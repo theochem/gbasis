@@ -3,11 +3,22 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Generated version.py by setup.py
+gbasis/version.py
+
 # C extensions
 *.so
 
+# Cython compiled files
+gbasis/*.c
+
+# Documentation files
+doc/_build
+doc/pyapi
+
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -102,3 +113,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Ignore mac .DS_Store
+.DS_Store
+
+# PyCharm
+.idea/
