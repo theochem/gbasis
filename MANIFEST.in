@@ -1,0 +1,4 @@
+include pylintrc
+include LICENSE.txt
+include clean.sh
+include conda/*

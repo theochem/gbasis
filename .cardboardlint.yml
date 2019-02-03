@@ -1,0 +1,13 @@
+linters:
+- import:
+    packages: ['gbasis']
+- namespace:
+    filefilter: ['- */__init__.py', '- */test_*.py', '- *setup.py', '- tools/*',
+                 '+ *.py', '+ *.pyx']
+- pylint:
+    config: .pylintrc
+- pycodestyle:
+    config: .pycodestylerc
+- pydocstyle:
+    config: .pydocstylerc
+- whitespace:
