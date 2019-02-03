@@ -64,4 +64,15 @@ setup(
     url='https://github.com/theochem/gbasis',
     packages=['gbasis'],
     zip_safe=False,
-)
+    include_package_data=True,
+    classifiers=[
+        'Environment :: Console',
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Physics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Intended Audience :: Science/Research'],
+    setup_requires=['numpy>=1.0'],
+    install_requires=['numpy>=1.0', 'nose>=0.11'],
+    )
