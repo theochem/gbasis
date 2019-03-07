@@ -33,7 +33,40 @@ class ContractedCartesianGaussians:
         Charge at the center of the Gaussian primitives.
     coeffs : np.ndarray(K,)
         Contraction coefficients, :math:`\{d_i\}`, of the primitives.
-    exponents : np.ndarray(L,)
+    exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}`.
 
     """
+
+    @property
+    def charge(self):
+        """Charge at the center of the Gaussian primitives.
+
+        Returns
+        -------
+        charge : float
+            Point charge at the center of the Gaussian primitive.
+
+        """
+        return self._charge
+
+    @charge.setter
+    def charge(self, charge):
+        """Set the charge at the center of the Gaussian primitives.
+
+        Parameters
+        ----------
+        charge : {float, int}
+            Point charge at the center of the Gaussian primitive.
+
+        Raises
+        ------
+        TypeError
+            If charge is not given as an integer or a float.
+
+        """
+        if isinstance(charge, int):
+            charge = float(charge)
+        if not isinstance(charge, float):
+            raise TypeError("Charge must be given as an integer or a float.")
+        self._charge = charge
