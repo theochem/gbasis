@@ -60,7 +60,7 @@ setup(
     ],
 
     keywords='gaussian integration differentiation evaluation density',
-    packages=find_packages(exclude=['docs']),
+    packages=find_packages(exclude=['docs', 'tests']),
     python_requires='>=3.5',
     install_requires=['numpy', 'scipy'],
 
