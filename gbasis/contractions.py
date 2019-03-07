@@ -148,3 +148,35 @@ class ContractedCartesianGaussians:
         if angmom < 0:
             raise ValueError("Angular momentum must be a positive integer.")
         self._angmom = angmom
+
+    @property
+    def exps(self):
+        r"""Exponents of the Gaussian primitives.
+
+        Returns
+        -------
+        exps : np.ndarray(L,)
+            Exponents of the primitives, :math:`\{\alpha_i\}`.
+
+        """
+        return self._exps
+
+    @exps.setter
+    def exps(self, exps):
+        r"""Set the exponents of the Gaussian primitives.
+
+        Parameters
+        ----------
+        exps : np.ndarray(L,)
+            Exponents of the primitives, :math:`\{\alpha_i\}`.
+
+        Raises
+        ------
+        TypeError
+            If exps does not have data type of float.
+
+        """
+        if not (isinstance(exps, np.ndarray) and exps.dtype == float):
+            raise TypeError('Exponents must be given as a numpy array of data type float.')
+
+        self._exps = exps

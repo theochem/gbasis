@@ -80,3 +80,29 @@ def test_angmom_getter():
     test = skip_init(ContractedCartesianGaussians)
     test._angmom = 1
     assert test.angmom == 1
+
+
+def test_exps_setter():
+    """Test setter for ContractedCartesianGaussians.exps."""
+    test = skip_init(ContractedCartesianGaussians)
+    test.exps = np.array([1.0, 2.0, 3.0])
+    assert (
+        isinstance(test._exps, np.ndarray)
+        and test._exps.dtype == float
+        and np.allclose(test._exps, np.array([1, 2, 3]))
+    )
+
+    with pytest.raises(TypeError):
+        test.exps = [1, 2, 3]
+    with pytest.raises(TypeError):
+        test.exps = np.array([1, 2, 3], dtype=bool)
+    with pytest.raises(ValueError):
+        test.coeffs = np.array([1.0, 2.0, 3.0])
+        test.exps = np.array([4.0, 5.0])
+
+
+def test_exps_getter():
+    """Test getter for ContractedCartesianGaussians.exps."""
+    test = skip_init(ContractedCartesianGaussians)
+    test._exps = [2.0, 3.0]
+    assert test.exps == [2.0, 3.0]
