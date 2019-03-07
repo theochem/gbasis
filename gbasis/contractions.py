@@ -1,4 +1,5 @@
 """Data classes for contracted Gaussians."""
+import numpy as np
 
 
 class ContractedCartesianGaussians:
@@ -70,3 +71,40 @@ class ContractedCartesianGaussians:
         if not isinstance(charge, float):
             raise TypeError("Charge must be given as an integer or a float.")
         self._charge = charge
+
+    @property
+    def coord(self):
+        """Coordinate of the center of the Gaussian primitives.
+
+        Returns
+        -------
+        coord : float
+            Coordinate of the center of the Gaussian primitive.
+
+        """
+        return self._coord
+
+    @coord.setter
+    def coord(self, coord):
+        """Set the coordinate of the center of the Gaussian primitives.
+
+        Parameters
+        ----------
+        coord : {float, int}
+            Coordinate of the center of the Gaussian primitive.
+
+        Raises
+        ------
+        TypeError
+            If coord is not a numpy array of dimension 3.
+            If coord does not have data type of int or float.
+
+        """
+        if not (isinstance(coord, np.ndarray) and coord.size == 3):
+            raise TypeError("Coordinate must be given as a numpy array of dimension 3.")
+        if coord.dtype == int:
+            coord = coord.astype(float)
+        if coord.dtype != float:
+            raise TypeError("The data type of the coordinate must be int or float.")
+
+        self._coord = coord
