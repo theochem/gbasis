@@ -180,3 +180,39 @@ class ContractedCartesianGaussians:
             raise TypeError('Exponents must be given as a numpy array of data type float.')
 
         self._exps = exps
+
+    @property
+    def coeffs(self):
+        r"""Contraction coefficients of the Gaussian primitives.
+
+        Returns
+        -------
+        coeffs : np.ndarray(L,)
+            Contraction coefficients, :math:`\{d_i\}`, of the primitives.
+
+        """
+        return self._coeffs
+
+    @coeffs.setter
+    def coeffs(self, coeffs):
+        r"""Set the contraction coefficients of the Gaussian primitives.
+
+        Parameters
+        ----------
+        coeffs : np.ndarray(L,)
+            Contraction coefficients, :math:`\{d_i\}`, of the primitives.
+
+        Raises
+        ------
+        TypeError
+            If coeffs is not a numpy array of data type of float.
+        ValueError
+            If exps and coeffs are not arrays of the same size.
+
+        """
+        if not (isinstance(coeffs, np.ndarray) and coeffs.dtype == float):
+            raise TypeError("Contraction coefficients must be a numpy array of data type float.")
+        if hasattr(self, "_exps") and coeffs.shape != self.exps.shape:
+            raise ValueError("Coefficients array must have the same size as exponents array.")
+
+        self._coeffs = coeffs
