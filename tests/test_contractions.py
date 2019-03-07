@@ -106,3 +106,39 @@ def test_exps_getter():
     test = skip_init(ContractedCartesianGaussians)
     test._exps = [2.0, 3.0]
     assert test.exps == [2.0, 3.0]
+
+
+def test_coeffs_setter():
+    """Test setter for ContractedCartesianGaussians.coeffs."""
+    test = skip_init(ContractedCartesianGaussians)
+    test.coeffs = np.array([1.0, 2.0, 3.0])
+    assert (
+        isinstance(test._coeffs, np.ndarray)
+        and test._coeffs.dtype == float
+        and np.allclose(test._coeffs, np.array([1, 2, 3]))
+    )
+
+    test = skip_init(ContractedCartesianGaussians)
+    test.exps = np.array([4.0, 5.0, 6.0])
+    test.coeffs = np.array([1.0, 2.0, 3.0])
+    assert (
+        isinstance(test._coeffs, np.ndarray)
+        and test._coeffs.dtype == float
+        and np.allclose(test._coeffs, np.array([1, 2, 3]))
+    )
+
+    test = skip_init(ContractedCartesianGaussians)
+    with pytest.raises(TypeError):
+        test.coeffs = [1, 2, 3]
+    with pytest.raises(TypeError):
+        test.coeffs = np.array([1, 2, 3], dtype=bool)
+    with pytest.raises(ValueError):
+        test.exps = np.array([4.0, 5.0])
+        test.coeffs = np.array([1.0, 2.0, 3.0])
+
+
+def test_coeffs_getter():
+    """Test getter for ContractedCartesianGaussians.coeffs."""
+    test = skip_init(ContractedCartesianGaussians)
+    test._coeffs = [2.0, 3.0]
+    assert test.coeffs == [2.0, 3.0]
