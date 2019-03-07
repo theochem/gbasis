@@ -23,7 +23,7 @@ class ContractedCartesianGaussians:
     Attributes
     ----------
     angmom : int
-        Angular momentum of the contractions.
+        Angular momentum of the set of contractions.
         .. math::
 
             \sum_i \vec{a} = a_x + a_y + a_z
@@ -108,3 +108,43 @@ class ContractedCartesianGaussians:
             raise TypeError("The data type of the coordinate must be int or float.")
 
         self._coord = coord
+
+    @property
+    def angmom(self):
+        r"""Angular momentum of the contractions.
+
+        Returns
+        -------
+        angmom : int
+            Angular momentum of the set of contractions.
+            .. math::
+
+                \sum_i \vec{a} = a_x + a_y + a_z
+
+        """
+        return self._angmom
+
+    @angmom.setter
+    def angmom(self, angmom):
+        r"""Set the angular momentum of the contractions.
+
+        Parameters
+        ----------
+        angmom : int
+            Angular momentum of the set of contractions.
+            .. math::
+
+                \sum_i \vec{a} = a_x + a_y + a_z
+
+        Raises
+        ------
+        ValueError
+            If angular momentum is not given as an integer.
+            If angular momentum is not given as a positive integer.
+
+        """
+        if not isinstance(angmom, int):
+            raise TypeError("Angular momentum must be given as an integer")
+        if angmom < 0:
+            raise ValueError("Angular momentum must be a positive integer.")
+        self._angmom = angmom
