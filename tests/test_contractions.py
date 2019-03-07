@@ -56,3 +56,27 @@ def test_coord_getter():
     test = skip_init(ContractedCartesianGaussians)
     test._coord = 2
     assert test.coord == 2
+
+
+def test_angmom_setter():
+    """Test setter for ContractedCartesianGaussians.angmom."""
+    test = skip_init(ContractedCartesianGaussians)
+    test.angmom = 1
+    assert isinstance(test._angmom, int) and test._angmom == 1
+    test.angmom = 0
+    assert isinstance(test._angmom, int) and test._angmom == 0
+    with pytest.raises(ValueError):
+        test.angmom = -2
+    with pytest.raises(TypeError):
+        test.angmom = "0"
+    with pytest.raises(TypeError):
+        test.angmom = 0.0
+    with pytest.raises(TypeError):
+        test.angmom = None
+
+
+def test_angmom_getter():
+    """Test getter for ContractedCartesianGaussians.angmom."""
+    test = skip_init(ContractedCartesianGaussians)
+    test._angmom = 1
+    assert test.angmom == 1
