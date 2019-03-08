@@ -142,3 +142,19 @@ def test_coeffs_getter():
     test = skip_init(ContractedCartesianGaussians)
     test._coeffs = [2.0, 3.0]
     assert test.coeffs == [2.0, 3.0]
+
+
+def tests_init():
+    """Test ContractedCartesianGaussians.__init__."""
+    test = ContractedCartesianGaussians(
+        1,
+        np.array([0, 1, 2]),
+        0,
+        np.array([1, 2, 3, 4], dtype=float),
+        np.array([5, 6, 7, 8], dtype=float),
+    )
+    assert test._angmom == 1
+    assert np.allclose(test._coord, np.array([0, 1, 2]))
+    assert test._charge == 0
+    assert np.allclose(test._coeffs, np.array([1, 2, 3, 4]))
+    assert np.allclose(test._exps, np.array([5, 6, 7, 8]))

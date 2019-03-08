@@ -39,6 +39,33 @@ class ContractedCartesianGaussians:
 
     """
 
+    def __init__(self, angmom, coord, charge, coeffs, exps):
+        r"""Initialize a ContractedCartesianGaussians instance.
+
+        Attributes
+        ----------
+        angmom : int
+            Angular momentum of the set of contractions.
+            .. math::
+
+                \sum_i \vec{a} = a_x + a_y + a_z
+
+        coord : np.ndarray(3,)
+            Coordinate of the center of the Gaussian primitives.
+        charge : float
+            Charge at the center of the Gaussian primitives.
+        coeffs : np.ndarray(K,)
+            Contraction coefficients, :math:`\{d_i\}`, of the primitives.
+        exps : np.ndarray(K,)
+            Exponents of the primitives, :math:`\{\alpha_i\}`.
+
+        """
+        self.angmom = angmom
+        self.coord = coord
+        self.charge = charge
+        self.coeffs = coeffs
+        self.exps = exps
+
     @property
     def charge(self):
         """Charge at the center of the Gaussian primitives.
