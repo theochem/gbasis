@@ -92,6 +92,16 @@ def test_exps_setter():
         and np.allclose(test._exps, np.array([1, 2, 3]))
     )
 
+    test = skip_init(ContractedCartesianGaussians)
+    test.coeffs = np.array([1.0, 2.0, 3.0])
+    test.exps = np.array([1.0, 2.0, 3.0])
+    assert (
+        isinstance(test._exps, np.ndarray)
+        and test._exps.dtype == float
+        and np.allclose(test._exps, np.array([1, 2, 3]))
+    )
+
+    test = skip_init(ContractedCartesianGaussians)
     with pytest.raises(TypeError):
         test.exps = [1, 2, 3]
     with pytest.raises(TypeError):
