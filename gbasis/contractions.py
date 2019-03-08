@@ -201,10 +201,14 @@ class ContractedCartesianGaussians:
         ------
         TypeError
             If exps does not have data type of float.
+        ValueError
+            If exps and coeffs are not arrays of the same size.
 
         """
         if not (isinstance(exps, np.ndarray) and exps.dtype == float):
-            raise TypeError('Exponents must be given as a numpy array of data type float.')
+            raise TypeError("Exponents must be given as a numpy array of data type float.")
+        if hasattr(self, "_coeffs") and exps.shape != self.coeffs.shape:
+            raise ValueError("Exponents array must have the same size as Coefficients array")
 
         self._exps = exps
 
