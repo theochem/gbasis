@@ -59,10 +59,10 @@ def eval_cart (grid_pt, norms, angnom, coord, charge, coeffs, exps):
 
     # Contraction (TODO : must make sure of how the normalization constant is vectorized)
     prim_matrix = np.outer(primitive, poly_vec.T)
-    for primitive in xrange(0, coeffs.size + 1):
-       for shell_in_atom in xrange(0, shell_dim + 1):
-           norm_pos = primitive * coeffs.size + shell_in_atom
-           cart_eval[shell_in_atom] = norms[norm_pos] * poly_vec[shell_in_atom]
-                                                      * exp_vec[primitive]
+    for shell_in_atom in xrange(0, shell_dim + 1):
+       for primitive in xrange(0, coeffs.size + 1):
+           norm_pos = shell_in_atom * shell_dim + primitive
+           cart_eval[shell_in_atom] += norms[norm_pos] * poly_vec[shell_in_atom]
+                                                       * exp_vec[primitive]
 
     return cart_eval
