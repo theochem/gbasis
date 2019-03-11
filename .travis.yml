@@ -5,7 +5,7 @@ matrix:
     - python: 3.5
       env: TOXENV=py35
     - python: 3.6
-      env: TOXENV=py36
+      env: TOXENV=qa
     - python: 3.7
       sudo: required
       dist: xenial
