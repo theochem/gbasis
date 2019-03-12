@@ -26,7 +26,7 @@ class ContractedCartesianGaussians:
         Angular momentum of the set of contractions.
         .. math::
 
-            \sum_i \vec{a} = a_x + a_y + a_z
+            l = \sum_i \vec{a} = a_x + a_y + a_z
 
     coord : np.ndarray(3,)
         Coordinate of the center of the Gaussian primitives.
@@ -247,3 +247,20 @@ class ContractedCartesianGaussians:
             raise ValueError("Coefficients array must have the same size as exponents array.")
 
         self._coeffs = coeffs
+
+    @property
+    def angmom_components(self):
+        r"""Components of the angular momentum.
+
+        Returns
+        -------
+        angmom_components : list of int
+            The x, y, and z components of the angular momentum (:math:`\vec{a} = (a_x, a_y, a_z)`
+            where :math:`a_x + a_y + a_z = l`).
+
+        """
+        return [
+            (x, y, self.angmom - x - y)
+            for x in range(self.angmom + 1)
+            for y in range(self.angmom - x + 1)
+        ]
