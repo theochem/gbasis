@@ -1,5 +1,8 @@
 """Data classes for contracted Gaussians."""
+from math import pi
+
 import numpy as np
+from scipy.special import factorial2
 
 
 class ContractedCartesianGaussians:
@@ -264,3 +267,36 @@ class ContractedCartesianGaussians:
             for x in range(self.angmom + 1)
             for y in range(self.angmom - x + 1)
         ]
+
+
+def cartesian_gaussian_norm(components, exponent):
+    r"""Compute the normalization constant for a Cartesian Gaussian primitive.
+
+        .. math::
+
+            N(\vec{a}, \alpha) = (2 * \alpha / \pi)^{3/4} *
+            (4 * \alpha)^{(a_x + a_y + a_z)/2} /
+            ((2 * a_x - 1)!! * (2 * a_y - 1)!! * (2 * a_z - 1)!!)^{1/2}
+
+    Parameters
+    ----------
+    components : np.ndarray(3,)
+        The Cartesian components for angular momentum of the Gaussian primitive.
+        .. math::
+
+            \vec{a} = a_x + a_y + a_z
+
+    exponent: float
+        The exponent of the Cartesian Gaussian primitive.
+
+    Returns
+    -------
+    norm : float
+        The normalization constant of the Cartesian Gaussian primitive.
+
+    """
+    return (
+        ((2 * exponent / pi) ** (3 / 4))
+        * ((4 * exponent) ** (np.sum(components) / 2))
+        / (np.sqrt(np.prod(factorial2(2 * components - 1))))
+    )
