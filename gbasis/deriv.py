@@ -166,3 +166,162 @@ def eval_prim(coord, center, angmom_comps, alpha):
 
     """
     return eval_deriv_prim(coord, np.zeros(angmom_comps.shape), center, angmom_comps, alpha)
+
+
+def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coeffs):
+    """Return the evaluation of the derivative of a Cartesian contraction.
+
+    Parameters
+    ----------
+    coord : np.ndarray(3, N)
+        Point in space where the derivative of the Gaussian primitive is evaluated.
+    orders : np.ndarray(3,)
+        Orders of the derivative.
+        Negative orders are treated as zero orders.
+    center : np.ndarray(3,)
+        Center of the Gaussian primitive.
+    angmom_comps : np.ndarray(3,)
+        Component of the angular momentum that corresponds to this dimension.
+    alphas : np.ndarray(K,)
+        Values of the (square root of the) precisions of the primitives.
+    prim_coeffs : np.ndarray(K,)
+        Contraction coefficients of the primitives.
+
+    Returns
+    -------
+    derivative : float
+        Evaluation of the derivative.
+
+    """
+    # pylint: disable=R0914
+    # support primitive evaluation
+    if isinstance(alphas, (int, float)):
+        alphas = np.array([alphas])
+    if isinstance(prim_coeffs, (int, float)):
+        prim_coeffs = np.array([prim_coeffs])
+
+    # NOTE: following convention will be used to organize the axis of the multidimensional arrays
+    # axis 0 = index for term in hermite polynomial (size: min(K, n)) where n is the order in given
+    # dimension
+    # axis 1 = index for primitive (size: K)
+    # axis 2 = index for dimension (x, y, z) of coordinate (size: 3)
+    # axis 3 = index for coordinate (out of a grid) (size: N)
+    # adjust the axis
+    coord = coord[np.newaxis, np.newaxis]
+    # NOTE: `order` is still assumed to be a one dimensional
+    center = center[np.newaxis, np.newaxis, :]
+    angmom_comps = angmom_comps[np.newaxis, np.newaxis, :]
+    alphas = alphas[np.newaxis, :, np.newaxis]
+    # NOTE: `prim_coeffs` will still be used as a 1D array
+
+    # useful variables
+    rel_coord = coord - center
+    gauss = np.exp(-alphas * rel_coord ** 2)
+
+    # zeroth order (i.e. no derivatization)
+    indices_noderiv = orders <= 0
+    zero_rel_coord, zero_angmom_comps, zero_gauss = (
+        rel_coord[:, :, indices_noderiv],
+        angmom_comps[:, :, indices_noderiv],
+        gauss[:, :, indices_noderiv],
+    )
+    zeroth_part = np.prod(zero_rel_coord ** zero_angmom_comps * zero_gauss, axis=(0, 2))
+    # NOTE: `zeroth_part` now has axis 0 for primitives and axis 1 for coordinates
+
+    deriv_part = 1
+    nonzero_rel_coord, nonzero_orders, nonzero_angmom_comps, nonzero_gauss = (
+        rel_coord[:, :, ~indices_noderiv],
+        orders[~indices_noderiv],
+        angmom_comps[:, :, ~indices_noderiv],
+        gauss[:, :, ~indices_noderiv],
+    )
+    nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :]
+
+    # derivatization part
+    if nonzero_orders.size != 0:
+        # General approach: compute the whole coefficents, zero out the irrelevant parts
+        # NOTE: The following step assumes that there is only one set (nx, ny, nz) of derivatization
+        # orders i.e. we assume that only one axis (axis 2) of `nonzero_orders` has a dimension
+        # greater than 1
+        indices_herm = np.arange(np.max(nonzero_orders) + 1)[:, np.newaxis, np.newaxis]
+        # get indices that are used as powers of the appropriate terms in the derivative
+        # NOTE: the negative indices must be turned into zeros (even though they are turned into
+        # zeros later anyways) because these terms are sometimes zeros (and negative power is
+        # undefined).
+        indices_angmom = nonzero_angmom_comps - nonzero_orders + indices_herm
+        indices_angmom[indices_angmom < 0] = 0
+        # get coefficients for all entries
+        coeffs = (
+            comb(nonzero_orders, indices_herm)
+            * perm(nonzero_angmom_comps, nonzero_orders - indices_herm)
+            * (-alphas ** 0.5) ** indices_herm
+            * nonzero_rel_coord ** indices_angmom
+        )
+        # zero out the appropriate terms
+        indices_zero = np.where(indices_herm < np.maximum(0, nonzero_orders - nonzero_angmom_comps))
+        coeffs[indices_zero[0], :, indices_zero[2]] = 0
+        indices_zero = np.where(nonzero_orders < indices_herm)
+        coeffs[indices_zero[0], :, indices_zero[2]] = 0
+        # compute
+        # FIXME: I can't seem to vectorize the next part due to the API of
+        # np.polynomial.hermite.hermval. The main problem is that the indices for the primitives and
+        # the dimension must be constrained for the given `x` and `c`, otherwise the hermitian
+        # polynomial is evaluated at many unnecessary points.
+        hermite = np.prod(
+            [
+                [
+                    np.polynomial.hermite.hermval(
+                        alphas[:, i, 0] ** 0.5 * nonzero_rel_coord[:, 0, j], coeffs[:, i, j]
+                    )
+                    for i in range(alphas.shape[1])
+                ]
+                for j in range(nonzero_rel_coord.shape[2])
+            ],
+            # NOTE: for loop over the axis 1 (primitives) and 2 (dimension) moves it to axis 1 and
+            # 0, respectively, while removing these indices from alphas and coeffs. hermval returns
+            # an array of c.shape[1:] + x.shape.
+            # Therefore, axis 0 is for index for dimension (x, y, z)
+            #            axis 1 is the index for primitive
+            #            axis 2 is the index for term in hermite polynomial
+            #            axis 3 is the index for coordinates
+            axis=(0, 2),
+        )
+        # NOTE: `hermite` now has axis 0 for primitives and axis 1 for coordinates
+        deriv_part = np.prod(nonzero_gauss, axis=(0, 2)) * hermite
+
+    return np.sum(prim_coeffs * zeroth_part * deriv_part, axis=0)
+
+
+def eval_contraction(coord, center, angmom_comps, alphas, coeffs):
+    """Return the evaluation of a Gaussian contraction.
+
+    Parameters
+    ----------
+    coord : np.ndarray(3, N)
+        Point in space where the derivative of the Gaussian primitive is evaluated.
+    orders : np.ndarray(3,)
+        Orders of the derivative.
+        Negative orders are treated as zero orders.
+    center : np.ndarray(3,)
+        Center of the Gaussian primitive.
+    angmom_comps : np.ndarray(3,)
+        Component of the angular momentum that corresponds to this dimension.
+    alphas : np.ndarray(K,)
+        Values of the (square root of the) precisions of the primitives.
+    prim_coeffs : np.ndarray(K,)
+        Contraction coefficients of the primitives.
+
+    Returns
+    -------
+    derivative : float
+        Evaluation of the derivative.
+
+    Returns
+    -------
+    contraction : float
+        Evaluation of the contraction.
+
+    """
+    return eval_deriv_contraction(
+        coord, np.zeros(center.shape), center, angmom_comps, alphas, coeffs
+    )
