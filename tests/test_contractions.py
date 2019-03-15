@@ -1,5 +1,5 @@
 """Test gbasis.contractions."""
-from gbasis.contractions import cartesian_gaussian_norm, ContractedCartesianGaussians
+from gbasis.contractions import ContractedCartesianGaussians
 import numpy as np
 import pytest
 from utils import skip_init
@@ -202,11 +202,12 @@ def test_angmom_components():
 
 
 # TODO: Test norm using actual integrals
+# TODO: add more tests
 def test_cartesian_gaussian_norm():
     """Test cartesian_gaussian_norm."""
-    assert np.isclose(
-        [cartesian_gaussian_norm(np.array([0, 0, 0]), 0.25)], [0.2519794355383807303479140]
+    test = ContractedCartesianGaussians(
+        0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
     )
-    assert np.isclose(
-        [cartesian_gaussian_norm(np.array([2, 0, 1]), 0.5)], [0.6920252830162908851679097]
-    )
+    assert np.isclose(test.norm, 0.2519794355383807303479140)
+    test = ContractedCartesianGaussians(3, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.5]))
+    assert np.isclose(test.norm[7], 0.6920252830162908851679097)
