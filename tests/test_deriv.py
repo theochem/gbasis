@@ -118,16 +118,21 @@ def test_eval_contraction():
         3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
         + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
     )
+    # contraction + multiple angular momentums
     assert np.allclose(
         eval_contraction(
-            np.array([2.0, 0, 0]),
+            np.array([2, 0, 0]),
             np.array([0, 3, 4]),
-            np.array([2, 1, 3]),
-            np.array([1, 2]),
-            np.array([2, 3]),
+            np.array([[2, 1, 3], [1, 3, 4]]),
+            np.array([0.1, 0.001]),
+            np.array([3, 4]),
         ),
-        2 * eval_prim(np.array([2.0, 0, 0]), np.array([0, 3, 4]), np.array([2, 1, 3]), 1)
-        + 3 * eval_prim(np.array([2.0, 0, 0]), np.array([0, 3, 4]), np.array([2, 1, 3]), 2),
+        [
+            3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+            + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
+            3 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+            + 4 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
+        ],
     )
 
 
@@ -156,6 +161,43 @@ def test_eval_deriv_contraction():
                 * eval_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
                 ),
+            )
+            # contraction + multiple angular momentums
+            assert np.allclose(
+                eval_deriv_contraction(
+                    np.array([2, 3, 4]),
+                    orders,
+                    np.array([0.5, 1, 1.5]),
+                    np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
+                    np.array([1, 2]),
+                    np.array([3, 4]),
+                ),
+                [
+                    3
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
+                    )
+                    + 4
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
+                    ),
+                    3
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]),
+                        orders,
+                        np.array([0.5, 1, 1.5]),
+                        np.array([x - 1, y + 2, z + 1]),
+                        1,
+                    )
+                    + 4
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]),
+                        orders,
+                        np.array([0.5, 1, 1.5]),
+                        np.array([x - 1, y + 2, z + 1]),
+                        2,
+                    ),
+                ],
             )
     # second order
     for k, l in it.product(range(3), range(3)):
@@ -189,4 +231,41 @@ def test_eval_deriv_contraction():
                 * eval_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
                 ),
+            )
+            # contraction + multiple angular momentums
+            assert np.allclose(
+                eval_deriv_contraction(
+                    np.array([2, 3, 4]),
+                    orders,
+                    np.array([0.5, 1, 1.5]),
+                    np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
+                    np.array([1, 2]),
+                    np.array([3, 4]),
+                ),
+                [
+                    3
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
+                    )
+                    + 4
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
+                    ),
+                    3
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]),
+                        orders,
+                        np.array([0.5, 1, 1.5]),
+                        np.array([x - 1, y + 2, z + 1]),
+                        1,
+                    )
+                    + 4
+                    * eval_deriv_prim(
+                        np.array([2, 3, 4]),
+                        orders,
+                        np.array([0.5, 1, 1.5]),
+                        np.array([x - 1, y + 2, z + 1]),
+                        2,
+                    ),
+                ],
             )
