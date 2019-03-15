@@ -174,31 +174,29 @@ def test_angmom_components():
     """Test ContractedCartesianGaussians.angmom_components."""
     test = skip_init(ContractedCartesianGaussians)
     test._angmom = 0
-    assert test.angmom_components == [(0, 0, 0)]
+    assert np.allclose(test.angmom_components, [(0, 0, 0)])
     test._angmom = 1
-    assert test.angmom_components == [(0, 0, 1), (0, 1, 0), (1, 0, 0)]
+    assert np.allclose(test.angmom_components, [(0, 0, 1), (0, 1, 0), (1, 0, 0)])
     test._angmom = 2
-    assert test.angmom_components == [
-        (0, 0, 2),
-        (0, 1, 1),
-        (0, 2, 0),
-        (1, 0, 1),
-        (1, 1, 0),
-        (2, 0, 0),
-    ]
+    assert np.allclose(
+        test.angmom_components, [(0, 0, 2), (0, 1, 1), (0, 2, 0), (1, 0, 1), (1, 1, 0), (2, 0, 0)]
+    )
     test._angmom = 3
-    assert test.angmom_components == [
-        (0, 0, 3),
-        (0, 1, 2),
-        (0, 2, 1),
-        (0, 3, 0),
-        (1, 0, 2),
-        (1, 1, 1),
-        (1, 2, 0),
-        (2, 0, 1),
-        (2, 1, 0),
-        (3, 0, 0),
-    ]
+    assert np.allclose(
+        test.angmom_components,
+        [
+            (0, 0, 3),
+            (0, 1, 2),
+            (0, 2, 1),
+            (0, 3, 0),
+            (1, 0, 2),
+            (1, 1, 1),
+            (1, 2, 0),
+            (2, 0, 1),
+            (2, 1, 0),
+            (3, 0, 0),
+        ],
+    )
     test._angmom = 10
     assert len(test.angmom_components) == 11 * 12 / 2
 
