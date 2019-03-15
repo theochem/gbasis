@@ -1,6 +1,4 @@
 """Data classes for contracted Gaussians."""
-from math import pi
-
 import numpy as np
 from scipy.special import factorial2
 
@@ -270,34 +268,28 @@ class ContractedCartesianGaussians:
             ]
         )
 
-def cartesian_gaussian_norm(components, exponent):
-    r"""Compute the normalization constant for a Cartesian Gaussian primitive.
+    @property
+    def norm(self):
+        r"""Compute the normalization constant for a Cartesian Gaussian primitive.
 
-        .. math::
+            .. math::
 
-            N(\vec{a}, \alpha) = (2 * \alpha / \pi)^{3/4} *
-            (4 * \alpha)^{(a_x + a_y + a_z)/2} /
-            ((2 * a_x - 1)!! * (2 * a_y - 1)!! * (2 * a_z - 1)!!)^{1/2}
+                N(\vec{a}, \alpha) = (2 * \alpha / \pi)^{3/4} *
+                (4 * \alpha)^{(a_x + a_y + a_z)/2} /
+                ((2 * a_x - 1)!! * (2 * a_y - 1)!! * (2 * a_z - 1)!!)^{1/2}
 
-    Parameters
-    ----------
-    components : np.ndarray(3,)
-        The Cartesian components for angular momentum of the Gaussian primitive.
-        .. math::
+        Returns
+        -------
+        norm : np.ndarray(L, K)
+            The normalization constant of each of the Cartesian Gaussian primitive of the Cartesian
+            contraction.
 
-            \vec{a} = a_x + a_y + a_z
+        """
+        exponents = self.exps[np.newaxis, :]
+        angmom_components = self.angmom_components[:, :, np.newaxis]
 
-    exponent: float
-        The exponent of the Cartesian Gaussian primitive.
-
-    Returns
-    -------
-    norm : float
-        The normalization constant of the Cartesian Gaussian primitive.
-
-    """
-    return (
-        ((2 * exponent / pi) ** (3 / 4))
-        * ((4 * exponent) ** (np.sum(components) / 2))
-        / (np.sqrt(np.prod(factorial2(2 * components - 1))))
-    )
+        return (
+            (2 * exponents / np.pi) ** (3 / 4)
+            * ((4 * exponents) ** (self.angmom / 2))
+            / np.sqrt(np.prod(factorial2(2 * angmom_components - 1), axis=1))
+        )
