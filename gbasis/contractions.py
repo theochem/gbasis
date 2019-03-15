@@ -257,17 +257,18 @@ class ContractedCartesianGaussians:
 
         Returns
         -------
-        angmom_components : list of int
+        angmom_components : np.ndarray(L, 3)
             The x, y, and z components of the angular momentum (:math:`\vec{a} = (a_x, a_y, a_z)`
             where :math:`a_x + a_y + a_z = l`).
 
         """
-        return [
-            (x, y, self.angmom - x - y)
-            for x in range(self.angmom + 1)
-            for y in range(self.angmom - x + 1)
-        ]
-
+        return np.array(
+            [
+                (x, y, self.angmom - x - y)
+                for x in range(self.angmom + 1)
+                for y in range(self.angmom - x + 1)
+            ]
+        )
 
 def cartesian_gaussian_norm(components, exponent):
     r"""Compute the normalization constant for a Cartesian Gaussian primitive.
