@@ -293,3 +293,15 @@ class ContractedCartesianGaussians:
             * ((4 * exponents) ** (self.angmom / 2))
             / np.sqrt(np.prod(factorial2(2 * angmom_components - 1), axis=1))
         )
+
+    @property
+    def num_contr(self):
+        """Return the number of contractions.
+
+        Returns
+        -------
+        num_contr : int
+            Number of contrations.
+
+        """
+        return (self.angmom + 1) * (self.angmom + 2) // 2
