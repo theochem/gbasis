@@ -211,3 +211,13 @@ def test_norm():
     assert np.isclose(test.norm, 0.2519794355383807303479140)
     test = ContractedCartesianGaussians(3, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.5]))
     assert np.isclose(test.norm[7], 0.6920252830162908851679097)
+
+
+def test_num_contr():
+    """Test ContractedCartesianGaussians.num_contr."""
+    test = skip_init(ContractedCartesianGaussians)
+    last_num_contr = 0
+    for i in range(100):
+        test._angmom = i
+        assert test.num_contr == last_num_contr + i + 1
+        last_num_contr = test.num_contr
