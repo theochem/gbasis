@@ -203,8 +203,8 @@ def test_angmom_components():
 
 # TODO: Test norm using actual integrals
 # TODO: add more tests
-def test_cartesian_gaussian_norm():
-    """Test cartesian_gaussian_norm."""
+def test_norm():
+    """Test ContractedCartesianGaussians.norm."""
     test = ContractedCartesianGaussians(
         0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
     )
