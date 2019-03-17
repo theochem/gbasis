@@ -5,7 +5,7 @@ from gbasis.contractions import ContractedCartesianGaussians
 import numpy as np
 
 
-def lincomb_blocks_evals(contractions, eval_func, trans_blocks):
+def lincomb_blocks_evals(contractions, eval_func, trans_blocks, **kwargs):
     """Return linear transformation of the evaluations of the given contractions.
 
     Parameters
@@ -14,7 +14,7 @@ def lincomb_blocks_evals(contractions, eval_func, trans_blocks):
         Contractions that will be used to generate the function evaluations.
     eval_func : function
         Function for evaluating the Cartesian contraction or its derivative.
-        Input of the function is a ContractedCartesianGaussians instance.
+        Input of the function is a ContractedCartesianGaussians instance and the keyword arguments.
         Output of the function is an array whose first index corresponds to the contractions of the
         given ContractedCartesianGaussians instance.
     trans_blocks : iterable of np.ndarray
@@ -23,6 +23,8 @@ def lincomb_blocks_evals(contractions, eval_func, trans_blocks):
         Each transformation matrix applies from the left, i.e. the number of columns of the
         transformation matrix should match the number of contractions for the corresponding
         ContractedCartesianGaussians instance.
+    kwargs
+        Keyword arguments that are used for calling the `eval_func`
 
     Returns
     -------
@@ -73,11 +75,21 @@ def lincomb_blocks_evals(contractions, eval_func, trans_blocks):
     if len(contractions) != i + 1:  # pylint: disable=W0631
         raise ValueError("Number of contractions and transformation blocks must be the same.")
 
-    # FIXME: einsum not used efficiently
-    matrices = [
-        np.einsum("ij,j...->i...", block, eval_func(contraction))
-        for contraction, block in zip(contractions, trans_blocks)
-    ]
+    matrices = []
+    for contraction, block in zip(contractions, trans_blocks):
+        # NOTE: this process is pretty similar to
+        # np.einsum("ij,j...->i...", transform, matrix, optimize='optimal')
+        # evaluate the function at the given points
+        eval_cont = eval_func(contraction, **kwargs)
+        # save original shape
+        old_shape = eval_cont.shape[1:]
+        # combine all indices except the first index
+        eval_cont = eval_cont.reshape(eval_cont.shape[0], np.prod(old_shape))
+        # transform
+        matrix = block.dot(eval_cont)
+        # restore shape of the combined indices and store
+        matrices.append(matrix.reshape(matrix.shape[0], *old_shape))
+
     if not all(matrix.shape[1:] == matrices[0].shape[1:] for matrix in matrices):
         raise ValueError(
             "The output of `eval_func` for all of the ContractedCartesianGaussians instances must "
