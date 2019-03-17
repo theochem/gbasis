@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 
 
+# TODO: add actual test case with real evaluation function
 def test_lincomb_blocks_evals():
     """Test lincomb.lincomb_blocks_evals."""
     test = ContractedCartesianGaussians(
