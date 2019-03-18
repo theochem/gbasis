@@ -6,12 +6,14 @@ from scipy.special import comb, perm
 # TODO: in the case of generalized Cartesian contraction where multiple shells have the same sets of
 # exponents but different sets of primitive coefficients, it will be helpful to vectorize the
 # `prim_coeffs` also.
-def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coeffs):
+# FIXME: name is pretty bad
+# TODO: vectorize for multiple orders? Caching instead?
+def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs):
     """Return the evaluation of the derivative of a Cartesian contraction.
 
     Parameters
     ----------
-    coord : np.ndarray(3, N)
+    coords : np.ndarray(3, N)
         Point in space where the derivative of the Gaussian primitive is evaluated.
     orders : np.ndarray(3,)
         Orders of the derivative.
@@ -50,9 +52,9 @@ def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coe
     # axis 3 = index for angular momentum vector (size: L)
     # axis 4 = index for coordinate (out of a grid) (size: N)
     # adjust the axis
-    coord = coord[np.newaxis, np.newaxis, :, np.newaxis]
-    # NOTE: if `coord` is two dimensional (3, N), then coord has shape (1, 1, 3, 1, N). If it is
-    # one dimensional (3,), then coord has shape (1, 1, 3, 1)
+    coords = coords[np.newaxis, np.newaxis, :, np.newaxis]
+    # NOTE: if `coord` is two dimensional (3, N), then coords has shape (1, 1, 3, 1, N). If it is
+    # one dimensional (3,), then coords has shape (1, 1, 3, 1)
     # NOTE: `order` is still assumed to be a one dimensional
     center = center[np.newaxis, np.newaxis, :, np.newaxis]
     angmom_comps = angmom_comps.T[np.newaxis, np.newaxis, :, :]
@@ -62,23 +64,23 @@ def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coe
     # NOTE: `prim_coeffs` will be used as a 1D array
 
     # useful variables
-    rel_coord = coord - center
-    gauss = np.exp(-alphas * rel_coord ** 2)
+    rel_coords = coords - center
+    gauss = np.exp(-alphas * rel_coords ** 2)
 
     # zeroth order (i.e. no derivatization)
     indices_noderiv = orders <= 0
-    zero_rel_coord, zero_angmom_comps, zero_gauss = (
-        rel_coord[:, :, indices_noderiv],
+    zero_rel_coords, zero_angmom_comps, zero_gauss = (
+        rel_coords[:, :, indices_noderiv],
         angmom_comps[:, :, indices_noderiv],
         gauss[:, :, indices_noderiv],
     )
-    zeroth_part = np.prod(zero_rel_coord ** zero_angmom_comps * zero_gauss, axis=(0, 2))
+    zeroth_part = np.prod(zero_rel_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
     # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for angular momentum vector, and
     # axis 2 for coordinate
 
     deriv_part = 1
-    nonzero_rel_coord, nonzero_orders, nonzero_angmom_comps, nonzero_gauss = (
-        rel_coord[:, :, ~indices_noderiv],
+    nonzero_rel_coords, nonzero_orders, nonzero_angmom_comps, nonzero_gauss = (
+        rel_coords[:, :, ~indices_noderiv],
         orders[~indices_noderiv],
         angmom_comps[:, :, ~indices_noderiv],
         gauss[:, :, ~indices_noderiv],
@@ -103,7 +105,7 @@ def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coe
             comb(nonzero_orders, indices_herm)
             * perm(nonzero_angmom_comps, nonzero_orders - indices_herm)
             * (-alphas ** 0.5) ** indices_herm
-            * nonzero_rel_coord ** indices_angmom
+            * nonzero_rel_coords ** indices_angmom
         )
         # zero out the appropriate terms
         indices_zero = np.where(indices_herm < np.maximum(0, nonzero_orders - nonzero_angmom_comps))
@@ -120,14 +122,14 @@ def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coe
                 [
                     [
                         np.polynomial.hermite.hermval(
-                            alphas[:, i, 0, 0] ** 0.5 * nonzero_rel_coord[:, 0, j, 0],
+                            alphas[:, i, 0, 0] ** 0.5 * nonzero_rel_coords[:, 0, j, 0],
                             coeffs[:, i, j, k],
                         )
                         for k in range(nonzero_angmom_comps.shape[3])
                     ]
                     for i in range(alphas.shape[1])
                 ]
-                for j in range(nonzero_rel_coord.shape[2])
+                for j in range(nonzero_rel_coords.shape[2])
             ],
             # NOTE: for loop over the axis 1 (primitives) and 2 (dimension) moves it to axis 1 and
             # 0, respectively, while removing these indices from alphas and coeffs. hermval returns
@@ -144,101 +146,3 @@ def eval_deriv_contraction(coord, orders, center, angmom_comps, alphas, prim_coe
 
     prim_coeffs = prim_coeffs[:, np.newaxis]
     return np.sum(prim_coeffs * zeroth_part * deriv_part, axis=0)
-
-
-def eval_contraction(coord, center, angmom_comps, alphas, coeffs):
-    """Return the evaluation of a Gaussian contraction.
-
-    Parameters
-    ----------
-    coord : np.ndarray(3, N)
-        Point in space where the derivative of the Gaussian primitive is evaluated.
-    orders : np.ndarray(3,)
-        Orders of the derivative.
-        Negative orders are treated as zero orders.
-    center : np.ndarray(3,)
-        Center of the Gaussian primitive.
-    angmom_comps : np.ndarray(3,)
-        Component of the angular momentum that corresponds to this dimension.
-    alphas : np.ndarray(K,)
-        Values of the (square root of the) precisions of the primitives.
-    prim_coeffs : np.ndarray(K,)
-        Contraction coefficients of the primitives.
-
-    Returns
-    -------
-    derivative : float
-        Evaluation of the derivative.
-
-    Returns
-    -------
-    contraction : float
-        Evaluation of the contraction.
-
-    """
-    return eval_deriv_contraction(
-        coord, np.zeros(center.shape), center, angmom_comps, alphas, coeffs
-    )
-
-
-# TODO: this function will likely be unused by anyone but is used for testing. Maybe it should be
-# moved to the tests directory?
-def eval_deriv_prim(coord, orders, center, angmom_comps, alpha):
-    """Return the evaluation of the derivative of a Gaussian primitive.
-
-    Parameters
-    ----------
-    coord : np.ndarray(3,)
-        Point in space where the derivative of the Gaussian primitive is evaluated.
-    orders : np.ndarray(3,)
-        Orders of the derivative.
-        Negative orders are treated as zero orders.
-    center : np.ndarray(3,)
-        Center of the Gaussian primitive.
-    angmom_comps : np.ndarray(3,)
-        Component of the angular momentum that corresponds to this dimension.
-    alpha : float
-        Value of the exponential in the Guassian primitive.
-
-    Returns
-    -------
-    derivative : float
-        Evaluation of the derivative.
-
-    Note
-    ----
-    If you want to evaluate the derivative of the contractions of the primitive, then use
-    `gbasis.deriv.eval_deriv_contraction` instead.
-
-    """
-    return eval_deriv_contraction(coord, orders, center, angmom_comps, alpha, 1)[0]
-
-
-# TODO: this function will likely be unused by anyone but is used for testing. Maybe it should be
-# moved to the tests directory?
-def eval_prim(coord, center, angmom_comps, alpha):
-    """Return the evaluation of a Gaussian primitive.
-
-    Parameters
-    ----------
-    coord : np.ndarray(3,)
-        Point in space where the derivative of the Gaussian primitive is evaluated.
-    center : np.ndarray(3,)
-        Center of the Gaussian primitive.
-    angmom_comps : np.ndarray(3,)
-        Component of the angular momentum that corresponds to this dimension.
-    alpha : float
-        Value of the exponential in the Guassian primitive.
-
-    Returns
-    -------
-    derivative : float
-        Evaluation of the derivative.
-
-    Note
-    ----
-    If you want to evaluate the contractions of the primitive, then use
-    `gbasis.deriv.eval_contraction` instead.
-
-    """
-    return eval_deriv_prim(coord, np.zeros(angmom_comps.shape), center, angmom_comps, alpha)
