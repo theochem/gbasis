@@ -1,7 +1,8 @@
 """Test gbasis.deriv."""
 import itertools as it
 
-from gbasis.deriv import _eval_deriv_contractions
+from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.deriv import _eval_deriv_contractions, eval_deriv_shell, eval_shell
 import numpy as np
 from utils import partial_deriv_finite_diff
 
@@ -365,3 +366,80 @@ def test_eval_deriv_contractions():
                     ),
                 ],
             )
+
+
+def test_eval_deriv_shell():
+    """Test gbasis.deriv.eval_deriv_shell."""
+    # first order
+    for k in range(3):
+        orders = np.zeros(3, dtype=int)
+        orders[k] = 1
+        for i in range(6):
+            test = ContractedCartesianGaussians(
+                1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+            )
+            answer = np.array(
+                [
+                    _eval_deriv_contractions(
+                        np.array([2, 3, 4]),
+                        orders,
+                        np.array([0.5, 1, 1.5]),
+                        angmom_comp,
+                        np.array([0.1, 0.01]),
+                        np.array([1, 2]),
+                    )
+                    for angmom_comp in test.angmom_components
+                ]
+            )
+            assert np.allclose(
+                eval_deriv_shell(coords=np.array([2, 3, 4]), orders=orders, shell=test),
+                answer.ravel(),
+            )
+    # second order
+    for k, l in it.product(range(3), range(3)):
+        orders = np.zeros(3, dtype=int)
+        orders[k] += 1
+        orders[l] += 1
+        for i in range(6):
+            test = ContractedCartesianGaussians(
+                1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+            )
+            answer = np.array(
+                [
+                    _eval_deriv_contractions(
+                        np.array([2, 3, 4]),
+                        orders,
+                        np.array([0.5, 1, 1.5]),
+                        angmom_comp,
+                        np.array([0.1, 0.01]),
+                        np.array([1, 2]),
+                    )
+                    for angmom_comp in test.angmom_components
+                ]
+            )
+            assert np.allclose(
+                eval_deriv_shell(coords=np.array([2, 3, 4]), orders=orders, shell=test),
+                answer.ravel(),
+            )
+
+
+def test_eval_shell():
+    """Test gbasis.deriv.eval_shell."""
+    for i in range(6):
+        test = ContractedCartesianGaussians(
+            1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        )
+        answer = np.array(
+            [
+                _eval_deriv_contractions(
+                    np.array([2, 3, 4]),
+                    np.array([0, 0, 0]),
+                    np.array([0.5, 1, 1.5]),
+                    angmom_comp,
+                    np.array([0.1, 0.01]),
+                    np.array([1, 2]),
+                )
+                for angmom_comp in test.angmom_components
+            ]
+        )
+        assert np.allclose(eval_shell(coords=np.array([2, 3, 4]), shell=test), answer.ravel())

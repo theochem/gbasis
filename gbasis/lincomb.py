@@ -80,7 +80,7 @@ def lincomb_blocks_evals(contractions, eval_func, trans_blocks, **kwargs):
         # NOTE: this process is pretty similar to
         # np.einsum("ij,j...->i...", transform, matrix, optimize='optimal')
         # evaluate the function at the given points
-        eval_cont = eval_func(contraction, **kwargs)
+        eval_cont = eval_func(contraction=contraction, **kwargs)
         # save original shape
         old_shape = eval_cont.shape[1:]
         # combine all indices except the first index

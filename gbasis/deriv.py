@@ -146,3 +146,70 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
 
     prim_coeffs = prim_coeffs[:, np.newaxis]
     return np.sum(prim_coeffs * zeroth_part * deriv_part, axis=0)
+
+
+def eval_deriv_shell(*, coords, orders, shell):
+    """Return the derivatives of a set of Cartesian contractions evaluated at the given coordinates.
+
+    Parameters
+    ----------
+    coords : np.ndarray(3, N)
+        Point in space where the derivative of the Gaussian primitive is evaluated.
+    orders : np.ndarray(3,)
+        Orders of the derivative.
+        Negative orders are treated as zero orders.
+    shell : ContractedCartesianGaussians
+        Set of contracted Cartesian Gaussians with the same angular momentum.
+
+    Returns
+    -------
+    derivative : np.ndarray(L, N)
+        Evaluation of the derivative.
+        :math:`L` is the number of contractions associated with the given `shell`.
+
+    Raises
+    ------
+    TypeError
+        If the arguments are given as positional arguments.
+
+    Notes
+    -----
+    When calling this function, the arguments must be given via keywords and not positional
+    arguments. This feature is used to catch problems that arise due to a change in API.
+
+    """
+    alphas = shell.exps
+    prim_coeffs = shell.coeffs
+    angmom_comps = shell.angmom_components
+    center = shell.coord
+    return _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs)
+
+
+def eval_shell(*, coords, shell):
+    """Return the a set of Cartesian contractions evaluated at the given coordinates.
+
+    Parameters
+    ----------
+    coords : np.ndarray(3, N)
+        Point in space where the derivative of the Gaussian primitive is evaluated.
+    shell : ContractedCartesianGaussians
+        Set of contracted Cartesian Gaussians with the same angular momentum.
+
+    Returns
+    -------
+    derivative : np.ndarray(L, N)
+        Evaluation of the derivative.
+        :math:`L` is the number of contractions associated with the given `shell`.
+
+    Raises
+    ------
+    TypeError
+        If the arguments are given as positional arguments.
+
+    Notes
+    -----
+    When calling this function, the arguments must be given via keywords and not positional
+    arguments. This feature is used to catch problems that arise due to a change in API.
+
+    """
+    return eval_deriv_shell(coords=coords, orders=np.zeros(shell.coord.shape), shell=shell)  # nosec
