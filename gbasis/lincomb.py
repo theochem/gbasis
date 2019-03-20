@@ -80,6 +80,8 @@ def lincomb_blocks_evals(contractions, eval_func, trans_blocks, **kwargs):
         # NOTE: this process is pretty similar to
         # np.einsum("ij,j...->i...", transform, matrix, optimize='optimal')
         # evaluate the function at the given points
+        # FIXME: eval_func is probably almost always going to be eval_shell or eval_deriv_shell,
+        # maybe these can be hardcoded?
         eval_cont = eval_func(contraction=contraction, **kwargs)
         # save original shape
         old_shape = eval_cont.shape[1:]
