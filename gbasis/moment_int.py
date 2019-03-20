@@ -69,16 +69,6 @@ def _compute_multipole_moment_integrals(
     angmom_a_max = np.max(angmoms_a)
     angmom_b_max = np.max(angmoms_b)
     order_moment_max = np.max(orders_moment)
-    # swap a and b if l(a) > l_b
-    # NOTE: If the transient integrals are returned, then we need ot make sure to swap back the
-    # a and b should they be swapped
-    # FIXME: not sure if a < b or a > b
-    if angmom_a_max < angmom_b_max:
-        angmom_a_max, angmom_b_max = angmom_b_max, angmom_a_max
-        coord_a, coord_b = coord_b, coord_a
-        alphas_a, alphas_b = alphas_b, alphas_a
-        coeffs_a, coeffs_b = coeffs_b, coeffs_a
-        angmoms_a, angmoms_b = angmoms_b, angmoms_a
 
     integrals = np.zeros(
         (order_moment_max + 1, angmom_b_max + 1, angmom_a_max + 1, 3, alphas_a.size, alphas_b.size)
