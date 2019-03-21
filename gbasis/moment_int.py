@@ -12,10 +12,12 @@ def _compute_multipole_moment_integrals(
     angmoms_a,
     alphas_a,
     coeffs_a,
+    norm_a,
     coord_b,
     angmoms_b,
     alphas_b,
     coeffs_b,
+    norm_b,
 ):
     """Return the multipole moment integrals of two contraction.
 
@@ -37,6 +39,8 @@ def _compute_multipole_moment_integrals(
         Values of the (square root of the) precisions of the primitives on the left side.
     coeffs_a : np.ndarray(K_a,)
         Contraction coefficients of the primitives on the left side.
+    norm_a : np.ndarray(L_a, 3, K_a)
+        Normalization constants of the components (x, y, z) of the contractions on the left side.
     coord_b : np.ndarray(3,)
         Center of the contraction on the right side.
     angmoms_b : np.ndarray(L_b, 3)
@@ -47,6 +51,8 @@ def _compute_multipole_moment_integrals(
         Values of the (square root of the) precisions of the primitives on the right side.
     coeffs_b : np.ndarray(K_b,)
         Contraction coefficients of the primitives on the right side.
+    norm_b : np.ndarray(L_b, 3, K_b)
+        Normalization constants of the components (x, y, z) of the contractions on the right side.
 
     Returns
     -------
@@ -63,23 +69,23 @@ def _compute_multipole_moment_integrals(
     # axis 2 = index for angular momentum component of contraction a in the corresponding dimension
     # (size: L_a^{max})
     # axis 3 = index for dimension (x, y, z) of coordinate (size: 3)
-    # axis 4 = index for primitive of contraction a (size: K_a)
-    # axis 5 = index for primitive of contraction b (size: K_b)
+    # axis 4 = index for primitive of contraction b (size: K_b)
+    # axis 5 = index for primitive of contraction a (size: K_a)
 
     angmom_a_max = np.max(angmoms_a)
     angmom_b_max = np.max(angmoms_b)
     order_moment_max = np.max(orders_moment)
 
     integrals = np.zeros(
-        (order_moment_max + 1, angmom_b_max + 1, angmom_a_max + 1, 3, alphas_a.size, alphas_b.size)
+        (order_moment_max + 1, angmom_b_max + 1, angmom_a_max + 1, 3, alphas_b.size, alphas_a.size)
     )
 
     # adjust axis
     coord_moment = coord_moment[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
     coord_a = coord_a[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
     coord_b = coord_b[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
-    alphas_a = alphas_a[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :, np.newaxis]
-    alphas_b = alphas_b[np.newaxis, np.newaxis, np.newaxis, np.newaxis, np.newaxis, :]
+    alphas_a = alphas_a[np.newaxis, np.newaxis, np.newaxis, np.newaxis, np.newaxis, :]
+    alphas_b = alphas_b[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :, np.newaxis]
     # NOTE: coeffs_a and coeffs_b are not flattened because tensordot will be used at the end where
     # the primitives are transformed to contractions
 
@@ -164,10 +170,13 @@ def _compute_multipole_moment_integrals(
 
     # multiply the x, y, and z components together
     integrals = np.prod(integrals, axis=3)
+    # NOTE: axis for dimension (x, y, z) of the coordinate has been removed
 
     # transform the primitives
-    # NOTE: axis for dimension (x, y, z) of the coordinate has been removed
-    integrals = np.tensordot(integrals, coeffs_b, (4, 0))
-    integrals = np.tensordot(integrals, coeffs_a, (3, 0))
-
+    norm_a = norm_a[np.newaxis, np.newaxis, :, np.newaxis, :]
+    integrals = np.tensordot(integrals * norm_a, coeffs_a, (4, 0))
+    # NOTE: axis for primitive of contraction a has been removed
+    norm_b = norm_b[np.newaxis, :, np.newaxis, :]
+    integrals = np.tensordot(integrals * norm_b, coeffs_b, (3, 0))
+    # NOTE: axis for primitive of contraction b has been removed
     return integrals
