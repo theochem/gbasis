@@ -12,7 +12,7 @@ def test_lincomb_blocks_evals():
         2, np.array([0, 0, 0]), 0, np.array([0.0, 1.0]), np.array([0.1, 0.04])
     )
 
-    def func(contraction):
+    def func(shell):
         """Temporary function."""
         return np.ones((6, 7, 8))
 
@@ -49,9 +49,9 @@ def test_lincomb_blocks_evals():
     with pytest.raises(ValueError):
         lincomb_blocks_evals([test, test, test], func, trans_blocks)
 
-    def bad_func(contraction):
+    def bad_func(shell):
         """Temporary function that will raise a ValueError in lincomb_blocks_evals."""
-        return np.random.rand(contraction.num_contr, contraction.num_contr, 8)
+        return np.random.rand(shell.num_contr, shell.num_contr, 8)
 
     test2 = ContractedCartesianGaussians(
         3, np.array([0, 0, 0]), 0, np.array([0.0, 1.0]), np.array([0.1, 0.04])
