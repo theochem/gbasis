@@ -4,6 +4,7 @@ import itertools as it
 from gbasis.contractions import ContractedCartesianGaussians
 from gbasis.deriv import _eval_deriv_contractions, eval_deriv_shell, eval_shell
 import numpy as np
+import pytest
 from scipy.special import factorial2
 from utils import partial_deriv_finite_diff
 
@@ -406,6 +407,26 @@ def test_eval_deriv_contractions():
 
 def test_eval_deriv_shell():
     """Test gbasis.deriv.eval_deriv_shell."""
+    coords = np.array([[2, 3, 4]])
+    orders = np.array([0, 0, 0])
+    shell = ContractedCartesianGaussians(
+        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+    )
+    with pytest.raises(TypeError):
+        eval_deriv_shell(coords=[[2, 3, 4]], orders=orders, shell=shell)
+    with pytest.raises(TypeError):
+        eval_deriv_shell(coords=coords, orders=[0, 0, 0], shell=shell)
+    with pytest.raises(TypeError):
+        eval_deriv_shell(coords=coords, orders=orders, shell=shell.__dict__)
+    with pytest.raises(ValueError):
+        eval_deriv_shell(coords=coords.reshape(3, 1), orders=orders, shell=shell)
+    with pytest.raises(ValueError):
+        eval_deriv_shell(coords=coords, orders=orders.reshape(1, 3), shell=shell)
+    assert np.allclose(
+        eval_deriv_shell(coords=coords, orders=orders, shell=shell),
+        eval_deriv_shell(coords=coords.reshape(3), orders=orders, shell=shell),
+    )
+
     # first order
     for k in range(3):
         orders = np.zeros(3, dtype=int)
