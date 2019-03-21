@@ -82,7 +82,7 @@ def lincomb_blocks_evals(contractions, eval_func, trans_blocks, **kwargs):
         # evaluate the function at the given points
         # FIXME: eval_func is probably almost always going to be eval_shell or eval_deriv_shell,
         # maybe these can be hardcoded?
-        eval_cont = eval_func(contraction=contraction, **kwargs)
+        eval_cont = eval_func(shell=contraction, **kwargs)  # nosec
         # save original shape
         old_shape = eval_cont.shape[1:]
         # combine all indices except the first index
