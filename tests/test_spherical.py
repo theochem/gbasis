@@ -107,28 +107,44 @@ def test_real_solid_harmonic():
 
 def test_generate_transformation():
     """Test spherical.generate_transformation."""
-    assert np.array_equal(generate_transformation(0, [(0, 0, 0)]), np.array([[1.0]]))
+    assert np.array_equal(generate_transformation(0, [(0, 0, 0)], "right"), np.array([[1.0]]))
     assert np.array_equal(
-        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)]),
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], "right"),
         np.array([[0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]),
     )
+    assert np.array_equal(
+        generate_transformation(0, [(0, 0, 0)], "right").T,
+        generate_transformation(0, [(0, 0, 0)], "left"),
+    )
+    assert np.array_equal(
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], "right").T,
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], "left"),
+    )
     with pytest.raises(TypeError):
-        generate_transformation(0.0, [(0, 0, 0)])
+        generate_transformation(0.0, [(0, 0, 0)], "right")
     with pytest.raises(TypeError):
-        generate_transformation(0, 0)
+        generate_transformation(0, 0, "right")
     with pytest.raises(TypeError):
-        generate_transformation(0, [[0, 0, 0]])
+        generate_transformation(0, [[0, 0, 0]], "right")
     with pytest.raises(ValueError):
-        generate_transformation(-1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)])
+        generate_transformation(-1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], "right")
     with pytest.raises(ValueError):
-        generate_transformation(0, [(0, 0, 0, 0)])
+        generate_transformation(0, [(0, 0, 0, 0)], "right")
     with pytest.raises(TypeError):
-        generate_transformation(1, [(1, 0, 0), (0, 1, 0), [0, 0, 1]])
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), [0, 0, 1]], "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 1)])
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 1)], "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)])
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)], "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, [(1, 0, 0), (0, 1, 0)])
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0)], "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, [(1, 0, 0), (0, 0, 0), (0, 0, 2)])
+        generate_transformation(1, [(1, 0, 0), (0, 0, 0), (0, 0, 2)], "right")
+    with pytest.raises(TypeError):
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], 1)
+    with pytest.raises(TypeError):
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], None)
+    with pytest.raises(ValueError):
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], "up")
+    with pytest.raises(ValueError):
+        generate_transformation(1, [(1, 0, 0), (0, 1, 0), (0, 0, 1)], "")
