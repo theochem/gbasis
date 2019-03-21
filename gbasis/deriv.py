@@ -1,7 +1,7 @@
 """Derivative of a Gaussian Contraction."""
 from gbasis.contractions import ContractedCartesianGaussians
 import numpy as np
-from scipy.special import comb, perm
+from scipy.special import comb, eval_hermite, perm
 
 
 # TODO: in the case of generalized Cartesian contraction where multiple shells have the same sets of
@@ -114,37 +114,15 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         indices_zero = np.where(nonzero_orders < indices_herm)
         coeffs[indices_zero[0], :, indices_zero[2]] = 0
         # compute
-        # FIXME: I can't seem to vectorize the next part due to the API of
-        # np.polynomial.hermite.hermval. The main problem is that the indices for the primitives and
-        # the dimension must be constrained for the given `x` and `c`, otherwise the hermitian
-        # polynomial is evaluated at many unnecessary points.
-        hermite = np.prod(
-            [
-                [
-                    [
-                        np.polynomial.hermite.hermval(
-                            alphas[:, i, 0, 0, 0] ** 0.5 * nonzero_rel_coords[:, 0, k, 0, l],
-                            coeffs[:, i, k, :, l],
-                        )
-                        for k in range(nonzero_rel_coords.shape[2])
-                    ]
-                    for l in range(coords.shape[4])
-                ]
-                for i in range(alphas.shape[1])
-            ],
-            # NOTE: for loop over the axis 1 (primitives), 3 (angular momentum vector), 4
-            # (coordinate), and 2 (dimension) moves it to axis 0, 1, 2, and 3, respectively, while
-            # removing these indices from alphas and coeffs. hermval returns an array of c.shape[1:]
-            # + x.shape.
-            # Therefore, axis 0 is the index for primitive
-            #            axis 1 is the index for coordinates
-            #            axis 2 is for index for dimension (x, y, z)
-            #            axis 3 is the index for angular momentum vector
-            #            axis 4 is the index for term in hermite polynomial
-            axis=(2, 4),
+        # TODO: I don't know if the scipy.special.eval_hermite uses some smart vectorizing/caching
+        # to evaluate multiple orders at the same time. Creating/finding a better function for
+        # evaluating the hermite polynomial at different orders (in sequence) may be nice in the
+        # future.
+        hermite = np.sum(
+            coeffs * eval_hermite(indices_herm, alphas ** 0.5 * nonzero_rel_coords), axis=0
         )
-        # swap axis 1 and 2
-        hermite = np.swapaxes(hermite, 1, 2)
+        hermite = np.prod(hermite, axis=1)
+
         # NOTE: `hermite` now has axis 0 for primitives, 1 for angular momentum vector, and axis 2
         # for coordinates
         deriv_part = np.prod(nonzero_gauss, axis=(0, 2)) * hermite
