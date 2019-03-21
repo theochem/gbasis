@@ -1,4 +1,5 @@
 """Derivative of a Gaussian Contraction."""
+from gbasis.contractions import ContractedCartesianGaussians
 import numpy as np
 from scipy.special import comb, perm
 
@@ -175,6 +176,12 @@ def eval_deriv_shell(*, coords, orders, shell):
     ------
     TypeError
         If the arguments are given as positional arguments.
+        If coords is not a numpy array.
+        If orders is not a numpy array.
+        If shell is not a ContractedCartesianGaussians.
+    ValueError
+        If coords is not a two-dimensional numpy array with 3 columns.
+        If orders is not a one-dimensional numpy array with 3 entries.
 
     Notes
     -----
@@ -182,6 +189,24 @@ def eval_deriv_shell(*, coords, orders, shell):
     arguments. This feature is used to catch problems that arise due to a change in API.
 
     """
+    if not isinstance(coords, np.ndarray):
+        raise TypeError("Coordinates must be provided as a numpy array.")
+    if coords.ndim == 1 and coords.size == 3:
+        coords = coords.reshape(1, 3)
+    if not (coords.ndim == 2 and coords.shape[1] == 3):
+        raise ValueError(
+            "Coordinates must be provided as a two-dimensional numpy array with 3 columns."
+        )
+    if not isinstance(orders, np.ndarray):
+        raise TypeError("Orders of the derivatives must be a numpy array")
+    if not orders.shape == (3,):
+        raise ValueError(
+            "Orders of derivatives must be given as a one-dimensional numpy array with three "
+            "entries"
+        )
+    if not isinstance(shell, ContractedCartesianGaussians):
+        raise TypeError('Each "shell" must be a ContractedCartesianGaussians instance.')
+
     alphas = shell.exps
     prim_coeffs = shell.coeffs
     angmom_comps = shell.angmom_components
@@ -210,6 +235,12 @@ def eval_shell(*, coords, shell):
     ------
     TypeError
         If the arguments are given as positional arguments.
+        If coords is not a numpy array.
+        If orders is not a numpy array.
+        If shell is not a ContractedCartesianGaussians.
+    ValueError
+        If coords is not a two-dimensional numpy array with 3 columns.
+        If orders is not a one-dimensional numpy array with 3 entries.
 
     Notes
     -----
