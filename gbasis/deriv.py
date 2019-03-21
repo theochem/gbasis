@@ -8,7 +8,6 @@ from scipy.special import comb, eval_hermite, perm
 # exponents but different sets of primitive coefficients, it will be helpful to vectorize the
 # `prim_coeffs` also.
 # FIXME: name is pretty bad
-# TODO: vectorize for multiple orders? Caching instead?
 def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm):
     """Return the evaluation of the derivative of a Cartesian contraction.
 
@@ -17,7 +16,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     coords : np.ndarray(N, 3)
         Point in space where the derivative of the Gaussian primitive is evaluated.
         Coordinates must be given as a two dimensional array, even if one coordinate is given.
-    orders : np.ndarray(3,)
+    orders : np.ndarray(M, 3)
         Orders of the derivative.
         Negative orders are treated as zero orders.
     center : np.ndarray(3,)
@@ -35,7 +34,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
 
     Returns
     -------
-    derivative : np.ndarray(L, N)
+    derivative : np.ndarray(M, L, N)
         Evaluation of the derivative at each given coordinate.
 
     Notes
@@ -49,19 +48,18 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     # axis 0 = index for term in hermite polynomial (size: min(K, n)) where n is the order in given
     # dimension
     # axis 1 = index for primitive (size: K)
-    # axis 2 = index for dimension (x, y, z) of coordinate (size: 3)
-    # axis 3 = index for angular momentum vector (size: L)
-    # axis 4 = index for coordinate (out of a grid) (size: N)
+    # axis 2 = index for order of derivatization (size: M)
+    # axis 3 = index for dimension (x, y, z) of coordinate (size: 3)
+    # axis 4 = index for angular momentum vector (size: L)
+    # axis 5 = index for coordinate (out of a grid) (size: N)
     # adjust the axis
-    coords = coords.T[np.newaxis, np.newaxis, :, np.newaxis, :]
-    # NOTE: if `coord` is two dimensional (3, N), then coords has shape (1, 1, 3, 1, N). If it is
-    # one dimensional (3,), then coords has shape (1, 1, 3, 1)
+    coords = coords.T[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis, :]
+    # NOTE: if `coord` is two dimensional (3, N), then coords has shape (1, 1, 1, 3, 1, N).
     # NOTE: `order` is still assumed to be a one dimensional
-    center = center[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
-    angmom_comps = angmom_comps.T[np.newaxis, np.newaxis, :, :, np.newaxis]
-    # NOTE: if `angmom_comps` is two-dimensional (3, L), has shape (1, 1, 3, L). If it is one
-    # dimensional (3, ) then it has shape (1, 1, 3)
-    alphas = alphas[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis]
+    center = center[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
+    angmom_comps = angmom_comps.T[np.newaxis, np.newaxis, np.newaxis, :, :, np.newaxis]
+    # NOTE: if `angmom_comps` is two-dimensional (3, L), has shape (1, 1, 3, L).
+    alphas = alphas[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis, np.newaxis]
     # NOTE: `prim_coeffs` will be used as a 1D array
 
     # useful variables
@@ -69,32 +67,42 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     gauss = np.exp(-alphas * rel_coords ** 2)
 
     # zeroth order (i.e. no derivatization)
-    indices_noderiv = orders <= 0
+    bool_noderiv = (orders <= 0)[np.newaxis, np.newaxis, :, :, np.newaxis, np.newaxis]
     zero_rel_coords, zero_angmom_comps, zero_gauss = (
-        rel_coords[:, :, indices_noderiv],
-        angmom_comps[:, :, indices_noderiv],
-        gauss[:, :, indices_noderiv],
+        rel_coords * bool_noderiv,
+        angmom_comps * bool_noderiv,
+        gauss * bool_noderiv,
     )
-    zeroth_part = np.prod(zero_rel_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
-    # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for angular momentum vector, and
-    # axis 2 for coordinate
+    zeroth_part = np.zeros(
+        (alphas.shape[1], bool_noderiv.shape[2], angmom_comps.shape[4], rel_coords.shape[5])
+    )
+    for i in range(bool_noderiv.shape[2]):
+        zeroth_part[:, i] = np.prod(
+            zero_rel_coords[:, :, i, bool_noderiv[0, 0, i, :, 0, 0], :, :]
+            ** zero_angmom_comps[:, :, i, bool_noderiv[0, 0, i, :, 0, 0], :, :]
+            * zero_gauss[:, :, i, bool_noderiv[0, 0, i, :, 0, 0], :, :],
+            axis=(0, 2),
+        )
+    # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for order of derivatization, and
+    # axis 1 for angular momentum vector, and axis 2 for coordinate
 
     deriv_part = 1
+    bool_deriv = (orders > 0)[np.newaxis, np.newaxis, :, :, np.newaxis, np.newaxis]
+    indices_deriv = np.where(bool_deriv)
     nonzero_rel_coords, nonzero_orders, nonzero_angmom_comps, nonzero_gauss = (
-        rel_coords[:, :, ~indices_noderiv],
-        orders[~indices_noderiv],
-        angmom_comps[:, :, ~indices_noderiv],
-        gauss[:, :, ~indices_noderiv],
+        rel_coords * bool_deriv,
+        orders[np.newaxis, np.newaxis, :, :, np.newaxis, np.newaxis] * bool_deriv,
+        angmom_comps * bool_deriv,
+        gauss * bool_deriv,
     )
-    nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
 
     # derivatization part
-    if nonzero_orders.size != 0:
+    if indices_deriv[0].size != 0:
         # General approach: compute the whole coefficents, zero out the irrelevant parts
         # NOTE: The following step assumes that there is only one set (nx, ny, nz) of derivatization
         # orders i.e. we assume that only one axis (axis 2) of `nonzero_orders` has a dimension
         # greater than 1
-        indices_herm = np.arange(np.max(nonzero_orders) + 1)[:, None, None, None, None]
+        indices_herm = np.arange(np.max(nonzero_orders) + 1)[:, None, None, None, None, None]
         # get indices that are used as powers of the appropriate terms in the derivative
         # NOTE: the negative indices must be turned into zeros (even though they are turned into
         # zeros later anyways) because these terms are sometimes zeros (and negative power is
@@ -110,9 +118,9 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         )
         # zero out the appropriate terms
         indices_zero = np.where(indices_herm < np.maximum(0, nonzero_orders - nonzero_angmom_comps))
-        coeffs[indices_zero[0], :, indices_zero[2], indices_zero[3]] = 0
+        coeffs[indices_zero[0], :, indices_zero[2], indices_zero[3], indices_zero[4], :] = 0
         indices_zero = np.where(nonzero_orders < indices_herm)
-        coeffs[indices_zero[0], :, indices_zero[2]] = 0
+        coeffs[indices_zero[0], :, indices_zero[2], indices_zero[3], :, :] = 0
         # compute
         # TODO: I don't know if the scipy.special.eval_hermite uses some smart vectorizing/caching
         # to evaluate multiple orders at the same time. Creating/finding a better function for
@@ -121,13 +129,18 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         hermite = np.sum(
             coeffs * eval_hermite(indices_herm, alphas ** 0.5 * nonzero_rel_coords), axis=0
         )
-        hermite = np.prod(hermite, axis=1)
+        hermite = np.prod(hermite, axis=2)
 
-        # NOTE: `hermite` now has axis 0 for primitives, 1 for angular momentum vector, and axis 2
-        # for coordinates
-        deriv_part = np.prod(nonzero_gauss, axis=(0, 2)) * hermite
+        # NOTE: `hermite` now has axis 0 for primitives, 1 for order of derivatization, 2 for
+        # angular momentum vector, axis 3 for coordinates
+        nonzero_gauss_2 = np.zeros(hermite.shape)
+        for i in range(nonzero_orders.shape[2]):
+            nonzero_gauss_2[:, i] = np.prod(
+                nonzero_gauss[:, :, i, bool_deriv[0, 0, i, :, 0, 0], :, :], axis=(0, 2)
+            )
+        deriv_part = nonzero_gauss_2 * hermite
 
-    norm = norm.T[:, :, np.newaxis]
+    norm = norm.T[:, np.newaxis, :, np.newaxis]
     return np.tensordot(prim_coeffs, norm * zeroth_part * deriv_part, (0, 0))
 
 
@@ -177,7 +190,9 @@ def eval_deriv_shell(*, coords, orders, shell):
         )
     if not isinstance(orders, np.ndarray):
         raise TypeError("Orders of the derivatives must be a numpy array")
-    if not orders.shape == (3,):
+    if orders.ndim == 1 and orders.size == 3:
+        orders = orders.reshape(1, 3)
+    if not (orders.ndim == 2 and orders.shape[1] == 3):
         raise ValueError(
             "Orders of derivatives must be given as a one-dimensional numpy array with three "
             "entries"
@@ -226,4 +241,6 @@ def eval_shell(*, coords, shell):
     arguments. This feature is used to catch problems that arise due to a change in API.
 
     """
-    return eval_deriv_shell(coords=coords, orders=np.zeros(shell.coord.shape), shell=shell)  # nosec
+    return eval_deriv_shell(
+        coords=coords, orders=np.zeros((1,) + shell.coord.shape), shell=shell  # nosec
+    )

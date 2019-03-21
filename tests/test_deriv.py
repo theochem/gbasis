@@ -39,7 +39,7 @@ def eval_deriv_prim(coord, orders, center, angmom_comps, alpha):
     """
     return _eval_deriv_contractions(
         coord.reshape(1, 3),
-        orders,
+        orders.reshape(1, 3),
         center,
         angmom_comps.reshape(1, 3),
         np.array([alpha]),
@@ -151,7 +151,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[0, 0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([[0, 0, 0]]),
             np.array([1.0]),
@@ -163,7 +163,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[1.0, 0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([[0, 0, 0]]),
             np.array([1.0]),
@@ -175,7 +175,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[1.0, 2.0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([[0, 0, 0]]),
             np.array([1.0]),
@@ -187,7 +187,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[1.0, 2.0, 3.0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([[0, 0, 0]]),
             np.array([1.0]),
@@ -200,7 +200,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[2.0, 0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([[1, 0, 0]]),
             np.array([1.0]),
@@ -213,7 +213,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[2.0, 0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 3, 4]),
             np.array([[2, 1, 3]]),
             np.array([1.0]),
@@ -226,7 +226,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[2, 0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 3, 4]),
             np.array([[2, 1, 3]]),
             np.array([0.1, 0.001]),
@@ -240,7 +240,7 @@ def test_eval_contractions():
     assert np.allclose(
         _eval_deriv_contractions(
             np.array([[2, 0, 0]]),
-            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
             np.array([0, 3, 4]),
             np.array([[2, 1, 3], [1, 3, 4]]),
             np.array([0.1, 0.001]),
@@ -266,6 +266,7 @@ def test_eval_deriv_contractions():
     for k in range(3):
         orders = np.zeros(3, dtype=int)
         orders[k] = 1
+        orders = orders.reshape(1, 3)
         for x, y, z in it.product(range(3), range(3), range(3)):
             # only contraction
             assert np.allclose(
@@ -288,16 +289,7 @@ def test_eval_deriv_contractions():
                 ),
             )
             # contraction + multiple angular momentums
-            assert np.allclose(
-                _eval_deriv_contractions(
-                    np.array([[2, 3, 4]]),
-                    orders,
-                    np.array([0.5, 1, 1.5]),
-                    np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
-                    np.array([1, 2]),
-                    np.array([3, 4]),
-                    np.array([[1, 1]]),
-                ),
+            answer = np.array(
                 [
                     3
                     * eval_deriv_prim(
@@ -323,13 +315,26 @@ def test_eval_deriv_contractions():
                         np.array([x - 1, y + 2, z + 1]),
                         2,
                     ),
-                ],
+                ]
+            )
+            assert np.allclose(
+                _eval_deriv_contractions(
+                    np.array([[2, 3, 4]]),
+                    orders,
+                    np.array([0.5, 1, 1.5]),
+                    np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
+                    np.array([1, 2]),
+                    np.array([3, 4]),
+                    np.array([[1, 1]]),
+                ),
+                np.swapaxes(answer, 0, 1),
             )
     # second order
     for k, l in it.product(range(3), range(3)):
         orders = np.zeros(3, dtype=int)
         orders[k] += 1
         orders[l] += 1
+        orders = orders.reshape(1, 3)
         for x, y, z in it.product(range(4), range(4), range(4)):
             assert np.allclose(
                 _eval_deriv_contractions(
@@ -366,16 +371,7 @@ def test_eval_deriv_contractions():
                 ),
             )
             # contraction + multiple angular momentums
-            assert np.allclose(
-                _eval_deriv_contractions(
-                    np.array([[2, 3, 4]]),
-                    orders,
-                    np.array([0.5, 1, 1.5]),
-                    np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
-                    np.array([1, 2]),
-                    np.array([3, 4]),
-                    np.array([[1, 1]]),
-                ),
+            answer = np.array(
                 [
                     3
                     * eval_deriv_prim(
@@ -401,7 +397,19 @@ def test_eval_deriv_contractions():
                         np.array([x - 1, y + 2, z + 1]),
                         2,
                     ),
-                ],
+                ]
+            )
+            assert np.allclose(
+                _eval_deriv_contractions(
+                    np.array([[2, 3, 4]]),
+                    orders,
+                    np.array([0.5, 1, 1.5]),
+                    np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
+                    np.array([1, 2]),
+                    np.array([3, 4]),
+                    np.array([[1, 1]]),
+                ),
+                np.swapaxes(answer, 0, 1),
             )
 
 
@@ -421,7 +429,7 @@ def test_eval_deriv_shell():
     with pytest.raises(ValueError):
         eval_deriv_shell(coords=coords.reshape(3, 1), orders=orders, shell=shell)
     with pytest.raises(ValueError):
-        eval_deriv_shell(coords=coords, orders=orders.reshape(1, 3), shell=shell)
+        eval_deriv_shell(coords=coords, orders=orders.reshape(3, 1), shell=shell)
     assert np.allclose(
         eval_deriv_shell(coords=coords, orders=orders, shell=shell),
         eval_deriv_shell(coords=coords.reshape(3), orders=orders, shell=shell),
@@ -431,6 +439,7 @@ def test_eval_deriv_shell():
     for k in range(3):
         orders = np.zeros(3, dtype=int)
         orders[k] = 1
+        orders = orders.reshape(1, 3)
 
         test = ContractedCartesianGaussians(
             1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
@@ -468,6 +477,7 @@ def test_eval_deriv_shell():
         orders = np.zeros(3, dtype=int)
         orders[k] += 1
         orders[l] += 1
+        orders = orders.reshape(1, 3)
 
         test = ContractedCartesianGaussians(
             1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
@@ -511,7 +521,7 @@ def test_eval_shell():
         [
             _eval_deriv_contractions(
                 np.array([[2, 3, 4]]),
-                np.array([0, 0, 0]),
+                np.array([[0, 0, 0]]),
                 np.array([0.5, 1, 1.5]),
                 np.array([angmom_comp]),
                 np.array([0.1, 0.01]),
@@ -533,3 +543,90 @@ def test_eval_shell():
         ]
     ).reshape(3, 1)
     assert np.allclose(eval_shell(coords=np.array([[2, 3, 4]]), shell=test), answer)
+
+
+def test_eval_deriv_prim_multiple_orders():
+    """Test gbasis.deriv.eval_deriv_prim."""
+    # duplicate orders
+    orders = np.array([[0, 0, 0], [0, 0, 0]])
+    for x, y, z in it.product(range(3), range(3), range(3)):
+        assert np.allclose(
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                orders,
+                np.array([0.5, 1, 1.5]),
+                np.array([[x, y, z]]),
+                np.array([1]),
+                np.array([1]),
+                np.array([[1]]),
+            ),
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                np.array([[0, 0, 0]]),
+                np.array([0.5, 1, 1.5]),
+                np.array([[x, y, z]]),
+                np.array([1]),
+                np.array([1]),
+                np.array([[1]]),
+            ),
+        )
+    # multiple orders
+    orders = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    for x, y, z in it.product(range(3), range(3), range(3)):
+        test = _eval_deriv_contractions(
+            np.array([[2, 3, 4]]),
+            orders,
+            np.array([0.5, 1, 1.5]),
+            np.array([[x, y, z]]),
+            np.array([1]),
+            np.array([1]),
+            np.array([[1]]),
+        )
+        assert np.allclose(
+            test[0],
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                np.array([[0, 0, 0]]),
+                np.array([0.5, 1, 1.5]),
+                np.array([[x, y, z]]),
+                np.array([1]),
+                np.array([1]),
+                np.array([[1]]),
+            )[0],
+        )
+        assert np.allclose(
+            test[1],
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                np.array([[1, 0, 0]]),
+                np.array([0.5, 1, 1.5]),
+                np.array([[x, y, z]]),
+                np.array([1]),
+                np.array([1]),
+                np.array([[1]]),
+            )[0],
+        )
+        assert np.allclose(
+            test[2],
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                np.array([[0, 1, 0]]),
+                np.array([0.5, 1, 1.5]),
+                np.array([[x, y, z]]),
+                np.array([1]),
+                np.array([1]),
+                np.array([[1]]),
+            )[0],
+        )
+        assert np.allclose(
+            test[3],
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                np.array([[0, 0, 1]]),
+                np.array([0.5, 1, 1.5]),
+                np.array([[x, y, z]]),
+                np.array([1]),
+                np.array([1]),
+                np.array([[1]]),
+            )[0],
+        )
