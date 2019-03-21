@@ -8,12 +8,12 @@ from scipy.special import comb, perm
 # `prim_coeffs` also.
 # FIXME: name is pretty bad
 # TODO: vectorize for multiple orders? Caching instead?
-def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs):
+def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm):
     """Return the evaluation of the derivative of a Cartesian contraction.
 
     Parameters
     ----------
-    coords : np.ndarray(3, N)
+    coords : np.ndarray(N, 3)
         Point in space where the derivative of the Gaussian primitive is evaluated.
         Coordinates must be given as a two dimensional array, even if one coordinate is given.
     orders : np.ndarray(3,)
@@ -29,24 +29,21 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         Values of the (square root of the) precisions of the primitives.
     prim_coeffs : np.ndarray(K,)
         Contraction coefficients of the primitives.
+    norm : np.ndarray(L, K)
+        Normalization constants for the primitives in each contraction.
 
     Returns
     -------
     derivative : np.ndarray(L, N)
         Evaluation of the derivative at each given coordinate.
 
+    Notes
+    -----
+    The input is not checked. This means that you must provide the parameters as they are specified
+    in the docstring. They must all be numpy arrays with the **correct shape**.
+
     """
     # pylint: disable=R0914
-    # support primitive evaluation
-    if isinstance(alphas, (int, float)):
-        alphas = np.array([alphas])
-    if isinstance(prim_coeffs, (int, float)):
-        prim_coeffs = np.array([prim_coeffs])
-    # FIXME: I'm not a huge fan of this if statement. maybe the arrays should be ordered such that
-    # the index for angular momentum vector goes last?
-    if angmom_comps.ndim == 1:
-        angmom_comps = angmom_comps[np.newaxis, :]
-
     # NOTE: following convention will be used to organize the axis of the multidimensional arrays
     # axis 0 = index for term in hermite polynomial (size: min(K, n)) where n is the order in given
     # dimension
@@ -55,15 +52,15 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     # axis 3 = index for angular momentum vector (size: L)
     # axis 4 = index for coordinate (out of a grid) (size: N)
     # adjust the axis
-    coords = coords[np.newaxis, np.newaxis, :, np.newaxis]
+    coords = coords.T[np.newaxis, np.newaxis, :, np.newaxis, :]
     # NOTE: if `coord` is two dimensional (3, N), then coords has shape (1, 1, 3, 1, N). If it is
     # one dimensional (3,), then coords has shape (1, 1, 3, 1)
     # NOTE: `order` is still assumed to be a one dimensional
-    center = center[np.newaxis, np.newaxis, :, np.newaxis]
-    angmom_comps = angmom_comps.T[np.newaxis, np.newaxis, :, :]
+    center = center[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
+    angmom_comps = angmom_comps.T[np.newaxis, np.newaxis, :, :, np.newaxis]
     # NOTE: if `angmom_comps` is two-dimensional (3, L), has shape (1, 1, 3, L). If it is one
     # dimensional (3, ) then it has shape (1, 1, 3)
-    alphas = alphas[np.newaxis, :, np.newaxis, np.newaxis]
+    alphas = alphas[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis]
     # NOTE: `prim_coeffs` will be used as a 1D array
 
     # useful variables
@@ -88,7 +85,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         angmom_comps[:, :, ~indices_noderiv],
         gauss[:, :, ~indices_noderiv],
     )
-    nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :, np.newaxis]
+    nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
 
     # derivatization part
     if nonzero_orders.size != 0:
@@ -96,7 +93,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         # NOTE: The following step assumes that there is only one set (nx, ny, nz) of derivatization
         # orders i.e. we assume that only one axis (axis 2) of `nonzero_orders` has a dimension
         # greater than 1
-        indices_herm = np.arange(np.max(nonzero_orders) + 1)[:, np.newaxis, np.newaxis, np.newaxis]
+        indices_herm = np.arange(np.max(nonzero_orders) + 1)[:, None, None, None, None]
         # get indices that are used as powers of the appropriate terms in the derivative
         # NOTE: the negative indices must be turned into zeros (even though they are turned into
         # zeros later anyways) because these terms are sometimes zeros (and negative power is
@@ -125,31 +122,34 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
                 [
                     [
                         np.polynomial.hermite.hermval(
-                            alphas[:, i, 0, 0] ** 0.5 * nonzero_rel_coords[:, 0, j, 0],
-                            coeffs[:, i, j, k],
+                            alphas[:, i, 0, 0, 0] ** 0.5 * nonzero_rel_coords[:, 0, k, 0, l],
+                            coeffs[:, i, k, :, l],
                         )
-                        for k in range(nonzero_angmom_comps.shape[3])
+                        for k in range(nonzero_rel_coords.shape[2])
                     ]
-                    for i in range(alphas.shape[1])
+                    for l in range(coords.shape[4])
                 ]
-                for j in range(nonzero_rel_coords.shape[2])
+                for i in range(alphas.shape[1])
             ],
-            # NOTE: for loop over the axis 1 (primitives) and 2 (dimension) moves it to axis 1 and
-            # 0, respectively, while removing these indices from alphas and coeffs. hermval returns
-            # an array of c.shape[1:] + x.shape.
-            # Therefore, axis 0 is for index for dimension (x, y, z)
-            #            axis 1 is the index for primitive
-            #            axis 2 is the index for angular momentum vector
-            #            axis 3 is the index for term in hermite polynomial
-            #            axis 4 is the index for coordinates
-            axis=(0, 3),
+            # NOTE: for loop over the axis 1 (primitives), 3 (angular momentum vector), 4
+            # (coordinate), and 2 (dimension) moves it to axis 0, 1, 2, and 3, respectively, while
+            # removing these indices from alphas and coeffs. hermval returns an array of c.shape[1:]
+            # + x.shape.
+            # Therefore, axis 0 is the index for primitive
+            #            axis 1 is the index for coordinates
+            #            axis 2 is for index for dimension (x, y, z)
+            #            axis 3 is the index for angular momentum vector
+            #            axis 4 is the index for term in hermite polynomial
+            axis=(2, 4),
         )
+        # swap axis 1 and 2
+        hermite = np.swapaxes(hermite, 1, 2)
         # NOTE: `hermite` now has axis 0 for primitives, 1 for angular momentum vector, and axis 2
         # for coordinates
         deriv_part = np.prod(nonzero_gauss, axis=(0, 2)) * hermite
 
-    prim_coeffs = prim_coeffs[:, np.newaxis]
-    return np.sum(prim_coeffs * zeroth_part * deriv_part, axis=0)
+    norm = norm.T[:, :, np.newaxis]
+    return np.tensordot(prim_coeffs, norm * zeroth_part * deriv_part, (0, 0))
 
 
 def eval_deriv_shell(*, coords, orders, shell):
@@ -157,7 +157,7 @@ def eval_deriv_shell(*, coords, orders, shell):
 
     Parameters
     ----------
-    coords : np.ndarray(3, N)
+    coords : np.ndarray(N, 3)
         Point in space where the derivative of the Gaussian primitive is evaluated.
     orders : np.ndarray(3,)
         Orders of the derivative.
@@ -186,7 +186,8 @@ def eval_deriv_shell(*, coords, orders, shell):
     prim_coeffs = shell.coeffs
     angmom_comps = shell.angmom_components
     center = shell.coord
-    return _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs)
+    norm = shell.norm
+    return _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm)
 
 
 def eval_shell(*, coords, shell):
@@ -194,7 +195,7 @@ def eval_shell(*, coords, shell):
 
     Parameters
     ----------
-    coords : np.ndarray(3, N)
+    coords : np.ndarray(N, 3)
         Point in space where the derivative of the Gaussian primitive is evaluated.
     shell : ContractedCartesianGaussians
         Set of contracted Cartesian Gaussians with the same angular momentum.
