@@ -15,6 +15,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     ----------
     coords : np.ndarray(3, N)
         Point in space where the derivative of the Gaussian primitive is evaluated.
+        Coordinates must be given as a two dimensional array, even if one coordinate is given.
     orders : np.ndarray(3,)
         Orders of the derivative.
         Negative orders are treated as zero orders.
@@ -22,6 +23,8 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         Center of the Gaussian primitive.
     angmom_comps : np.ndarray(L, 3)
         Component of the angular momentum that corresponds to this dimension.
+        Angular momentum components must be given as a two dimensional array, even if only one
+        is given.
     alphas : np.ndarray(K,)
         Values of the (square root of the) precisions of the primitives.
     prim_coeffs : np.ndarray(K,)
@@ -30,7 +33,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     Returns
     -------
     derivative : np.ndarray(L, N)
-        Evaluation of the derivative.
+        Evaluation of the derivative at each given coordinate.
 
     """
     # pylint: disable=R0914
@@ -141,7 +144,8 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
             #            axis 4 is the index for coordinates
             axis=(0, 3),
         )
-        # NOTE: `hermite` now has axis 0 for primitives and axis 1 for coordinates
+        # NOTE: `hermite` now has axis 0 for primitives, 1 for angular momentum vector, and axis 2
+        # for coordinates
         deriv_part = np.prod(nonzero_gauss, axis=(0, 2)) * hermite
 
     prim_coeffs = prim_coeffs[:, np.newaxis]
