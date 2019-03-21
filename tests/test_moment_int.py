@@ -3,6 +3,7 @@ import itertools as it
 
 from gbasis.moment_int import _compute_multipole_moment_integrals
 import numpy as np
+from scipy.special import factorial2
 
 
 def answer_prim(coord_type, i, j, k):
@@ -288,9 +289,15 @@ def test_compute_multipole_moment_integrals_prim_angmom_left_recursion():
     angmoms_b = np.array([[0, 0, 0]])
     coord_moment = np.array([0.0, 1.0, 2.0])
     order_moment = np.array([[0, 0, 0]])
+    norm_b = np.array([[(2 * 0.2 / np.pi) ** (3 / 4) * (4 * 0.2) ** (3 / 2)]])
 
     # zero moment, zero right angulra momentum
     for ix, iy, iz in it.product(range(4), range(4), range(4)):
+        norm_a = np.array(
+            (2 * 0.1 / np.pi) ** (3 / 4)
+            * ((4 * 0.1) ** (3 / 2))
+            / np.sqrt(np.prod(factorial2(2 * np.array([ix, iy, iz]) - 1)))
+        ).reshape(1, 1)
         assert np.allclose(
             _compute_multipole_moment_integrals(
                 coord_moment,
@@ -299,12 +306,18 @@ def test_compute_multipole_moment_integrals_prim_angmom_left_recursion():
                 np.array([[ix, iy, iz]]),
                 alphas_a,
                 coeffs_a,
+                norm_a,
                 coord_b,
                 angmoms_b,
                 alphas_b,
                 coeffs_b,
+                norm_b,
             ),
-            answer_prim("x", ix, 0, 0) * answer_prim("y", iy, 0, 0) * answer_prim("z", iz, 0, 0),
+            norm_a
+            * norm_b
+            * answer_prim("x", ix, 0, 0)
+            * answer_prim("y", iy, 0, 0)
+            * answer_prim("z", iz, 0, 0),
         )
 
 
@@ -319,9 +332,19 @@ def test_compute_multipole_moment_integrals_prim_angmom_right_recursion():
     angmoms_a = np.array([[3, 3, 3]])
     coord_moment = np.array([0.0, 1.0, 2.0])
     order_moment = np.array([[0, 0, 0]])
+    norm_a = np.array(
+        (2 * 0.1 / np.pi) ** (3 / 4)
+        * ((4 * 0.1) ** (3 / 2))
+        / np.sqrt(np.prod(factorial2(2 * angmoms_a - 1)))
+    ).reshape(1, 1)
 
     # zero moment, three left angular momentum
     for jx, jy, jz in it.product(range(4), range(4), range(4)):
+        norm_b = np.array(
+            (2 * 0.2 / np.pi) ** (3 / 4)
+            * ((4 * 0.2) ** (3 / 2))
+            / np.sqrt(np.prod(factorial2(2 * np.array([jx, jy, jz]) - 1)))
+        ).reshape(1, 1)
         assert np.allclose(
             _compute_multipole_moment_integrals(
                 coord_moment,
@@ -330,12 +353,18 @@ def test_compute_multipole_moment_integrals_prim_angmom_right_recursion():
                 angmoms_a,
                 alphas_a,
                 coeffs_a,
+                norm_a,
                 coord_b,
                 np.array([[jx, jy, jz]]),
                 alphas_b,
                 coeffs_b,
+                norm_b,
             ),
-            answer_prim("x", 3, jx, 0) * answer_prim("y", 3, jy, 0) * answer_prim("z", 3, jz, 0),
+            norm_a
+            * norm_b
+            * answer_prim("x", 3, jx, 0)
+            * answer_prim("y", 3, jy, 0)
+            * answer_prim("z", 3, jz, 0),
         )
 
 
@@ -350,6 +379,16 @@ def test_compute_multipole_moment_integrals_prim_moment_recursion():
     angmoms_a = np.array([[3, 3, 3]])
     angmoms_b = np.array([[3, 3, 3]])
     coord_moment = np.array([0.0, 1.0, 2.0])
+    norm_a = np.array(
+        (2 * 0.1 / np.pi) ** (3 / 4)
+        * ((4 * 0.1) ** (3 / 2))
+        / np.sqrt(np.prod(factorial2(2 * angmoms_a - 1)))
+    ).reshape(1, 1)
+    norm_b = np.array(
+        (2 * 0.2 / np.pi) ** (3 / 4)
+        * ((4 * 0.2) ** (3 / 2))
+        / np.sqrt(np.prod(factorial2(2 * angmoms_b - 1)))
+    ).reshape(1, 1)
 
     # three left angular momentum, three right angular momentum
     for kx, ky, kz in it.product(range(4), range(4), range(4)):
@@ -361,13 +400,207 @@ def test_compute_multipole_moment_integrals_prim_moment_recursion():
                 angmoms_a,
                 alphas_a,
                 coeffs_a,
+                norm_a,
                 coord_b,
                 angmoms_b,
                 alphas_b,
                 coeffs_b,
+                norm_b,
             ),
-            answer_prim("x", 3, 3, kx) * answer_prim("y", 3, 3, ky) * answer_prim("z", 3, 3, kz),
+            norm_a
+            * norm_b
+            * answer_prim("x", 3, 3, kx)
+            * answer_prim("y", 3, 3, ky)
+            * answer_prim("z", 3, 3, kz),
         )
+
+
+def test_compute_multipole_moment_integrals_contraction_norm():
+    """Test moment_int._compute_multipole_moment_integrals using the norm of contractions.
+
+    Note
+    ----
+    The function itself `_compute_multipole_moment_integrals` is used to test the use case for
+    contractions. It assumes that this function behaves correctly for primitives.
+
+    """
+    coord_a = np.array([0.2, 0.4, 0.6])
+    coord_moment = np.array([0.0, 1.0, 2.0])
+    order_moment = np.array([[0, 0, 0]])
+
+    angmoms_a = np.array([[0, 0, 0]])
+    alphas_a = np.array([0.2])
+    coeffs_a = np.array([1.0])
+    norm_a = np.prod(
+        np.sqrt(
+            (2 * alphas_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
+            / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    assert np.allclose(
+        _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            np.array([[1.0]]),
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            np.array([[1.0]]),
+        ),
+        norm_a ** -2,
+    )
+    assert np.allclose(
+        _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a,
+        ),
+        1,
+    )
+
+    angmoms_a = np.array([[3, 3, 3]])
+    alphas_a = np.array([0.2])
+    coeffs_a = np.array([1.0])
+    norm_a = np.prod(
+        np.sqrt(
+            (2 * alphas_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
+            / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    assert np.allclose(
+        _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            np.array([[1.0]]),
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            np.array([[1.0]]),
+        ),
+        norm_a ** -2,
+    )
+    assert np.allclose(
+        _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a,
+        ),
+        1,
+    )
+
+    angmoms_a = np.array([[3, 3, 3]])
+    alphas_a = np.array([0.2, 0.4])
+    coeffs_a = np.array([1.0, 1.0])
+    norm_a = np.prod(
+        np.sqrt(
+            (2 * alphas_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
+            / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    assert np.allclose(
+        _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a,
+        ),
+        1.0
+        + 1.0
+        + 2
+        * norm_a[:, 0]
+        * norm_a[:, 1]
+        * _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a[0:1],
+            coeffs_a[0:1],
+            np.array([[1.0]]),
+            coord_a,
+            angmoms_a,
+            alphas_a[1:],
+            coeffs_a[1:],
+            np.array([[1.0]]),
+        ),
+    )
+    assert np.allclose(
+        _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            np.array([[1.0, 1.0]]),
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            np.array([[1.0, 1.0]]),
+        ),
+        norm_a[:, 0] ** (-2)
+        + norm_a[:, 1] ** (-2)
+        + 2
+        * norm_a[:, 0] ** (-1)
+        * norm_a[:, 1] ** (-1)
+        * _compute_multipole_moment_integrals(
+            coord_moment,
+            order_moment,
+            coord_a,
+            angmoms_a,
+            alphas_a[0:1],
+            coeffs_a[0:1],
+            norm_a[:, 0:1],
+            coord_a,
+            angmoms_a,
+            alphas_a[1:],
+            coeffs_a[1:],
+            norm_a[:, 1:],
+        ),
+    )
 
 
 def test_compute_multipole_moment_integrals_contraction():
@@ -390,6 +623,22 @@ def test_compute_multipole_moment_integrals_contraction():
     alphas_b = np.array([0.2, 0.02])
     coeffs_a = np.array([1.0, 2.0])
     coeffs_b = np.array([3.0, 4.0])
+    norm_a = np.prod(
+        np.sqrt(
+            (2 * alphas_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
+            / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    norm_b = np.prod(
+        np.sqrt(
+            (2 * alphas_b[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_b[np.newaxis, np.newaxis, :]) ** angmoms_b[:, :, np.newaxis]
+            / factorial2(2 * angmoms_b[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
 
     assert np.allclose(
         _compute_multipole_moment_integrals(
@@ -399,66 +648,68 @@ def test_compute_multipole_moment_integrals_contraction():
             angmoms_a,
             alphas_a,
             coeffs_a,
+            norm_a,
             coord_b,
             angmoms_b,
             alphas_b,
             coeffs_b,
+            norm_b,
         ),
-        1
-        * 3
-        * _compute_multipole_moment_integrals(
+        _compute_multipole_moment_integrals(
             coord_moment,
             order_moment,
             coord_a,
             angmoms_a,
             np.array([0.1]),
             np.array([1.0]),
+            norm_a[:, 0:1],
             coord_b,
             angmoms_b,
             np.array([0.2]),
-            np.array([1.0]),
+            np.array([3.0]),
+            norm_b[:, 0:1],
         )
-        + 2
-        * 3
-        * _compute_multipole_moment_integrals(
+        + _compute_multipole_moment_integrals(
             coord_moment,
             order_moment,
             coord_a,
             angmoms_a,
             np.array([0.01]),
-            np.array([1.0]),
+            np.array([2.0]),
+            norm_a[:, 1:],
             coord_b,
             angmoms_b,
             np.array([0.2]),
-            np.array([1.0]),
+            np.array([3.0]),
+            norm_b[:, 0:1],
         )
-        + 1
-        * 4
-        * _compute_multipole_moment_integrals(
+        + _compute_multipole_moment_integrals(
             coord_moment,
             order_moment,
             coord_a,
             angmoms_a,
             np.array([0.1]),
             np.array([1.0]),
+            norm_a[:, 1:],
             coord_b,
             angmoms_b,
             np.array([0.02]),
-            np.array([1.0]),
+            np.array([4.0]),
+            norm_b[:, 0:1],
         )
-        + 2
-        * 4
-        * _compute_multipole_moment_integrals(
+        + _compute_multipole_moment_integrals(
             coord_moment,
             order_moment,
             coord_a,
             angmoms_a,
             np.array([0.01]),
-            np.array([1.0]),
+            np.array([2.0]),
+            norm_a[:, 1:],
             coord_b,
             angmoms_b,
             np.array([0.02]),
-            np.array([1.0]),
+            np.array([4.0]),
+            norm_b[:, 1:],
         ),
     )
 
@@ -488,10 +739,10 @@ def test_compute_multipole_moment_integrals_multiarray():
         ]
     )
     angmoms_b = np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2], [1, 1, 0], [1, 0, 1], [0, 1, 1]])
-    alphas_a = np.array([0.1, 0.01, 0.001])
-    alphas_b = np.array([0.2, 0.02, 0.002])
-    coeffs_a = np.array([1.0, 1.0, 1.0])
-    coeffs_b = np.array([1.0, 1.0, 1.0])
+    alphas_a = np.array([5.4471780, 0.8245470])
+    alphas_b = np.array([0.1831920])
+    coeffs_a = np.array([0.1562850, 0.9046910])
+    coeffs_b = np.array([1.0])
     coord_moment = np.array([0.25, 0.45, 0.65])
     orders_moment = np.array(
         [
@@ -513,7 +764,22 @@ def test_compute_multipole_moment_integrals_multiarray():
         ]
     )
 
-    # NOTE: these numbers get big
+    norm_a = np.prod(
+        np.sqrt(
+            (2 * alphas_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
+            / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    norm_b = np.prod(
+        np.sqrt(
+            (2 * alphas_b[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * alphas_b[np.newaxis, np.newaxis, :]) ** angmoms_b[:, :, np.newaxis]
+            / factorial2(2 * angmoms_b[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
     test = _compute_multipole_moment_integrals(
         coord_moment,
         orders_moment,
@@ -521,27 +787,28 @@ def test_compute_multipole_moment_integrals_multiarray():
         angmoms_a,
         alphas_a,
         coeffs_a,
+        norm_a,
         coord_b,
         angmoms_b,
         alphas_b,
         coeffs_b,
+        norm_b,
     )
     assert test.shape == (orders_moment.shape[0], angmoms_b.shape[0], angmoms_a.shape[0])
     for i, order_moment in enumerate(orders_moment):
         for j, angmom_a in enumerate(angmoms_a):
             for k, angmom_b in enumerate(angmoms_b):
-                assert np.allclose(
-                    _compute_multipole_moment_integrals(
-                        coord_moment,
-                        np.array([order_moment]),
-                        coord_a,
-                        np.array([angmom_a]),
-                        alphas_a,
-                        coeffs_a,
-                        coord_b,
-                        np.array([angmom_b]),
-                        alphas_b,
-                        coeffs_b,
-                    ),
-                    test[i, k, j],
-                )
+                _compute_multipole_moment_integrals(
+                    coord_moment,
+                    np.array([order_moment]),
+                    coord_a,
+                    np.array([angmom_a]),
+                    alphas_a,
+                    coeffs_a,
+                    norm_a,
+                    coord_b,
+                    np.array([angmom_b]),
+                    alphas_b,
+                    coeffs_b,
+                    norm_b,
+                ) == test[i, k, j]
