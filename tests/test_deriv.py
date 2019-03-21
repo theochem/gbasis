@@ -4,6 +4,7 @@ import itertools as it
 from gbasis.contractions import ContractedCartesianGaussians
 from gbasis.deriv import _eval_deriv_contractions, eval_deriv_shell, eval_shell
 import numpy as np
+from scipy.special import factorial2
 from utils import partial_deriv_finite_diff
 
 
@@ -35,7 +36,15 @@ def eval_deriv_prim(coord, orders, center, angmom_comps, alpha):
     `gbasis.deriv.eval_deriv_contraction` instead.
 
     """
-    return _eval_deriv_contractions(coord, orders, center, angmom_comps, alpha, 1)[0]
+    return _eval_deriv_contractions(
+        coord.reshape(1, 3),
+        orders,
+        center,
+        angmom_comps.reshape(1, 3),
+        np.array([alpha]),
+        np.array([1.0]),
+        np.array([[1]]),
+    )[0]
 
 
 def eval_prim(coord, center, angmom_comps, alpha):
@@ -140,76 +149,88 @@ def test_eval_contractions():
     # angular momentum: 0
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1, 1
+            np.array([[0, 0, 0]]),
+            np.array([0, 0, 0]),
+            np.array([0, 0, 0]),
+            np.array([[0, 0, 0]]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([[1.0]]),
         ),
         1,
     )
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([1.0, 0, 0]),
+            np.array([[1.0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([0, 0, 0]),
-            np.array([0, 0, 0]),
-            1,
-            1,
+            np.array([[0, 0, 0]]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([[1.0]]),
         ),
         np.exp(-1),
     )
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([1.0, 2.0, 0]),
+            np.array([[1.0, 2.0, 0]]),
             np.array([0, 0, 0]),
             np.array([0, 0, 0]),
-            np.array([0, 0, 0]),
-            1,
-            1,
+            np.array([[0, 0, 0]]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([[1.0]]),
         ),
         np.exp(-1) * np.exp(-4),
     )
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([1.0, 2.0, 3.0]),
+            np.array([[1.0, 2.0, 3.0]]),
             np.array([0, 0, 0]),
             np.array([0, 0, 0]),
-            np.array([0, 0, 0]),
-            1,
-            1,
+            np.array([[0, 0, 0]]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([[1.0]]),
         ),
         np.exp(-1) * np.exp(-4) * np.exp(-9),
     )
     # angular momentum 1
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([2.0, 0, 0]),
+            np.array([[2.0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([0, 0, 0]),
-            np.array([1, 0, 0]),
-            1,
-            1,
+            np.array([[1, 0, 0]]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([[1.0]]),
         ),
         2 * np.exp(-2 ** 2),
     )
     # other angular momentum
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([2.0, 0, 0]),
+            np.array([[2.0, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([0, 3, 4]),
-            np.array([2, 1, 3]),
-            1,
-            1,
+            np.array([[2, 1, 3]]),
+            np.array([1.0]),
+            np.array([1.0]),
+            np.array([[1.0]]),
         ),
         4 * 3 * 4 ** 3 * np.exp(-(2 ** 2 + 3 ** 2 + 4 ** 2)),
     )
     # contraction
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([2, 0, 0]),
+            np.array([[2, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([0, 3, 4]),
-            np.array([2, 1, 3]),
+            np.array([[2, 1, 3]]),
             np.array([0.1, 0.001]),
             np.array([3, 4]),
+            np.array([[1.0, 1.0]]),
         ),
         3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
         + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
@@ -217,18 +238,23 @@ def test_eval_contractions():
     # contraction + multiple angular momentums
     assert np.allclose(
         _eval_deriv_contractions(
-            np.array([2, 0, 0]),
+            np.array([[2, 0, 0]]),
             np.array([0, 0, 0]),
             np.array([0, 3, 4]),
             np.array([[2, 1, 3], [1, 3, 4]]),
             np.array([0.1, 0.001]),
             np.array([3, 4]),
+            np.array([[1.0, 1.0], [1.0, 1.0]]),
         ),
         [
-            3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
-            + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
-            3 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
-            + 4 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
+            [
+                3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+                + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+            ],
+            [
+                3 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+                + 4 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+            ],
         ],
     )
 
@@ -243,12 +269,13 @@ def test_eval_deriv_contractions():
             # only contraction
             assert np.allclose(
                 _eval_deriv_contractions(
-                    np.array([2, 3, 4]),
+                    np.array([[2, 3, 4]]),
                     orders,
                     np.array([0.5, 1, 1.5]),
-                    np.array([x, y, z]),
+                    np.array([[x, y, z]]),
                     np.array([1, 2]),
                     np.array([3, 4]),
+                    np.array([[1, 1]]),
                 ),
                 3
                 * eval_deriv_prim(
@@ -262,12 +289,13 @@ def test_eval_deriv_contractions():
             # contraction + multiple angular momentums
             assert np.allclose(
                 _eval_deriv_contractions(
-                    np.array([2, 3, 4]),
+                    np.array([[2, 3, 4]]),
                     orders,
                     np.array([0.5, 1, 1.5]),
                     np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
                     np.array([1, 2]),
                     np.array([3, 4]),
+                    np.array([[1, 1]]),
                 ),
                 [
                     3
@@ -304,7 +332,13 @@ def test_eval_deriv_contractions():
         for x, y, z in it.product(range(4), range(4), range(4)):
             assert np.allclose(
                 _eval_deriv_contractions(
-                    np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1, 1
+                    np.array([[2, 3, 4]]),
+                    orders,
+                    np.array([0.5, 1, 1.5]),
+                    np.array([[x, y, z]]),
+                    np.array([1]),
+                    np.array([1]),
+                    np.array([[1]]),
                 ),
                 eval_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
@@ -313,12 +347,13 @@ def test_eval_deriv_contractions():
             # only contraction
             assert np.allclose(
                 _eval_deriv_contractions(
-                    np.array([2, 3, 4]),
+                    np.array([[2, 3, 4]]),
                     orders,
                     np.array([0.5, 1, 1.5]),
-                    np.array([x, y, z]),
+                    np.array([[x, y, z]]),
                     np.array([1, 2]),
                     np.array([3, 4]),
+                    np.array([[1, 1]]),
                 ),
                 3
                 * eval_deriv_prim(
@@ -332,12 +367,13 @@ def test_eval_deriv_contractions():
             # contraction + multiple angular momentums
             assert np.allclose(
                 _eval_deriv_contractions(
-                    np.array([2, 3, 4]),
+                    np.array([[2, 3, 4]]),
                     orders,
                     np.array([0.5, 1, 1.5]),
                     np.array([[x, y, z], [x - 1, y + 2, z + 1]]),
                     np.array([1, 2]),
                     np.array([3, 4]),
+                    np.array([[1, 1]]),
                 ),
                 [
                     3
@@ -374,72 +410,105 @@ def test_eval_deriv_shell():
     for k in range(3):
         orders = np.zeros(3, dtype=int)
         orders[k] = 1
-        for i in range(6):
-            test = ContractedCartesianGaussians(
-                1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
-            )
-            answer = np.array(
-                [
-                    _eval_deriv_contractions(
-                        np.array([2, 3, 4]),
-                        orders,
-                        np.array([0.5, 1, 1.5]),
-                        angmom_comp,
-                        np.array([0.1, 0.01]),
-                        np.array([1, 2]),
-                    )
-                    for angmom_comp in test.angmom_components
-                ]
-            )
-            assert np.allclose(
-                eval_deriv_shell(coords=np.array([2, 3, 4]), orders=orders, shell=test),
-                answer.ravel(),
-            )
-    # second order
-    for k, l in it.product(range(3), range(3)):
-        orders = np.zeros(3, dtype=int)
-        orders[k] += 1
-        orders[l] += 1
-        for i in range(6):
-            test = ContractedCartesianGaussians(
-                1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
-            )
-            answer = np.array(
-                [
-                    _eval_deriv_contractions(
-                        np.array([2, 3, 4]),
-                        orders,
-                        np.array([0.5, 1, 1.5]),
-                        angmom_comp,
-                        np.array([0.1, 0.01]),
-                        np.array([1, 2]),
-                    )
-                    for angmom_comp in test.angmom_components
-                ]
-            )
-            assert np.allclose(
-                eval_deriv_shell(coords=np.array([2, 3, 4]), orders=orders, shell=test),
-                answer.ravel(),
-            )
 
-
-def test_eval_shell():
-    """Test gbasis.deriv.eval_shell."""
-    for i in range(6):
         test = ContractedCartesianGaussians(
             1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
         )
         answer = np.array(
             [
                 _eval_deriv_contractions(
-                    np.array([2, 3, 4]),
-                    np.array([0, 0, 0]),
+                    np.array([[2, 3, 4]]),
+                    orders,
                     np.array([0.5, 1, 1.5]),
-                    angmom_comp,
+                    np.array([angmom_comp]),
                     np.array([0.1, 0.01]),
                     np.array([1, 2]),
+                    np.array(
+                        [
+                            [
+                                (2 * 0.1 / np.pi) ** (3 / 4)
+                                * (4 * 0.1) ** (1 / 2)
+                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
+                                (2 * 0.01 / np.pi) ** (3 / 4)
+                                * (4 * 0.01) ** (1 / 2)
+                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
+                            ]
+                        ]
+                    ),
                 )
                 for angmom_comp in test.angmom_components
             ]
+        ).reshape(3, 1)
+        assert np.allclose(
+            eval_deriv_shell(coords=np.array([[2, 3, 4]]), orders=orders, shell=test), answer
         )
-        assert np.allclose(eval_shell(coords=np.array([2, 3, 4]), shell=test), answer.ravel())
+    # second order
+    for k, l in it.product(range(3), range(3)):
+        orders = np.zeros(3, dtype=int)
+        orders[k] += 1
+        orders[l] += 1
+
+        test = ContractedCartesianGaussians(
+            1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        )
+        answer = np.array(
+            [
+                _eval_deriv_contractions(
+                    np.array([[2, 3, 4]]),
+                    orders,
+                    np.array([0.5, 1, 1.5]),
+                    np.array([angmom_comp]),
+                    np.array([0.1, 0.01]),
+                    np.array([1, 2]),
+                    np.array(
+                        [
+                            [
+                                (2 * 0.1 / np.pi) ** (3 / 4)
+                                * (4 * 0.1) ** (1 / 2)
+                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
+                                (2 * 0.01 / np.pi) ** (3 / 4)
+                                * (4 * 0.01) ** (1 / 2)
+                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
+                            ]
+                        ]
+                    ),
+                )
+                for angmom_comp in test.angmom_components
+            ]
+        ).reshape(3, 1)
+        assert np.allclose(
+            eval_deriv_shell(coords=np.array([[2, 3, 4]]), orders=orders, shell=test), answer
+        )
+
+
+def test_eval_shell():
+    """Test gbasis.deriv.eval_shell."""
+    test = ContractedCartesianGaussians(
+        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+    )
+    answer = np.array(
+        [
+            _eval_deriv_contractions(
+                np.array([[2, 3, 4]]),
+                np.array([0, 0, 0]),
+                np.array([0.5, 1, 1.5]),
+                np.array([angmom_comp]),
+                np.array([0.1, 0.01]),
+                np.array([1, 2]),
+                np.array(
+                    [
+                        [
+                            (2 * 0.1 / np.pi) ** (3 / 4)
+                            * (4 * 0.1) ** (1 / 2)
+                            / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
+                            (2 * 0.01 / np.pi) ** (3 / 4)
+                            * (4 * 0.01) ** (1 / 2)
+                            / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
+                        ]
+                    ]
+                ),
+            )
+            for angmom_comp in test.angmom_components
+        ]
+    ).reshape(3, 1)
+    assert np.allclose(eval_shell(coords=np.array([[2, 3, 4]]), shell=test), answer)
