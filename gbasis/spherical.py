@@ -247,12 +247,11 @@ def generate_transformation(angmom, cartesian_order, apply_from):
     ------
     TypeError
         If angmom is not an integer.
-        If cartesian_order is not a list
+        If cartesian_order is not an array.
         If each member of cartesian_order is not a tuple.
     ValueError
         If angmom is negative.
-        If cartesian_order does not have (angmom + 1)*(angmom + 2) / 2 components.
-        If any tuple in cartesian_order does not have 3 components.
+        If cartesian_order does not have shape (angmom, 3).
         If the components of any primitive do not sum to angmom.
 
     """
@@ -262,9 +261,11 @@ def generate_transformation(angmom, cartesian_order, apply_from):
         raise ValueError("Angular momentum must be a non-negative integer.")
     if not isinstance(cartesian_order, np.ndarray):
         raise TypeError("The order of the Cartesian primitives must be an array.")
-    if not cartesian_order.shape == ((angmom + 1)*(angmom + 2) / 2, 3):
+    if not cartesian_order.shape == ((angmom + 1) * (angmom + 2) // 2, 3):
         raise ValueError(
-            "The order of the Cartesian primitives must have dimensions {}".format((angmom, 3))
+            "The order of the Cartesian primitives must have dimensions {}".format(
+                ((angmom + 1) * (angmom + 2) // 2, 3)
+            )
         )
     if not np.all(np.sum(cartesian_order, axis=1) == angmom):
         raise ValueError("Each primitive's components must sum to the angular momentum.")
@@ -275,7 +276,9 @@ def generate_transformation(angmom, cartesian_order, apply_from):
             "Specify the side of application for the transformation using 'left' or 'right'"
         )
 
-    order = {components: index for index, components in enumerate(cartesian_order)}
+    order = {
+        components: index for index, components in enumerate(list(map(tuple, cartesian_order)))
+    }
     transform = np.zeros(((angmom + 1) * (angmom + 2) // 2, 2 * angmom + 1))
 
     for mag in range(-angmom, angmom + 1):
