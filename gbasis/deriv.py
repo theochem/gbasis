@@ -199,14 +199,14 @@ def eval_shell(*, coords, shell):
     Parameters
     ----------
     coords : np.ndarray(N, 3)
-        Point in space where the derivative of the Gaussian primitive is evaluated.
+        Point in space where the Gaussian primitive is evaluated.
     shell : ContractedCartesianGaussians
         Set of contracted Cartesian Gaussians with the same angular momentum.
 
     Returns
     -------
     derivative : np.ndarray(L, N)
-        Evaluation of the derivative.
+        Evaluation of the (zeroth-order) derivative.
         :math:`L` is the number of contractions associated with the given `shell`.
 
     Raises
@@ -214,11 +214,9 @@ def eval_shell(*, coords, shell):
     TypeError
         If the arguments are given as positional arguments.
         If coords is not a numpy array.
-        If orders is not a numpy array.
         If shell is not a ContractedCartesianGaussians.
     ValueError
         If coords is not a two-dimensional numpy array with 3 columns.
-        If orders is not a one-dimensional numpy array with 3 entries.
 
     Notes
     -----
