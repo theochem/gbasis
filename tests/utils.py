@@ -31,6 +31,39 @@ def skip_init(class_obj):
     return NoInitClass()
 
 
+def disable_abstract(abclass, dict_overwrite={}):
+    """Return a class that is a copy of the given abstract class without its abstract methods.
+
+    Parameters
+    ----------
+    abclass : type
+        Class.
+
+    Returns
+    -------
+    new_class : type
+        Child of the given abstract class without its abstract methods.
+
+    Notes
+    -----
+    This code was adapted from
+    https://stackoverflow.com/questions/9757299/python-testing-an-abstract-base-class.
+
+    """
+    if "__abstractmethods__" not in abclass.__dict__:
+        return abclass
+    new_dict = abclass.__dict__.copy()
+    for abstractmethod in abclass.__abstractmethods__:
+        # replace abstract methods with a function that does nothing
+        new_dict[abstractmethod] = lambda *args: None
+    # replace namespace
+    new_dict.update(dict_overwrite)
+    # make subclass of the abstract class with
+    return type(
+        "{} class with abstract methods disabled".format(abclass.__name__), (abclass,), new_dict
+    )
+
+
 def partial_deriv_finite_diff(func, x, order, epsilon=1e-8, num_points=1):
     """Return the first order partial derivative of the given function at the given value.
 
