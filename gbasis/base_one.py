@@ -77,8 +77,12 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array_contraction : np.ndarray
+        array_contraction : np.ndarray(M, L, N)
             Array associated with the given instance(s) of ContractedCartesianGaussians.
+            First index corresponds to contractions that have the same exponents (and angular
+            momentum), but different coefficients.
+            Second index corresponds to angular momentum vector.
+            Third index corresponds to coordinates at which the contractions are evaluated.
 
         Notes
         -----
@@ -86,6 +90,14 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         contracted Cartesian Gaussians. The keyword arguments will be different depending on its
         functionality. You should use explicit keyword arguments when defining this function, rather
         than the arbitrary number of keywords (as is done here).
+
+        The methods `construct_array_cartesian`, `construct_array_spherical`, and
+        `construct_array_spherical_lincomb` depend on this function to produce an array whose first
+        index corresponds to the contraction (within a generalized contraction) and second index
+        corresponds to the angular momentum vector. These other methods **will** fail with little
+        warning if the shape of the output is different. Even if there is only one contraction (i.e.
+        segmented contraction), the first index must correspond to contraction. In other words, the
+        shape must still be (1, L, N).
 
         """
 
@@ -106,10 +118,14 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             First index of the array is associated with the contracted Cartesian Gaussian.
 
         """
-        matrices = [
-            self.construct_array_contraction(contraction, **kwargs)
-            for contraction in self.contractions
-        ]
+        matrices = []
+        for contraction in self.contractions:
+            array = self.construct_array_contraction(contraction, **kwargs)
+            # ASSUME array always has shape (M, L, N)
+            if array.shape[0] == 1:
+                matrices.append(np.squeeze(array, axis=0))
+            else:
+                matrices.append(np.concatenate(array, axis=0))
         return np.concatenate(matrices, axis=0)
 
     def construct_array_spherical(self, **kwargs):
@@ -138,7 +154,13 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             # evaluate the function at the given points
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # transform
-            matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 0))
+            # ASSUME array always has shape (M, L, N)
+            if matrix_contraction.shape[0] == 1:
+                matrix_contraction = np.squeeze(matrix_contraction, axis=0)
+                matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 0))
+            else:
+                matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 1))
+                matrix_contraction = np.concatenate(np.swapaxes(matrix_contraction, 0, 1), axis=0)
             # store
             matrices_spherical.append(matrix_contraction)
 
