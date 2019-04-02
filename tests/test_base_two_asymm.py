@@ -58,7 +58,7 @@ def test_contruct_array_cartesian():
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexAsymmetric,
         dict_overwrite={
-            "construct_array_contraction": lambda self, cont1, cont2, a=2: np.ones((2, 2)) * a
+            "construct_array_contraction": lambda self, cont1, cont2, a=2: np.ones((1, 2, 1, 2)) * a
         },
     )
     test = Test([contractions], [contractions])
@@ -74,12 +74,26 @@ def test_contruct_array_cartesian():
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexAsymmetric,
         dict_overwrite={
-            "construct_array_contraction": lambda self, cont_one, cont_two, a=2: np.ones((2, 5)) * a
+            "construct_array_contraction": (
+                lambda self, cont_one, cont_two, a=2: np.ones((1, 2, 1, 5)) * a
+            )
         },
     )
     test = Test([contractions, contractions], [contractions])
     assert np.allclose(test.construct_array_cartesian(), np.ones((4, 5)) * 2)
     assert np.allclose(test.construct_array_cartesian(a=3), np.ones((4, 5)) * 3)
+
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexAsymmetric,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont_one, cont_two, a=2: np.ones((2, 2, 2, 5)) * a
+            )
+        },
+    )
+    test = Test([contractions, contractions], [contractions])
+    assert np.allclose(test.construct_array_cartesian(), np.ones((8, 10)) * 2)
+    assert np.allclose(test.construct_array_cartesian(a=3), np.ones((8, 10)) * 3)
 
 
 def test_contruct_array_spherical():
@@ -91,7 +105,7 @@ def test_contruct_array_spherical():
         BaseTwoIndexAsymmetric,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(3, 3) * a
+                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(1, 3, 1, 3) * a
             )
         },
     )
@@ -113,6 +127,57 @@ def test_contruct_array_spherical():
         np.vstack([transform.dot(np.arange(9).reshape(3, 3).dot(transform.T)) * 2] * 2),
     )
 
+    matrix = np.arange(36).reshape(2, 3, 2, 3)
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexAsymmetric,
+        dict_overwrite={
+            "construct_array_contraction": lambda self, cont_one, cont_two, a=2: matrix * a
+        },
+    )
+    test = Test([contractions], [contractions])
+    assert np.allclose(
+        test.construct_array_spherical(),
+        np.vstack(
+            [
+                np.hstack(
+                    [
+                        transform.dot(matrix[0, :, 0, :]).dot(transform.T),
+                        transform.dot(matrix[0, :, 1, :]).dot(transform.T),
+                    ]
+                ),
+                np.hstack(
+                    [
+                        transform.dot(matrix[1, :, 0, :]).dot(transform.T),
+                        transform.dot(matrix[1, :, 1, :]).dot(transform.T),
+                    ]
+                ),
+            ]
+        )
+        * 2,
+    )
+    test = Test([contractions, contractions], [contractions])
+    assert np.allclose(
+        test.construct_array_spherical(),
+        np.vstack(
+            [
+                np.hstack(
+                    [
+                        transform.dot(matrix[0, :, 0, :]).dot(transform.T),
+                        transform.dot(matrix[0, :, 1, :]).dot(transform.T),
+                    ]
+                ),
+                np.hstack(
+                    [
+                        transform.dot(matrix[1, :, 0, :]).dot(transform.T),
+                        transform.dot(matrix[1, :, 1, :]).dot(transform.T),
+                    ]
+                ),
+            ]
+            * 2
+        )
+        * 2,
+    )
+
 
 def test_contruct_array_spherical_lincomb():
     """Test BaseTwoIndexAsymmetric.construct_array_spherical_lincomb."""
@@ -125,7 +190,7 @@ def test_contruct_array_spherical_lincomb():
         BaseTwoIndexAsymmetric,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(3, 3) * a
+                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(1, 3, 1, 3) * a
             )
         },
     )
