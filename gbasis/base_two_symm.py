@@ -80,10 +80,12 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array_contraction : np.ndarray
+        array_contraction : np.ndarray(M_1, L_1, M_2, L_2)
             Array associated with the given instance(s) of ContractedCartesianGaussians.
-            First axis corresponds to the first set of contractions.
-            Second axis corresponds to the second set of contrations.
+            First axis corresponds to the segmented contraction within `contraction_one`.
+            Second axis corresponds to the angular momentum vector of the `contraction_one`.
+            Third axis corresponds to the segmented contraction within `contraction_two`.
+            Fourth axis corresponds to the angular momentum vector of the `contraction_two`.
             This array should be symmetric with respect to the swapping of the first and second
             axes.
 
@@ -93,6 +95,16 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         contracted Cartesian Gaussians. The keyword arguments will be different depending on its
         functionality. You should use explicit keyword arguments when defining this function, rather
         than the arbitrary number of keywords (as is done here).
+
+        The methods `construct_array_cartesian`, `construct_array_spherical`, and
+        `construct_array_spherical_lincomb` depend on this function to produce an array whose first
+        and second indices corresponds to the contraction (within a generalized contraction) and
+        the angular momentum vector of `contration_one`, and third and fourth indices corresponds to
+        the contraction (within a generalized contraction) and the angular momentum vector of
+        `contration_two`,. These other methods **will** fail with little warning if the shape of the
+        output is different. Even if both `contraction_one` and `contraction_two` are segmented
+        contractions, the first and third indices must correspond to the contraction. In other
+        words, the shape must still be (1, L_1, 1, L_2).
 
         """
 
@@ -121,11 +133,24 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         respect to the swapping of the first and second axes.
 
         """
-        triu_blocks = [
-            self.construct_array_contraction(cont_one, cont_two, **kwargs)
-            for i, cont_one in enumerate(self.contractions)
-            for cont_two in self.contractions[i:]
-        ]
+        triu_blocks = []
+        for i, cont_one in enumerate(self.contractions):
+            for cont_two in self.contractions[i:]:
+                block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
+                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                if block.shape[0] == 1:
+                    block = np.squeeze(block, axis=0)
+                else:
+                    block = np.concatenate(block, axis=0)
+                # array now has shape (M_1 L_1, M_2, L_2, N)
+                if block.shape[1] == 1:
+                    block = np.squeeze(block, axis=1)
+                else:
+                    block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
+                    block = np.concatenate(block, axis=0)
+                    block = np.swapaxes(block, 0, 1)
+                # array now has shape (M_1 L_1, M_2 L_2, N)
+                triu_blocks.append(block)
         # use numpy triu and tril indices to create blocks
         num_blocks_side = len(self.contractions)
         all_blocks = np.zeros((num_blocks_side, num_blocks_side), dtype=object)
@@ -177,9 +202,24 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 block_sph = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # transform
-                block_sph = np.tensordot(transform_one, block_sph, (1, 0))
-                block_sph = np.tensordot(transform_two, block_sph, (1, 1))
-                block_sph = np.swapaxes(block_sph, 0, 1)
+                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                if block_sph.shape[0] == 1:
+                    block_sph = np.squeeze(block_sph, axis=0)
+                    block_sph = np.tensordot(transform_one, block_sph, (1, 0))
+                else:
+                    block_sph = np.tensordot(transform_one, block_sph, (1, 1))
+                    block_sph = np.concatenate(np.swapaxes(block_sph, 0, 1), axis=0)
+                # array now has shape (M_1 L_1, M_2, L_2, N)
+                if block_sph.shape[1] == 1:
+                    block_sph = np.squeeze(block_sph, axis=1)
+                    block_sph = np.tensordot(transform_two, block_sph, (1, 1))
+                    block_sph = np.swapaxes(block_sph, 0, 1)
+                else:
+                    block_sph = np.tensordot(transform_two, block_sph, (1, 2))
+                    block_sph = np.swapaxes(np.swapaxes(block_sph, 0, 1), 0, 2)
+                    block_sph = np.concatenate(block_sph, axis=0)
+                    block_sph = np.swapaxes(block_sph, 0, 1)
+                # array now has shape (M_1 L_1, M_2 L_2, N)
                 # store
                 triu_blocks.append(block_sph)
         # use numpy triu and tril indices to create blocks
