@@ -109,6 +109,9 @@ def test_exps_setter():
     with pytest.raises(ValueError):
         test.coeffs = np.array([1.0, 2.0, 3.0])
         test.exps = np.array([4.0, 5.0])
+    with pytest.raises(ValueError):
+        test.coeffs = np.array([[1.0], [2.0], [3.0]])
+        test.exps = np.array([4.0, 5.0])
 
 
 def test_exps_getter():
@@ -138,6 +141,24 @@ def test_coeffs_setter():
     )
 
     test = skip_init(ContractedCartesianGaussians)
+    test.exps = np.array([4.0, 5.0, 6.0])
+    test.coeffs = np.array([[1.0], [2.0], [3.0]])
+    assert (
+        isinstance(test._coeffs, np.ndarray)
+        and test._coeffs.dtype == float
+        and np.allclose(test._coeffs, np.array([[1], [2], [3]]))
+    )
+
+    test = skip_init(ContractedCartesianGaussians)
+    test.exps = np.array([4.0, 5.0, 6.0])
+    test.coeffs = np.array([[1.0, 4.0], [2.0, 5.0], [3.0, 6.0]])
+    assert (
+        isinstance(test._coeffs, np.ndarray)
+        and test._coeffs.dtype == float
+        and np.allclose(test._coeffs, np.array([[1, 4], [2, 5], [3, 6]]))
+    )
+
+    test = skip_init(ContractedCartesianGaussians)
     with pytest.raises(TypeError):
         test.coeffs = [1, 2, 3]
     with pytest.raises(TypeError):
@@ -145,6 +166,15 @@ def test_coeffs_setter():
     with pytest.raises(ValueError):
         test.exps = np.array([4.0, 5.0])
         test.coeffs = np.array([1.0, 2.0, 3.0])
+    with pytest.raises(ValueError):
+        test.exps = np.array([4.0, 5.0, 6.0])
+        test.coeffs = np.array([[[1.0, 2.0, 3.0]]])
+    with pytest.raises(ValueError):
+        test.exps = np.array([4.0, 5.0, 6.0])
+        test.coeffs = np.array([[1.0, 2.0, 3.0]])
+    with pytest.raises(ValueError):
+        test.exps = np.array([4.0, 5.0])
+        test.coeffs = np.array([[1.0], [2.0], [3.0]])
 
 
 def test_coeffs_getter():
