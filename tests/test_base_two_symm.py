@@ -47,7 +47,7 @@ def test_contruct_array_cartesian():
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
         dict_overwrite={
-            "construct_array_contraction": lambda self, cont1, cont2, a=2: np.ones((2, 2)) * a
+            "construct_array_contraction": lambda self, cont1, cont2, a=2: np.ones((1, 2, 1, 2)) * a
         },
     )
     test = Test([contractions])
@@ -67,7 +67,7 @@ def test_contruct_array_cartesian():
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
                 np.arange(cont_one.num_contr * cont_two.num_contr).reshape(
-                    cont_one.num_contr, cont_two.num_contr
+                    1, cont_one.num_contr, 1, cont_two.num_contr
                 )
                 * a
             )
@@ -98,7 +98,7 @@ def test_contruct_array_cartesian():
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
                 np.arange(cont_one.num_contr * cont_two.num_contr * 2).reshape(
-                    cont_one.num_contr, cont_two.num_contr, 2
+                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
                 )
                 * a
             )
@@ -147,6 +147,68 @@ def test_contruct_array_cartesian():
         ),
     )
 
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexSymmetric,
+        dict_overwrite={
+            # NOTE: assume that cont_one and cont_two will always be cont_one and cont_two defined
+            # above
+            "construct_array_contraction": lambda self, cont_one, cont_two, a=2: np.arange(
+                2 * cont_one.num_contr * 2 * cont_two.num_contr
+            ).reshape(2, cont_one.num_contr, 2, cont_two.num_contr)
+            * a
+        },
+    )
+    test = Test([cont_one, cont_two])
+    matrix_11 = np.arange(2 * cont_one.num_contr * 2 * cont_one.num_contr).reshape(
+        2, cont_one.num_contr, 2, cont_one.num_contr
+    )
+    matrix_12 = np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr).reshape(
+        2, cont_one.num_contr, 2, cont_two.num_contr
+    )
+    matrix_22 = np.arange(2 * cont_two.num_contr * 2 * cont_two.num_contr).reshape(
+        2, cont_two.num_contr, 2, cont_two.num_contr
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(),
+        np.vstack(
+            [
+                np.hstack(
+                    [
+                        np.vstack(
+                            [
+                                np.hstack([matrix_11[0, :, 0, :], matrix_11[0, :, 1, :]]),
+                                np.hstack([matrix_11[1, :, 0, :], matrix_11[1, :, 1, :]]),
+                            ]
+                        ).T,
+                        np.vstack(
+                            [
+                                np.hstack([matrix_12[0, :, 0, :], matrix_12[0, :, 1, :]]),
+                                np.hstack([matrix_12[1, :, 0, :], matrix_12[1, :, 1, :]]),
+                            ]
+                        ),
+                    ]
+                ),
+                np.hstack(
+                    [
+                        np.vstack(
+                            [
+                                np.hstack([matrix_12[0, :, 0, :], matrix_12[0, :, 1, :]]),
+                                np.hstack([matrix_12[1, :, 0, :], matrix_12[1, :, 1, :]]),
+                            ]
+                        ).T,
+                        np.vstack(
+                            [
+                                np.hstack([matrix_22[0, :, 0, :], matrix_22[0, :, 1, :]]),
+                                np.hstack([matrix_22[1, :, 0, :], matrix_22[1, :, 1, :]]),
+                            ]
+                        ).T,
+                    ]
+                ),
+            ]
+        )
+        * 2,
+    )
+
 
 def test_contruct_array_spherical():
     """Test BaseTwoIndexSymmetric.construct_array_spherical."""
@@ -157,7 +219,7 @@ def test_contruct_array_spherical():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(3, 3) * a
+                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(1, 3, 1, 3) * a
             )
         },
     )
@@ -173,22 +235,23 @@ def test_contruct_array_spherical():
     with pytest.raises(TypeError):
         test.construct_array_spherical(bad_keyword=3)
 
+    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    transform_one = generate_transformation(1, cont_one.angmom_components, "left")
+    transform_two = generate_transformation(2, cont_two.angmom_components, "left")
+
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
                 np.arange(cont_one.num_contr * cont_two.num_contr * 2).reshape(
-                    cont_one.num_contr, cont_two.num_contr, 2
+                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
                 )
                 * a
             )
         },
     )
-    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     test = Test([cont_one, cont_two])
-    transform_one = generate_transformation(1, cont_one.angmom_components, "left")
-    transform_two = generate_transformation(2, cont_two.angmom_components, "left")
     assert np.allclose(
         test.construct_array_spherical(a=4),
         np.concatenate(
@@ -236,6 +299,74 @@ def test_contruct_array_spherical():
         ),
     )
 
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexSymmetric,
+        dict_overwrite={
+            "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
+                np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr).reshape(
+                    2, cont_one.num_contr, 2, cont_two.num_contr
+                )
+                * a
+            )
+        },
+    )
+    test = Test([cont_one, cont_two])
+    matrix_11 = np.arange(2 * cont_one.num_contr * 2 * cont_one.num_contr).reshape(
+        2, cont_one.num_contr, 2, cont_one.num_contr
+    )
+    matrix_11 = np.swapaxes(np.tensordot(transform_one, matrix_11, (1, 1)), 0, 1)
+    matrix_11 = np.moveaxis(np.tensordot(transform_one, matrix_11, (1, 3)), 0, 3)
+    matrix_12 = np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr).reshape(
+        2, cont_one.num_contr, 2, cont_two.num_contr
+    )
+    matrix_12 = np.swapaxes(np.tensordot(transform_one, matrix_12, (1, 1)), 0, 1)
+    matrix_12 = np.moveaxis(np.tensordot(transform_two, matrix_12, (1, 3)), 0, 3)
+    matrix_22 = np.arange(2 * cont_two.num_contr * 2 * cont_two.num_contr).reshape(
+        2, cont_two.num_contr, 2, cont_two.num_contr
+    )
+    matrix_22 = np.swapaxes(np.tensordot(transform_two, matrix_22, (1, 1)), 0, 1)
+    matrix_22 = np.moveaxis(np.tensordot(transform_two, matrix_22, (1, 3)), 0, 3)
+    assert np.allclose(
+        test.construct_array_spherical(),
+        np.vstack(
+            [
+                np.hstack(
+                    [
+                        np.vstack(
+                            [
+                                np.hstack([matrix_11[0, :, 0, :], matrix_11[0, :, 1, :]]),
+                                np.hstack([matrix_11[1, :, 0, :], matrix_11[1, :, 1, :]]),
+                            ]
+                        ).T,
+                        np.vstack(
+                            [
+                                np.hstack([matrix_12[0, :, 0, :], matrix_12[0, :, 1, :]]),
+                                np.hstack([matrix_12[1, :, 0, :], matrix_12[1, :, 1, :]]),
+                            ]
+                        ),
+                    ]
+                ),
+                np.hstack(
+                    [
+                        np.vstack(
+                            [
+                                np.hstack([matrix_12[0, :, 0, :], matrix_12[0, :, 1, :]]),
+                                np.hstack([matrix_12[1, :, 0, :], matrix_12[1, :, 1, :]]),
+                            ]
+                        ).T,
+                        np.vstack(
+                            [
+                                np.hstack([matrix_22[0, :, 0, :], matrix_22[0, :, 1, :]]),
+                                np.hstack([matrix_22[1, :, 0, :], matrix_22[1, :, 1, :]]),
+                            ]
+                        ).T,
+                    ]
+                ),
+            ]
+        )
+        * 2,
+    )
+
 
 def test_contruct_array_spherical_lincomb():
     """Test BaseTwoIndexSymmetric.construct_array_spherical_lincomb."""
@@ -247,7 +378,7 @@ def test_contruct_array_spherical_lincomb():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(3, 3) * a
+                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(1, 3, 1, 3) * a
             )
         },
     )
@@ -283,7 +414,7 @@ def test_contruct_array_spherical_lincomb():
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
                 np.arange(cont_one.num_contr * cont_two.num_contr * 2).reshape(
-                    cont_one.num_contr, cont_two.num_contr, 2
+                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
                 )
                 * a
             )
@@ -382,9 +513,9 @@ def test_compare_two_asymm():
         one_size = cont_one.num_contr
         two_size = cont_two.num_contr
         output = (
-            np.arange(one_size)[:, None, None]
-            + np.arange(two_size)[None, :, None]
-            + np.arange(5, 10)[None, None, :]
+            np.arange(one_size)[None, :, None, None, None]
+            + np.arange(two_size)[None, None, None, :, None]
+            + np.arange(5, 10)[None, None, None, None, :]
         )
         return output * a
 
