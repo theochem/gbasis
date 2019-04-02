@@ -96,8 +96,12 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array_contraction : np.ndarray
+        array_contraction : np.ndarray(M_1, L_1, M_2, L_2)
             Array associated with the given instance(s) of ContractedCartesianGaussians.
+            First axis corresponds to the segmented contraction within `contraction_one`.
+            Second axis corresponds to the angular momentum vector of the `contraction_one`.
+            Third axis corresponds to the segmented contraction within `contraction_two`.
+            Fourth axis corresponds to the angular momentum vector of the `contraction_two`.
 
         Notes
         -----
@@ -105,6 +109,16 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         contracted Cartesian Gaussians. The keyword arguments will be different depending on its
         functionality. You should use explicit keyword arguments when defining this function, rather
         than the arbitrary number of keywords (as is done here).
+
+        The methods `construct_array_cartesian`, `construct_array_spherical`, and
+        `construct_array_spherical_lincomb` depend on this function to produce an array whose first
+        and second indices corresponds to the contraction (within a generalized contraction) and
+        the angular momentum vector of `contration_one`, and third and fourth indices corresponds to
+        the contraction (within a generalized contraction) and the angular momentum vector of
+        `contration_two`,. These other methods **will** fail with little warning if the shape of the
+        output is different. Even if both `contraction_one` and `contraction_two` are segmented
+        contractions, the first and third indices must correspond to the contraction. In other
+        words, the shape must still be (1, L_1, 1, L_2).
 
         """
 
@@ -126,16 +140,26 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             Gaussians.
 
         """
-        matrices = [
-            np.concatenate(
-                [
-                    self.construct_array_contraction(cont_one, cont_two, **kwargs)
-                    for cont_two in self.contractions_two
-                ],
-                axis=1,
-            )
-            for cont_one in self.contractions_one
-        ]
+        matrices = []
+        for cont_one in self.contractions_one:
+            matrices_cols = []
+            for cont_two in self.contractions_two:
+                block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
+                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                if block.shape[0] == 1:
+                    block = np.squeeze(block, axis=0)
+                else:
+                    block = np.concatenate(block, axis=0)
+                # array now has shape (M_1 L_1, M_2, L_2, N)
+                if block.shape[1] == 1:
+                    block = np.squeeze(block, axis=1)
+                else:
+                    block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
+                    block = np.concatenate(block, axis=0)
+                    block = np.swapaxes(block, 0, 1)
+                # array now has shape (M_1 L_1, M_2 L_2, N)
+                matrices_cols.append(block)
+            matrices.append(np.concatenate(matrices_cols, axis=1))
         return np.concatenate(matrices, axis=0)
 
     def construct_array_spherical(self, **kwargs):
@@ -173,9 +197,26 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 matrix_contraction = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # transform
-                matrix_contraction = np.tensordot(transform_one, matrix_contraction, (1, 0))
-                matrix_contraction = np.tensordot(transform_two, matrix_contraction, (1, 1))
-                matrix_contraction = np.swapaxes(matrix_contraction, 0, 1)
+                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                if matrix_contraction.shape[0] == 1:
+                    matrix_contraction = np.squeeze(matrix_contraction, axis=0)
+                    matrix_contraction = np.tensordot(transform_one, matrix_contraction, (1, 0))
+                else:
+                    matrix_contraction = np.tensordot(transform_one, matrix_contraction, (1, 1))
+                    matrix_contraction = np.concatenate(
+                        np.swapaxes(matrix_contraction, 0, 1), axis=0
+                    )
+                # array now has shape (M_1 L_1, M_2, L_2, N)
+                if matrix_contraction.shape[1] == 1:
+                    matrix_contraction = np.squeeze(matrix_contraction, axis=1)
+                    matrix_contraction = np.tensordot(transform_two, matrix_contraction, (1, 1))
+                    matrix_contraction = np.swapaxes(matrix_contraction, 0, 1)
+                else:
+                    matrix_contraction = np.tensordot(transform_two, matrix_contraction, (1, 2))
+                    matrix_contraction = np.swapaxes(np.swapaxes(matrix_contraction, 0, 1), 0, 2)
+                    matrix_contraction = np.concatenate(matrix_contraction, axis=0)
+                    matrix_contraction = np.swapaxes(matrix_contraction, 0, 1)
+                # array now has shape (M_1 L_1, M_2 L_2, N)
                 # store
                 matrices_spherical_cols.append(matrix_contraction)
             matrices_spherical.append(np.concatenate(matrices_spherical_cols, axis=1))
