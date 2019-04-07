@@ -128,7 +128,7 @@ def test_coeffs_setter():
     assert (
         isinstance(test._coeffs, np.ndarray)
         and test._coeffs.dtype == float
-        and np.allclose(test._coeffs, np.array([1, 2, 3]))
+        and np.allclose(test._coeffs, np.array([[1], [2], [3]]))
     )
 
     test = skip_init(ContractedCartesianGaussians)
@@ -137,7 +137,7 @@ def test_coeffs_setter():
     assert (
         isinstance(test._coeffs, np.ndarray)
         and test._coeffs.dtype == float
-        and np.allclose(test._coeffs, np.array([1, 2, 3]))
+        and np.allclose(test._coeffs, np.array([[1], [2], [3]]))
     )
 
     test = skip_init(ContractedCartesianGaussians)
@@ -196,7 +196,7 @@ def tests_init():
     assert test._angmom == 1
     assert np.allclose(test._coord, np.array([0, 1, 2]))
     assert test._charge == 0
-    assert np.allclose(test._coeffs, np.array([1, 2, 3, 4]))
+    assert np.allclose(test._coeffs, np.array([[1], [2], [3], [4]]))
     assert np.allclose(test._exps, np.array([5, 6, 7, 8]))
 
 
