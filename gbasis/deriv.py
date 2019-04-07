@@ -28,27 +28,21 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         is given.
     alphas : np.ndarray(K,)
         Values of the (square root of the) precisions of the primitives.
-    prim_coeffs : {np.ndarray(K,M), np.ndarray(K,)}
+    prim_coeffs : np.ndarray(K, M)
         Contraction coefficients of the primitives.
-        If the coefficients correspond to generalized contractions (i.e. two-dimensional array),
-        then the first index corresponds to the primitive and the second index corresponds to the
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
         contraction (with the same exponents and angular momentum).
-        If the coefficients correspond to segmented contractions (i.e. one-dimensional array), then
-        the first index corresponds to the primitive.
     norm : np.ndarray(L, K)
         Normalization constants for the primitives in each contraction.
 
     Returns
     -------
-    derivative : {np.ndarray(M, L, N), np.ndarray(L, N)}
+    derivative : np.ndarray(M, L, N)
         Evaluation of the derivative at each given coordinate.
-        If the given coefficients is a two-dimensional array (i.e. generalized contracitons), then a
-        three dimensional array is returned, where the first index corresponds to the contraction,
-        second index corrresponds to the angular momentum vector, and the third index corresponds to
-        the coordinate for the evaluation
-        If the given coefficients is a one-dimensional array (i.e. segmented contracitons), then a
-        two dimensional array is returned, where the first index corrresponds to the angular
-        momentum vector, and the second index corresponds to the coordinate for the evaluation
+        Array is three dimensional, where the first index corresponds to the contraction, second
+        index corrresponds to the angular momentum vector, and the third index corresponds to the
+        coordinate for the evaluation.
 
     Notes
     -----
@@ -59,12 +53,6 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     angular momentum) and multiple contraction coefficients are provided, it is **not assumed** that
     the angular momentum vector should be paired up with the contraction coefficients. In fact, each
     angular momentum vector will create multiple contractions according to the given coefficients.
-
-    Multiple shapes of `prim_coeffs` are supported at the expense of concise API. For example, we
-    assumed that the `prim_coeffs` is always 2-dimensional, such that the coefficients for a
-    segmented contraction will have the shape `(K, 1)`. However, it takes a little more time to
-    evaluate a two-dimensional array over a one-dimensional array, even if their size is the same.
-    We support different shapes of `prim_coeffs` to keep this little bit of performance.
 
     """
     # pylint: disable=R0914

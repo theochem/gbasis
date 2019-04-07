@@ -33,11 +33,10 @@ class ContractedCartesianGaussians:
         Coordinate of the center of the Gaussian primitives.
     charge : float
         Charge at the center of the Gaussian primitives.
-    coeffs : {np.ndarray(K,), np.ndarray(K, M)}
+    coeffs : np.ndarray(K, M)
         Contraction coefficients, :math:`\{d_i\}`, of the primitives.
-        If a two dimensional array is given, the first axis corresponds to the primitive and the
-        second axis corresponds to the different contractions that have the same exponents (and
-        angular momentum) but different coefficients.
+        First axis corresponds to the primitive and the second axis corresponds to the different
+        segmented contractions (same exponents and angular momentum but different coefficients).
     exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}`.
 
@@ -58,8 +57,12 @@ class ContractedCartesianGaussians:
             Coordinate of the center of the Gaussian primitives.
         charge : float
             Charge at the center of the Gaussian primitives.
-        coeffs : np.ndarray(K,)
+        coeffs : {np.ndarray(K,), np.ndarray(K, M)}
             Contraction coefficients, :math:`\{d_i\}`, of the primitives.
+            If a two-dimensional array is given, the first axis corresponds to the primitive and the
+            second axis corresponds to the different contractions that have the same exponents (and
+            angular momentum) but different coefficients.
+            If a one-dimensional array is given, a newaxis will be inserted in the second dimension.
         exps : np.ndarray(K,)
             Exponents of the primitives, :math:`\{\alpha_i\}`.
 
@@ -211,17 +214,11 @@ class ContractedCartesianGaussians:
         """
         if not (isinstance(exps, np.ndarray) and exps.dtype == float):
             raise TypeError("Exponents must be given as a numpy array of data type float.")
-        if hasattr(self, "_coeffs"):
-            if self.coeffs.ndim == 2 and self.coeffs.shape[0] != exps.size:
-                raise ValueError(
-                    "Exponents array must have the same number of elements as the number of rows "
-                    "in the two-dimensional coefficient matrix (for the generalized contractions)."
-                )
-            if self.coeffs.ndim == 1 and self.coeffs.shape != exps.shape:
-                raise ValueError(
-                    "Exponents array must have the same number of elements as the one-dimensional "
-                    "coefficient matrix (for the segmented contractions)."
-                )
+        if hasattr(self, "_coeffs") and self.coeffs.shape[0] != exps.size:
+            raise ValueError(
+                "Exponents array must have the same number of elements as the number of rows "
+                "in the two-dimensional coefficient matrix (for the generalized contractions)."
+            )
 
         self._exps = exps
 
@@ -231,11 +228,10 @@ class ContractedCartesianGaussians:
 
         Returns
         -------
-        coeffs : {np.ndarray(K,), np.ndarray(K, M)}
+        coeffs : np.ndarray(K, M)
             Contraction coefficients, :math:`\{d_i\}`, of the primitives.
-            If two dimensional, then the first axis corresponds to the primitive and the second axis
-            corresponds to the different contractions that have the same exponents (and angular
-            momentum) but different coefficients.
+            First axis corresponds to the primitive and the second axis corresponds to the different
+            segmented contractions (same exponents and angular momentum but different coefficients).
 
         """
         return self._coeffs
@@ -248,9 +244,10 @@ class ContractedCartesianGaussians:
         ----------
         coeffs : {np.ndarray(K,), np.ndarray(K, M)}
             Contraction coefficients, :math:`\{d_i\}`, of the primitives.
-            If a two dimensional array is given, the first axis corresponds to the primitive and the
+            If a two-dimensional array is given, the first axis corresponds to the primitive and the
             second axis corresponds to the different contractions that have the same exponents (and
             angular momentum) but different coefficients.
+            If a one-dimensional array is given, a newaxis will be inserted in the second dimension.
 
         Raises
         ------
@@ -278,8 +275,10 @@ class ContractedCartesianGaussians:
                     "Coefficients array for segmented contractions must be given as a one-"
                     "dimensional array with the same size as the exponents array."
                 )
-
-        self._coeffs = coeffs
+        if coeffs.ndim == 1:
+            self._coeffs = coeffs[:, np.newaxis]
+        else:
+            self._coeffs = coeffs
 
     @property
     def angmom_components(self):
