@@ -1,11 +1,8 @@
 """Test gbasis.deriv."""
 import itertools as it
 
-from gbasis.contractions import ContractedCartesianGaussians
-from gbasis.deriv import _eval_deriv_contractions, eval_deriv_shell, eval_shell
+from gbasis.deriv import _eval_deriv_contractions
 import numpy as np
-import pytest
-from scipy.special import factorial2
 from utils import partial_deriv_finite_diff
 
 
@@ -403,103 +400,6 @@ def test_eval_deriv_contractions():
                     ),
                 ],
             )
-
-
-def test_eval_deriv_shell():
-    """Test gbasis.deriv.eval_deriv_shell."""
-    coords = np.array([[2, 3, 4]])
-    orders = np.array([0, 0, 0])
-    shell = ContractedCartesianGaussians(
-        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
-    )
-    with pytest.raises(TypeError):
-        eval_deriv_shell(coords=[[2, 3, 4]], orders=orders, shell=shell)
-    with pytest.raises(TypeError):
-        eval_deriv_shell(coords=coords, orders=[0, 0, 0], shell=shell)
-    with pytest.raises(TypeError):
-        eval_deriv_shell(coords=coords, orders=orders, shell=shell.__dict__)
-    with pytest.raises(ValueError):
-        eval_deriv_shell(coords=coords.reshape(3, 1), orders=orders, shell=shell)
-    with pytest.raises(ValueError):
-        eval_deriv_shell(coords=coords, orders=orders.reshape(1, 3), shell=shell)
-    assert np.allclose(
-        eval_deriv_shell(coords=coords, orders=orders, shell=shell),
-        eval_deriv_shell(coords=coords.reshape(3), orders=orders, shell=shell),
-    )
-
-    # first order
-    for k in range(3):
-        orders = np.zeros(3, dtype=int)
-        orders[k] = 1
-
-        test = ContractedCartesianGaussians(
-            1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
-        )
-        answer = np.array(
-            [
-                _eval_deriv_contractions(
-                    np.array([[2, 3, 4]]),
-                    orders,
-                    np.array([0.5, 1, 1.5]),
-                    np.array([angmom_comp]),
-                    np.array([0.1, 0.01]),
-                    np.array([1, 2]),
-                    np.array(
-                        [
-                            [
-                                (2 * 0.1 / np.pi) ** (3 / 4)
-                                * (4 * 0.1) ** (1 / 2)
-                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
-                                (2 * 0.01 / np.pi) ** (3 / 4)
-                                * (4 * 0.01) ** (1 / 2)
-                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
-                            ]
-                        ]
-                    ),
-                )
-                for angmom_comp in test.angmom_components
-            ]
-        ).reshape(3, 1)
-        assert np.allclose(
-            eval_deriv_shell(coords=np.array([[2, 3, 4]]), orders=orders, shell=test), answer
-        )
-    # second order
-    for k, l in it.product(range(3), range(3)):
-        orders = np.zeros(3, dtype=int)
-        orders[k] += 1
-        orders[l] += 1
-
-        test = ContractedCartesianGaussians(
-            1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
-        )
-        answer = np.array(
-            [
-                _eval_deriv_contractions(
-                    np.array([[2, 3, 4]]),
-                    orders,
-                    np.array([0.5, 1, 1.5]),
-                    np.array([angmom_comp]),
-                    np.array([0.1, 0.01]),
-                    np.array([1, 2]),
-                    np.array(
-                        [
-                            [
-                                (2 * 0.1 / np.pi) ** (3 / 4)
-                                * (4 * 0.1) ** (1 / 2)
-                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
-                                (2 * 0.01 / np.pi) ** (3 / 4)
-                                * (4 * 0.01) ** (1 / 2)
-                                / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
-                            ]
-                        ]
-                    ),
-                )
-                for angmom_comp in test.angmom_components
-            ]
-        ).reshape(3, 1)
-        assert np.allclose(
-            eval_deriv_shell(coords=np.array([[2, 3, 4]]), orders=orders, shell=test), answer
-        )
 
 
 def test_eval_deriv_generalized_contraction():
