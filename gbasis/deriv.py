@@ -202,37 +202,3 @@ def eval_deriv_shell(*, coords, orders, shell):
     center = shell.coord
     norm = shell.norm
     return _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm)
-
-
-def eval_shell(*, coords, shell):
-    """Return the set of Cartesian contractions evaluated at the given coordinates.
-
-    Parameters
-    ----------
-    coords : np.ndarray(N, 3)
-        Point in space where the Gaussian primitive is evaluated.
-    shell : ContractedCartesianGaussians
-        Set of contracted Cartesian Gaussians with the same angular momentum.
-
-    Returns
-    -------
-    derivative : np.ndarray(L, N)
-        Evaluation of the (zeroth-order) derivative.
-        :math:`L` is the number of contractions associated with the given `shell`.
-
-    Raises
-    ------
-    TypeError
-        If the arguments are given as positional arguments.
-        If coords is not a numpy array.
-        If shell is not a ContractedCartesianGaussians.
-    ValueError
-        If coords is not a two-dimensional numpy array with 3 columns.
-
-    Notes
-    -----
-    When calling this function, the arguments must be given via keywords and not positional
-    arguments. This feature is used to catch problems that arise due to a change in API.
-
-    """
-    return eval_deriv_shell(coords=coords, orders=np.zeros(shell.coord.shape), shell=shell)  # nosec
