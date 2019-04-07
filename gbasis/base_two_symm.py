@@ -27,15 +27,27 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
     -------
     __init__(self, contractions)
         Initialize.
-    construct_array_contraction(self, contraction) : np.ndarray
+    construct_array_contraction(self, contraction, **kwargs) :
+    np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
         Return the array associated with a `ContractedCartesianGaussians` instance.
-    construct_array_cartesian(self) : np.ndarray
+        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        associated with the first index.
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
+        with the first index.
+        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        associated with the second index.
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
+        with the second index.
+    construct_array_cartesian(self, **kwargs) : np.ndarray(K_cart, K_cart, ...)
         Return the array associated with Cartesian Gaussians.
-    construct_array_spherical(self) : np.ndarray
+        `K_cart` is the total number of Cartesian contractions within the instance.
+    construct_array_spherical(self, **kwargs) : np.ndarray(K_sph, K_sph, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
-    construct_array_spherical_lincomb(self, transform) : np.ndarray
+        `K_sph` is the total number of spherical contractions within the instance.
+    construct_array_spherical_lincomb(self, transform, **kwargs) : np.ndarray(K_orbs, K_orbs, ...)
         Return the array associated with linear combinations of spherical Gaussians (linear
         combinations of atomic orbitals).
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -80,12 +92,20 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array_contraction : np.ndarray(M_1, L_1, M_2, L_2)
-            Array associated with the given instance(s) of ContractedCartesianGaussians.
-            First axis corresponds to the segmented contraction within `contraction_one`.
+        array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
+            Array associated with the given instances of ContractedCartesianGaussians.
+            First axis corresponds to the segmented contraction within `contraction_one`. `M_1` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the first index.
             Second axis corresponds to the angular momentum vector of the `contraction_one`.
-            Third axis corresponds to the segmented contraction within `contraction_two`.
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            associated with the first index.
+            Third axis corresponds to the segmented contraction within `contraction_two`. `M_2` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the second index.
             Fourth axis corresponds to the angular momentum vector of the `contraction_two`.
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            associated with the second index.
             This array should be symmetric with respect to the swapping of the first and second
             axes.
 
@@ -120,10 +140,10 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray
+        array : np.ndarray(K_cart, K_cart, ...)
             Array associated with the given set of contracted Cartesian Gaussians.
             First and second indices of the array is associated with the contracted Cartesian
-            Gaussians.
+            Gaussians. `K_cart` is the total number of Cartesian contractions within the instance.
 
         Notes
         -----
@@ -175,11 +195,12 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray
+        array : np.ndarray(K_sph, K_sph, ...)
             Array associated with the atomic orbitals associated with the given set(s) of contracted
             Cartesian Gaussians.
             First and second indices of the array is associated with two contracted spherical
-            Gaussians (atomic orbitals).
+            Gaussians (atomic orbitals). `K_sph` is the total number of spherical contractions
+            within the instance.
 
         Notes
         -----
@@ -254,13 +275,12 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray
+        array : np.ndarray(K_orbs, K_orbs, ...)
             Array whose first and second indices associated with the linear combinations of the
             contracted spherical Gaussians.
-            First index of the array corresponds to the linear combination of contracted spherical
-            Gaussians associated with the first set of contractions, `contractions_one`.
-            Second index of the array corresponds to the linear combination of contracted spherical
-            Gaussians associated with the second set of contractions, `contractions_two`.
+            First and second indices of the array correspond to the linear combination of contracted
+            spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
+            combinations.
 
         """
         array_transformed = self.construct_array_spherical(**kwargs)
