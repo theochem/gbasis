@@ -1,6 +1,4 @@
 """Convert from Cartesian Gaussians to Spherical Gaussians."""
-from gbasis.deriv import eval_shell
-from gbasis.lincomb import lincomb_blocks_evals
 import numpy as np
 from scipy.special import comb, factorial
 
@@ -289,42 +287,3 @@ def generate_transformation(angmom, cartesian_order, apply_from):
     if apply_from == "left":
         return transform.T
     return transform
-
-
-def eval_spherical_shell(*, coords, shell):
-    """Return the set of spherical contractions evaluated at the given coordinates.
-
-    Parameters
-    ----------
-    coords : np.ndarray(N, 3)
-        Point in space where the Gaussian primitive is evaluated.
-    shell : ContractedCartesianGaussians
-        Set of contracted Cartesian Gaussians with the same angular momentum.
-
-    Returns
-    -------
-    derivative : np.ndarray(L, N)
-        Evaluation of the (zeroth-order) derivative.
-        :math:`L` is the number of contractions associated with the given `shell`.
-
-    Raises
-    ------
-    TypeError
-        If the arguments are given as positional arguments.
-        If coords is not a numpy array.
-        If shell is not a ContractedCartesianGaussians.
-    ValueError
-        If coords is not a two-dimensional numpy array with 3 columns.
-
-    Notes
-    -----
-    When calling this function, the arguments must be given via keywords and not positional
-    arguments. This feature is used to catch problems that arise due to a change in API.
-
-    """
-    return lincomb_blocks_evals(
-        [shell],
-        eval_shell,
-        [generate_transformation(shell.angmom, shell.angmom_components, apply_from="left")],
-        coords=coords,
-    )
