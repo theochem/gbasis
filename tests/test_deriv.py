@@ -502,39 +502,6 @@ def test_eval_deriv_shell():
         )
 
 
-def test_eval_shell():
-    """Test gbasis.deriv.eval_shell."""
-    test = ContractedCartesianGaussians(
-        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
-    )
-    answer = np.array(
-        [
-            _eval_deriv_contractions(
-                np.array([[2, 3, 4]]),
-                np.array([0, 0, 0]),
-                np.array([0.5, 1, 1.5]),
-                np.array([angmom_comp]),
-                np.array([0.1, 0.01]),
-                np.array([1, 2]),
-                np.array(
-                    [
-                        [
-                            (2 * 0.1 / np.pi) ** (3 / 4)
-                            * (4 * 0.1) ** (1 / 2)
-                            / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
-                            (2 * 0.01 / np.pi) ** (3 / 4)
-                            * (4 * 0.01) ** (1 / 2)
-                            / np.sqrt(np.prod(factorial2(2 * angmom_comp - 1))),
-                        ]
-                    ]
-                ),
-            )
-            for angmom_comp in test.angmom_components
-        ]
-    ).reshape(3, 1)
-    assert np.allclose(eval_shell(coords=np.array([[2, 3, 4]]), shell=test), answer)
-
-
 def test_eval_deriv_generalized_contraction():
     """Test gbasis.deriv._eval_deriv_contractions for generalized contractions."""
     for k, l in it.product(range(3), range(3)):
