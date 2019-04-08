@@ -25,7 +25,7 @@ def _compute_multipole_moment_integrals(
     ----------
     coord_moment : np.ndarray(3,)
         Center of the moment.
-    orders_moment : np.ndarray(M, 3)
+    orders_moment : np.ndarray(D, 3)
         Orders of the moment for each dimension (x, y, z).
         Note that two dimensional array must be given, even if there is only one set of orders of
         the moment.
@@ -37,10 +37,13 @@ def _compute_multipole_moment_integrals(
         vector.
     alphas_a : np.ndarray(K_a,)
         Values of the (square root of the) precisions of the primitives on the left side.
-    coeffs_a : np.ndarray(K_a,)
+    coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives on the left side.
-    norm_a : np.ndarray(L_a, 3, K_a)
-        Normalization constants of the components (x, y, z) of the contractions on the left side.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    norm_a : np.ndarray(L_a, K_a)
+        Normalization constants for the primitives in each contraction on the left side.
     coord_b : np.ndarray(3,)
         Center of the contraction on the right side.
     angmoms_b : np.ndarray(L_b, 3)
@@ -49,16 +52,30 @@ def _compute_multipole_moment_integrals(
         vector.
     alphas_b : np.ndarray(K_b,)
         Values of the (square root of the) precisions of the primitives on the right side.
-    coeffs_b : np.ndarray(K_b,)
+    coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives on the right side.
-    norm_b : np.ndarray(L_b, 3, K_b)
-        Normalization constants of the components (x, y, z) of the contractions on the right side.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    norm_b : np.ndarray(L_b, K_b)
+        Normalization constants for the primitives in each contraction on the right side.
 
     Returns
     -------
-    integrals : np.ndarray(M, L_a, L_b)
+    integrals : np.ndarray(D, M_a, L_a, M_b, L_b)
         Multipole moment integrals associated with the given orders of moments and angular momentum
         vectors (contractions).
+        First index corresponds to the order of the moment. `D` is the number of moments given.
+        Second index corresponds to segmented contractions within the given generalized contraction
+        `a`, (same exponents and angular momentum but different coefficients). `M_a` is the number
+        of segmented contractions.
+        Third index corresponds to the angular momentum vector a segmented contraction of
+        generalized contraction `a`. `L_a` is the number of angular momentum vectors.
+        Fourth index corresponds to segmented contractions within the given generalized contraction
+        `b`, (same exponents and angular momentum but different coefficients). `M_b` is the number
+        of segmented contractions.
+        Fifth index corresponds to the angular momentum vector a segmented contraction of
+        generalized contraction `b`. `L_b` is the number of angular momentum vectors.
 
     """
     # pylint: disable=R0914
@@ -170,13 +187,25 @@ def _compute_multipole_moment_integrals(
 
     # multiply the x, y, and z components together
     integrals = np.prod(integrals, axis=3)
-    # NOTE: axis for dimension (x, y, z) of the coordinate has been removed
+    # NOTE: axis 3 for dimension (x, y, z) of the coordinate has been removed
 
     # transform the primitives
+    # FIXME: support generalized contraction
     norm_a = norm_a[np.newaxis, np.newaxis, :, np.newaxis, :]
     integrals = np.tensordot(integrals * norm_a, coeffs_a, (4, 0))
-    # NOTE: axis for primitive of contraction a has been removed
-    norm_b = norm_b[np.newaxis, :, np.newaxis, :]
+    # NOTE: axis for primitive of contraction a has been removed (axis 4), and axis for segmented
+    # contractions has been added at the right (axis 4)
+    norm_b = norm_b[np.newaxis, :, np.newaxis, :, np.newaxis]
     integrals = np.tensordot(integrals * norm_b, coeffs_b, (3, 0))
-    # NOTE: axis for primitive of contraction b has been removed
-    return integrals
+    # NOTE: axis for primitive of contraction b (axis 3) has been removed, axis for segmented
+    # contractions changes to axis 3, and axis for segmented contractions has been added at the
+    # right (axis 4)
+    # NOTE: now the
+    # axis 0 = index for order of moment in the corresponding dimension (size: L_c^{max})
+    # axis 1 = index for angular momentum component of contraction b in the corresponding dimension
+    # (size: L_b^{max})
+    # axis 2 = index for angular momentum component of contraction a in the corresponding dimension
+    # (size: L_a^{max})
+    # axis 3 = index for segmented contractions of contraction a (size: M_a)
+    # axis 4 = index for segmented contractions of contraction b (size: M_b)
+    return np.transpose(integrals, (0, 3, 2, 4, 1))
