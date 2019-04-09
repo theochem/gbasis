@@ -1,10 +1,17 @@
 """Test gbasis.overlap."""
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import ContractedCartesianGaussians, make_contractions
 from gbasis.moment_int import _compute_multipole_moment_integrals
-from gbasis.overlap import Overlap
+from gbasis.overlap import (
+    Overlap,
+    overlap_basis_cartesian,
+    overlap_basis_spherical,
+    overlap_basis_spherical_lincomb,
+)
+from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2
+from utils import find_datafile
 
 
 def test_overlap_construct_array_contraction():
@@ -67,3 +74,38 @@ def test_overlap_construct_array_contraction():
         Overlap.construct_array_contraction(test_one, None)
     with pytest.raises(TypeError):
         Overlap.construct_array_contraction(None, test_two)
+
+
+def test_overlap_basis_cartesian():
+    """Test gbasis.eval.overlap_basis_cartesian."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(overlap_obj.construct_array_cartesian(), overlap_basis_cartesian(basis))
+
+
+def test_overlap_basis_spherical():
+    """Test gbasis.eval.overlap_basis_spherical."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(overlap_obj.construct_array_spherical(), overlap_basis_spherical(basis))
+
+
+def test_overlap_basis_spherical_lincomb():
+    """Test gbasis.eval.overlap_basis_spherical_lincomb."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    transform = np.random.rand(14, 18)
+    assert np.allclose(
+        overlap_obj.construct_array_spherical_lincomb(transform),
+        overlap_basis_spherical_lincomb(basis, transform),
+    )
