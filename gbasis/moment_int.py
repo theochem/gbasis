@@ -19,7 +19,7 @@ def _compute_multipole_moment_integrals(
     coeffs_b,
     norm_b,
 ):
-    """Return the multipole moment integrals of two contraction.
+    """Return the multipole moment integrals of two contractions.
 
     Parameters
     ----------
@@ -27,13 +27,13 @@ def _compute_multipole_moment_integrals(
         Center of the moment.
     orders_moment : np.ndarray(D, 3)
         Orders of the moment for each dimension (x, y, z).
-        Note that two dimensional array must be given, even if there is only one set of orders of
+        Note that a two dimensional array must be given, even if there is only one set of orders of
         the moment.
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmoms_a : np.ndarray(L_a, 3)
         Angular momentum vectors (lx, ly, lz) for the contractions on the left side.
-        Note that two dimensional array must be given, even if there is only one angular momentum
+        Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     alphas_a : np.ndarray(K_a,)
         Values of the (square root of the) precisions of the primitives on the left side.
@@ -48,7 +48,7 @@ def _compute_multipole_moment_integrals(
         Center of the contraction on the right side.
     angmoms_b : np.ndarray(L_b, 3)
         Angular momentum vectors (lx, ly, lz) for the contractions on the right side.
-        Note that two dimensional array must be given, even if there is only one angular momentum
+        Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     alphas_b : np.ndarray(K_b,)
         Values of the (square root of the) precisions of the primitives on the right side.

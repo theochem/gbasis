@@ -1,4 +1,4 @@
-"""Base class for arrays that depends on one or more contracted Gaussians."""
+"""Base class for arrays that depend on one or more contracted Gaussians."""
 import abc
 
 from gbasis.contractions import ContractedCartesianGaussians
@@ -10,7 +10,7 @@ class BaseGaussianRelatedArray(abc.ABC):
     Attributes
     ----------
     _axes_contractions : tuple of tuple of ContractedCartesianGaussians
-        Contractions that are asosciatd with each index of the array.
+        Contractions that are associated with each index of the array.
         Each tuple of ContractedCartesianGaussians corresponds to an index of the array.
 
     Methods
@@ -35,7 +35,7 @@ class BaseGaussianRelatedArray(abc.ABC):
         Parameters
         ----------
         contractions : list/tuple of ContractedCartesianGaussians
-            Contractions that are asosciatd with each index of the array.
+            Contractions that are associated with each index of the array.
             First contractions is associated with the first index, etc.
 
         Raises
