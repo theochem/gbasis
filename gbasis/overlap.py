@@ -1,7 +1,7 @@
 """Functions for computing overlap of a basis set."""
+from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import ContractedCartesianGaussians
-from gbasis.moment_int import _compute_multipole_moment_integrals
 import numpy as np
 
 

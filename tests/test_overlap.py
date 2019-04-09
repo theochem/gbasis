@@ -1,6 +1,6 @@
 """Test gbasis.overlap."""
+from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
-from gbasis.moment_int import _compute_multipole_moment_integrals
 from gbasis.overlap import (
     Overlap,
     overlap_basis_cartesian,
