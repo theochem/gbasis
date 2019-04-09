@@ -1,5 +1,8 @@
 """Test gbasis.contractions."""
-from gbasis.contractions import ContractedCartesianGaussians
+import os
+
+from gbasis.contractions import ContractedCartesianGaussians, make_contractions
+from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
 from utils import skip_init
@@ -251,3 +254,80 @@ def test_num_contr():
         test._angmom = i
         assert test.num_contr == last_num_contr + i + 1
         last_num_contr = test.num_contr
+
+
+def test_make_contractions():
+    """Test gbasis.contractions.make_contractions."""
+    with open(os.path.join(os.path.dirname(__file__), "data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, {"H", "H"}, np.array([[0, 0, 0], [1, 1, 1]]))
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, [0, 0], np.array([[0, 0, 0], [1, 1, 1]]))
+
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], [[0, 0, 0], [1, 1, 1]])
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], np.array([0, 0, 0, 1, 1, 1]))
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0, 2], [1, 1, 1, 2]]))
+
+    with pytest.raises(ValueError):
+        make_contractions(basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0])
+    with pytest.raises(TypeError):
+        make_contractions(
+            basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), np.array([[0, 0]])
+        )
+
+    with pytest.raises(ValueError):
+        make_contractions(
+            basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), np.array([0, 0, 0])
+        )
+
+    test = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+    assert isinstance(test, tuple)
+    assert len(test) == 2
+    assert test[0].angmom == 0
+    assert np.allclose(test[0].coord, np.array([0, 0, 0]))
+    assert test[0].charge == 0
+    assert np.allclose(
+        test[0].coeffs,
+        np.array(
+            [
+                0.00916359628,
+                0.04936149294,
+                0.16853830490,
+                0.37056279970,
+                0.41649152980,
+                0.13033408410,
+            ]
+        ).reshape(6, 1),
+    )
+    assert np.allclose(
+        test[0].exps,
+        np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
+    )
+    assert test[1].angmom == 0
+    assert np.allclose(test[1].coord, np.array([1, 1, 1]))
+    assert test[1].charge == 0
+    assert np.allclose(
+        test[1].coeffs,
+        np.array(
+            [
+                0.00916359628,
+                0.04936149294,
+                0.16853830490,
+                0.37056279970,
+                0.41649152980,
+                0.13033408410,
+            ]
+        ).reshape(6, 1),
+    )
+    assert np.allclose(
+        test[1].exps,
+        np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
+    )
