@@ -17,7 +17,7 @@ from utils import find_datafile
 
 
 def test_eval_deriv_construct_array_contraction():
-    """Test gbasis.eval_deriv.EvalDeriv."""
+    """Test gbasis.eval_deriv.EvalDeriv.construct_array_contraction."""
     coords = np.array([[2, 3, 4]])
     orders = np.array([0, 0, 0])
     contractions = ContractedCartesianGaussians(
