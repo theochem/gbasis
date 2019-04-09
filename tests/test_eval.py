@@ -1,6 +1,6 @@
 """Test gbasis.eval."""
+from gbasis._deriv import _eval_deriv_contractions
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
-from gbasis.deriv import _eval_deriv_contractions
 from gbasis.eval import (
     Eval,
     evaluate_basis_cartesian,
