@@ -1,11 +1,9 @@
 """Test gbasis.contractions."""
-import os
-
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
 from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
-from utils import skip_init
+from utils import find_datafile, skip_init
 
 
 def test_charge_setter():
@@ -258,7 +256,7 @@ def test_num_contr():
 
 def test_make_contractions():
     """Test gbasis.contractions.make_contractions."""
-    with open(os.path.join(os.path.dirname(__file__), "data_sto6g.nwchem"), "r") as f:
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     with pytest.raises(TypeError):

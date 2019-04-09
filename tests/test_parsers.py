@@ -1,13 +1,12 @@
 """Test gbasis.parsers."""
-import os
-
 from gbasis.parsers import parse_nwchem
 import numpy as np
+from utils import find_datafile
 
 
 def test_parse_nwchem_sto6g():
     """Test gbasis.parsers.parse_nwchem for sto6g."""
-    with open(os.path.join(os.path.dirname(__file__), "data_sto6g.nwchem"), "r") as f:
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     test = parse_nwchem(test_basis)
     # test specific cases
@@ -199,7 +198,7 @@ def test_parse_nwchem_sto6g():
 
 def test_parse_nwchem_anorcc():
     """Test gbasis.parsers.parse_nwchem for anorcc."""
-    with open(os.path.join(os.path.dirname(__file__), "data_anorcc.nwchem"), "r") as f:
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
         test_basis = f.read()
     test = parse_nwchem(test_basis)
     # test specific cases

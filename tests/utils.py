@@ -1,5 +1,6 @@
 """Utility functions for running tests."""
 import itertools as it
+import os
 
 import numpy as np
 
@@ -144,3 +145,26 @@ def test_finite_diff():
     assert np.allclose(test, func(x))
     test = partial_deriv_finite_diff(func, x, [0, 2], epsilon=1e-5, num_points=2)
     assert np.allclose(test, func(x))
+
+
+def find_datafile(file_name):
+    """Find data file from the current (tests) directory.
+
+    Parameters
+    ----------
+    file_name : str
+        Name of the file that is in the same directory as this module.
+
+    Returns
+    -------
+    file_path : str
+        Absolute path of the file.
+
+    Raises
+    ------
+    IOError
+        If file cannot be found.
+        If more than one file is found.
+
+    """
+    return os.path.join(os.path.dirname(__file__), file_name)
