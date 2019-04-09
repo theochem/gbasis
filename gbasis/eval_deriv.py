@@ -14,7 +14,7 @@ class EvalDeriv(BaseOneIndex):
     Attributes
     ----------
     _axes_contractions : tuple of tuple of ContractedCartesianGaussians
-        Contractions that are asosciatd with each index of the array.
+        Contractions that are associated with each index of the array.
         Each tuple of ContractedCartesianGaussians corresponds to an index of the array.
 
     Properties
@@ -42,8 +42,8 @@ class EvalDeriv(BaseOneIndex):
         `K_sph` is the total number of spherical contractions within the instance.
         `N` is the number of coordinates at which the contractions are evaluated.
     construct_array_spherical_lincomb(self, transform, coords, orders) : np.ndarray(K_orbs, N)
-        Return the evalutions of the linear combinations of spherical Gaussians (linear combinations
-        of atomic orbitals).
+        Return the evaluations of the linear combinations of spherical Gaussians (linear
+        combinations of atomic orbitals).
         `K_orbs` is the number of basis functions produced after the linear combinations.
         `N` is the number of coordinates at which the contractions are evaluated.
 
@@ -57,7 +57,8 @@ class EvalDeriv(BaseOneIndex):
         ----------
         contractions : ContractedCartesianGaussians
             Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
-            array. coords : np.ndarray(N, 3)
+            array.
+        coords : np.ndarray(N, 3)
             Points in space where the contractions are evaluated.
         orders : np.ndarray(3,)
             Orders of the derivative.
@@ -77,7 +78,7 @@ class EvalDeriv(BaseOneIndex):
         Raises
         ------
         TypeError
-            If contractions is not a ContractedCartesianGaussians.
+            If contractions is not a ContractedCartesianGaussians instance.
             If coords is not a two-dimensional numpy array with 3 columns.
             If orders is not a one-dimensional numpy array with 3 elements.
         ValueError

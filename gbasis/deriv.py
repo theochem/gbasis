@@ -40,7 +40,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     derivative : np.ndarray(M, L, N)
         Evaluation of the derivative at each given coordinate.
         Array is three dimensional, where the first index corresponds to the contraction, second
-        index corrresponds to the angular momentum vector, and the third index corresponds to the
+        index corresponds to the angular momentum vector, and the third index corresponds to the
         coordinate for the evaluation.
 
     Notes

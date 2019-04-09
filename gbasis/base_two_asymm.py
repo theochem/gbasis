@@ -138,13 +138,13 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         The methods `construct_array_cartesian`, `construct_array_spherical`, and
         `construct_array_spherical_lincomb` depend on this function to produce an array whose first
-        and second indices corresponds to the contraction (within a generalized contraction) and
-        the angular momentum vector of `contration_one`, and third and fourth indices corresponds to
-        the contraction (within a generalized contraction) and the angular momentum vector of
-        `contration_two`,. These other methods **will** fail with little warning if the shape of the
-        output is different. Even if both `contractions_one` and `contractions_two` are segmented
-        contractions, the first and third indices must correspond to the contraction. In other
-        words, the shape must still be (1, L_1, 1, L_2).
+        and second indices correspond to the contraction (within a generalized contraction) and
+        the angular momentum vector of `contractions_one`, and third and fourth indices correspond
+        to the contraction (within a generalized contraction) and the angular momentum vector of
+        `contractions_two`,. These other methods **will** fail with little warning if the shape of
+        the output is different. Even if both `contractions_one` and `contractions_two` are
+        segmented contractions, the first and third indices must correspond to the contraction.
+        In other words, the shape must still be (1, L_1, 1, L_2).
 
         """
 
@@ -155,8 +155,8 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         ----------
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
-            These keyword arguments are passed entirely to `construct_array_contrations`. See
-            `construct_array_contractions` for details on the keyword arguments.
+            These keyword arguments are passed entirely to `construct_array_contraction`. See
+            `construct_array_contraction` for details on the keyword arguments.
 
         Returns
         -------
@@ -197,8 +197,8 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         ----------
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
-            These keyword arguments are passed entirely to `construct_array_contrations`. See
-            `construct_array_contractions` for details on the keyword arguments.
+            These keyword arguments are passed entirely to `construct_array_contraction`. See
+            `construct_array_contraction` for details on the keyword arguments.
 
         Returns
         -------
@@ -271,7 +271,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
-            then pass it down to `construct_array_contrations`. See `construct_array_contractions`
+            then pass it down to `construct_array_contraction`. See `construct_array_contraction`
             for details on the keyword arguments.
 
         Returns

@@ -1,4 +1,4 @@
-"""Base class for arrays that depend on one contracted Gaussians."""
+"""Base class for arrays that depend on one contracted Gaussian."""
 import abc
 
 from gbasis.base import BaseGaussianRelatedArray
@@ -16,7 +16,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
     Attributes
     ----------
     _axes_contractions : tuple of tuple of ContractedCartesianGaussians
-        Contractions that are asosciatd with each index of the array.
+        Contractions that are associated with each index of the array.
         Each tuple of ContractedCartesianGaussians corresponds to an index of the array.
 
     Properties
@@ -102,8 +102,8 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         index corresponds to the contraction (within a generalized contraction) and second index
         corresponds to the angular momentum vector. These other methods **will** fail with little
         warning if the shape of the output is different. Even if there is only one contraction (i.e.
-        segmented contraction), the first index must correspond to contraction. In other words, the
-        shape must still be (1, L, N).
+        segmented contraction), the first index must correspond to the contraction. In other words,
+        the shape must still be (1, L, N).
 
         """
 
@@ -114,8 +114,8 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         ----------
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
-            These keyword arguments are passed entirely to `construct_array_contrations`. See
-            `construct_array_contractions` for details on the keyword arguments.
+            These keyword arguments are passed entirely to `construct_array_contraction`. See
+            `construct_array_contraction` for details on the keyword arguments.
 
         Returns
         -------
@@ -142,8 +142,8 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         ----------
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
-            These keyword arguments are passed entirely to `construct_array_contrations`. See
-            `construct_array_contractions` for details on the keyword arguments.
+            These keyword arguments are passed entirely to `construct_array_contraction`. See
+            `construct_array_contraction` for details on the keyword arguments.
 
         Returns
         -------
@@ -190,7 +190,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
-            then pass it down to `construct_array_contrations`. See `construct_array_contractions`
+            then pass it down to `construct_array_contraction`. See `construct_array_contraction`
             for details on the keyword arguments.
 
         Returns
