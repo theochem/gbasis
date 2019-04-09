@@ -103,3 +103,71 @@ class Eval(BaseOneIndex):
             coords, np.zeros(3), center, angmom_comps, alphas, prim_coeffs, norm
         )
         return output
+
+
+def evaluate_basis_cartesian(basis, coords):
+    """Evaluate a basis set in the Cartesian form at the given coordinates.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+
+    Returns
+    -------
+    eval_array : np.ndarray(K_cart, N)
+        Evaluations of the Cartesian contractions of the instance at the given coordinates.
+        `K_cart` is the total number of Cartesian contractions within the instance.
+        `N` is the number of coordinates at which the contractions are evaluated.
+
+    """
+    return Eval(basis).construct_array_cartesian(coords=coords)
+
+
+def evaluate_basis_spherical(basis, coords):
+    """Evaluate a basis set in the spherical form at the given coordinates.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+
+    Returns
+    -------
+    eval_array : np.ndarray(K_sph, N)
+        Evaluations of the spherical contractions of the instance at the given coordinates.
+        `K_sph` is the total number of spherical contractions within the instance.
+        `N` is the number of coordinates at which the contractions are evaluated.
+
+    """
+    return Eval(basis).construct_array_spherical(coords=coords)
+
+
+def evaluate_basis_spherical_lincomb(basis, coords, transform):
+    """Evaluate a basis set in the spherical form at the given coordinates.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_sph)
+        Array associated with the linear combinations of spherical Gaussians (LCAO's).
+        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
+        and first index of the array for contracted spherical Gaussians.
+
+    Returns
+    -------
+    eval_array : np.ndarray(K_orbs, N)
+        Evaluations of the linear combinations of spherical Gaussians (linear combinations of atomic
+        orbitals).
+        `K_orbs` is the number of basis functions produced after the linear combinations.
+        `N` is the number of coordinates at which the contractions are evaluated.
+
+    """
+    return Eval(basis).construct_array_spherical_lincomb(transform, coords=coords)
