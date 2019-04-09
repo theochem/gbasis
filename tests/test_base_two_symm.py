@@ -41,6 +41,12 @@ def test_contruct_array_contraction():
         Test([contractions])
 
 
+# TODO: test only involves four blocks. This is not big enough to catch the difference between the
+# ordering of the triu and tril indices. For example, triu_indices for a 3x3 matrix is 0, 1, 2, 4,
+# 5, 8 and tril_indices is 0, 3, 4, 6, 7, 8. We aim to assign the triu blocks to the tril blocks
+# after taking their transpose. To do so, the mapping from triu to tril indices is 0 -> 0, 1
+# -> 3, 2 -> 6, 4 -> 4, 5 -> 7, and 8 -> 8. The triu blocks cannot simply assigned in the same order
+# to the tril blocks because the ordering is different.
 def test_contruct_array_cartesian():
     """Test BaseTwoIndexSymmetric.construct_array_cartesian."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
@@ -210,6 +216,12 @@ def test_contruct_array_cartesian():
     )
 
 
+# TODO: test only involves four blocks. This is not big enough to catch the difference between the
+# ordering of the triu and tril indices. For example, triu_indices for a 3x3 matrix is 0, 1, 2, 4,
+# 5, 8 and tril_indices is 0, 3, 4, 6, 7, 8. We aim to assign the triu blocks to the tril blocks
+# after taking their transpose. To do so, the mapping from triu to tril indices is 0 -> 0, 1
+# -> 3, 2 -> 6, 4 -> 4, 5 -> 7, and 8 -> 8. The triu blocks cannot simply assigned in the same order
+# to the tril blocks because the ordering is different.
 def test_contruct_array_spherical():
     """Test BaseTwoIndexSymmetric.construct_array_spherical."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))

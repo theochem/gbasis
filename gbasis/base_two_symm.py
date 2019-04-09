@@ -176,7 +176,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         all_blocks = np.zeros((num_blocks_side, num_blocks_side), dtype=object)
         all_blocks[np.triu_indices(num_blocks_side)] = triu_blocks
         all_blocks[np.tril_indices(num_blocks_side)] = [
-            np.swapaxes(block, 0, 1) for block in triu_blocks
+            np.swapaxes(block, 0, 1) for block in all_blocks.T[np.tril_indices(num_blocks_side)]
         ]
         # concatenate
         return np.concatenate(
@@ -248,7 +248,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         all_blocks = np.zeros((num_blocks_side, num_blocks_side), dtype=object)
         all_blocks[np.triu_indices(num_blocks_side)] = triu_blocks
         all_blocks[np.tril_indices(num_blocks_side)] = [
-            np.swapaxes(block, 0, 1) for block in triu_blocks
+            np.swapaxes(block, 0, 1) for block in all_blocks.T[np.tril_indices(num_blocks_side)]
         ]
         # concatenate
         return np.concatenate(
