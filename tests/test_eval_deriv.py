@@ -1,8 +1,8 @@
 """Test gbasis.eval_deriv."""
 import itertools as it
 
+from gbasis._deriv import _eval_deriv_contractions
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
-from gbasis.deriv import _eval_deriv_contractions
 from gbasis.eval_deriv import (
     EvalDeriv,
     evaluate_deriv_basis_cartesian,
