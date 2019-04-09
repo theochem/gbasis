@@ -106,8 +106,6 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
             `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
-            This array should be symmetric with respect to the swapping of the first and second
-            axes.
 
         Notes
         -----
