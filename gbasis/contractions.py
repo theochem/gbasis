@@ -340,3 +340,58 @@ class ContractedCartesianGaussians:
 
         """
         return (self.angmom + 1) * (self.angmom + 2) // 2
+
+
+def make_contractions(basis_dict, atoms, coords, charges=None):
+    """Return the contractions that correspond to the given atoms for the given basis.
+
+    Parameters
+    ----------
+    basis_dict : dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)
+        Output of the parsers from gbasis.parsers.
+    atoms : N-list/tuple of str
+        Atoms at which the contractions are centered.
+    coords : np.ndarray(N, 3)
+        Coordinates of each atom.
+    charges : np.ndarray(N,)
+        Charges of each atom.
+        Default is 0 for each atom (neutral).
+
+    Returns
+    -------
+    basis : tuple of ContractedCartesianGaussians
+        Contractions for each atom.
+        Contractions are ordered in the same order as in the values of `basis_dict`.
+
+    Raises
+    ------
+    TypeError
+        If atoms is not a list or tuple of strings.
+        If coords is not a two-dimensional numpy array with 3 columns.
+        If charges is not a one-dimensional numpy array.
+    ValueError
+        If the length of atoms is not equal to the number of rows of coords.
+        If the length of charges is not equal to the length of atoms.
+
+    """
+    if not (isinstance(atoms, (list, tuple)) and all(isinstance(i, str) for i in atoms)):
+        raise TypeError("Atoms must be provided as a list or tuple.")
+    if not (isinstance(coords, np.ndarray) and coords.ndim == 2 and coords.shape[1] == 3):
+        raise TypeError(
+            "Coordinates must be provided as a two-dimensional numpy array with three columns."
+        )
+    if len(atoms) != coords.shape[0]:
+        raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
+
+    if charges is None:
+        charges = np.zeros(len(atoms))
+    elif not (isinstance(charges, np.ndarray) and charges.ndim == 1):
+        raise TypeError("Charges must be given as a one-dimensional numpy array.")
+    if charges.size != len(atoms):
+        raise ValueError("Number of charges must be equal to the number of atoms.")
+
+    basis = []
+    for atom, coord, charge in zip(atoms, coords, charges):
+        for angmom, exps, coeffs in basis_dict[atom]:
+            basis.append(ContractedCartesianGaussians(angmom, coord, charge, coeffs, exps))
+    return tuple(basis)
