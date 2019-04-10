@@ -155,19 +155,19 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         for i, cont_one in enumerate(self.contractions):
             for cont_two in self.contractions[i:]:
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
-                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                # assume array always has shape (M_1, L_1, M_2, L_2, ...)
                 if block.shape[0] == 1:
                     block = np.squeeze(block, axis=0)
                 else:
                     block = np.concatenate(block, axis=0)
-                # array now has shape (M_1 L_1, M_2, L_2, N)
+                # array now has shape (M_1 L_1, M_2, L_2, ...)
                 if block.shape[1] == 1:
                     block = np.squeeze(block, axis=1)
                 else:
                     block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
                     block = np.concatenate(block, axis=0)
                     block = np.swapaxes(block, 0, 1)
-                # array now has shape (M_1 L_1, M_2 L_2, N)
+                # array now has shape (M_1 L_1, M_2 L_2, ...)
                 triu_blocks.append(block)
         # use numpy triu and tril indices to create blocks
         num_blocks_side = len(self.contractions)
@@ -220,15 +220,15 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 )
                 # evaluate
                 block_sph = self.construct_array_contraction(cont_one, cont_two, **kwargs)
+                # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 # transform
-                # assume array always has shape (M_1, L_1, M_2, L_2, N)
                 if block_sph.shape[0] == 1:
                     block_sph = np.squeeze(block_sph, axis=0)
                     block_sph = np.tensordot(transform_one, block_sph, (1, 0))
                 else:
                     block_sph = np.tensordot(transform_one, block_sph, (1, 1))
                     block_sph = np.concatenate(np.swapaxes(block_sph, 0, 1), axis=0)
-                # array now has shape (M_1 L_1, M_2, L_2, N)
+                # array now has shape (M_1 L_1, M_2, L_2, ...)
                 if block_sph.shape[1] == 1:
                     block_sph = np.squeeze(block_sph, axis=1)
                     block_sph = np.tensordot(transform_two, block_sph, (1, 1))
@@ -238,7 +238,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                     block_sph = np.swapaxes(np.swapaxes(block_sph, 0, 1), 0, 2)
                     block_sph = np.concatenate(block_sph, axis=0)
                     block_sph = np.swapaxes(block_sph, 0, 1)
-                # array now has shape (M_1 L_1, M_2 L_2, N)
+                # array now has shape (M_1 L_1, M_2 L_2, ...)
                 # store
                 triu_blocks.append(block_sph)
         # use numpy triu and tril indices to create blocks

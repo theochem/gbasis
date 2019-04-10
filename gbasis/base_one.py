@@ -128,7 +128,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         matrices = []
         for contraction in self.contractions:
             array = self.construct_array_contraction(contraction, **kwargs)
-            # ASSUME array always has shape (M, L, N)
+            # ASSUME array always has shape (M, L, ...)
             if array.shape[0] == 1:
                 matrices.append(np.squeeze(array, axis=0))
             else:
@@ -161,7 +161,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             # evaluate the function at the given points
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # transform
-            # ASSUME array always has shape (M, L, N)
+            # ASSUME array always has shape (M, L, ...)
             if matrix_contraction.shape[0] == 1:
                 matrix_contraction = np.squeeze(matrix_contraction, axis=0)
                 matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 0))

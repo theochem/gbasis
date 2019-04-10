@@ -173,19 +173,19 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             matrices_cols = []
             for cont_two in self.contractions_two:
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
-                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                # assume array always has shape (M_1, L_1, M_2, L_2, ...)
                 if block.shape[0] == 1:
                     block = np.squeeze(block, axis=0)
                 else:
                     block = np.concatenate(block, axis=0)
-                # array now has shape (M_1 L_1, M_2, L_2, N)
+                # array now has shape (M_1 L_1, M_2, L_2, ...)
                 if block.shape[1] == 1:
                     block = np.squeeze(block, axis=1)
                 else:
                     block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
                     block = np.concatenate(block, axis=0)
                     block = np.swapaxes(block, 0, 1)
-                # array now has shape (M_1 L_1, M_2 L_2, N)
+                # array now has shape (M_1 L_1, M_2 L_2, ...)
                 matrices_cols.append(block)
             matrices.append(np.concatenate(matrices_cols, axis=1))
         return np.concatenate(matrices, axis=0)
@@ -227,7 +227,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 matrix_contraction = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # transform
-                # assume array always has shape (M_1, L_1, M_2, L_2, N)
+                # assume array always has shape (M_1, L_1, M_2, L_2, ...)
                 if matrix_contraction.shape[0] == 1:
                     matrix_contraction = np.squeeze(matrix_contraction, axis=0)
                     matrix_contraction = np.tensordot(transform_one, matrix_contraction, (1, 0))
@@ -236,7 +236,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                     matrix_contraction = np.concatenate(
                         np.swapaxes(matrix_contraction, 0, 1), axis=0
                     )
-                # array now has shape (M_1 L_1, M_2, L_2, N)
+                # array now has shape (M_1 L_1, M_2, L_2, ...)
                 if matrix_contraction.shape[1] == 1:
                     matrix_contraction = np.squeeze(matrix_contraction, axis=1)
                     matrix_contraction = np.tensordot(transform_two, matrix_contraction, (1, 1))
@@ -246,7 +246,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                     matrix_contraction = np.swapaxes(np.swapaxes(matrix_contraction, 0, 1), 0, 2)
                     matrix_contraction = np.concatenate(matrix_contraction, axis=0)
                     matrix_contraction = np.swapaxes(matrix_contraction, 0, 1)
-                # array now has shape (M_1 L_1, M_2 L_2, N)
+                # array now has shape (M_1 L_1, M_2 L_2, ...)
                 # store
                 matrices_spherical_cols.append(matrix_contraction)
             matrices_spherical.append(np.concatenate(matrices_spherical_cols, axis=1))
