@@ -22,8 +22,9 @@ class Overlap(BaseTwoIndexSymmetric):
     -------
     __init__(self, contractions)
         Initialize.
-    construct_array_contraction(self, contraction) : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
-        Return the array associated with a `ContractedCartesianGaussians` instance.
+    construct_array_contraction(contractions_one, contractions_two) :
+    np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+        Return the overlap associated with a `ContractedCartesianGaussians` instance.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -33,13 +34,13 @@ class Overlap(BaseTwoIndexSymmetric):
         `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
         with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart)
-        Return the array associated with Cartesian Gaussians.
+        Return the overlap associated with Cartesian Gaussians.
         `K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph)
-        Return the array associated with spherical Gaussians (atomic orbitals).
+        Return the overlap associated with spherical Gaussians (atomic orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
     construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
-        Return the array associated with linear combinations of spherical Gaussians (linear
+        Return the overlap associated with linear combinations of spherical Gaussians (linear
         combinations of atomic orbitals).
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
@@ -53,10 +54,10 @@ class Overlap(BaseTwoIndexSymmetric):
         ----------
         contractions_one : ContractedCartesianGaussians
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
-            the array.
+            the overlap.
         contractions_two : ContractedCartesianGaussians
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
-            the array.
+            the overlap.
 
         Returns
         -------
@@ -74,8 +75,6 @@ class Overlap(BaseTwoIndexSymmetric):
             Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
             `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
-            This array should be symmetric with respect to the swapping of the first and second
-            axes.
 
         Raises
         ------
