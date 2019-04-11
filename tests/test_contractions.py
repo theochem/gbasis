@@ -329,3 +329,24 @@ def test_make_contractions():
         test[1].exps,
         np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
     )
+
+
+def test_assign_norm_cont():
+    """Test ContractedCartesianGaussians.assign_norm_cont."""
+    test = ContractedCartesianGaussians(
+        0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
+    )
+    test.assign_norm_cont()
+    assert np.allclose(test.norm_cont, 1)
+
+    test = ContractedCartesianGaussians(
+        1, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
+    )
+    test.assign_norm_cont()
+    assert np.allclose(test.norm_cont, 1)
+
+    test = ContractedCartesianGaussians(
+        2, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
+    )
+    test.assign_norm_cont()
+    assert np.allclose(test.norm_cont, 1)
