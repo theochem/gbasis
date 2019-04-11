@@ -109,3 +109,69 @@ def test_overlap_basis_spherical_lincomb():
         overlap_obj.construct_array_spherical_lincomb(transform),
         overlap_basis_spherical_lincomb(basis, transform),
     )
+
+
+def test_overlap_basis_cartesian_norm_anorcc():
+    """Test the norm of gbasis.eval.overlap_basis_cartesian on the ANO-RCC basis set.
+
+    The contraction coefficients in ANO-RCC is such that the cartesian contractions are normalized.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+
+
+def test_overlap_basis_spherical_norm_sto6g():
+    """Test the norm of gbasis.eval.overlap_basis_spherical on the STO-6G basis set.
+
+    The contraction coefficients in STO-6G is such that the spherical contractions are not
+    normalized to past 3rd decimal places.
+
+    """
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(np.diag(overlap_obj.construct_array_spherical()), 1)
+
+
+def test_overlap_basis_spherical_norm_anorcc():
+    """Test the norm of gbasis.eval.overlap_basis_spherical on the ANO-RCC basis set.
+
+    The contraction coefficients in ANO-RCC is such that the Cartesian contractions are normalized.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+
+    basis = make_contractions(basis_dict, ["Xe"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+
+
+def test_overlap_basis_cartesian_norm_sto6g():
+    """Test the norm of gbasis.eval.overlap_basis_cartesian on the STO-6G basis set.
+
+    The contraction coefficients in STO-6G is such that the Cartesian contractions are not
+    normalized to past 3rd decimal places.
+
+    """
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
