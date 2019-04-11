@@ -72,6 +72,7 @@ class ContractedCartesianGaussians:
         self.charge = charge
         self.coeffs = coeffs
         self.exps = exps
+        self.assign_norm_cont()
 
     @property
     def charge(self):
@@ -340,6 +341,25 @@ class ContractedCartesianGaussians:
 
         """
         return (self.angmom + 1) * (self.angmom + 2) // 2
+
+    def assign_norm_cont(self):
+        """Normalize the contractions to have an overlap of 1.
+
+        Returns
+        -------
+        norms : np.ndarray(M, L)
+            Norms of the contractions of the angular momentum of the instance.
+
+        Notes
+        -----
+        Since the `overlap` module also depends on this (`contractions`) module, if the `overlap`
+        module is imported at the start of this module, there is a circular import error. Therefore,
+        the overlap module must be imported within this method.
+
+        """
+        from gbasis.overlap import Overlap  # pylint: disable=R0401
+
+        self.norm_cont = np.einsum("ijij->ij", Overlap.construct_array_contraction(self, self))
 
 
 def make_contractions(basis_dict, atoms, coords, charges=None):
