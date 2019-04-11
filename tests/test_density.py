@@ -1,6 +1,7 @@
 """Test gbasis.density."""
 from gbasis.contractions import make_contractions
 from gbasis.density import (
+    eval_density_gradient,
     eval_density_using_basis,
     eval_density_using_evaluated_orbs,
     eval_deriv_density_using_basis,
@@ -218,4 +219,71 @@ def test_eval_deriv_density_using_basis():
             evaluate_deriv_basis_spherical_lincomb(basis, coords, np.array([0, 0, 0]), transform),
         ),
     )
+
+
+def test_eval_density_gradient():
+    """Test gbasis.density.eval_density_gradient."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    transform = np.random.rand(14, 18)
+    density = np.random.rand(14, 14)
+    density += density.T
+    coords = np.random.rand(10, 3)
+
+    np.allclose(
+        eval_density_gradient(density, basis, coords, transform),
+        np.array(
+            [
+                np.einsum(
+                    "ij,ik,jk->k",
+                    density,
+                    evaluate_deriv_basis_spherical_lincomb(
+                        basis, coords, np.array([1, 0, 0]), transform
+                    ),
+                    evaluate_basis_spherical_lincomb(basis, coords, transform),
+                )
+                + np.einsum(
+                    "ij,ik,jk->k",
+                    density,
+                    evaluate_basis_spherical_lincomb(basis, coords, transform),
+                    evaluate_deriv_basis_spherical_lincomb(
+                        basis, coords, np.array([1, 0, 0]), transform
+                    ),
+                ),
+                np.einsum(
+                    "ij,ik,jk->k",
+                    density,
+                    evaluate_deriv_basis_spherical_lincomb(
+                        basis, coords, np.array([0, 1, 0]), transform
+                    ),
+                    evaluate_basis_spherical_lincomb(basis, coords, transform),
+                )
+                + np.einsum(
+                    "ij,ik,jk->k",
+                    density,
+                    evaluate_basis_spherical_lincomb(basis, coords, transform),
+                    evaluate_deriv_basis_spherical_lincomb(
+                        basis, coords, np.array([0, 1, 0]), transform
+                    ),
+                ),
+                np.einsum(
+                    "ij,ik,jk->k",
+                    density,
+                    evaluate_deriv_basis_spherical_lincomb(
+                        basis, coords, np.array([0, 0, 1]), transform
+                    ),
+                    evaluate_basis_spherical_lincomb(basis, coords, transform),
+                )
+                + np.einsum(
+                    "ij,ik,jk->k",
+                    density,
+                    evaluate_basis_spherical_lincomb(basis, coords, transform),
+                    evaluate_deriv_basis_spherical_lincomb(
+                        basis, coords, np.array([0, 0, 1]), transform
+                    ),
+                ),
+            ]
+        ),
     )

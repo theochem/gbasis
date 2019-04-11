@@ -145,3 +145,40 @@ def eval_deriv_density_using_basis(orders, one_density_matrix, basis, coords, tr
                 density = np.sum(density, axis=0)
                 output += factor * num_occurence * density
     return output
+
+
+def eval_density_gradient(one_density_matrix, basis, coords, transform):
+    """Return the gradient of the density evaluated at the given coordinates.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix.
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_sph)
+        Array associated with the linear combinations of spherical Gaussians (LCAO's).
+        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
+        and first index of the array for contracted spherical Gaussians.
+
+    Returns
+    -------
+    density_gradient : np.ndarray(N,)
+        Gradient of the density evaluated at the given coordinates.
+
+    """
+    return np.array(
+        [
+            eval_deriv_density_using_basis(
+                np.array([1, 0, 0]), one_density_matrix, basis, coords, transform
+            ),
+            eval_deriv_density_using_basis(
+                np.array([0, 1, 0]), one_density_matrix, basis, coords, transform
+            ),
+            eval_deriv_density_using_basis(
+                np.array([0, 0, 1]), one_density_matrix, basis, coords, transform
+            ),
+        ]
+    )
