@@ -92,12 +92,12 @@ class Overlap(BaseTwoIndexSymmetric):
         angmoms_a = contractions_one.angmom_components
         alphas_a = contractions_one.exps
         coeffs_a = contractions_one.coeffs
-        norm_a = contractions_one.norm
+        norm_a_prim = contractions_one.norm_prim
         coord_b = contractions_two.coord
         angmoms_b = contractions_two.angmom_components
         alphas_b = contractions_two.exps
         coeffs_b = contractions_two.coeffs
-        norm_b = contractions_two.norm
+        norm_b_prim = contractions_two.norm_prim
         return _compute_multipole_moment_integrals(
             np.zeros(3),
             np.zeros((1, 3), dtype=int),
@@ -105,12 +105,12 @@ class Overlap(BaseTwoIndexSymmetric):
             angmoms_a,
             alphas_a,
             coeffs_a,
-            norm_a,
+            norm_a_prim,
             coord_b,
             angmoms_b,
             alphas_b,
             coeffs_b,
-            norm_b,
+            norm_b_prim,
         )[0]
 
 
