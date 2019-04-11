@@ -41,6 +41,7 @@ def test_contruct_array_contraction():
 def test_contruct_array_cartesian():
     """Test BaseOneIndex.construct_array_cartesian."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions.norm_cont = np.ones((1, 5))
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
         dict_overwrite={"construct_array_contraction": lambda self, cont, a=2: np.ones((1, 5)) * a},
@@ -59,6 +60,7 @@ def test_contruct_array_cartesian():
         BaseOneIndex,
         dict_overwrite={"construct_array_contraction": lambda self, cont, a=2: np.ones((2, 5)) * a},
     )
+    contractions.norm_cont = np.ones((2, 5))
     test = Test([contractions, contractions])
     assert np.allclose(test.construct_array_cartesian(), np.ones(20) * 2)
     assert np.allclose(test.construct_array_cartesian(a=3), np.ones(20) * 3)

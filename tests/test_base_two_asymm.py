@@ -61,6 +61,7 @@ def test_contruct_array_cartesian():
             "construct_array_contraction": lambda self, cont1, cont2, a=2: np.ones((1, 2, 1, 2)) * a
         },
     )
+    contractions.norm_cont = np.ones((1, 2))
     test = Test([contractions], [contractions])
     assert np.allclose(test.construct_array_cartesian(), np.ones((2, 2)) * 2)
     assert np.allclose(test.construct_array_cartesian(a=3), np.ones((2, 2)) * 3)
@@ -79,7 +80,11 @@ def test_contruct_array_cartesian():
             )
         },
     )
-    test = Test([contractions, contractions], [contractions])
+    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one.norm_cont = np.ones((1, 2))
+    cont_two.norm_cont = np.ones((1, 5))
+    test = Test([cont_one, cont_one], [cont_two])
     assert np.allclose(test.construct_array_cartesian(), np.ones((4, 5)) * 2)
     assert np.allclose(test.construct_array_cartesian(a=3), np.ones((4, 5)) * 3)
 
@@ -91,7 +96,9 @@ def test_contruct_array_cartesian():
             )
         },
     )
-    test = Test([contractions, contractions], [contractions])
+    cont_one.norm_cont = np.ones((2, 2))
+    cont_two.norm_cont = np.ones((2, 5))
+    test = Test([cont_one, cont_one], [cont_two])
     assert np.allclose(test.construct_array_cartesian(), np.ones((8, 10)) * 2)
     assert np.allclose(test.construct_array_cartesian(a=3), np.ones((8, 10)) * 3)
 
@@ -105,10 +112,13 @@ def test_contruct_array_spherical():
         BaseTwoIndexAsymmetric,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(1, 3, 1, 3) * a
+                lambda self, cont_one, cont_two, a=2: np.arange(9, dtype=float).reshape(1, 3, 1, 3)
+                * a
             )
         },
     )
+    contractions.norm_cont = np.ones((1, 3))
+
     test = Test([contractions], [contractions])
     assert np.allclose(
         test.construct_array_spherical(),
@@ -127,13 +137,14 @@ def test_contruct_array_spherical():
         np.vstack([transform.dot(np.arange(9).reshape(3, 3).dot(transform.T)) * 2] * 2),
     )
 
-    matrix = np.arange(36).reshape(2, 3, 2, 3)
+    matrix = np.arange(36, dtype=float).reshape(2, 3, 2, 3)
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexAsymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: matrix * a
         },
     )
+    contractions.norm_cont = np.ones((2, 3))
     test = Test([contractions], [contractions])
     assert np.allclose(
         test.construct_array_spherical(),
@@ -190,10 +201,12 @@ def test_contruct_array_spherical_lincomb():
         BaseTwoIndexAsymmetric,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont_one, cont_two, a=2: np.arange(9).reshape(1, 3, 1, 3) * a
+                lambda self, cont_one, cont_two, a=2: np.arange(9, dtype=float).reshape(1, 3, 1, 3)
+                * a
             )
         },
     )
+    contractions.norm_cont = np.ones((1, 3))
     test = Test([contractions], [contractions])
     assert np.allclose(
         test.construct_array_spherical_lincomb(orb_transform_one, orb_transform_two),
