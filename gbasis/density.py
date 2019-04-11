@@ -1,4 +1,5 @@
 """Density Evaluation."""
+from gbasis.eval import evaluate_basis_spherical_lincomb
 import numpy as np
 
 
@@ -56,3 +57,34 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     density = one_density_matrix.dot(orb_eval)
     density *= orb_eval
     return np.sum(density, axis=0)
+
+
+def eval_density_using_basis(one_density_matrix, basis, coords, transform):
+    """Return the density of the given transformed basis set at the given coordinates.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix.
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_sph)
+        Array associated with the linear combinations of spherical Gaussians (LCAO's).
+        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
+        and first index of the array for contracted spherical Gaussians.
+
+    Returns
+    -------
+    density : np.ndarray(N,)
+        Density evaluated at different grid points.
+
+    Notes
+    -----
+    The transformation matrix corresponds to the spherical contractions. If your transformation
+    matrix corresponds to Cartesian contractions, please raise an issue.
+
+    """
+    orb_eval = evaluate_basis_spherical_lincomb(basis, coords, transform)
+    return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
