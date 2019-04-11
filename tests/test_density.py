@@ -1,10 +1,10 @@
 """Test gbasis.density."""
 from gbasis.contractions import make_contractions
 from gbasis.density import (
+    eval_density,
     eval_density_gradient,
-    eval_density_using_basis,
     eval_density_using_evaluated_orbs,
-    eval_deriv_density_using_basis,
+    eval_deriv_density,
 )
 from gbasis.eval import evaluate_basis_spherical_lincomb
 from gbasis.eval_deriv import evaluate_deriv_basis_spherical_lincomb
@@ -57,8 +57,8 @@ def test_eval_density_using_evaluated_orbs():
         eval_density_using_evaluated_orbs(density_mat, orb_eval)
 
 
-def test_eval_density_using_basis():
-    """Test gbasis.density.eval_density_using_basis."""
+def test_eval_density():
+    """Test gbasis.density.eval_density."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -70,13 +70,13 @@ def test_eval_density_using_basis():
 
     eval_orbs = evaluate_basis_spherical_lincomb(basis, coords, transform)
     assert np.allclose(
-        eval_density_using_basis(density, basis, coords, transform),
+        eval_density(density, basis, coords, transform),
         np.einsum("ij,ik,jk->k", density, eval_orbs, eval_orbs),
     )
 
 
-def test_eval_deriv_density_using_basis():
-    """Test gbasis.density.eval_deriv_density_using_basis."""
+def test_eval_deriv_density():
+    """Test gbasis.density.eval_deriv_density."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -87,7 +87,7 @@ def test_eval_deriv_density_using_basis():
     coords = np.random.rand(10, 3)
 
     assert np.allclose(
-        eval_deriv_density_using_basis(np.array([1, 0, 0]), density, basis, coords, transform),
+        eval_deriv_density(np.array([1, 0, 0]), density, basis, coords, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -103,7 +103,7 @@ def test_eval_deriv_density_using_basis():
     )
 
     assert np.allclose(
-        eval_deriv_density_using_basis(np.array([0, 1, 0]), density, basis, coords, transform),
+        eval_deriv_density(np.array([0, 1, 0]), density, basis, coords, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -119,7 +119,7 @@ def test_eval_deriv_density_using_basis():
     )
 
     assert np.allclose(
-        eval_deriv_density_using_basis(np.array([0, 0, 1]), density, basis, coords, transform),
+        eval_deriv_density(np.array([0, 0, 1]), density, basis, coords, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -135,7 +135,7 @@ def test_eval_deriv_density_using_basis():
     )
 
     assert np.allclose(
-        eval_deriv_density_using_basis(np.array([2, 3, 0]), density, basis, coords, transform),
+        eval_deriv_density(np.array([2, 3, 0]), density, basis, coords, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,

@@ -61,7 +61,7 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def eval_density_using_basis(one_density_matrix, basis, coords, transform):
+def eval_density(one_density_matrix, basis, coords, transform):
     """Return the density of the given transformed basis set at the given coordinates.
 
     Parameters
@@ -92,7 +92,7 @@ def eval_density_using_basis(one_density_matrix, basis, coords, transform):
     return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
 
 
-def eval_deriv_density_using_basis(orders, one_density_matrix, basis, coords, transform):
+def eval_deriv_density(orders, one_density_matrix, basis, coords, transform):
     """Return the derivative of density of the given transformed basis set at the given coordinates.
 
     Parameters
@@ -171,14 +171,8 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
     """
     return np.array(
         [
-            eval_deriv_density_using_basis(
-                np.array([1, 0, 0]), one_density_matrix, basis, coords, transform
-            ),
-            eval_deriv_density_using_basis(
-                np.array([0, 1, 0]), one_density_matrix, basis, coords, transform
-            ),
-            eval_deriv_density_using_basis(
-                np.array([0, 0, 1]), one_density_matrix, basis, coords, transform
-            ),
+            eval_deriv_density(np.array([1, 0, 0]), one_density_matrix, basis, coords, transform),
+            eval_deriv_density(np.array([0, 1, 0]), one_density_matrix, basis, coords, transform),
+            eval_deriv_density(np.array([0, 0, 1]), one_density_matrix, basis, coords, transform),
         ]
     )
