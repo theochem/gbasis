@@ -302,7 +302,7 @@ class ContractedCartesianGaussians:
         )
 
     @property
-    def norm(self):
+    def norm_prim(self):
         r"""Compute the normalization constant for a Cartesian Gaussian primitive.
 
             .. math::
