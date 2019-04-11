@@ -1,6 +1,6 @@
 """Convert from Cartesian Gaussians to Spherical Gaussians."""
 import numpy as np
-from scipy.special import comb, factorial
+from scipy.special import comb, factorial, factorial2
 
 
 def shift_factor(mag):
@@ -283,6 +283,10 @@ def generate_transformation(angmom, cartesian_order, apply_from):
         harmonic = real_solid_harmonic(angmom, mag)
         for components, coeff in harmonic.items():
             transform[order[components], mag + angmom] = coeff
+
+    # normalize
+    transform *= np.sqrt(np.prod(factorial2(2 * cartesian_order - 1), axis=1))[:, np.newaxis]
+    transform /= np.sqrt(factorial2(2 * angmom - 1))
 
     if apply_from == "left":
         return transform.T
