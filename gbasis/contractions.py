@@ -29,6 +29,8 @@ class ContractedCartesianGaussians:
 
             l = \sum_i \vec{a} = a_x + a_y + a_z
 
+    angmom_components : np.ndarray(L, 3)
+        Components of the angular momentum.
     coord : np.ndarray(3,)
         Coordinate of the center of the Gaussian primitives.
     charge : float
@@ -39,6 +41,18 @@ class ContractedCartesianGaussians:
         segmented contractions (same exponents and angular momentum but different coefficients).
     exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}`.
+    norm_prim : np.ndarray(L, K)
+        The normalization constant for each Cartesian Gaussian primitive.
+    num_contr : int
+        The number of Cartesian Gaussian primitives in the shell (L).
+
+    Methods
+    -------
+    __init__(self, angmom, coord, charge, coeffs, exps)
+        Initialize.
+    assign_norm_contr
+        Normalize the contractions to have an overlap of 1.
+
 
     """
 
