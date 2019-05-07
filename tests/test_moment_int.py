@@ -291,7 +291,7 @@ def test_compute_multipole_moment_integrals_prim_angmom_left_recursion():
     order_moment = np.array([[0, 0, 0]])
     norm_b = np.array([[(2 * 0.2 / np.pi) ** (3 / 4) * (4 * 0.2) ** (3 / 2)]])
 
-    # zero moment, zero right angulra momentum
+    # zero moment, zero right angular momentum
     for ix, iy, iz in it.product(range(4), range(4), range(4)):
         norm_a = np.array(
             (2 * 0.1 / np.pi) ** (3 / 4)
