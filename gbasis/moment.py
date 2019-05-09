@@ -127,12 +127,12 @@ class Moment(BaseTwoIndexSymmetric):
 
         coord_a = contractions_one.coord
         angmoms_a = contractions_one.angmom_components
-        alphas_a = contractions_one.exps
+        exps_a = contractions_one.exps
         coeffs_a = contractions_one.coeffs
         norm_a_prim = contractions_one.norm_prim
         coord_b = contractions_two.coord
         angmoms_b = contractions_two.angmom_components
-        alphas_b = contractions_two.exps
+        exps_b = contractions_two.exps
         coeffs_b = contractions_two.coeffs
         norm_b_prim = contractions_two.norm_prim
         output = _compute_multipole_moment_integrals(
@@ -140,12 +140,12 @@ class Moment(BaseTwoIndexSymmetric):
             moment_orders,
             coord_a,
             angmoms_a,
-            alphas_a,
+            exps_a,
             coeffs_a,
             norm_a_prim,
             coord_b,
             angmoms_b,
-            alphas_b,
+            exps_b,
             coeffs_b,
             norm_b_prim,
         )
