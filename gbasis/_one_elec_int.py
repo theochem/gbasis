@@ -266,16 +266,9 @@ def _compute_one_elec_integrals(
 
     # Expand the integral array using contracted basis functions (with m = 0):
 
-    # Contract basis functions
-    # Apply contraction coefficients to contraction a primitives
-    temp = integrals.copy()
-    temp = np.tensordot(temp, coeffs_a, 1)
-    # Swap contraction b primitives to be inner-most index
-    # NOTE: Integrals have now been reordered such that:
-    # axis 4 : index for segmented contractions of contraction a (size: M_a)
-    # axis 5 : primitive of contraction a (size: K_a)
-    temp = np.transpose(temp, (0, 1, 2, 3, 5, 4))
-    temp = np.tensordot(temp, coeffs_b, 1)
+    # Contract primitives
+    integrals_cont = np.tensordot(integrals, coeffs_a, (5, 0))
+    integrals_cont = np.tensordot(integrals_cont, coeffs_b, (4, 0))
 
     # NOTE: Ordering convention for horizontal recursion of integrals
     # axis 0 : a_x (size: m_max)
@@ -298,7 +291,7 @@ def _compute_one_elec_integrals(
             len(coeffs_b[0]),
         )
     )
-    integrals[:, :, :, 0, 0, 0, :, :] = temp[0, :, :, :, :, :]
+    integrals[:, :, :, 0, 0, 0, :, :] = integrals_cont[0, :, :, :, :, :]
 
     # Horizontal recursion for one nonzero index i.e. V(120|100)
     for b in range(0, angmom_b):
