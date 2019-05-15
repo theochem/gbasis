@@ -87,54 +87,28 @@ def _compute_one_elec_integrals(
     harm_mean = exps_a * exps_b / exps_sum
 
     # Initialize V(m)(000|000) for all m
-    for m in range(m_max):
-        integrals[m, 0:1, 0:1, 0:1, :, :] = boys_func(
-            m, exps_sum.squeeze() * (rel_coord_point ** 2).sum(axis=1)
-        ) * np.exp(-harm_mean.squeeze() * (rel_dist ** 2).sum(axis=1))
+    m = np.arange(m_max)[:, None, None]
+    integrals[:, 0, 0, 0, :, :] = boys_func(
+        m, exps_sum[:, 0] * np.sum(rel_coord_point ** 2, axis=1)
+    ) * np.exp(-harm_mean[:, 0] * (rel_dist ** 2).sum(axis=1))
 
     # Vertical recursion for one nonzero index i.e. V(010|000)
-    # Slice to avoid if statement
     # For a = 0:
-    # Increment a_x:
-    integrals[:-1, 1, 0, 0, :, :] = (
-        rel_coord_a[:, 0, :, :] * integrals[:-1, 0, 0, 0, :, :]
-        - rel_coord_point[:, 0, :, :] * integrals[1:, 0, 0, 0, :, :]
-    )
-    # Increment a_y:
-    integrals[:-1, 0, 1, 0, :, :] = (
-        rel_coord_a[:, 1, :, :] * integrals[:-1, 0, 0, 0, :, :]
-        - rel_coord_point[:, 1, :, :] * integrals[1:, 0, 0, 0, :, :]
-    )
-    # Increment a_z
-    integrals[:-1, 0, 0, 1, :, :] = (
-        rel_coord_a[:, 2, :, :] * integrals[:-1, 0, 0, 0, :, :]
-        - rel_coord_point[:, 2, :, :] * integrals[1:, 0, 0, 0, :, :]
+    integrals[:-1, [1, 0, 0], [0, 1, 0], [0, 0, 1], :, :] = (
+        rel_coord_a * integrals[:-1, 0, 0, 0, :, :][:, None, :, :]
+        - rel_coord_point * integrals[1:, 0, 0, 0, :, :][:, None, :, :]
     )
     # For a > 0:
     for a in range(1, m_max - 1):
-        # Increment a_x:
-        integrals[: -a - 1, a + 1, 0, 0, :, :] = (
-            rel_coord_a[:, 0, :, :] * integrals[: -a - 1, a, 0, 0, :, :]
-            - rel_coord_point[:, 0, :, :] * integrals[1:-a, a, 0, 0, :, :]
+        integrals[: -a - 1, [a + 1, 0, 0], [0, a + 1, 0], [0, 0, a + 1], :, :] = (
+            rel_coord_a * integrals[: -a - 1, [a, 0, 0], [0, a, 0], [0, 0, a], :, :]
+            - rel_coord_point * integrals[1:-a, [a, 0, 0], [0, a, 0], [0, 0, a], :, :]
             + a
-            / (2 * exps_sum.squeeze())
-            * (integrals[: -a - 1, a - 1, 0, 0, :, :] - integrals[1:-a, a - 1, 0, 0, :, :])
-        )
-        # Increment a_y:
-        integrals[: -a - 1, 0, a + 1, 0, :, :] = (
-            rel_coord_a[:, 1, :, :] * integrals[: -a - 1, 0, a, 0, :, :]
-            - rel_coord_point[:, 1, :, :] * integrals[1:-a, 0, a, 0, :, :]
-            + a
-            / (2 * exps_sum.squeeze())
-            * (integrals[: -a - 1, 0, a - 1, 0, :, :] - integrals[1:-a, 0, a - 1, 0, :, :])
-        )
-        # Increment a_z
-        integrals[: -a - 1, 0, 0, a + 1, :, :] = (
-            rel_coord_a[:, 2, :, :] * integrals[: -a - 1, 0, 0, a, :, :]
-            - rel_coord_point[:, 2, :, :] * integrals[1:-a, 0, 0, a, :, :]
-            + a
-            / (2 * exps_sum.squeeze())
-            * (integrals[: -a - 1, 0, 0, a - 1, :, :] - integrals[1:-a, a - 1, 0, 0, :, :])
+            / (2 * exps_sum)
+            * (
+                integrals[: -a - 1, [a - 1, 0, 0], [0, a - 1, 0], [0, 0, a - 1], :, :]
+                - integrals[1:-a, [a - 1, 0, 0], [0, a - 1, 0], [0, 0, a - 1], :, :]
+            )
         )
 
     # Vertical recursion for two nonzero indices i.e. V(110|000)
