@@ -5,6 +5,7 @@ import numpy as np
 # TODO: in the case of generalized Cartesian contraction where multiple shells have the same sets of
 # exponents but different sets of primitive coefficients, it will be helpful to vectorize the
 # `prim_coeffs` also.
+# FIXME: returns nan when exponent is zero
 def _compute_multipole_moment_integrals(
     coord_moment,
     orders_moment,
