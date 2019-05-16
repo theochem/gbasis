@@ -6,15 +6,25 @@ import numpy as np
 def _compute_one_elec_integrals(
     coord_point, boys_func, coord_a, angmom_a, exps_a, coeffs_a, coord_b, angmom_b, exps_b, coeffs_b
 ):
-    """Return the one-electron integrals for a point charge interaction.
+    r"""Return the one-electron integrals for a point charge interaction.
 
     Parameters
     ----------
     coord_point : np.ndarray(3,)
         Center of the point charge.
-    boys_func : function(order : int, weighted_dist : np.ndarray(L_b, L_a))
+    boys_func : function(orders, weighted_dist)
         Boys function used to evaluate the one-electron integral.
-        `L_a` and `L_b` are the angular momentum of contraction one and two respectively.
+        `orders` is the orders of the Boys integral that will be evaluated. It should be a
+        three-dimensional numpy array of integers with shape `(M, 1, 1)` where `M` is the number of
+        orders that will be evaluated.
+        `weighted_dist` is the weighted interatomic distance, i.e.
+        :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{AB}||^2` where :math:`\alpha_i` is
+        the exponent of the ith primitive on the left side and the :math:`\beta_j` is the exponent
+        of the jth primitive on the right side. It should be a three-dimensional numpy array of
+        floats with shape `(1, K_b, K_a)` where `K_a` and `K_b` are the number of primitives on the
+        left and right side, respectively.
+        Output is the Boys function evaluated for each order and the weighted interactomic distance.
+        It will be a three-dimensional numpy array of shape `(M, K_b, K_a)`.
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmom_a : int
