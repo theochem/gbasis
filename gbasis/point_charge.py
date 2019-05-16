@@ -162,32 +162,27 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
         # Enforce L_a >= L_b
         if angmom_a < angmom_b:
-            integrals = _compute_one_elec_integrals(
-                coord_point,
-                boys_func,
-                coord_b,
-                angmom_b,
-                exps_b,
-                coeffs_b,
-                coord_a,
-                angmom_a,
-                exps_a,
-                coeffs_a,
-            )
-            integrals = np.transpose(integrals, (2, 3, 0, 1))
-        else:
-            integrals = _compute_one_elec_integrals(
-                coord_point,
-                boys_func,
-                coord_a,
-                angmom_a,
-                exps_a,
-                coeffs_a,
-                coord_b,
-                angmom_b,
-                exps_b,
-                coeffs_b,
-            )
+            coord_a, coord_b = coord_b, coord_a
+            angmom_a, angmom_b = angmom_b, angmom_a
+            exps_a, exps_b = exps_b, exps_a
+            coeffs_a, coeffs_b = coeffs_b, coeffs_a
+
+        integrals = _compute_one_elec_integrals(
+            coord_point,
+            cls.boys_func,
+            coord_a,
+            angmom_a,
+            exps_a,
+            coeffs_a,
+            coord_b,
+            angmom_b,
+            exps_b,
+            coeffs_b,
+        )
+        integrals = np.transpose(integrals, (6, 0, 1, 2, 7, 3, 4, 5))
+
+        angmoms_a_x, angmoms_a_y, angmoms_a_z = angmoms_a.T
+        angmoms_b_x, angmoms_b_y, angmoms_b_z = angmoms_b.T
 
         # Generate output array
         # Ordering for output array:
@@ -195,21 +190,16 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         # axis 1 : angular momentum vector of contraction one (in the same order as angmoms_a)
         # axis 2 : index for segmented contractions of contraction two
         # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
-        output = np.zeros(
-            (
-                len(coeffs_a[0]),
-                contractions_one.num_contr,
-                len(coeffs_b[0]),
-                contractions_two.num_contr,
-            )
-        )
-
-        for i, comp_a in enumerate(angmoms_a):
-            a_x, a_y, a_z = comp_a
-            for j, comp_b in enumerate(angmoms_b):
-                b_x, b_y, b_z = comp_b
-                output[:, i, :, j] = integrals[a_x, a_y, a_z, b_x, b_y, b_z, :, :]
-
+        output = integrals[
+            np.arange(coeffs_a.shape[1]),
+            angmoms_a_x[None, :, None, None],
+            angmoms_a_y[None, :, None, None],
+            angmoms_a_z[None, :, None, None],
+            np.arange(coeffs_b.shape[1]),
+            angmoms_b_x[None, None, None, :],
+            angmoms_b_y[None, None, None, :],
+            angmoms_b_z[None, None, None, :],
+        ]
         return output
 
 
