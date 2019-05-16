@@ -264,11 +264,11 @@ def _compute_one_elec_integrals(
             )
         )
 
-    # Expand the integral array using contracted basis functions (with m = 0):
-
+    # Discard nonrelevant integrals
+    integrals_cont = integrals[0, :, :, :, :, :]
     # Contract primitives
-    integrals_cont = np.tensordot(integrals, coeffs_a, (5, 0))
-    integrals_cont = np.tensordot(integrals_cont, coeffs_b, (4, 0))
+    integrals_cont = np.tensordot(integrals_cont, coeffs_a, (4, 0))
+    integrals_cont = np.tensordot(integrals_cont, coeffs_b, (3, 0))
 
     # NOTE: Ordering convention for horizontal recursion of integrals
     # axis 0 : a_x (size: m_max)
@@ -291,7 +291,7 @@ def _compute_one_elec_integrals(
             len(coeffs_b[0]),
         )
     )
-    integrals[:, :, :, 0, 0, 0, :, :] = integrals_cont[0, :, :, :, :, :]
+    integrals[0, 0, 0, :, :, :, :, :] = integrals_cont
 
     # Horizontal recursion for one nonzero index i.e. V(120|100)
     for b in range(0, angmom_b):
