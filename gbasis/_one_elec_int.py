@@ -1,5 +1,6 @@
 """One-electron integrals involving Contracted Cartesian Gaussians."""
 import numpy as np
+from scipy.special import factorial2
 
 
 # pylint: disable=C0103,R0914,R0915
@@ -277,9 +278,25 @@ def _compute_one_elec_integrals(
 
     # Discard nonrelevant integrals
     integrals_cont = integrals[0, :, :, :, :, :]
+    # Get norms
+    # FIXME: hard coded
+    exps_a_norm = exps_a.reshape(1, 1, 1, -1)
+    angmoms_a_x = np.arange(m_max)[:, None, None, None]
+    angmoms_a_y = np.arange(m_max)[None, :, None, None]
+    angmoms_a_z = np.arange(m_max)[None, None, :, None]
+    norm_a = (
+        (2 * exps_a_norm / np.pi) ** (3 / 4)
+        * ((4 * exps_a) ** ((angmoms_a_x + angmoms_a_y + angmoms_a_z) / 2))
+        / np.sqrt(
+            factorial2(2 * angmoms_a_x - 1)
+            * factorial2(2 * angmoms_a_y - 1)
+            * factorial2(2 * angmoms_a_z - 1)
+        )
+    )[:, :, :, None, :]
+    norm_b = ((2 * exps_b / np.pi) ** (3 / 4)).reshape(1, 1, 1, 1, -1, 1)
     # Contract primitives
-    integrals_cont = np.tensordot(integrals_cont, coeffs_a, (4, 0))
-    integrals_cont = np.tensordot(integrals_cont, coeffs_b, (3, 0))
+    integrals_cont = np.tensordot(integrals_cont * norm_a, coeffs_a, (4, 0))
+    integrals_cont = np.tensordot(integrals_cont * norm_b, coeffs_b, (3, 0))
 
     # NOTE: Ordering convention for horizontal recursion of integrals
     # axis 0 : b_x (size: angmom_b + 1)
