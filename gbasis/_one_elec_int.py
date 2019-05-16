@@ -5,6 +5,7 @@ from scipy.special import factorial2
 
 # pylint: disable=C0103,R0914,R0915
 # FIXME: returns nan when exponent is zero
+# TODO: vectorize over multiple coordinate points (i.e. nuclear electron attraction)
 def _compute_one_elec_integrals(
     coord_point, boys_func, coord_a, angmom_a, exps_a, coeffs_a, coord_b, angmom_b, exps_b, coeffs_b
 ):
