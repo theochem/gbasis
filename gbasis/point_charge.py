@@ -9,6 +9,17 @@ from scipy.special import hyp1f1  # pylint: disable=E0611
 class PointChargeIntegral(BaseTwoIndexSymmetric):
     r"""General class for calculating one-electron integrals for interaction with a point charge.
 
+    One electron integrals are assumed to have the following form:
+    .. math::
+
+        \int \phi_a(\mathbf{r}) \phi_b(\mathbf{r}) g(|\mathbf{r} - \mathbf{R}_C|, Z) d\mathbf{r}
+
+    where :math:`\phi_a` is Gaussian contraction on the left, :math:`\phi_b` is the Gaussian
+    contraction on the right, :math:`\mathbf{R}_C` is the position of the point charge, :math:`Z` is
+    the charge at the point charge, and :math:`g(|\mathbf{r} - \mathbf{R}_C|, Z)` determines the
+    type of the one-electorn integral.
+
+
     Attributes
     ----------
     _axes_contractions : tuple of tuple of ContractedCartesianGaussians
@@ -23,11 +34,12 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
     -------
     __init__(self, contractions)
         Initialize.
-    boys_func : function(order : int, weighted_dist : np.ndarray(L_b, L_a))
+    boys_func : np.ndarray(np.ndarray(M, K_b, K_a))
         Boys function used to evaluate the one-electron integral.
-        `L_a` and `L_b` are the angular momentum of contraction one and two respectively.
-    construct_array_contraction(self, contraction) : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
-        Return the one-electron integrals for the given `ContractedCartesianGaussians` instances.
+        `M` is the number of orders that will be evaluated. `K_a` and `K_b` are the number of
+        primitives on the left and right side, respectively.
+    construct_array_contraction(self, contractions_one, contractions_two, coord_point, charge_point
+        Return the point charge integrals for the given `ContractedCartesianGaussians` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -51,25 +63,32 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     # pylint: disable=W0613
     @staticmethod
-    def boys_func(order, weighted_dist):
-        r"""Boys function for evaluating the one-electron integral.
+    def boys_func(orders, weighted_dist):
+        r"""Return the value of Boys function for the given orders and weighted distances.
 
         Parameters
         ----------
-        order : int
+        orders : np.ndarray(M, 1, 1)
             Differentiation order of the helper function.
             Same as m in eq. 23, Aldrichs, R. Phys. Chem. Chem. Phys., 2006, 8, 3072-3077.
-        weighted_dist : np.ndarray(L_b, L_a)
-            The weighted interatomic distance, :math:`\\mu * R_{AB}^{2}`, where `\\mu` is the
-            harmonic mean of the exponents for primitive one and two,
-            :math:`\\mu = \\alpha * \\beta / (\\alpha + \\beta)`.
-            `L_a` and `L_b` are the angular momentum of contraction one and two respectively.
+            `M` is the number of orders that will be evaluated.
+        weighted_dist : np.ndarray(1, K_b, K_a)
+            Weighted interatomic distance
+            .. math::
+
+                \frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{AB}||^2
+
+            where :math:`\alpha_i` is the exponent of the ith primitive on the left side and the
+            :math:`\beta_j` is the exponent of the jth primitive on the right side.
+            `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
+            Note that the index 1 corresponds to the primitive on the right side and the index 2
+            corresponds to the primitive on the left side.
 
         Returns
         -------
-        boys_eval : np.ndarray(L_b, L_a)
-            The evaluation of the Boys function for the given values. This output corresponds
-            to the evaluation for every Gaussian primitive at the given differentiation order.
+        boys_eval : np.ndarray(M, K_b, K_a)
+            Output is the Boys function evaluated for each order and the weighted interactomic
+            distance.
 
         """
         return None
@@ -277,9 +296,10 @@ class ElectroStaticPotential(PointChargeIntegral):
     -------
     __init__(self, contractions)
         Initialize.
-    boys_func : function(order : int, weighted_dist : np.ndarray(L_b, L_a))
+    boys_func : np.ndarray(np.ndarray(M, K_b, K_a))
         Boys function used to evaluate the one-electron integral.
-        `L_a` and `L_b` are the angular momentum of contraction one and two respectively.
+        `M` is the number of orders that will be evaluated. `K_a` and `K_b` are the number of
+        primitives on the left and right side, respectively.
     construct_array_contraction(self, contraction) : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
         Return the one-electron Coulomb interaction integrals for the given
         `ContractedCartesianGaussians` instances.
@@ -307,28 +327,35 @@ class ElectroStaticPotential(PointChargeIntegral):
     """
 
     @staticmethod
-    def boys_func(order, weighted_dist):
-        r"""Boys function for evaluating the one-electron Coulomb interaction integral.
+    def boys_func(orders, weighted_dist):
+        r"""Return the value of Boys function for the given orders and weighted distances.
 
         The Coulombic Boys function can be written as a renormalized special case of the Kummer
         confluent hypergeometric function, as derived in Helgaker (eq. 9.8.39).
 
         Parameters
         ----------
-        order : int
+        orders : np.ndarray(M, 1, 1)
             Differentiation order of the helper function.
             Same as m in eq. 23, Aldrichs, R. Phys. Chem. Chem. Phys., 2006, 8, 3072-3077.
-        weighted_dist : np.ndarray(L_b, L_a)
-            The weighted interatomic distance, :math:`\\mu * R_{AB}^{2}`, where `\\mu` is the
-            harmonic mean of the exponents for primitive one and two,
-            :math:`\\mu = \\alpha * \\beta / (\\alpha + \\beta)`.
-            `L_a` and `L_b` are the angular momentum of contraction one and two respectively.
+            `M` is the number of orders that will be evaluated.
+        weighted_dist : np.ndarray(1, K_b, K_a)
+            Weighted interatomic distance
+            .. math::
+
+                \frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{AB}||^2
+
+            where :math:`\alpha_i` is the exponent of the ith primitive on the left side and the
+            :math:`\beta_j` is the exponent of the jth primitive on the right side.
+            `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
+            Note that the index 1 corresponds to the primitive on the right side and the index 2
+            corresponds to the primitive on the left side.
 
         Returns
         -------
-        boys_eval : np.ndarray(L_b, L_a)
-            The evaluation of the Boys function for the given values. This output corresponds
-            to the evaluation for every Gaussian primitive at the given differentiation order.
+        boys_eval : np.ndarray(M, K_b, K_a)
+            Output is the Boys function evaluated for each order and the weighted interactomic
+            distance.
 
         Notes
         -----
@@ -340,5 +367,4 @@ class ElectroStaticPotential(PointChargeIntegral):
         This function cannot be vectorized for both m and x.
 
         """
-
-        return hyp1f1(order + 1 / 2, order + 3 / 2, -weighted_dist) / (2 * order + 1)
+        return hyp1f1(orders + 1 / 2, orders + 3 / 2, -weighted_dist) / (2 * orders + 1)
