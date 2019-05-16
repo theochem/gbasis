@@ -18,7 +18,8 @@ def _compute_one_elec_integrals(
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmom_a : int
-        Angular momentum of the contraction on the left side.
+        Angular momentum of the segmented contractions on the left side.
+        We will denote this value to be `L_a`.
     exps_a : np.ndarray(K_a,)
         Values of the (square root of the) precisions of the primitives on the left side.
     coeffs_a : np.ndarray(K_a, M_a)
@@ -29,7 +30,8 @@ def _compute_one_elec_integrals(
     coord_b : np.ndarray(3,)
         Center of the contraction on the right side.
     angmom_b : int
-        Angular momentum of the contraction on the right side.
+        Angular momentum of the segmented contractions on the right side.
+        We will denote this value to be `L_b`.
     exps_b : np.ndarray(K_b,)
         Values of the (square root of the) precisions of the primitives on the right side.
     coeffs_b : np.ndarray(K_b, M_b)
@@ -40,8 +42,7 @@ def _compute_one_elec_integrals(
 
     Returns
     -------
-    integrals : np.ndarray(m_max, m_max, m_max, L_b + 1, L_b + 1, L_b + 1, M_a, M_b)
-        Where :math:`m_max = L_a + L_b + 1`.
+    integrals : np.ndarray(L_a + 1, L_a + 1, L_a + 1, L_b + 1, L_b + 1, L_b + 1, M_a, M_b)
         One electron integrals for the given `ContractedCartesianGaussian` instances.
         First, second, and third index correspond to the `x`, `y`, and `z` components of the
         angular momentum for contraction a.
@@ -357,4 +358,10 @@ def _compute_one_elec_integrals(
             + rel_dist[2] * integrals[b + 1 : -b - 1, b + 1 : -b - 1, b, :-2, :, :, :, :]
         )
 
-    return np.transpose(integrals, (3, 4, 5, 0, 1, 2, 6, 7))
+    # rearrange to more sensible order
+    integrals = np.transpose(integrals, (3, 4, 5, 0, 1, 2, 6, 7))
+
+    # discard higher order angular momentum needed for the recursions
+    integrals = integrals[: angmom_a + 1, : angmom_a + 1, : angmom_a + 1]
+
+    return integrals
