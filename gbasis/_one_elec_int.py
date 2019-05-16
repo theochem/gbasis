@@ -287,8 +287,8 @@ def _compute_one_elec_integrals(
             m_max,
             m_max,
             m_max,
-            len(coeffs_a[0]),
-            len(coeffs_b[0]),
+            coeffs_a.shape[1],
+            coeffs_b.shape[1],
         )
     )
     rel_dist = np.squeeze(rel_dist)
