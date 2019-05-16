@@ -1,4 +1,6 @@
 """Module for computing point charge integrals."""
+import abc
+
 from gbasis._one_elec_int import _compute_one_elec_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import ContractedCartesianGaussians
@@ -61,8 +63,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     """
 
-    # pylint: disable=W0613
-    @staticmethod
+    @abc.abstractstaticmethod
     def boys_func(orders, weighted_dist):
         r"""Return the value of Boys function for the given orders and weighted distances.
 
@@ -91,12 +92,12 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             distance.
 
         """
-        return None
 
-    # pylint: disable=R0914
-    @staticmethod
-    def construct_array_contraction(contractions_one, contractions_two, coord_point, boys_func):
-        """Return the evaluations of the point charge interaction for the given contractions.
+    @classmethod
+    def construct_array_contraction(
+        cls, contractions_one, contractions_two, coord_point, charge_point
+    ):
+        """Return point charge interaction integral for the given contractions.
 
         Parameters
         ----------
@@ -108,11 +109,34 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             the array.
         coord_point : np.ndarray(3,)
             Center of the point charge.
-        boys_func : function(order : int, weighted_dist : np.ndarray(L_b, L_a))
-            Boys function used to evaluate the one-electron integral.
-            `L_a` and `L_b` are the angular momentum of contraction one and two respectively.
+
+        Returns
+        -------
+        array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+            Point charge integral associated with the given instances of
+            ContractedCartesianGaussians.
+            First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the first index.
+            Second axis corresponds to the angular momentum vector of the `contractions_one`.
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            associated with the first index.
+            Third axis corresponds to the segmented contraction within `contractions_two`. `M_2` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the second index.
+            Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            associated with the second index.
+
+        Raises
+        ------
+        TypeError
+            If `contractions_one` is not a ContractedCartesianGaussians instance.
+            If `contractions_two` is not a ContractedCartesianGaussians instance.
+            If `coord_point` is not a one-dimensional numpy array with three elements.
 
         """
+        # pylint: disable=R0914
 
         if not isinstance(contractions_one, ContractedCartesianGaussians):
             raise TypeError("`contractions_one` must be a ContractedCartesianGaussians instance.")
@@ -122,10 +146,6 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             isinstance(coord_point, np.ndarray) and coord_point.ndim == 1 and coord_point.size == 3
         ):
             raise TypeError("`coord_point` must be a one-dimensional numpy array with 3 elements.")
-        try:
-            boys_func(order=1, weighted_dist=np.arange(4).reshape((2, 2)))
-        except ValueError:
-            raise ValueError("`boys_func` must accept two arguments, `order` and `weighted_dist`")
 
         # TODO: Overlap screening
 
