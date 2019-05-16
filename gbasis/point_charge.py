@@ -1,4 +1,4 @@
-"""Module for computing one-electron integrals."""
+"""Module for computing point charge integrals."""
 from gbasis._one_elec_int import _compute_one_elec_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import ContractedCartesianGaussians
@@ -6,8 +6,8 @@ import numpy as np
 from scipy.special import hyp1f1  # pylint: disable=E0611
 
 
-class OneElectronIntegral(BaseTwoIndexSymmetric):
-    """General class for calculating one-electron integrals (interaction with a point charge).
+class PointChargeIntegral(BaseTwoIndexSymmetric):
+    r"""General class for calculating one-electron integrals for interaction with a point charge.
 
     Attributes
     ----------
@@ -195,7 +195,7 @@ def one_electron_integral_basis_cartesian(basis, coord_point, boys_func):
         Gaussians. `K_cart` is the total number of Cartesian contractions within the instance.
 
     """
-    return OneElectronIntegral(basis).construct_array_cartesian(
+    return PointChargeIntegral(basis).construct_array_cartesian(
         coord_point=coord_point, boys_func=boys_func
     )
 
@@ -223,7 +223,7 @@ def one_electron_integral_basis_spherical(basis, coord_point, boys_func):
         instance.
 
     """
-    return OneElectronIntegral(basis).construct_array_spherical(
+    return PointChargeIntegral(basis).construct_array_spherical(
         coord_point=coord_point, boys_func=boys_func
     )
 
@@ -255,13 +255,13 @@ def one_electron_integral_spherical_lincomb(basis, transform, coord_point, boys_
         combinations.
 
     """
-    return OneElectronIntegral(basis).construct_array_spherical_lincomb(
+    return PointChargeIntegral(basis).construct_array_spherical_lincomb(
         transform, coord_point=coord_point, boys_func=boys_func
     )
 
 
-class OneElectronCoulomb(OneElectronIntegral):
-    """Evaluate one-electron Coulomb interaction integrals.
+class ElectroStaticPotential(PointChargeIntegral):
+    """Class for evaluating the electrostatic potential.
 
     Attributes
     ----------

@@ -1,6 +1,6 @@
-"""Test gbasis.one_electron_integral."""
+"""Test gbasis.point_charge."""
 from gbasis.contractions import ContractedCartesianGaussians
-from gbasis.one_electron_integral import OneElectronCoulomb, OneElectronIntegral
+from gbasis.point_charge import PointChargeIntegral, ElectroStaticPotential
 import numpy as np
 
 
@@ -12,11 +12,11 @@ def test_one_electron_integral_input():
     s_type_two = ContractedCartesianGaussians(
         1, np.array([1.5, 2, 3]), 0, np.array([3.0]), np.array([0.02])
     )
-    test_12 = OneElectronIntegral.construct_array_contraction(
-        s_type_one, s_type_two, np.array([0.0, 0.0, 0.0]), OneElectronCoulomb.boys_func
+    test_12 = PointChargeIntegral.construct_array_contraction(
+        s_type_one, s_type_two, np.array([0.0, 0.0, 0.0]), ElectroStaticPotential.boys_func
     )
-    test_21 = OneElectronIntegral.construct_array_contraction(
-        s_type_two, s_type_one, np.array([0.0, 0.0, 0.0]), OneElectronCoulomb.boys_func
+    test_21 = PointChargeIntegral.construct_array_contraction(
+        s_type_two, s_type_one, np.array([0.0, 0.0, 0.0]), ElectroStaticPotential.boys_func
     )
     assert np.allclose(test_12, np.transpose(test_21, (2, 3, 0, 1)))
 
