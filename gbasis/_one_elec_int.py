@@ -271,92 +271,90 @@ def _compute_one_elec_integrals(
     integrals_cont = np.tensordot(integrals_cont, coeffs_b, (3, 0))
 
     # NOTE: Ordering convention for horizontal recursion of integrals
-    # axis 0 : a_x (size: m_max)
-    # axis 1 : a_y (size: m_max)
-    # axis 2 : a_z (size: m_max)
-    # axis 3 : b_x (size: angmom_b + 1)
-    # axis 4 : b_y (size: angmom_b + 1)
-    # axis 5 : b_z (size: angmom_b + 1)
+    # axis 0 : b_x (size: angmom_b + 1)
+    # axis 1 : b_y (size: angmom_b + 1)
+    # axis 2 : b_z (size: angmom_b + 1)
+    # axis 3 : a_x (size: m_max)
+    # axis 4 : a_y (size: m_max)
+    # axis 5 : a_z (size: m_max)
     # axis 6 : index for segmented contractions of contraction a (size: M_a)
     # axis 7 : index for segmented contractions of contraction b (size: M_b)
     integrals = np.zeros(
         (
-            m_max,
-            m_max,
-            m_max,
             angmom_b + 1,
             angmom_b + 1,
             angmom_b + 1,
+            m_max,
+            m_max,
+            m_max,
             len(coeffs_a[0]),
             len(coeffs_b[0]),
         )
     )
+    rel_dist = np.squeeze(rel_dist)
     integrals[0, 0, 0, :, :, :, :, :] = integrals_cont
 
     # Horizontal recursion for one nonzero index i.e. V(120|100)
     for b in range(0, angmom_b):
         # Increment b_x
-        integrals[:-1, :, :, b + 1, 0, 0, :, :] = (
-            integrals[1:, :, :, b, 0, 0, :, :]
-            + rel_dist[:, 0, :, :] * integrals[:-1, :, :, b, 0, 0, :, :]
+        integrals[b + 1, 0, 0, :-1, :, :, :, :] = (
+            integrals[b, 0, 0, 1:, :, :, :, :] + rel_dist[0] * integrals[b, 0, 0, :-1, :, :, :, :]
         )
         # Increment b_y
-        integrals[:, :-1, :, 0, b + 1, 0, :, :] = (
-            integrals[:, 1:, :, 0, b, 0, :, :]
-            + rel_dist[:, 1, :, :] * integrals[:, :-1, :, 0, b, 0, :, :]
+        integrals[0, b + 1, 0, :, :-1, :, :, :] = (
+            integrals[0, b, 0, :, 1:, :, :, :] + rel_dist[1] * integrals[0, b, 0, :, :-1, :, :, :]
         )
         # Increment b_z
-        integrals[:, :, :-1, 0, 0, b + 1, :, :] = (
-            integrals[:, :, 1:, 0, 0, b, :, :]
-            + rel_dist[:, 2, :, :] * integrals[:, :, :-1, 0, 0, b, :, :]
+        integrals[0, 0, b + 1, :, :, :-1, :, :] = (
+            integrals[0, 0, b, :, :, 1:, :, :] + rel_dist[2] * integrals[0, 0, b, :, :, :-1, :, :]
         )
 
     # Horizontal recursion for two nonzero indices
     for b in range(0, angmom_b):
         # Increment b_x for all b_y
-        integrals[:-1, :, :, b + 1, b + 1 : -b - 1, 0, :, :] = (
-            integrals[1:, :, :, b, b + 1 : -b - 1, 0, :, :]
-            + rel_dist[:, 0, :, :] * integrals[:-1, :, :, b, b + 1 : -b - 1, 0, :, :]
+        integrals[b + 1, b + 1 : -b - 1, 0, :-1, :, :, :, :] = (
+            integrals[b, b + 1 : -b - 1, 0, 1:, :, :, :, :]
+            + rel_dist[0] * integrals[b, b + 1 : -b - 1, 0, :-1, :, :, :, :]
         )
         # Increment b_x for all b_z
-        integrals[:-1, :, :, b + 1, 0, b + 1 : -b - 1, :, :] = (
-            integrals[1:, :, :, b, 0, b + 1 : -b - 1, :, :]
-            + rel_dist[:, 0, :, :] * integrals[:-1, :, :, b, 0, b + 1 : -b - 1, :, :]
+        integrals[b + 1, 0, b + 1 : -b - 1, :-1, :, :, :, :] = (
+            integrals[b, 0, b + 1 : -b - 1, 1:, :, :, :, :]
+            + rel_dist[0] * integrals[b, 0, b + 1 : -b - 1, :-1, :, :, :, :]
         )
         # Increment b_y for all b_x
-        integrals[:, :-1, :, b + 1 : -b - 1, b + 1, 0, :, :] = (
-            integrals[:, 1:, :, b + 1 : -b - 1, b, 0, :, :]
-            + rel_dist[:, 1, :, :] * integrals[:, :-1, :, b + 1 : -b - 1, b, 0, :, :]
+        integrals[b + 1 : -b - 1, b + 1, 0, :, :-1, :, :, :] = (
+            integrals[b + 1 : -b - 1, b, 0, :, 1:, :, :, :]
+            + rel_dist[1] * integrals[b + 1 : -b - 1, b, 0, :, :-1, :, :, :]
         )
         # Increment b_y for all b_z
-        integrals[:, :-1, :, 0, b + 1, b + 1 : -b - 1, :, :] = (
-            integrals[:, 1:, :, 0, b, b + 1 : -b - 1, :, :]
-            + rel_dist[:, 1, :, :] * integrals[:, :-1, :, 0, b, b + 1 : -b - 1, :, :]
+        integrals[0, b + 1, b + 1 : -b - 1, :, :-1, :, :, :] = (
+            integrals[0, b, b + 1 : -b - 1, :, 1:, :, :, :]
+            + rel_dist[1] * integrals[0, b, b + 1 : -b - 1, :, :-1, :, :, :]
         )
         # Increment b_z for all b_x
-        integrals[:, :, :-1, b + 1 : -b - 1, 0, b + 1, :, :] = (
-            integrals[:, :, 1:, b + 1 : -b - 1, 0, b, :, :]
-            + rel_dist[:, 2, :, :] * integrals[:, :, :-1, b + 1 : -b - 1, 0, b, :, :]
+        integrals[b + 1 : -b - 1, 0, b + 1, :, :, :-1, :, :] = (
+            integrals[b + 1 : -b - 1, 0, b, :, :, 1:, :, :]
+            + rel_dist[2] * integrals[b + 1 : -b - 1, 0, b, :, :, :-1, :, :]
         )
         # Increment b_z for all b_y
-        integrals[:, :, :-1, 0, b + 1 : -b - 1, b + 1, :, :] = (
-            integrals[:, :, 1:, 0, b + 1 : -b - 1, b, :, :]
-            + rel_dist[:, 2, :, :] * integrals[:, :, :-1, 0, b + 1 : -b - 1, b, :, :]
+        integrals[0, b + 1 : -b - 1, b + 1, :, :, :-1, :, :] = (
+            integrals[0, b + 1 : -b - 1, b, :, :, 1:, :, :]
+            + rel_dist[2] * integrals[0, b + 1 : -b - 1, b, :, :, :-1, :, :]
         )
 
     # Horizontal recursion for three nonzero indices
     for b in range(0, angmom_b):
-        integrals[:-2, :, :, b + 1, b + 1 : -b - 1, b + 1 : -b - 1, :, :] = (
-            integrals[1:-1, :, :, b, b + 1 : -b - 1, b + 1 : -b - 1, :, :]
-            + rel_dist[:, 0, :, :] * integrals[:-2, :, :, b, b + 1 : -b - 1, b + 1 : -b - 1, :, :]
+        integrals[b + 1, b + 1 : -b - 1, b + 1 : -b - 1, :-2, :, :, :, :] = (
+            integrals[b, b + 1 : -b - 1, b + 1 : -b - 1, 1:-1, :, :, :, :]
+            + rel_dist[0] * integrals[b, b + 1 : -b - 1, b + 1 : -b - 1, :-2, :, :, :, :]
         )
-        integrals[:-2, :, :, b + 1 : -b - 1, b + 1, b + 1 : -b - 1, :, :] = (
-            integrals[1:-1, :, :, b + 1 : -b - 1, b, b + 1 : -b - 1, :, :]
-            + rel_dist[:, 1, :, :] * integrals[:-2, :, :, b + 1 : -b - 1, b, b + 1 : -b - 1, :, :]
+        integrals[b + 1 : -b - 1, b + 1, b + 1 : -b - 1, :-2, :, :, :, :] = (
+            integrals[b + 1 : -b - 1, b, b + 1 : -b - 1, 1:-1, :, :, :, :]
+            + rel_dist[1] * integrals[b + 1 : -b - 1, b, b + 1 : -b - 1, :-2, :, :, :, :]
         )
-        integrals[:-2, :, :, b + 1 : -b - 1, b + 1 : -b - 1, b + 1, :, :] = (
-            integrals[1:-1, :, :, b + 1 : -b - 1, b + 1 : -b - 1, b, :, :]
-            + rel_dist[:, 2, :, :] * integrals[:-2, :, :, b + 1 : -b - 1, b + 1 : -b - 1, b, :, :]
+        integrals[b + 1 : -b - 1, b + 1 : -b - 1, b + 1, :-2, :, :, :, :] = (
+            integrals[b + 1 : -b - 1, b + 1 : -b - 1, b, 1:-1, :, :, :, :]
+            + rel_dist[2] * integrals[b + 1 : -b - 1, b + 1 : -b - 1, b, :-2, :, :, :, :]
         )
 
-    return integrals
+    return np.transpose(integrals, (3, 4, 5, 0, 1, 2, 6, 7))
