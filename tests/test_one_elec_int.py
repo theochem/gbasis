@@ -92,16 +92,6 @@ def test_compute_one_elec_int_v_recursion():
     # Recursion loop for all a
     assert np.allclose(-5.795589744177589, answer[2, 1, 2, 0, 0, 0])
 
-    # Check for no out-of-bounds assignments i.e. V(a|0) = 0.0 if |a| >= m_max
-    m_max = angmom_a + angmom_b + 1
-    for i in range(1, m_max - 1):
-        assert np.allclose(answer[i, m_max - i, 0:, 0, 0, 0], 0.0)
-        assert np.allclose(answer[m_max - i, i, 0:, 0, 0, 0], 0.0)
-        assert np.allclose(answer[0:, i, m_max - i, 0, 0, 0], 0.0)
-        assert np.allclose(answer[0:, m_max - i, i, 0, 0, 0], 0.0)
-        assert np.allclose(answer[i, 0:, m_max - i, 0, 0, 0], 0.0)
-        assert np.allclose(answer[m_max - i, 0:, i, 0, 0, 0], 0.0)
-
 
 def test_compute_one_elec_int_s_type():
     """Test _one_elec_int._compute_one_electron_integrals for s-type primitives."""
