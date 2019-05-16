@@ -109,6 +109,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             the array.
         coord_point : np.ndarray(3,)
             Center of the point charge.
+        charge_point : float
+            Charge of the point charge.
 
         Returns
         -------
@@ -134,6 +136,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             If `contractions_one` is not a ContractedCartesianGaussians instance.
             If `contractions_two` is not a ContractedCartesianGaussians instance.
             If `coord_point` is not a one-dimensional numpy array with three elements.
+            If `charge_point` is not an integer or a float.
 
         """
         # pylint: disable=R0914
@@ -146,6 +149,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             isinstance(coord_point, np.ndarray) and coord_point.ndim == 1 and coord_point.size == 3
         ):
             raise TypeError("`coord_point` must be a one-dimensional numpy array with 3 elements.")
+        if not isinstance(charge_point, (int, float)):
+            raise TypeError("`charge_point` must be an integer or a float.")
 
         # TODO: Overlap screening
 
@@ -190,16 +195,19 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         # axis 1 : angular momentum vector of contraction one (in the same order as angmoms_a)
         # axis 2 : index for segmented contractions of contraction two
         # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
-        output = integrals[
-            np.arange(coeffs_a.shape[1]),
-            angmoms_a_x[None, :, None, None],
-            angmoms_a_y[None, :, None, None],
-            angmoms_a_z[None, :, None, None],
-            np.arange(coeffs_b.shape[1]),
-            angmoms_b_x[None, None, None, :],
-            angmoms_b_y[None, None, None, :],
-            angmoms_b_z[None, None, None, :],
-        ]
+        output = (
+            charge_point
+            * integrals[
+                np.arange(coeffs_a.shape[1]),
+                angmoms_a_x[None, :, None, None],
+                angmoms_a_y[None, :, None, None],
+                angmoms_a_z[None, :, None, None],
+                np.arange(coeffs_b.shape[1]),
+                angmoms_b_x[None, None, None, :],
+                angmoms_b_y[None, None, None, :],
+                angmoms_b_z[None, None, None, :],
+            ]
+        )
         return output
 
 
