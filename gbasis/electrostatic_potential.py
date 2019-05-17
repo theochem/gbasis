@@ -93,6 +93,34 @@ class ElectroStaticPotential(PointChargeIntegral):
         """
         return hyp1f1(orders + 1 / 2, orders + 3 / 2, -weighted_dist) / (2 * orders + 1)
 
+    @classmethod
+    def construct_array_contraction(self, contractions_one, contractions_two, coord_point):
+        """Return electrostatic potential for the given contractions.
+
+        Parameters
+        ----------
+        contractions_one : ContractedCartesianGaussians
+            Contracted Cartesian Gaussians (of the same shell) associated with the first index of
+            the array.
+        contractions_two : ContractedCartesianGaussians
+            Contracted Cartesian Gaussians (of the same shell) associated with the second index of
+            the array.
+        coord_point : np.ndarray(3,)
+            Center of the point charge.
+
+        Raises
+        ------
+        TypeError
+            If `contractions_one` is not a ContractedCartesianGaussians instance.
+            If `contractions_two` is not a ContractedCartesianGaussians instance.
+            If `coord_point` is not a one-dimensional numpy array with three elements.
+            If `charge_point` is not an integer or a float.
+
+        """
+        return super().construct_array_contraction(
+            contractions_one, contractions_two, coord_point, -1
+        )
+
 
 def one_electron_integral_basis_cartesian(basis, coord_point, boys_func):
     """Return the one-electron integrals of the basis set in the Cartesian form.
