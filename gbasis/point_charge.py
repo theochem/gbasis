@@ -1,10 +1,9 @@
 """Module for computing point charge integrals."""
-import abc
-
 from gbasis._one_elec_int import _compute_one_elec_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import ContractedCartesianGaussians
 import numpy as np
+from scipy.special import hyp1f1  # pylint: disable=E0611
 
 
 class PointChargeIntegral(BaseTwoIndexSymmetric):
@@ -62,9 +61,12 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     """
 
-    @abc.abstractstaticmethod
+    @staticmethod
     def boys_func(orders, weighted_dist):
         r"""Return the value of Boys function for the given orders and weighted distances.
+
+        The Coulombic Boys function can be written as a renormalized special case of the Kummer
+        confluent hypergeometric function, as derived in Helgaker (eq. 9.8.39).
 
         Parameters
         ----------
@@ -90,7 +92,22 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             Output is the Boys function evaluated for each order and the weighted interactomic
             distance.
 
+        Notes
+        -----
+        There's some documented instability for hyp1f1, mainly for large values or complex numbers.
+        In this case it seems fine, since m should be less than 10 in most cases, and except for
+        exceptional cases the input, while negative, shouldn't be very large. In scipy > 0.16, this
+        problem becomes a precision error in most cases where it was an overflow error before, so
+        the values should be close even when they are wrong.
+
+        To use another `boys_func`, simply overwrite this function (via monkeypatching or
+        inheritance) with the desired boys function. Make sure to follow the same API, i.e. *have
+        the same inputs including their shapes and types*. Note that the index `1` corresponds to
+        the primitive on the right side and the index `2` correspond to the primitive on the left
+        side.
+
         """
+        return hyp1f1(orders + 1 / 2, orders + 3 / 2, -weighted_dist) / (2 * orders + 1)
 
     @classmethod
     def construct_array_contraction(

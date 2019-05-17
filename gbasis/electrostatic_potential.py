@@ -1,6 +1,5 @@
 """Module for computing the electrostatic potential integrals."""
 from gbasis.point_charge import PointChargeIntegral
-from scipy.special import hyp1f1  # pylint: disable=E0611
 
 
 class ElectroStaticPotential(PointChargeIntegral):
@@ -49,49 +48,6 @@ class ElectroStaticPotential(PointChargeIntegral):
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
-
-    @staticmethod
-    def boys_func(orders, weighted_dist):
-        r"""Return the value of Boys function for the given orders and weighted distances.
-
-        The Coulombic Boys function can be written as a renormalized special case of the Kummer
-        confluent hypergeometric function, as derived in Helgaker (eq. 9.8.39).
-
-        Parameters
-        ----------
-        orders : np.ndarray(M, 1, 1)
-            Differentiation order of the helper function.
-            Same as m in eq. 23, Aldrichs, R. Phys. Chem. Chem. Phys., 2006, 8, 3072-3077.
-            `M` is the number of orders that will be evaluated.
-        weighted_dist : np.ndarray(1, K_b, K_a)
-            Weighted interatomic distance
-            .. math::
-
-                \frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{AB}||^2
-
-            where :math:`\alpha_i` is the exponent of the ith primitive on the left side and the
-            :math:`\beta_j` is the exponent of the jth primitive on the right side.
-            `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
-            Note that the index 1 corresponds to the primitive on the right side and the index 2
-            corresponds to the primitive on the left side.
-
-        Returns
-        -------
-        boys_eval : np.ndarray(M, K_b, K_a)
-            Output is the Boys function evaluated for each order and the weighted interactomic
-            distance.
-
-        Notes
-        -----
-        There's some documented instability for hyp1f1, mainly for large values or complex numbers.
-        In this case it seems fine, since m should be less than 10 in most cases, and except for
-        exceptional cases the input, while negative, shouldn't be very large. In scipy > 0.16, this
-        problem becomes a precision error in most cases where it was an overflow error before, so
-        the values should be close even when they are wrong.
-        This function cannot be vectorized for both m and x.
-
-        """
-        return hyp1f1(orders + 1 / 2, orders + 3 / 2, -weighted_dist) / (2 * orders + 1)
 
     @classmethod
     def construct_array_contraction(self, contractions_one, contractions_two, coord_point):
