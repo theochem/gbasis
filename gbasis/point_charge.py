@@ -182,11 +182,14 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         coeffs_b = contractions_two.coeffs
 
         # Enforce L_a >= L_b
+        ab_swapped = False
         if angmom_a < angmom_b:
             coord_a, coord_b = coord_b, coord_a
             angmom_a, angmom_b = angmom_b, angmom_a
+            angmoms_a, angmoms_b = angmoms_b, angmoms_a
             exps_a, exps_b = exps_b, exps_a
             coeffs_a, coeffs_b = coeffs_b, coeffs_a
+            ab_swapped = True
 
         integrals = _compute_one_elec_integrals(
             coord_point,
@@ -224,4 +227,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
                 angmoms_b_z[None, None, None, :],
             ]
         )
+
+        if ab_swapped:
+            return np.transpose(output, (2, 3, 0, 1))
+
         return output
