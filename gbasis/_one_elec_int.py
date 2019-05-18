@@ -280,22 +280,13 @@ def _compute_one_elec_integrals(
 
     # Discard nonrelevant integrals
     integrals_cont = integrals[0, :, :, :, :, :]
-    # Get norms
-    # FIXME: hard coded
-    exps_a_norm = exps_a.reshape(1, 1, 1, -1)
-    angmoms_a_x = np.arange(m_max)[:, None, None, None]
-    angmoms_a_y = np.arange(m_max)[None, :, None, None]
-    angmoms_a_z = np.arange(m_max)[None, None, :, None]
-    norm_a = (
-        (2 * exps_a_norm / np.pi) ** (3 / 4)
-        * ((4 * exps_a) ** ((angmoms_a_x + angmoms_a_y + angmoms_a_z) / 2))
-        / np.sqrt(
-            factorial2(2 * angmoms_a_x - 1)
-            * factorial2(2 * angmoms_a_y - 1)
-            * factorial2(2 * angmoms_a_z - 1)
-        )
-    )[:, :, :, None, :]
-    norm_b = ((2 * exps_b / np.pi) ** (3 / 4)).reshape(1, 1, 1, 1, -1, 1)
+    # Get normalization constants that correspond to the exponents (and the angular momentum)
+    norm_a = (((2 * exps_a / np.pi) ** (3 / 4)) * ((4 * exps_a) ** (angmom_a / 2))).reshape(
+        1, 1, 1, 1, -1
+    )
+    norm_b = (((2 * exps_b / np.pi) ** (3 / 4)) * ((4 * exps_b) ** (angmom_b / 2))).reshape(
+        1, 1, 1, -1, 1
+    )
     # Contract primitives
     integrals_cont = np.tensordot(integrals_cont * norm_a, coeffs_a, (4, 0))
     integrals_cont = np.tensordot(integrals_cont * norm_b, coeffs_b, (3, 0))
@@ -392,5 +383,21 @@ def _compute_one_elec_integrals(
 
     # discard higher order angular momentum needed for the recursions
     integrals = integrals[: angmom_a + 1, : angmom_a + 1, : angmom_a + 1]
+
+    # Get normalzation constants that correspond to the angular momentum components
+    angmoms_a = np.arange(m_max)
+    angmoms_b = np.arange(angmom_b + 1)
+    norm_a = 1 / np.sqrt(
+        factorial2(2 * angmoms_a[:, None, None, None, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_a[None, :, None, None, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_a[None, None, :, None, None, None, None, None] - 1)
+    )
+    norm_b = 1 / np.sqrt(
+        factorial2(2 * angmoms_b[None, None, None, :, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_b[None, None, None, None, :, None, None, None] - 1)
+        * factorial2(2 * angmoms_b[None, None, None, None, None, :, None, None] - 1)
+    )
+    integrals *= norm_a
+    integrals *= norm_b
 
     return integrals
