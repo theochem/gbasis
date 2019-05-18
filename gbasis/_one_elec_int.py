@@ -102,7 +102,7 @@ def _compute_one_elec_integrals(
 
     # Initialize V(m)(000|000) for all m
     m = np.arange(m_max)[:, None, None]
-    integrals[:, 0, 0, 0, :, :] = boys_func(
+    integrals[:, 0, 0, 0, :, :] = np.sqrt(4 * exps_sum / np.pi).squeeze(axis=1) * boys_func(
         m, exps_sum[:, 0] * np.sum(rel_coord_point ** 2, axis=1)
     ) * np.exp(-harm_mean[:, 0] * (rel_dist ** 2).sum(axis=1))
 
