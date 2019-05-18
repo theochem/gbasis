@@ -217,11 +217,11 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         output = (
             charge_point
             * integrals[
-                np.arange(coeffs_a.shape[1]),
+                np.arange(coeffs_a.shape[1])[:, None, None, None],
                 angmoms_a_x[None, :, None, None],
                 angmoms_a_y[None, :, None, None],
                 angmoms_a_z[None, :, None, None],
-                np.arange(coeffs_b.shape[1]),
+                np.arange(coeffs_b.shape[1])[None, None, :, None],
                 angmoms_b_x[None, None, None, :],
                 angmoms_b_y[None, None, None, :],
                 angmoms_b_z[None, None, None, :],
