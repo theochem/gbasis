@@ -217,7 +217,7 @@ def _compute_one_elec_integrals(
     integrals = integrals[: angmom_a + 1, : angmom_a + 1, : angmom_a + 1]
 
     # Get normalzation constants that correspond to the angular momentum components
-    angmoms_a = np.arange(m_max)
+    angmoms_a = np.arange(angmom_a + 1)
     angmoms_b = np.arange(angmom_b + 1)
     norm_a = 1 / np.sqrt(
         factorial2(2 * angmoms_a[:, None, None, None, None, None, None, None] - 1)
