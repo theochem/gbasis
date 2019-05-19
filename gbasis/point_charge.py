@@ -38,7 +38,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         Boys function used to evaluate the one-electron integral.
         `M` is the number of orders that will be evaluated. `K_a` and `K_b` are the number of
         primitives on the left and right side, respectively.
-    construct_array_contraction(self, contractions_one, contractions_two, coord_point, charge_point
+    construct_array_contraction(self, contractions_one, contractions_two, coords_points,
+                                charges_points)
         Return the point charge integrals for the given `ContractedCartesianGaussians` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
@@ -70,25 +71,25 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
         Parameters
         ----------
-        orders : np.ndarray(M, 1, 1)
+        orders : np.ndarray(M, 1, 1, 1)
             Differentiation order of the helper function.
             Same as m in eq. 23, Aldrichs, R. Phys. Chem. Chem. Phys., 2006, 8, 3072-3077.
             `M` is the number of orders that will be evaluated.
-        weighted_dist : np.ndarray(1, K_b, K_a)
-            Weighted interatomic distance
+        weighted_dist : np.ndarray(1, N, K_b, K_a)
+            Weighted interatomic distances.
             .. math::
 
-                \frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{AB}||^2
+                \frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2
 
             where :math:`\alpha_i` is the exponent of the ith primitive on the left side and the
             :math:`\beta_j` is the exponent of the jth primitive on the right side.
-            `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
-            Note that the index 1 corresponds to the primitive on the right side and the index 2
-            corresponds to the primitive on the left side.
+            `N` is the number of point charges. `K_a` and `K_b` are the number of primitives on the
+            left and right side, respectively. Note that the index 2 corresponds to the primitive on
+            the right side and the index 3 corresponds to the primitive on the left side.
 
         Returns
         -------
-        boys_eval : np.ndarray(M, K_b, K_a)
+        boys_eval : np.ndarray(M, N, K_b, K_a)
             Output is the Boys function evaluated for each order and the weighted interactomic
             distance.
 
@@ -111,9 +112,9 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     @classmethod
     def construct_array_contraction(
-        cls, contractions_one, contractions_two, coord_point, charge_point
+        cls, contractions_one, contractions_two, coords_points, charges_points
     ):
-        """Return point charge interaction integral for the given contractions.
+        """Return point charge interaction integral for the given contractions and point charges.
 
         Parameters
         ----------
@@ -123,14 +124,16 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         contractions_two : ContractedCartesianGaussians
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
-        coord_point : np.ndarray(3,)
-            Center of the point charge.
-        charge_point : float
-            Charge of the point charge.
+        coords_points : np.ndarray(N, 3)
+            Coordinates of the point charges.
+            Rows correspond to the different point charges and columns correspond to the x, y, and z
+            components.
+        charges_points : np.ndarray(N)
+            Charge of the point charges.
 
         Returns
         -------
-        array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+        array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, N)
             Point charge integral associated with the given instances of
             ContractedCartesianGaussians.
             First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
@@ -145,14 +148,19 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
             `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
+            Fifth axis cooresponds to the point charge. `N` is the number of points charges.
 
         Raises
         ------
         TypeError
             If `contractions_one` is not a ContractedCartesianGaussians instance.
             If `contractions_two` is not a ContractedCartesianGaussians instance.
-            If `coord_point` is not a one-dimensional numpy array with three elements.
-            If `charge_point` is not an integer or a float.
+            If `coords_points` is not a two-dimensional numpy array of dtype int/float with 3
+            columns.
+            If `charges_points` is not a one-dimensional numpy array of int/float.
+        ValueError
+            If `coords_points` does not have the same number of rows as the size of
+            `charges_points`.
 
         """
         # pylint: disable=R0914
@@ -162,11 +170,28 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, ContractedCartesianGaussians):
             raise TypeError("`contractions_two` must be a ContractedCartesianGaussians instance.")
         if not (
-            isinstance(coord_point, np.ndarray) and coord_point.ndim == 1 and coord_point.size == 3
+            isinstance(coords_points, np.ndarray)
+            and coords_points.ndim == 2
+            and coords_points.shape[1] == 3
+            and coords_points.dtype in [int, float]
         ):
-            raise TypeError("`coord_point` must be a one-dimensional numpy array with 3 elements.")
-        if not isinstance(charge_point, (int, float)):
-            raise TypeError("`charge_point` must be an integer or a float.")
+            raise TypeError(
+                "`coords_points` must be a two-dimensional numpy array of dtype int/float with "
+                "three columns."
+            )
+        if not (
+            isinstance(charges_points, np.ndarray)
+            and charges_points.ndim == 1
+            and charges_points.dtype in [int, float]
+        ):
+            raise TypeError(
+                "`charges_points` must be a one-dimensional numpy array of integers or floats."
+            )
+        if coords_points.shape[0] != charges_points.size:
+            raise ValueError(
+                "`coords_points` must have the same number of rows as there are elements in "
+                "`charges_points`."
+            )
 
         # TODO: Overlap screening
 
@@ -192,7 +217,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             ab_swapped = True
 
         integrals = _compute_one_elec_integrals(
-            coord_point,
+            coords_points,
             cls.boys_func,
             coord_a,
             angmom_a,
@@ -203,7 +228,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             exps_b,
             coeffs_b,
         )
-        integrals = np.transpose(integrals, (6, 0, 1, 2, 7, 3, 4, 5))
+        integrals = np.transpose(integrals, (7, 0, 1, 2, 8, 3, 4, 5, 6))
 
         angmoms_a_x, angmoms_a_y, angmoms_a_z = angmoms_a.T
         angmoms_b_x, angmoms_b_y, angmoms_b_z = angmoms_b.T
@@ -214,21 +239,23 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         # axis 1 : angular momentum vector of contraction one (in the same order as angmoms_a)
         # axis 2 : index for segmented contractions of contraction two
         # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
+        # axis 4 : point charge
         output = (
-            charge_point
+            charges_points
             * integrals[
-                np.arange(coeffs_a.shape[1])[:, None, None, None],
-                angmoms_a_x[None, :, None, None],
-                angmoms_a_y[None, :, None, None],
-                angmoms_a_z[None, :, None, None],
-                np.arange(coeffs_b.shape[1])[None, None, :, None],
-                angmoms_b_x[None, None, None, :],
-                angmoms_b_y[None, None, None, :],
-                angmoms_b_z[None, None, None, :],
+                np.arange(coeffs_a.shape[1])[:, None, None, None, None],
+                angmoms_a_x[None, :, None, None, None],
+                angmoms_a_y[None, :, None, None, None],
+                angmoms_a_z[None, :, None, None, None],
+                np.arange(coeffs_b.shape[1])[None, None, :, None, None],
+                angmoms_b_x[None, None, None, :, None],
+                angmoms_b_y[None, None, None, :, None],
+                angmoms_b_z[None, None, None, :, None],
+                np.arange(coords_points.shape[0])[None, None, None, None, :],
             ]
         )
 
         if ab_swapped:
-            return np.transpose(output, (2, 3, 0, 1))
+            return np.transpose(output, (2, 3, 0, 1, 4))
 
         return output

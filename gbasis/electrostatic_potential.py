@@ -2,14 +2,14 @@
 from gbasis.point_charge import PointChargeIntegral
 
 
-def electrostatic_potential_basis_cartesian(basis, coord_point):
+def electrostatic_potential_basis_cartesian(basis, coords_points):
     """Return the electrostatic potentials of the basis set in the Cartesian form.
 
     Parameters
     ----------
     basis : list/tuple of ContractedCartesianGaussians
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    coord_point : np.ndarray(3,)
+    coords_points : np.ndarray(3,)
         Center of the point charge.
 
     Returns
@@ -21,18 +21,18 @@ def electrostatic_potential_basis_cartesian(basis, coord_point):
 
     """
     return PointChargeIntegral(basis).construct_array_cartesian(
-        coord_point=coord_point, charge_point=-1
+        coords_points=coords_points, charges_points=-1
     )
 
 
-def electrostatic_potential_basis_spherical(basis, coord_point):
+def electrostatic_potential_basis_spherical(basis, coords_points):
     """Return the electrostatic potentials of the basis set in the spherical form.
 
     Parameters
     ----------
     basis : list/tuple of ContractedCartesianGaussians
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    coord_point : np.ndarray(3,)
+    coords_points : np.ndarray(3,)
         Center of the point charge.
 
     Returns
@@ -46,11 +46,11 @@ def electrostatic_potential_basis_spherical(basis, coord_point):
 
     """
     return PointChargeIntegral(basis).construct_array_spherical(
-        coord_point=coord_point, charge_point=-1
+        coords_points=coords_points, charges_points=-1
     )
 
 
-def electrostatic_potential_spherical_lincomb(basis, transform, coord_point):
+def electrostatic_potential_spherical_lincomb(basis, transform, coords_points):
     """Return the electrostatic potentials of the LCAO's in the spherical form.
 
     Parameters
@@ -61,7 +61,7 @@ def electrostatic_potential_spherical_lincomb(basis, transform, coord_point):
         Array associated with the linear combinations of spherical Gaussians (LCAO's).
         Transformation is applied to the left, i.e. the sum is over the second index of `transform`
         and first index of the array for contracted spherical Gaussians.
-    coord_point : np.ndarray(3,)
+    coords_points : np.ndarray(3,)
         Center of the point charge.
 
     Returns
@@ -75,5 +75,5 @@ def electrostatic_potential_spherical_lincomb(basis, transform, coord_point):
 
     """
     return PointChargeIntegral(basis).construct_array_spherical_lincomb(
-        transform, coord_point=coord_point, charge_point=-1
+        transform, coords_points=coords_points, charges_points=-1
     )

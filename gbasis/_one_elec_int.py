@@ -5,29 +5,37 @@ from scipy.special import factorial2
 
 # pylint: disable=C0103,R0914,R0915
 # FIXME: returns nan when exponent is zero
-# TODO: vectorize over multiple coordinate points (i.e. nuclear electron attraction)
 def _compute_one_elec_integrals(
-    coord_point, boys_func, coord_a, angmom_a, exps_a, coeffs_a, coord_b, angmom_b, exps_b, coeffs_b
+    coords_points,
+    boys_func,
+    coord_a,
+    angmom_a,
+    exps_a,
+    coeffs_a,
+    coord_b,
+    angmom_b,
+    exps_b,
+    coeffs_b,
 ):
     r"""Return the one-electron integrals for a point charge interaction.
 
     Parameters
     ----------
-    coord_point : np.ndarray(3,)
-        Center of the point charge.
+    coords_points : np.ndarray(N, 3)
+        Coordinates of the point charges.
     boys_func : function(orders, weighted_dist)
         Boys function used to evaluate the one-electron integral.
         `orders` is the orders of the Boys integral that will be evaluated. It should be a
-        three-dimensional numpy array of integers with shape `(M, 1, 1)` where `M` is the number of
-        orders that will be evaluated.
+        three-dimensional numpy array of integers with shape `(M, 1, 1, 1)` where `M` is the number
+        of orders that will be evaluated.
         `weighted_dist` is the weighted interatomic distance, i.e.
-        :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{AB}||^2` where :math:`\alpha_i` is
+        :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
         the exponent of the ith primitive on the left side and the :math:`\beta_j` is the exponent
-        of the jth primitive on the right side. It should be a three-dimensional numpy array of
-        floats with shape `(1, K_b, K_a)` where `K_a` and `K_b` are the number of primitives on the
-        left and right side, respectively.
+        of the jth primitive on the right side. It should be a four-dimensional numpy array of
+        floats with shape `(1, N, K_b, K_a)` where `N` is the number of point charges, `K_a` and
+        `K_b` are the number of primitives on the left and right side, respectively.
         Output is the Boys function evaluated for each order and the weighted interactomic distance.
-        It will be a three-dimensional numpy array of shape `(M, K_b, K_a)`.
+        It will be a three-dimensional numpy array of shape `(M, N, K_b, K_a)`.
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmom_a : int
@@ -73,21 +81,25 @@ def _compute_one_elec_integrals(
     # axis 1 : a_x (size: m_max)
     # axis 2 : a_y (size: m_max)
     # axis 3 : a_z (size: m_max)
-    # axis 4 : primitive of contraction b (size: K_b)
-    # axis 5 : primitive of contraction a (size: K_a)
+    # axis 4 : point charge (size: N)
+    # axis 5 : primitive of contraction b (size: K_b)
+    # axis 6 : primitive of contraction a (size: K_a)
 
-    integrals = np.zeros((m_max, m_max, m_max, m_max, exps_b.size, exps_a.size))
+    integrals = np.zeros(
+        (m_max, m_max, m_max, m_max, coords_points.shape[0], exps_b.size, exps_a.size)
+    )
 
     # Adjust axes for pre-work
     # axis 0 : m (size: m_max)
     # axis 1 : components of vectors (x, y, z) (size: 3)
-    # axis 2 : primitive of contraction b (size: K_b)
-    # axis 3 : primitive of contraction a (size: K_a)
-    coord_point = coord_point[np.newaxis, :, np.newaxis, np.newaxis]
-    coord_a = coord_a[np.newaxis, :, np.newaxis, np.newaxis]
-    coord_b = coord_b[np.newaxis, :, np.newaxis, np.newaxis]
-    exps_a = exps_a[np.newaxis, np.newaxis, np.newaxis, :]
-    exps_b = exps_b[np.newaxis, np.newaxis, :, np.newaxis]
+    # axis 2 : point charge (size: N)
+    # axis 3 : primitive of contraction b (size: K_b)
+    # axis 4 : primitive of contraction a (size: K_a)
+    coord_point = coords_points.T[np.newaxis, :, :, np.newaxis, np.newaxis]
+    coord_a = coord_a[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis]
+    coord_b = coord_b[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis]
+    exps_a = exps_a[np.newaxis, np.newaxis, np.newaxis, np.newaxis, :]
+    exps_b = exps_b[np.newaxis, np.newaxis, np.newaxis, :, np.newaxis]
 
     # sum of the exponents
     exps_sum = exps_a + exps_b
@@ -101,69 +113,70 @@ def _compute_one_elec_integrals(
     harm_mean = exps_a * exps_b / exps_sum
 
     # Initialize V(m)(000|000) for all m
-    integrals[:, 0, 0, 0, :, :] = (
-        (2 * np.pi / exps_sum)
+    integrals[:, 0, 0, 0, :, :, :] = (
+        (2 * np.pi / exps_sum.squeeze(axis=1))
         * boys_func(
-            np.arange(m_max)[:, None, None],
-            exps_sum[:, 0, :, :] * np.sum(rel_coord_point ** 2, axis=1),
+            np.arange(m_max)[:, None, None, None],
+            (exps_sum.squeeze(axis=1) * np.sum(rel_coord_point ** 2, axis=1))[:, None, :, :],
         )
-        * np.exp(-harm_mean[:, 0] * (rel_dist ** 2).sum(axis=1))
+        * np.exp(-harm_mean.squeeze(axis=1) * (rel_dist ** 2).sum(axis=1))
     )
 
     # Vertical recursion for the first index
-    integrals[:-1, 1:2, 0, 0, :, :] = (
-        rel_coord_a[:, 0, :, :] * integrals[:-1, 0:1, 0, 0, :, :]
-        - rel_coord_point[:, 0, :, :] * integrals[1:, 0:1, 0, 0, :, :]
+    integrals[:-1, 1:2, 0, 0, :, :, :] = (
+        rel_coord_a[:, 0, :, :, :] * integrals[:-1, 0:1, 0, 0, :, :, :]
+        - rel_coord_point[:, 0, :, :, :] * integrals[1:, 0:1, 0, 0, :, :, :]
     )
     for a in range(1, m_max - 1):
-        integrals[:-1, a + 1, 0, 0, :, :] = (
-            rel_coord_a[:, 0, :, :] * integrals[:-1, a, 0, 0, :, :]
-            - rel_coord_point[:, 0, :, :] * integrals[1:, a, 0, 0, :, :]
+        integrals[:-1, a + 1, 0, 0, :, :, :] = (
+            rel_coord_a[:, 0, :, :, :] * integrals[:-1, a, 0, 0, :, :, :]
+            - rel_coord_point[:, 0, :, :, :] * integrals[1:, a, 0, 0, :, :, :]
             + a
-            / (2 * exps_sum)[:, 0, :, :]
-            * (integrals[:-1, a - 1, 0, 0, :, :] - integrals[1:, a - 1, 0, 0, :, :])
+            / (2 * exps_sum)[:, 0, :, :, :]
+            * (integrals[:-1, a - 1, 0, 0, :, :, :] - integrals[1:, a - 1, 0, 0, :, :, :])
         )
 
     # Vertical recursion for the second index
-    integrals[:-1, :, 1:2, 0, :, :] = (
-        rel_coord_a[:, 1, :, :][:, None, :, :] * integrals[:-1, :, 0:1, 0, :, :]
-        - rel_coord_point[:, 1, :, :][:, None, :, :] * integrals[1:, :, 0:1, 0, :, :]
+    integrals[:-1, :, 1:2, 0, :, :, :] = (
+        rel_coord_a[:, 1, :, :, :][:, None, :, :, :] * integrals[:-1, :, 0:1, 0, :, :, :]
+        - rel_coord_point[:, 1, :, :, :][:, None, :, :, :] * integrals[1:, :, 0:1, 0, :, :, :]
     )
     for a in range(1, m_max - 1):
-        integrals[:-1, :, a + 1, 0, :, :] = (
-            rel_coord_a[:, 1, :, :][:, None, :, :] * integrals[:-1, :, a, 0, :, :]
-            - rel_coord_point[:, 1, :, :][:, None, :, :] * integrals[1:, :, a, 0, :, :]
+        integrals[:-1, :, a + 1, 0, :, :, :] = (
+            rel_coord_a[:, 1, :, :, :][:, None, :, :, :] * integrals[:-1, :, a, 0, :, :, :]
+            - rel_coord_point[:, 1, :, :, :][:, None, :, :, :] * integrals[1:, :, a, 0, :, :, :]
             + a
-            / (2 * exps_sum)[:, 0, :, :][:, None, :, :]  # a bit redundant, but okay
-            * (integrals[:-1, :, a - 1, 0, :, :] - integrals[1:, :, a - 1, 0, :, :])
+            / (2 * exps_sum).squeeze(axis=1)[:, None, :, :, :]  # a bit redundant, but okay
+            * (integrals[:-1, :, a - 1, 0, :, :, :] - integrals[1:, :, a - 1, 0, :, :, :])
         )
 
     # Vertical recursion for the third index
-    integrals[:-1, :, :, 1:2, :, :] = (
-        rel_coord_a[:, 2, :, :][:, None, None, :, :] * integrals[:-1, :, :, 0:1, :, :]
-        - rel_coord_point[:, 2, :, :][:, None, None, :, :] * integrals[1:, :, :, 0:1, :, :]
+    integrals[:-1, :, :, 1:2, :, :, :] = (
+        rel_coord_a[:, 2, :, :, :][:, None, None, :, :, :] * integrals[:-1, :, :, 0:1, :, :, :]
+        - rel_coord_point[:, 2, :, :, :][:, None, None, :, :, :] * integrals[1:, :, :, 0:1, :, :, :]
     )
     for a in range(1, m_max - 1):
-        integrals[:-1, :, :, a + 1, :, :] = (
-            rel_coord_a[:, 2, :, :][:, None, None, :, :] * integrals[:-1, :, :, a, :, :]
-            - rel_coord_point[:, 2, :, :][:, None, None, :, :] * integrals[1:, :, :, a, :, :]
+        integrals[:-1, :, :, a + 1, :, :, :] = (
+            rel_coord_a[:, 2, :, :, :][:, None, None, :, :, :] * integrals[:-1, :, :, a, :, :, :]
+            - rel_coord_point[:, 2, :, :, :][:, None, None, :, :, :]
+            * integrals[1:, :, :, a, :, :, :]
             + a
-            / (2 * exps_sum)[:, 0, :, :][:, None, None, :, :]  # a bit redundant, but okay
-            * (integrals[:-1, :, :, a - 1, :, :] - integrals[1:, :, :, a - 1, :, :])
+            / (2 * exps_sum).squeeze(axis=1)[:, None, None, :, :, :]  # a bit redundant, but okay
+            * (integrals[:-1, :, :, a - 1, :, :, :] - integrals[1:, :, :, a - 1, :, :, :])
         )
 
     # Discard nonrelevant integrals
-    integrals_cont = integrals[0, :, :, :, :, :]
+    integrals_cont = integrals[0, :, :, :, :, :, :]
     # Get normalization constants that correspond to the exponents (and the angular momentum)
     norm_a = (((2 * exps_a / np.pi) ** (3 / 4)) * ((4 * exps_a) ** (angmom_a / 2))).reshape(
-        1, 1, 1, 1, -1
+        1, 1, 1, 1, 1, -1
     )
     norm_b = (((2 * exps_b / np.pi) ** (3 / 4)) * ((4 * exps_b) ** (angmom_b / 2))).reshape(
-        1, 1, 1, -1, 1
+        1, 1, 1, 1, -1, 1
     )
     # Contract primitives
-    integrals_cont = np.tensordot(integrals_cont * norm_a, coeffs_a, (4, 0))
-    integrals_cont = np.tensordot(integrals_cont * norm_b, coeffs_b, (3, 0))
+    integrals_cont = np.tensordot(integrals_cont * norm_a, coeffs_a, (5, 0))
+    integrals_cont = np.tensordot(integrals_cont * norm_b, coeffs_b, (4, 0))
 
     # NOTE: Ordering convention for horizontal recursion of integrals
     # axis 0 : b_x (size: angmom_b + 1)
@@ -172,8 +185,9 @@ def _compute_one_elec_integrals(
     # axis 3 : a_x (size: m_max)
     # axis 4 : a_y (size: m_max)
     # axis 5 : a_z (size: m_max)
-    # axis 6 : index for segmented contractions of contraction a (size: M_a)
-    # axis 7 : index for segmented contractions of contraction b (size: M_b)
+    # axis 6 : point charge (size: N)
+    # axis 7 : index for segmented contractions of contraction a (size: M_a)
+    # axis 8 : index for segmented contractions of contraction b (size: M_b)
     integrals = np.zeros(
         (
             angmom_b + 1,
@@ -182,36 +196,40 @@ def _compute_one_elec_integrals(
             m_max,
             m_max,
             m_max,
+            coords_points.shape[0],
             coeffs_a.shape[1],
             coeffs_b.shape[1],
         )
     )
     rel_dist = np.squeeze(rel_dist)
-    integrals[0, 0, 0, :, :, :, :, :] = integrals_cont
+    integrals[0, 0, 0, :, :, :, :, :, :] = integrals_cont
 
     # Horizontal recursion for the first index
     for b in range(0, angmom_b):
         # Increment b_x
-        integrals[b + 1, 0, 0, :-1, :, :, :, :] = (
-            integrals[b, 0, 0, 1:, :, :, :, :] + rel_dist[0] * integrals[b, 0, 0, :-1, :, :, :, :]
+        integrals[b + 1, 0, 0, :-1, :, :, :, :, :] = (
+            integrals[b, 0, 0, 1:, :, :, :, :, :]
+            + rel_dist[0] * integrals[b, 0, 0, :-1, :, :, :, :, :]
         )
 
     # Horizontal recursion for the second index
     for b in range(0, angmom_b):
         # Increment b_x
-        integrals[:, b + 1, 0, :, :-1, :, :, :] = (
-            integrals[:, b, 0, :, 1:, :, :, :] + rel_dist[1] * integrals[:, b, 0, :, :-1, :, :, :]
+        integrals[:, b + 1, 0, :, :-1, :, :, :, :] = (
+            integrals[:, b, 0, :, 1:, :, :, :, :]
+            + rel_dist[1] * integrals[:, b, 0, :, :-1, :, :, :, :]
         )
 
     # Horizontal recursion for the third index
     for b in range(0, angmom_b):
         # Increment b_x
-        integrals[:, :, b + 1, :, :, :-1, :, :] = (
-            integrals[:, :, b, :, :, 1:, :, :] + rel_dist[2] * integrals[:, :, b, :, :, :-1, :, :]
+        integrals[:, :, b + 1, :, :, :-1, :, :, :] = (
+            integrals[:, :, b, :, :, 1:, :, :, :]
+            + rel_dist[2] * integrals[:, :, b, :, :, :-1, :, :, :]
         )
 
     # rearrange to more sensible order
-    integrals = np.transpose(integrals, (3, 4, 5, 0, 1, 2, 6, 7))
+    integrals = np.transpose(integrals, (3, 4, 5, 0, 1, 2, 6, 7, 8))
 
     # discard higher order angular momentum needed for the recursions
     integrals = integrals[: angmom_a + 1, : angmom_a + 1, : angmom_a + 1]
@@ -220,14 +238,14 @@ def _compute_one_elec_integrals(
     angmoms_a = np.arange(angmom_a + 1)
     angmoms_b = np.arange(angmom_b + 1)
     norm_a = 1 / np.sqrt(
-        factorial2(2 * angmoms_a[:, None, None, None, None, None, None, None] - 1)
-        * factorial2(2 * angmoms_a[None, :, None, None, None, None, None, None] - 1)
-        * factorial2(2 * angmoms_a[None, None, :, None, None, None, None, None] - 1)
+        factorial2(2 * angmoms_a[:, None, None, None, None, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_a[None, :, None, None, None, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_a[None, None, :, None, None, None, None, None, None] - 1)
     )
     norm_b = 1 / np.sqrt(
-        factorial2(2 * angmoms_b[None, None, None, :, None, None, None, None] - 1)
-        * factorial2(2 * angmoms_b[None, None, None, None, :, None, None, None] - 1)
-        * factorial2(2 * angmoms_b[None, None, None, None, None, :, None, None] - 1)
+        factorial2(2 * angmoms_b[None, None, None, :, None, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_b[None, None, None, None, :, None, None, None, None] - 1)
+        * factorial2(2 * angmoms_b[None, None, None, None, None, :, None, None, None] - 1)
     )
     integrals *= norm_a
     integrals *= norm_b

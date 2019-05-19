@@ -34,8 +34,8 @@ def test_construct_array_contraction():
     test_one = ContractedCartesianGaussians(0, coord_one, 0, np.array([1.0]), np.array([0.1]))
     coord_two = np.array([1.5, 2, 3])
     test_two = ContractedCartesianGaussians(0, coord_two, 0, np.array([3.0]), np.array([0.2]))
-    coord = np.array([0, 0, 0])
-    charge = 1.0
+    coord = np.array([[0, 0, 0]])
+    charge = np.array([1])
     coord_wac = (0.1 * coord_one + 0.2 * coord_two) / (0.1 + 0.2)
 
     with pytest.raises(TypeError):
@@ -45,9 +45,11 @@ def test_construct_array_contraction():
     with pytest.raises(TypeError):
         PointChargeIntegral.construct_array_contraction(test_one, test_two, coord.tolist(), charge)
     with pytest.raises(TypeError):
-        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord[None, :], charge)
+        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord.ravel(), charge)
     with pytest.raises(TypeError):
-        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, np.array(charge))
+        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, float(charge))
+    with pytest.raises(ValueError):
+        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, np.array([0, 1]))
 
     assert np.allclose(
         PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge),
@@ -81,7 +83,7 @@ def test_construct_array_contraction():
     assert np.allclose(
         PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge).ravel(),
         (
-            ((coord_wac - coord_one) * v_000_000[0] - (coord_wac - coord) * v_000_000[1])
+            ((coord_wac - coord_one) * v_000_000[0] - (coord_wac - coord[0]) * v_000_000[1])
             * (2 * 0.1 / np.pi) ** (3 / 4)
             * ((4 * 0.1) ** 0.5)
             * (2 * 0.2 / np.pi) ** (3 / 4)
@@ -99,7 +101,7 @@ def test_construct_array_contraction():
     assert np.allclose(
         PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge).ravel(),
         (
-            ((coord_wac - coord_two) * v_000_000[0] - (coord_wac - coord) * v_000_000[1])
+            ((coord_wac - coord_two) * v_000_000[0] - (coord_wac - coord[0]) * v_000_000[1])
             * (2 * 0.1 / np.pi) ** (3 / 4)
             * (2 * 0.2 / np.pi) ** (3 / 4)
             * ((4 * 0.2) ** 0.5)

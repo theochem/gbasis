@@ -80,42 +80,10 @@ class NuclearElectronAttraction(PointChargeIntegral):
             If `nuclear_coords` and `nuclear_charges` do not have the same number of colunmns.
 
         """
-        if not (
-            isinstance(nuclear_coords, np.ndarray)
-            and nuclear_coords.ndim == 2
-            and nuclear_coords.dtype in [int, float]
-        ):
-            raise TypeError(
-                "`nuclear_coords` must be a two-dimension numpy array of dtype int or float."
-            )
-        if not (
-            isinstance(nuclear_charges, np.ndarray)
-            and nuclear_charges.ndim == 1
-            and nuclear_charges.dtype in [int, float]
-        ):
-            raise TypeError(
-                "`nuclear_charges` must be a one-dimension numpy array of dtype int or float."
-            )
-        if nuclear_coords.shape[1] != 3:
-            raise ValueError("`nuclear_coords` must have 3 columns (axis 1).")
-        if nuclear_coords.shape[0] != nuclear_charges.shape[0]:
-            raise ValueError(
-                "`nuclear_coords` and `nuclear_charges` must have the same number of rows (axis 0)."
-            )
-
-        output = np.zeros(
-            (
-                contractions_one.coeffs.shape[1],
-                contractions_one.angmom_components.shape[0],
-                contractions_two.coeffs.shape[1],
-                contractions_two.angmom_components.shape[0],
-            )
+        output = super().construct_array_contraction(
+            contractions_one, contractions_two, nuclear_coords, -nuclear_charges
         )
-        for nuc_coord, nuc_charge in zip(nuclear_coords, nuclear_charges):
-            output += super().construct_array_contraction(
-                contractions_one, contractions_two, nuc_coord, -float(nuc_charge)
-            )
-        return output
+        return np.sum(output, axis=4)
 
 
 def nuclear_electron_attraction_gbasis_cartesian(basis, nuclear_coords, nuclear_charges):
