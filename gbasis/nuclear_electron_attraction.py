@@ -81,7 +81,7 @@ class NuclearElectronAttraction(PointChargeIntegral):
 
         """
         output = super().construct_array_contraction(
-            contractions_one, contractions_two, nuclear_coords, -nuclear_charges
+            contractions_one, contractions_two, nuclear_coords, nuclear_charges
         )
         return np.sum(output, axis=4)
 

@@ -241,7 +241,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
         # axis 4 : point charge
         output = (
-            charges_points
+            -charges_points
             * integrals[
                 np.arange(coeffs_a.shape[1])[:, None, None, None, None],
                 angmoms_a_x[None, :, None, None, None],
