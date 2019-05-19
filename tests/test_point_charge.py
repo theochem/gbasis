@@ -63,6 +63,7 @@ def test_construct_array_contraction():
             * (2 * 0.2 / np.pi) ** (3 / 4)
             * 1
             * 3
+            * (-1)
         ),
     )
 
@@ -89,6 +90,7 @@ def test_construct_array_contraction():
             * (2 * 0.2 / np.pi) ** (3 / 4)
             * 1
             * 3
+            * (-1)
         )[::-1],
     )
 
@@ -107,5 +109,6 @@ def test_construct_array_contraction():
             * ((4 * 0.2) ** 0.5)
             * 1
             * 3
+            * (-1)
         )[::-1],
     )
