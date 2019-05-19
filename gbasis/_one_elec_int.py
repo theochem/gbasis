@@ -101,9 +101,14 @@ def _compute_one_elec_integrals(
     harm_mean = exps_a * exps_b / exps_sum
 
     # Initialize V(m)(000|000) for all m
-    integrals[:, 0, 0, 0, :, :] = np.sqrt(4 * exps_sum / np.pi).squeeze(axis=1) * boys_func(
-        np.arange(m_max)[:, None, None], exps_sum[:, 0] * np.sum(rel_coord_point ** 2, axis=1)
-    ) * np.exp(-harm_mean[:, 0] * (rel_dist ** 2).sum(axis=1))
+    integrals[:, 0, 0, 0, :, :] = (
+        (2 * np.pi / exps_sum)
+        * boys_func(
+            np.arange(m_max)[:, None, None],
+            exps_sum[:, 0, :, :] * np.sum(rel_coord_point ** 2, axis=1),
+        )
+        * np.exp(-harm_mean[:, 0] * (rel_dist ** 2).sum(axis=1))
+    )
 
     # Vertical recursion for the first index
     integrals[:-1, 1:2, 0, 0, :, :] = (
