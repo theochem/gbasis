@@ -176,4 +176,3 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
             eval_deriv_density(np.array([0, 0, 1]), one_density_matrix, basis, coords, transform),
         ]
     ).T
-    )

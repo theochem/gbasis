@@ -11,7 +11,7 @@ from gbasis.eval_deriv import evaluate_deriv_basis_spherical_lincomb
 from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
-from utils import find_datafile
+from utils import find_datafile, HortonContractions
 
 
 def test_eval_density_using_evaluated_orbs():
@@ -286,4 +286,55 @@ def test_eval_density_gradient():
                 ),
             ]
         ),
+    )
+
+
+def test_eval_density_horton():
+    """Test gbasis.density.eval_density against result from HORTON.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    basis = make_contractions(basis_dict, ["H", "He"], coords)
+    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+
+    horton_density = np.load(find_datafile("data_horton_hhe_sph_density.npy"))
+
+    grid_1d = np.linspace(-2, 2, num=10)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    assert np.allclose(
+        eval_density(np.identity(88), basis, grid_3d, np.identity(88)), horton_density
+    )
+
+
+def test_eval_density_gradient_horton():
+    """Test gbasis.density.eval_density_gradient against result from HORTON.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    basis = make_contractions(basis_dict, ["H", "He"], coords)
+    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+
+    horton_density_gradient = np.load(find_datafile("data_horton_hhe_sph_density_gradient.npy"))
+
+    grid_1d = np.linspace(-2, 2, num=10)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    assert np.allclose(
+        eval_density_gradient(np.identity(88), basis, grid_3d, np.identity(88)),
+        horton_density_gradient,
     )
