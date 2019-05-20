@@ -114,7 +114,7 @@ class Overlap(BaseTwoIndexSymmetric):
         )[0]
 
 
-def overlap_basis_cartesian(basis):
+def overlap_cartesian(basis):
     """Return the overlap of the basis set in the Cartesian form.
 
     Parameters
@@ -133,7 +133,7 @@ def overlap_basis_cartesian(basis):
     return Overlap(basis).construct_array_cartesian()
 
 
-def overlap_basis_spherical(basis):
+def overlap_spherical(basis):
     """Return the overlap of the basis set in the spherical form.
 
     Parameters
@@ -154,7 +154,7 @@ def overlap_basis_spherical(basis):
     return Overlap(basis).construct_array_spherical()
 
 
-def overlap_basis_spherical_lincomb(basis, transform):
+def overlap_spherical_lincomb(basis, transform):
     """Return the overlap of the linear combination of the basis set in the spherical form.
 
     Parameters
