@@ -1,12 +1,7 @@
 """Test gbasis.moment."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
-from gbasis.moment import (
-    Moment,
-    moment_basis_cartesian,
-    moment_basis_spherical,
-    moment_basis_spherical_lincomb,
-)
+from gbasis.moment import Moment, moment_cartesian, moment_spherical, moment_spherical_lincomb
 from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
@@ -136,8 +131,8 @@ def test_moment_construct_array_contraction():
         )
 
 
-def test_moment_basis_cartesian():
-    """Test gbasis.moment.moment_basis_cartesian."""
+def test_moment_cartesian():
+    """Test gbasis.moment.moment_cartesian."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -162,7 +157,7 @@ def test_moment_basis_cartesian():
                 ]
             ),
         ),
-        moment_basis_cartesian(
+        moment_cartesian(
             basis,
             np.zeros(3),
             np.array(
@@ -183,8 +178,8 @@ def test_moment_basis_cartesian():
     )
 
 
-def test_moment_basis_spherical():
-    """Test gbasis.moment.moment_basis_spherical."""
+def test_moment_spherical():
+    """Test gbasis.moment.moment_spherical."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -209,7 +204,7 @@ def test_moment_basis_spherical():
                 ]
             ),
         ),
-        moment_basis_spherical(
+        moment_spherical(
             basis,
             np.zeros(3),
             np.array(
@@ -230,8 +225,8 @@ def test_moment_basis_spherical():
     )
 
 
-def test_moment_basis_spherical_lincomb():
-    """Test gbasis.moment.moment_basis_spherical_lincomb."""
+def test_moment_spherical_lincomb():
+    """Test gbasis.moment.moment_spherical_lincomb."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -257,7 +252,7 @@ def test_moment_basis_spherical_lincomb():
                 ]
             ),
         ),
-        moment_basis_spherical_lincomb(
+        moment_spherical_lincomb(
             basis,
             transform,
             np.zeros(3),

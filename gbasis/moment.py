@@ -152,7 +152,7 @@ class Moment(BaseTwoIndexSymmetric):
         return np.transpose(output, (1, 2, 3, 4, 0))
 
 
-def moment_basis_cartesian(basis, moment_coord, moment_orders):
+def moment_cartesian(basis, moment_coord, moment_orders):
     """Return the moment of the basis set in the Cartesian form.
 
     Parameters
@@ -186,7 +186,7 @@ def moment_basis_cartesian(basis, moment_coord, moment_orders):
     )
 
 
-def moment_basis_spherical(basis, moment_coord, moment_orders):
+def moment_spherical(basis, moment_coord, moment_orders):
     """Return the moment of the basis set in the spherical form.
 
     Parameters
@@ -222,7 +222,7 @@ def moment_basis_spherical(basis, moment_coord, moment_orders):
     )
 
 
-def moment_basis_spherical_lincomb(basis, transform, moment_coord, moment_orders):
+def moment_spherical_lincomb(basis, transform, moment_coord, moment_orders):
     """Return the moment of the linear combination of the basis set in the spherical form.
 
     Parameters
