@@ -162,6 +162,10 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             transform = generate_transformation(cont.angmom, cont.angmom_components, "left")
             # evaluate the function at the given points
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
+            # normalize contractions
+            matrix_contraction *= cont.norm_cont.reshape(
+                *matrix_contraction.shape[:2], *[1 for i in matrix_contraction.shape[2:]]
+            )
             # transform
             # ASSUME array always has shape (M, L, ...)
             if matrix_contraction.shape[0] == 1:

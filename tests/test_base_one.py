@@ -84,7 +84,10 @@ def test_contruct_array_spherical():
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
         dict_overwrite={
-            "construct_array_contraction": lambda self, cont, a=2: np.arange(9).reshape(1, 3, 3) * a
+            "construct_array_contraction": lambda self, cont, a=2: np.arange(
+                9, dtype=float
+            ).reshape(1, 3, 3)
+            * a
         },
     )
     test = Test([contractions])
@@ -103,11 +106,14 @@ def test_contruct_array_spherical():
         np.vstack([transform.dot(np.arange(9).reshape(3, 3)) * 2] * 2),
     )
 
+    contractions = ContractedCartesianGaussians(
+        1, np.array([1, 2, 3]), 0, np.ones((1, 2)), np.ones(1)
+    )
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
         dict_overwrite={
             "construct_array_contraction": (
-                lambda self, cont, a=2: np.arange(18).reshape(2, 3, 3) * a
+                lambda self, cont, a=2: np.arange(18, dtype=float).reshape(2, 3, 3) * a
             )
         },
     )
@@ -156,7 +162,10 @@ def test_contruct_array_spherical_lincomb():
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
         dict_overwrite={
-            "construct_array_contraction": lambda self, cont, a=2: np.arange(9).reshape(1, 3, 3) * a
+            "construct_array_contraction": lambda self, cont, a=2: np.arange(
+                9, dtype=float
+            ).reshape(1, 3, 3)
+            * a
         },
     )
     test = Test([contractions])
@@ -175,5 +184,7 @@ def test_contruct_array_spherical_lincomb():
     test = Test([contractions, contractions])
     assert np.allclose(
         test.construct_array_spherical_lincomb(orb_transform),
-        orb_transform.dot(np.vstack([sph_transform.dot(np.arange(9).reshape(3, 3)) * 2] * 2)),
+        orb_transform.dot(
+            np.vstack([sph_transform.dot(np.arange(9, dtype=float).reshape(3, 3)) * 2] * 2)
+        ),
     )
