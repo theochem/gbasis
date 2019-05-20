@@ -1,13 +1,22 @@
 """Test gbasis.nuclear_electron_attraction."""
 from gbasis.contractions import make_contractions
-from gbasis.nuclear_electron_attraction import nuclear_electron_attraction_gbasis_cartesian
+from gbasis.nuclear_electron_attraction import (
+    nuclear_electron_attraction_cartesian,
+    nuclear_electron_attraction_spherical,
+    nuclear_electron_attraction_spherical_lincomb,
+)
 from gbasis.parsers import parse_nwchem
+from gbasis.point_charge import (
+    point_charge_cartesian,
+    point_charge_spherical,
+    point_charge_spherical_lincomb,
+)
 import numpy as np
 from utils import find_datafile, HortonContractions
 
 
 def test_nuclear_electron_attraction_horton_anorcc_hhe():
-    """Test nuclear_electron_attraciton.nuclear_electron_attraction_gbasis_cartesian with HORTON.
+    """Test nuclear_electron_attraciton.nuclear_electron_attraction_cartesian with HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -22,13 +31,12 @@ def test_nuclear_electron_attraction_horton_anorcc_hhe():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_nucattract.npy"))
     assert np.allclose(
-        nuclear_electron_attraction_gbasis_cartesian(basis, coords, np.array([1, 2])),
-        horton_nucattract,
+        nuclear_electron_attraction_cartesian(basis, coords, np.array([1, 2])), horton_nucattract
     )
 
 
 def test_nuclear_electron_attraction_horton_anorcc_bec():
-    """Test nuclear_electron_attraciton.nuclear_electron_attraction_gbasis_cartesian with HORTON.
+    """Test nuclear_electron_attraciton.nuclear_electron_attraction_cartesian with HORTON.
 
     The test case is diatomic with B and C separated by 1.0 angstroms with basis set ANO-RCC.
 
@@ -43,6 +51,56 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
 
     horton_nucattract = np.load(find_datafile("data_horton_bec_cart_nucattract.npy"))
     assert np.allclose(
-        nuclear_electron_attraction_gbasis_cartesian(basis, coords, np.array([4, 6])),
-        horton_nucattract,
+        nuclear_electron_attraction_cartesian(basis, coords, np.array([4, 6])), horton_nucattract
+    )
+
+
+def test_nuclear_electron_attraction_cartesian():
+    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_cartesian."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+
+    nuclear_coords = np.random.rand(5, 3)
+    nuclear_charges = np.random.rand(5)
+    ref = point_charge_cartesian(basis, nuclear_coords, nuclear_charges)
+    assert np.allclose(
+        ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
+        nuclear_electron_attraction_cartesian(basis, nuclear_coords, nuclear_charges),
+    )
+
+
+def test_nuclear_electron_attraction_spherical():
+    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_spherical."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+
+    nuclear_coords = np.random.rand(5, 3)
+    nuclear_charges = np.random.rand(5)
+    ref = point_charge_spherical(basis, nuclear_coords, nuclear_charges)
+    assert np.allclose(
+        ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
+        nuclear_electron_attraction_spherical(basis, nuclear_coords, nuclear_charges),
+    )
+
+
+def test_nuclear_electron_attraction_spherical_lincomb():
+    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_spherical_lincomb."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+
+    nuclear_coords = np.random.rand(5, 3)
+    nuclear_charges = np.random.rand(5)
+    transform = np.random.rand(14, 18)
+    ref = point_charge_spherical_lincomb(basis, transform, nuclear_coords, nuclear_charges)
+    assert np.allclose(
+        ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
+        nuclear_electron_attraction_spherical_lincomb(
+            basis, transform, nuclear_coords, nuclear_charges
+        ),
     )
