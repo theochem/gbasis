@@ -174,12 +174,8 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             for cont_two in self.contractions_two:
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                norm_cont_one = cont_one.norm_cont
-                norm_cont_two = cont_two.norm_cont
-                block *= (norm_cont_one ** (-0.5)).reshape(
-                    *block.shape[:2], *[1 for i in block.shape[2:]]
-                )
-                block *= (norm_cont_two ** (-0.5)).reshape(
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_two.norm_cont.reshape(
                     1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
                 )
                 # assume array always has shape (M_1, L_1, M_2, L_2, ...)
@@ -236,12 +232,10 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 matrix_contraction = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                norm_cont_one = cont_one.norm_cont
-                norm_cont_two = cont_two.norm_cont
-                matrix_contraction *= (norm_cont_one ** (-0.5)).reshape(
+                matrix_contraction *= cont_one.norm_cont.reshape(
                     *matrix_contraction.shape[:2], *[1 for i in matrix_contraction.shape[2:]]
                 )
-                matrix_contraction *= (norm_cont_two ** (-0.5)).reshape(
+                matrix_contraction *= cont_two.norm_cont.reshape(
                     1, 1, *matrix_contraction.shape[2:4], *[1 for i in matrix_contraction.shape[4:]]
                 )
                 # transform

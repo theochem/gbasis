@@ -156,12 +156,8 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             for cont_two in self.contractions[i:]:
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                norm_cont_one = cont_one.norm_cont
-                norm_cont_two = cont_two.norm_cont
-                block *= (norm_cont_one ** (-0.5)).reshape(
-                    *block.shape[:2], *[1 for i in block.shape[2:]]
-                )
-                block *= (norm_cont_two ** (-0.5)).reshape(
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_two.norm_cont.reshape(
                     1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
                 )
                 # assume array always has shape (M_1, L_1, M_2, L_2, ...)
@@ -230,12 +226,10 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 block_sph = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                norm_cont_one = cont_one.norm_cont
-                norm_cont_two = cont_two.norm_cont
-                block_sph *= (norm_cont_one ** (-0.5)).reshape(
+                block_sph *= cont_one.norm_cont.reshape(
                     *block_sph.shape[:2], *[1 for i in block_sph.shape[2:]]
                 )
-                block_sph *= (norm_cont_two ** (-0.5)).reshape(
+                block_sph *= cont_two.norm_cont.reshape(
                     1, 1, *block_sph.shape[2:4], *[1 for i in block_sph.shape[4:]]
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)

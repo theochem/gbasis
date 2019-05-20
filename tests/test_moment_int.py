@@ -416,7 +416,7 @@ def test_compute_multipole_moment_integrals_prim_moment_recursion():
 
 
 def test_compute_multipole_moment_integrals_contraction_norm():
-    """Test moment_int._compute_multipole_moment_integrals using the norm of contractions.
+    """Test moment_int._compute_multipole_moment_integrals using the normalized contractions.
 
     Note
     ----
