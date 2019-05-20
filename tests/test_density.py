@@ -3,6 +3,7 @@ from gbasis.contractions import make_contractions
 from gbasis.density import (
     eval_density,
     eval_density_gradient,
+    eval_density_hessian,
     eval_density_using_evaluated_orbs,
     eval_deriv_density,
 )
@@ -337,4 +338,36 @@ def test_eval_density_gradient_horton():
     assert np.allclose(
         eval_density_gradient(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_gradient,
+    )
+
+
+def test_eval_hessian_deriv_horton():
+    """Test gbasis.density.eval_density_hessian against result from HORTON.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    basis = make_contractions(basis_dict, ["H", "He"], coords)
+    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+
+    horton_density_hessian = np.zeros((10 ** 3, 3, 3))
+    horton_density_hessian[:, [0, 0, 0, 1, 1, 2], [0, 1, 2, 1, 2, 2]] = np.load(
+        find_datafile("data_horton_hhe_sph_density_hessian.npy")
+    )
+    horton_density_hessian[:, [1, 2, 2], [0, 0, 1]] = horton_density_hessian[
+        :, [0, 0, 1], [1, 2, 2]
+    ]
+
+    grid_1d = np.linspace(-2, 2, num=10)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    assert np.allclose(
+        eval_density_hessian(np.identity(88), basis, grid_3d, np.identity(88)),
+        horton_density_hessian,
     )
