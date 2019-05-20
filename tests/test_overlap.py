@@ -6,7 +6,7 @@ from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2
-from utils import find_datafile
+from utils import find_datafile, HortonContractions
 
 
 def test_overlap_construct_array_contraction():
@@ -170,3 +170,41 @@ def test_overlap_cartesian_norm_sto6g():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+
+
+def test_overlap_horton_anorcc_hhe():
+    """Test gbasis.eval.overlap_basis_cartesian against HORTON's overlap matrix.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    basis = make_contractions(
+        basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    )
+    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+
+    horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
+    assert np.allclose(overlap_cartesian(basis), horton_overlap)
+
+
+def test_overlap_horton_anorcc_bec():
+    """Test gbasis.eval.overlap_cartesian against HORTON's overlap matrix.
+
+    The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    basis = make_contractions(
+        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
+    )
+    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+
+    horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
+    assert np.allclose(overlap_cartesian(basis), horton_overlap)
