@@ -129,8 +129,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         for contraction in self.contractions:
             array = self.construct_array_contraction(contraction, **kwargs)
             # normalize contractions
-            norm_cont = contraction.norm_cont
-            array *= (norm_cont ** (-0.5)).reshape(*array.shape[:2], *[1 for i in array.shape[2:]])
+            array *= contraction.norm_cont.reshape(*array.shape[:2], *[1 for i in array.shape[2:]])
             # ASSUME array always has shape (M, L, ...)
             if array.shape[0] == 1:
                 matrices.append(np.squeeze(array, axis=0))

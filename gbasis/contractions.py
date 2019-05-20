@@ -43,6 +43,8 @@ class ContractedCartesianGaussians:
         Exponents of the primitives, :math:`\{\alpha_i\}`.
     norm_prim : np.ndarray(L, K)
         The normalization constant for each Cartesian Gaussian primitive.
+    norm_const : np.ndarray(M, L)
+        Normalization constants of the contractions of each angular momentum.
     num_contr : int
         The number of Cartesian Gaussian primitives in the shell (L).
 
@@ -357,12 +359,17 @@ class ContractedCartesianGaussians:
         return (self.angmom + 1) * (self.angmom + 2) // 2
 
     def assign_norm_cont(self):
-        """Normalize the contractions to have an overlap of 1.
+        r"""Store the normalization constants of the contractions.
 
-        Returns
-        -------
-        norms : np.ndarray(M, L)
-            Norms of the contractions of the angular momentum of the instance.
+        .. math::
+
+            \int \phi_i(\mathbf{r}) \phi_i(\mathbf{r}) d\mathbf{r} &= N\\
+            \frac{1}{N} \int \phi_i(\mathbf{r}) \phi_i(\mathbf{r}) d\mathbf{r} &= 1\\
+            \int (\frac{1}{\sqrt{N}} \phi_i(\mathbf{r}))
+            (\frac{1}{\sqrt{N}} \phi_i(\mathbf{r})) d\mathbf{r} &= 1\\
+
+        where :math:`\phi_i` is a contraction and :math:`N` is the norm of the contraction (without
+        normalization).
 
         Notes
         -----
@@ -374,6 +381,7 @@ class ContractedCartesianGaussians:
         from gbasis.overlap import Overlap  # pylint: disable=R0401
 
         self.norm_cont = np.einsum("ijij->ij", Overlap.construct_array_contraction(self, self))
+        self.norm_cont **= -0.5
 
 
 def make_contractions(basis_dict, atoms, coords, charges=None):
