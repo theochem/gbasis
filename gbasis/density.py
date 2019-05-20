@@ -165,7 +165,7 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
 
     Returns
     -------
-    density_gradient : np.ndarray(N,)
+    density_gradient : np.ndarray(N, 3)
         Gradient of the density evaluated at the given coordinates.
 
     """
@@ -175,4 +175,5 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
             eval_deriv_density(np.array([0, 1, 0]), one_density_matrix, basis, coords, transform),
             eval_deriv_density(np.array([0, 0, 1]), one_density_matrix, basis, coords, transform),
         ]
+    ).T
     )

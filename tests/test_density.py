@@ -233,7 +233,7 @@ def test_eval_density_gradient():
     coords = np.random.rand(10, 3)
 
     np.allclose(
-        eval_density_gradient(density, basis, coords, transform),
+        eval_density_gradient(density, basis, coords, transform).T,
         np.array(
             [
                 np.einsum(
