@@ -241,3 +241,36 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform):
             for orders_two in np.identity(3, dtype=int)
         ]
     ).T
+
+
+def eval_posdef_kinetic_energy_density(one_density_matrix, basis, coords, transform):
+    """Return evaluations of positive definite kinetic energy density.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix.
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_sph)
+        Array associated with the linear combinations of spherical Gaussians (LCAO's).
+        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
+        and first index of the array for contracted spherical Gaussians.
+
+    Returns
+    -------
+    posdef_kindetic_energy_density : np.ndarray(N,)
+        Positive definite kintic energy density of the given transformed basis set evaluated at the
+        given coordinates.
+
+    """
+    output = np.zeros(coords.shape[0])
+    for orders in np.identity(3, dtype=int):
+        deriv_orb_eval = evaluate_deriv_basis_spherical_lincomb(basis, coords, orders, transform)
+        density = one_density_matrix.dot(deriv_orb_eval)
+        density *= deriv_orb_eval
+        density = np.sum(density, axis=0)
+        output += density
+    return 0.5 * output

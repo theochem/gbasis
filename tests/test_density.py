@@ -7,6 +7,7 @@ from gbasis.density import (
     eval_density_laplacian,
     eval_density_using_evaluated_orbs,
     eval_deriv_density,
+    eval_posdef_kinetic_energy_density,
 )
 from gbasis.eval import evaluate_basis_spherical_lincomb
 from gbasis.eval_deriv import evaluate_deriv_basis_spherical_lincomb
@@ -397,4 +398,32 @@ def test_eval_laplacian_deriv_horton():
     assert np.allclose(
         eval_density_laplacian(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_laplacian,
+    )
+
+
+def test_eval_posdef_kinetic_energy_density():
+    """Test gbasis.kinetic_energy.eval_posdef_kinetic_energy_density against results from HORTON.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+
+    """
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    basis = make_contractions(basis_dict, ["H", "He"], coords)
+    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+
+    horton_density_kinetic_density = np.load(
+        find_datafile("data_horton_hhe_sph_posdef_kinetic_density.npy")
+    )
+
+    grid_1d = np.linspace(-2, 2, num=10)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    assert np.allclose(
+        eval_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88)),
+        horton_density_kinetic_density,
     )
