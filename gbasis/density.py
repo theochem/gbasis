@@ -178,6 +178,34 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
     ).T
 
 
+def eval_density_laplacian(one_density_matrix, basis, coords, transform):
+    """Return the Laplacian of the density evaluated at the given coordinates.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix.
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_sph)
+        Array associated with the linear combinations of spherical Gaussians (LCAO's).
+        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
+        and first index of the array for contracted spherical Gaussians.
+
+    Returns
+    -------
+    density_laplacian : np.ndarray(N)
+        Laplacian of the density evaluated at the given coordinates.
+
+    """
+    output = eval_deriv_density(np.array([2, 0, 0]), one_density_matrix, basis, coords, transform)
+    output += eval_deriv_density(np.array([0, 2, 0]), one_density_matrix, basis, coords, transform)
+    output += eval_deriv_density(np.array([0, 0, 2]), one_density_matrix, basis, coords, transform)
+    return output
+
+
 def eval_density_hessian(one_density_matrix, basis, coords, transform):
     """Return the Hessian of the density evaluated at the given coordinates.
 
