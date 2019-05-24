@@ -128,6 +128,26 @@ class BaseGaussianRelatedArray(abc.ABC):
         """
 
     @abc.abstractmethod
+    def construct_array_mix(self, coord_types, **kwargs):
+        """Return the array associated with set of Gaussians of the given coordinate systems.
+
+        Parameters
+        ----------
+        coord_types : list/tuple of str
+            Types of the coordinate system for each ContractedCartesianGaussians.
+            Each entry must be one of "cartesian" or "spherical".
+        kwargs : dict
+            Other keyword arguments that will be used to construct the array.
+
+        Returns
+        -------
+        array : np.ndarray
+            Array associated with the atomic orbitals associated with the given set of contracted
+            Cartesian Gaussians.
+
+        """
+
+    @abc.abstractmethod
     def construct_array_spherical_lincomb(self, *transform, **kwargs):
         """Return the array associated with linear combinations of spherical Gaussians (LCAO's).
 
