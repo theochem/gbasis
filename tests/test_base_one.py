@@ -153,6 +153,89 @@ def test_contruct_array_spherical():
     )
 
 
+def test_contruct_array_mix():
+    """Test BaseOneIndex.construct_array_mix."""
+    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+
+    Test = disable_abstract(  # noqa: N806
+        BaseOneIndex,
+        dict_overwrite={
+            "construct_array_contraction": lambda self, cont, a=2: np.arange(
+                9, dtype=float
+            ).reshape(1, 3, 3)
+            * a
+        },
+    )
+    test = Test([contractions])
+    assert np.allclose(test.construct_array_spherical(), test.construct_array_mix(["spherical"]))
+    assert np.allclose(
+        test.construct_array_spherical(a=3), test.construct_array_mix(["spherical"], a=3)
+    )
+    assert np.allclose(test.construct_array_cartesian(), test.construct_array_mix(["cartesian"]))
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"], a=3)
+    )
+
+    test = Test([contractions, contractions])
+    assert np.allclose(
+        test.construct_array_spherical(), test.construct_array_mix(["spherical"] * 2)
+    )
+    assert np.allclose(
+        test.construct_array_spherical(a=3), test.construct_array_mix(["spherical"] * 2, a=3)
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(), test.construct_array_mix(["cartesian"] * 2)
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
+    )
+
+    contractions = ContractedCartesianGaussians(
+        1, np.array([1, 2, 3]), 0, np.ones((1, 2)), np.ones(1)
+    )
+    Test = disable_abstract(  # noqa: N806
+        BaseOneIndex,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont, a=2: np.arange(18, dtype=float).reshape(2, 3, 3) * a
+            )
+        },
+    )
+    test = Test([contractions])
+    assert np.allclose(test.construct_array_spherical(), test.construct_array_mix(["spherical"]))
+    assert np.allclose(
+        test.construct_array_spherical(a=3), test.construct_array_mix(["spherical"], a=3)
+    )
+    assert np.allclose(test.construct_array_cartesian(), test.construct_array_mix(["cartesian"]))
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"], a=3)
+    )
+
+    test = Test([contractions, contractions])
+    assert np.allclose(
+        test.construct_array_spherical(), test.construct_array_mix(["spherical"] * 2)
+    )
+    assert np.allclose(
+        test.construct_array_spherical(a=3), test.construct_array_mix(["spherical"] * 2, a=3)
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(), test.construct_array_mix(["cartesian"] * 2)
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
+    )
+
+    # check coord_types type
+    with pytest.raises(TypeError):
+        test.construct_array_mix(np.array(["cartesian"] * 2), a=3),
+    # check coord_types content
+    with pytest.raises(ValueError):
+        test.construct_array_mix(["cartesian", "something"], a=3),
+    # check coord_types length
+    with pytest.raises(ValueError):
+        test.construct_array_mix(["cartesian"] * 3, a=3),
+
+
 def test_contruct_array_spherical_lincomb():
     """Test BaseOneIndex.construct_array_spherical_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
