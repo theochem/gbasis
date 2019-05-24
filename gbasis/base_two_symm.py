@@ -283,3 +283,23 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         array_transformed = np.tensordot(transform, array_transformed, (1, 1))
         array_transformed = np.swapaxes(array_transformed, 0, 1)
         return array_transformed
+
+    def construct_array_mix(self, coord_types, **kwargs):
+        """Return the array associated with set of Gaussians of the given coordinate systems.
+
+        Parameters
+        ----------
+        coord_types : list/tuple of str
+            Types of the coordinate system for each ContractedCartesianGaussians.
+            Each entry must be one of "cartesian" or "spherical".
+        kwargs : dict
+            Other keyword arguments that will be used to construct the array.
+
+        Returns
+        -------
+        array : np.ndarray
+            Array associated with the atomic orbitals associated with the given set of contracted
+            Cartesian Gaussians.
+
+        """
+        raise NotImplementedError
