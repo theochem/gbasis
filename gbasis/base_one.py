@@ -172,6 +172,69 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
         return np.concatenate(matrices_spherical, axis=0)
 
+    def construct_array_mix(self, coord_types, **kwargs):
+        """Return the array associated with all of the contraction in the given orbital types.
+
+        Parameters
+        ----------
+        coord_types : list/tuple of str
+            Types of the coordinate system for each ContractedCartesianGaussians.
+            Each entry must be one of "cartesian" or "spherical".
+        kwargs : dict
+            Other keyword arguments that will be used to construct the array.
+            These keyword arguments are passed entirely to `construct_array_contraction`. See
+            `construct_array_contraction` for details on the keyword arguments.
+
+        Returns
+        -------
+        array : np.ndarray(K, ...)
+            Array associated with the spherical contrations of the basis set.
+            First index of the array is associated with each spherical contraction in the basis set.
+            `K_spherical` is the total number of Cartesian contractions within the given basis set.
+
+        Raises
+        ------
+        TypeError
+            If `coord_types` is not a list/tuple.
+        ValueError
+            If `coord_types` has an entry that is not "cartesian" or "spherical".
+            If `coord_types` has different number of entries as the number of
+            ContractedCartesianGaussians (`contractions`) in instance.
+
+        """
+        if not isinstance(coord_types, (list, tuple)):
+            raise TypeError("`coord_types` must be a list or a tuple.")
+        if not all(i in ["cartesian", "spherical"] for i in coord_types):
+            raise ValueError(
+                "Each entry of `coord_types` must be one of 'cartesian' or 'spherical'."
+            )
+        if len(coord_types) != len(self.contractions):
+            raise ValueError(
+                "`coord_types` must have the same number of entries as the number of "
+                "ContractedCartesianGaussians in the instance."
+            )
+
+        matrices = []
+        for cont, coord_type in zip(self.contractions, coord_types):
+            # get transformation from cartesian to spherical (applied to left)
+            transform = generate_transformation(cont.angmom, cont.angmom_components, "left")
+            # evaluate the function at the given points
+            matrix_contraction = self.construct_array_contraction(cont, **kwargs)
+            # normalize contractions
+            matrix_contraction *= cont.norm_cont.reshape(
+                *matrix_contraction.shape[:2], *[1 for i in matrix_contraction.shape[2:]]
+            )
+            # transform
+            # ASSUME array always has shape (M, L, ...)
+            if coord_type == "spherical":
+                matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 1))
+                matrix_contraction = np.swapaxes(matrix_contraction, 0, 1)
+            matrix_contraction = np.concatenate(matrix_contraction, axis=0)
+            # store
+            matrices.append(matrix_contraction)
+
+        return np.concatenate(matrices, axis=0)
+
     def construct_array_spherical_lincomb(self, transform, **kwargs):
         r"""Return the array associated with linear combinations of spherical Gaussians (LCAO's).
 
