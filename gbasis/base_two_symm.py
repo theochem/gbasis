@@ -161,17 +161,11 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                     1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
                 )
                 # assume array always has shape (M_1, L_1, M_2, L_2, ...)
-                if block.shape[0] == 1:
-                    block = np.squeeze(block, axis=0)
-                else:
-                    block = np.concatenate(block, axis=0)
+                block = np.concatenate(block, axis=0)
                 # array now has shape (M_1 L_1, M_2, L_2, ...)
-                if block.shape[1] == 1:
-                    block = np.squeeze(block, axis=1)
-                else:
-                    block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
-                    block = np.concatenate(block, axis=0)
-                    block = np.swapaxes(block, 0, 1)
+                block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
+                block = np.concatenate(block, axis=0)
+                block = np.swapaxes(block, 0, 1)
                 # array now has shape (M_1 L_1, M_2 L_2, ...)
                 triu_blocks.append(block)
         # use numpy triu and tril indices to create blocks
@@ -234,22 +228,13 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 # transform
-                if block_sph.shape[0] == 1:
-                    block_sph = np.squeeze(block_sph, axis=0)
-                    block_sph = np.tensordot(transform_one, block_sph, (1, 0))
-                else:
-                    block_sph = np.tensordot(transform_one, block_sph, (1, 1))
-                    block_sph = np.concatenate(np.swapaxes(block_sph, 0, 1), axis=0)
+                block_sph = np.tensordot(transform_one, block_sph, (1, 1))
+                block_sph = np.concatenate(np.swapaxes(block_sph, 0, 1), axis=0)
                 # array now has shape (M_1 L_1, M_2, L_2, ...)
-                if block_sph.shape[1] == 1:
-                    block_sph = np.squeeze(block_sph, axis=1)
-                    block_sph = np.tensordot(transform_two, block_sph, (1, 1))
-                    block_sph = np.swapaxes(block_sph, 0, 1)
-                else:
-                    block_sph = np.tensordot(transform_two, block_sph, (1, 2))
-                    block_sph = np.swapaxes(np.swapaxes(block_sph, 0, 1), 0, 2)
-                    block_sph = np.concatenate(block_sph, axis=0)
-                    block_sph = np.swapaxes(block_sph, 0, 1)
+                block_sph = np.tensordot(transform_two, block_sph, (1, 2))
+                block_sph = np.swapaxes(np.swapaxes(block_sph, 0, 1), 0, 2)
+                block_sph = np.concatenate(block_sph, axis=0)
+                block_sph = np.swapaxes(block_sph, 0, 1)
                 # array now has shape (M_1 L_1, M_2 L_2, ...)
                 # store
                 triu_blocks.append(block_sph)

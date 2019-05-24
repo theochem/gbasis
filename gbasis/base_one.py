@@ -131,10 +131,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             # normalize contractions
             array *= contraction.norm_cont.reshape(*array.shape[:2], *[1 for i in array.shape[2:]])
             # ASSUME array always has shape (M, L, ...)
-            if array.shape[0] == 1:
-                matrices.append(np.squeeze(array, axis=0))
-            else:
-                matrices.append(np.concatenate(array, axis=0))
+            matrices.append(np.concatenate(array, axis=0))
         return np.concatenate(matrices, axis=0)
 
     def construct_array_spherical(self, **kwargs):
@@ -168,12 +165,8 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             )
             # transform
             # ASSUME array always has shape (M, L, ...)
-            if matrix_contraction.shape[0] == 1:
-                matrix_contraction = np.squeeze(matrix_contraction, axis=0)
-                matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 0))
-            else:
-                matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 1))
-                matrix_contraction = np.concatenate(np.swapaxes(matrix_contraction, 0, 1), axis=0)
+            matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 1))
+            matrix_contraction = np.concatenate(np.swapaxes(matrix_contraction, 0, 1), axis=0)
             # store
             matrices_spherical.append(matrix_contraction)
 
