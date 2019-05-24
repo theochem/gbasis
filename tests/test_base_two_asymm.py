@@ -190,6 +190,111 @@ def test_contruct_array_spherical():
     )
 
 
+def test_contruct_array_mix():
+    """Test BaseTwoIndexAsymmetric.construct_array_mix."""
+    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexAsymmetric,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont_one, cont_two, a=2: np.arange(9, dtype=float).reshape(1, 3, 1, 3)
+                * a
+            )
+        },
+    )
+    contractions.norm_cont = np.ones((1, 3))
+    test = Test([contractions], [contractions])
+    assert np.allclose(
+        test.construct_array_spherical(), test.construct_array_mix(["spherical"], ["spherical"])
+    )
+    assert np.allclose(
+        test.construct_array_spherical(a=3),
+        test.construct_array_mix(["spherical"], ["spherical"], a=3),
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(), test.construct_array_mix(["cartesian"], ["cartesian"])
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(a=3),
+        test.construct_array_mix(["cartesian"], ["cartesian"], a=3),
+    )
+
+    test = Test([contractions, contractions], [contractions])
+    assert np.allclose(
+        test.construct_array_spherical(), test.construct_array_mix(["spherical"] * 2, ["spherical"])
+    )
+    assert np.allclose(
+        test.construct_array_spherical(a=3),
+        test.construct_array_mix(["spherical"] * 2, ["spherical"], a=3),
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(), test.construct_array_mix(["cartesian"] * 2, ["cartesian"])
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(a=3),
+        test.construct_array_mix(["cartesian"] * 2, ["cartesian"], a=3),
+    )
+
+    matrix = np.arange(36, dtype=float).reshape(2, 3, 2, 3)
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexAsymmetric,
+        dict_overwrite={
+            "construct_array_contraction": lambda self, cont_one, cont_two, a=2: matrix * a
+        },
+    )
+    contractions.norm_cont = np.ones((2, 3))
+    test = Test([contractions], [contractions])
+    assert np.allclose(
+        test.construct_array_spherical(), test.construct_array_mix(["spherical"], ["spherical"])
+    )
+    assert np.allclose(
+        test.construct_array_spherical(a=3),
+        test.construct_array_mix(["spherical"], ["spherical"], a=3),
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(), test.construct_array_mix(["cartesian"], ["cartesian"])
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(a=3),
+        test.construct_array_mix(["cartesian"], ["cartesian"], a=3),
+    )
+    test = Test([contractions, contractions], [contractions])
+    assert np.allclose(
+        test.construct_array_spherical(), test.construct_array_mix(["spherical"] * 2, ["spherical"])
+    )
+    assert np.allclose(
+        test.construct_array_spherical(a=3),
+        test.construct_array_mix(["spherical"] * 2, ["spherical"], a=3),
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(), test.construct_array_mix(["cartesian"] * 2, ["cartesian"])
+    )
+    assert np.allclose(
+        test.construct_array_cartesian(a=3),
+        test.construct_array_mix(["cartesian"] * 2, ["cartesian"], a=3),
+    )
+
+    # check coord_types_one type
+    with pytest.raises(TypeError):
+        test.construct_array_mix(np.array(["cartesian"] * 2), ["cartesian"], a=3),
+    # check coord_types_two type
+    with pytest.raises(TypeError):
+        test.construct_array_mix(["cartesian"] * 2, np.array(["cartesian"]), a=3),
+    # check coord_types_one content
+    with pytest.raises(ValueError):
+        test.construct_array_mix(["cartesian", "something"], ["cartesian"], a=3),
+    # check coord_types_one content
+    with pytest.raises(ValueError):
+        test.construct_array_mix(["cartesian"] * 2, ["something"], a=3),
+    # check coord_types_one length
+    with pytest.raises(ValueError):
+        test.construct_array_mix(["cartesian"] * 3, ["cartesian"], a=3),
+    # check coord_types_two length
+    with pytest.raises(ValueError):
+        test.construct_array_mix(["cartesian"] * 2, ["cartesian"] * 2, a=3),
+
+
 def test_contruct_array_spherical_lincomb():
     """Test BaseTwoIndexAsymmetric.construct_array_spherical_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))

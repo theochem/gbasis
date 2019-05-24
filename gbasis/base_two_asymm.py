@@ -247,6 +247,105 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             matrices_spherical.append(np.concatenate(matrices_spherical_cols, axis=1))
         return np.concatenate(matrices_spherical, axis=0)
 
+    def construct_array_mix(self, coord_types_one, coord_types_two, **kwargs):
+        """Return the array associated with set of Gaussians of the given coordinate systems.
+
+        Parameters
+        ----------
+        coord_types_one : list/tuple of str
+            Types of the coordinate system for ContractedCartesianGaussians associated with the
+            first index of the array.
+            Each entry must be one of "cartesian" or "spherical".
+        coord_types_two : list/tuple of str
+            Types of the coordinate system for ContractedCartesianGaussians associated with the
+            second index of the array.
+            Each entry must be one of "cartesian" or "spherical".
+        kwargs : dict
+            Other keyword arguments that will be used to construct the array.
+
+        Returns
+        -------
+        array : np.ndarray
+            Array associated with the atomic orbitals associated with the given set of contracted
+            Cartesian Gaussians.
+
+        Raises
+        ------
+        TypeError
+            If `coord_types_one` is not a list/tuple.
+            If `coord_types_two` is not a list/tuple.
+        ValueError
+            If `coord_types_one` has an entry that is not "cartesian" or "spherical".
+            If `coord_types_one` has different number of entries as the number of
+            ContractedCartesianGaussians (`contractions`) in instance.
+            If `coord_types_two` has an entry that is not "cartesian" or "spherical".
+            If `coord_types_two` has different number of entries as the number of
+            ContractedCartesianGaussians (`contractions`) in instance.
+
+        """
+        if not isinstance(coord_types_one, (list, tuple)):
+            raise TypeError("`coord_types_one` must be a list or a tuple.")
+        if not isinstance(coord_types_two, (list, tuple)):
+            raise TypeError("`coord_types_two` must be a list or a tuple.")
+        if not all(i in ["cartesian", "spherical"] for i in coord_types_one):
+            raise ValueError(
+                "Each entry of `coord_types_one` must be one of 'cartesian' or 'spherical'."
+            )
+        if not all(i in ["cartesian", "spherical"] for i in coord_types_two):
+            raise ValueError(
+                "Each entry of `coord_types_two` must be two of 'cartesian' or 'spherical'."
+            )
+        if len(coord_types_one) != len(self.contractions_one):
+            raise ValueError(
+                "`coord_types_one` must have the same number of entries as the number of "
+                "ContractedCartesianGaussians in the instance."
+            )
+        if len(coord_types_two) != len(self.contractions_two):
+            raise ValueError(
+                "`coord_types_two` must have the same number of entries as the number of "
+                "ContractedCartesianGaussians in the instance."
+            )
+
+        matrices_spherical = []
+        for cont_one, type_one in zip(self.contractions_one, coord_types_one):
+            # get transformation from cartesian to spherical for the first index (applied to left)
+            transform_one = generate_transformation(
+                cont_one.angmom, cont_one.angmom_components, "left"
+            )
+            matrices_spherical_cols = []
+            for cont_two, type_two in zip(self.contractions_two, coord_types_two):
+                # get transformation from cartesian to spherical for the first index (applied to
+                # left)
+                transform_two = generate_transformation(
+                    cont_two.angmom, cont_two.angmom_components, "left"
+                )
+                # evaluate
+                block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
+                # normalize contractions
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_two.norm_cont.reshape(
+                    1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
+                )
+                # transform
+                # assume array always has shape (M_1, L_1, M_2, L_2, ...)
+                if type_one == "spherical":
+                    block = np.tensordot(transform_one, block, (1, 1))
+                    block = np.swapaxes(block, 0, 1)
+                block = np.concatenate(block, axis=0)
+                # array now has shape (M_1 L_1, M_2, L_2, ...)
+                if type_two == "spherical":
+                    block = np.tensordot(transform_two, block, (1, 2))
+                    block = np.swapaxes(np.swapaxes(block, 0, 1), 0, 2)
+                else:
+                    block = np.swapaxes(np.swapaxes(block, 0, 1), 1, 2)
+                block = np.concatenate(block, axis=0)
+                block = np.swapaxes(block, 0, 1)
+                # array now has shape (M_1 L_1, M_2 L_2, ...)
+                # store
+                matrices_spherical_cols.append(block)
+            matrices_spherical.append(np.concatenate(matrices_spherical_cols, axis=1))
+        return np.concatenate(matrices_spherical, axis=0)
+
     def construct_array_spherical_lincomb(self, transform_one, transform_two, **kwargs):
         r"""Return the array associated with linear combinations of spherical Gaussians (LCAO's).
 
@@ -288,23 +387,3 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         array_transformed = np.tensordot(transform_two, array_transformed, (1, 1))
         array_transformed = np.swapaxes(array_transformed, 0, 1)
         return array_transformed
-
-    def construct_array_mix(self, coord_types, **kwargs):
-        """Return the array associated with set of Gaussians of the given coordinate systems.
-
-        Parameters
-        ----------
-        coord_types : list/tuple of str
-            Types of the coordinate system for each ContractedCartesianGaussians.
-            Each entry must be one of "cartesian" or "spherical".
-        kwargs : dict
-            Other keyword arguments that will be used to construct the array.
-
-        Returns
-        -------
-        array : np.ndarray
-            Array associated with the atomic orbitals associated with the given set of contracted
-            Cartesian Gaussians.
-
-        """
-        raise NotImplementedError
