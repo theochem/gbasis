@@ -295,8 +295,8 @@ def test_contruct_array_mix():
         test.construct_array_mix(["cartesian"] * 2, ["cartesian"] * 2, a=3),
 
 
-def test_contruct_array_spherical_lincomb():
-    """Test BaseTwoIndexAsymmetric.construct_array_spherical_lincomb."""
+def test_contruct_array_lincomb():
+    """Test BaseTwoIndexAsymmetric.construct_array_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     sph_transform = generate_transformation(1, contractions.angmom_components, "left")
     orb_transform_one = np.random.rand(3, 3)
@@ -314,7 +314,15 @@ def test_contruct_array_spherical_lincomb():
     contractions.norm_cont = np.ones((1, 3))
     test = Test([contractions], [contractions])
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform_one, orb_transform_two),
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "cartesian", "cartesian"
+        ),
+        orb_transform_one.dot(np.arange(9).reshape(3, 3)).dot(orb_transform_two.T) * 2,
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "spherical", "spherical"
+        ),
         (
             orb_transform_one.dot(sph_transform)
             .dot(np.arange(9).reshape(3, 3))
@@ -324,7 +332,31 @@ def test_contruct_array_spherical_lincomb():
         ),
     )
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform_one, orb_transform_two, a=3),
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "cartesian", "spherical"
+        ),
+        (
+            orb_transform_one.dot(np.arange(9).reshape(3, 3))
+            .dot(sph_transform.T)
+            .dot(orb_transform_two.T)
+            * 2
+        ),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "spherical", "cartesian"
+        ),
+        (
+            orb_transform_one.dot(sph_transform)
+            .dot(np.arange(9).reshape(3, 3))
+            .dot(orb_transform_two.T)
+            * 2
+        ),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "spherical", "spherical", a=3
+        ),
         (
             orb_transform_one.dot(sph_transform)
             .dot(np.arange(9).reshape(3, 3))
@@ -334,15 +366,57 @@ def test_contruct_array_spherical_lincomb():
         ),
     )
     with pytest.raises(TypeError):
-        test.construct_array_spherical_lincomb(bad_keyword=3)
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "spherical", "spherical", bad_keyword=3
+        )
+    with pytest.raises(TypeError):
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "bad", "spherical", keyword=3
+        )
+    with pytest.raises(TypeError):
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "cartesian", "bad", keyword=3
+        )
 
     orb_transform_one = np.random.rand(3, 6)
+    orb_transform_two = np.random.rand(3, 3)
     test = Test([contractions, contractions], [contractions])
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform_one, orb_transform_two),
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "spherical", "spherical"
+        ),
         orb_transform_one.dot(
             np.vstack(
                 [sph_transform.dot(np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2] * 2
+            ).dot(orb_transform_two.T)
+        ),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, ["spherical", "cartesian"], "spherical"
+        ),
+        orb_transform_one.dot(
+            np.vstack(
+                [
+                    sph_transform.dot(np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2,
+                    (np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2,
+                ]
+            ).dot(orb_transform_two.T)
+        ),
+    )
+    orb_transform_one = np.random.rand(3, 3)
+    orb_transform_two = np.random.rand(3, 6)
+    test = Test([contractions], [contractions, contractions])
+    assert np.allclose(
+        test.construct_array_lincomb(
+            orb_transform_one, orb_transform_two, "cartesian", ["spherical", "cartesian"]
+        ),
+        orb_transform_one.dot(
+            np.hstack(
+                [
+                    (np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2,
+                    np.arange(9).reshape(3, 3) * 2,
+                ]
             ).dot(orb_transform_two.T)
         ),
     )
