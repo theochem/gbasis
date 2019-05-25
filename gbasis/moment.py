@@ -33,14 +33,18 @@ class Moment(BaseTwoIndexSymmetric):
         `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
         with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart)
-        Return the moment associated with Cartesian Gaussians.
+        Return the moment integrals associated with Cartesian Gaussians.
         `K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph)
-        Return the moment associated with spherical Gaussians (atomic orbitals).
+        Return the moment integrals associated with spherical Gaussians (atomic orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
-    construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
-        Return the moment associated with linear combinations of spherical Gaussians (linear
-        combinations of atomic orbitals).
+    construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, K_cont)
+        Return the moment integrals associated with all of the contraction in the given coordinate
+        system.
+        `K_cont` is the total number of contractions within the given basis set.
+    construct_array_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
+        Return the moment integrals associated with the linear combinations of contractions in the
+        given coordinate system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
@@ -203,8 +207,7 @@ def moment_spherical(basis, moment_coord, moment_orders):
     Returns
     -------
     array : np.ndarray(K_sph, K_sph, D)
-        Array associated with the atomic orbitals associated with the given set(s) of contracted
-        Cartesian Gaussians.
+        Array associated with the spherical contractions.
         First and second indices of the array are associated with two contracted spherical Gaussians
         (atomic orbitals). `K_sph` is the total number of spherical contractions within the
         instance.
@@ -222,8 +225,45 @@ def moment_spherical(basis, moment_coord, moment_orders):
     )
 
 
-def moment_spherical_lincomb(basis, transform, moment_coord, moment_orders):
-    """Return the moment of the linear combination of the basis set in the spherical form.
+def moment_mix(basis, moment_coord, moment_orders, coord_types):
+    """Return the moment of the basis set in the given coordinate system.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    moment_coord : np.ndarray(3,)
+        Center of the moment.
+    moment_orders : np.ndarray(D, 3)
+        Orders of the moment for each dimension (x, y, z).
+        Note that a two dimensional array must be given, even if there is only one set of orders
+        of the moment.
+    coord_types : list/tuple of str
+        Types of the coordinate system for each ContractedCartesianGaussians.
+        Each entry must be one of "cartesian" or "spherical".
+
+    Returns
+    -------
+    array : np.ndarray(K_cont, K_cont, D)
+        Array associated with the contractions in the given coordinate systems.
+        First and second indices of the array are associated with two contractions in the given
+        coordinate system. `K_cont` is the total number of contractions within the given basis set.
+
+    Notes
+    -----
+    If enough orders of moments are calculated (the exact number depends on the size of the basis
+    set), then it may be faster to access the moments for each order if the fifth axis is moved back
+    to the front prior to the access. Use `np.transpose(array, (4, 0, 1, 2, 3))` to change the
+    order.
+
+    """
+    return Moment(basis).construct_array_mix(
+        coord_types, moment_coord=moment_coord, moment_orders=moment_orders
+    )
+
+
+def moment_lincomb(basis, transform, moment_coord, moment_orders, coord_type="spherical"):
+    """Return the moment of the linear combination of the basis set.
 
     Parameters
     ----------
@@ -239,15 +279,21 @@ def moment_spherical_lincomb(basis, transform, moment_coord, moment_orders):
         Orders of the moment for each dimension (x, y, z).
         Note that a two dimensional array must be given, even if there is only one set of orders
         of the moment.
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
     array : np.ndarray(K_orbs, K_orbs, D)
         Array whose first and second indices are associated with the linear combinations of the
-        contracted spherical Gaussians.
-        First and second indices of the array correspond to the linear combination of contracted
-        spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
-        combinations.
+        contractions.
+        First and second indices of the array correspond to the linear combination of contractions.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     Notes
     -----
@@ -257,6 +303,6 @@ def moment_spherical_lincomb(basis, transform, moment_coord, moment_orders):
     order.
 
     """
-    return Moment(basis).construct_array_spherical_lincomb(
-        transform, moment_coord=moment_coord, moment_orders=moment_orders
+    return Moment(basis).construct_array_lincomb(
+        transform, coord_type, moment_coord=moment_coord, moment_orders=moment_orders
     )

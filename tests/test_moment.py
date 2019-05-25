@@ -1,7 +1,7 @@
 """Test gbasis.moment."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
-from gbasis.moment import Moment, moment_cartesian, moment_spherical, moment_spherical_lincomb
+from gbasis.moment import Moment, moment_cartesian, moment_lincomb, moment_mix, moment_spherical
 from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
@@ -225,17 +225,17 @@ def test_moment_spherical():
     )
 
 
-def test_moment_spherical_lincomb():
-    """Test gbasis.moment.moment_spherical_lincomb."""
+def test_moment_mix():
+    """Test gbasis.moment.moment_mix."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
+
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)
-    transform = np.random.rand(14, 18)
     assert np.allclose(
-        moment_obj.construct_array_spherical_lincomb(
-            transform,
+        moment_obj.construct_array_mix(
+            ["spherical"] * 8,
             moment_coord=np.zeros(3),
             moment_orders=np.array(
                 [
@@ -252,7 +252,57 @@ def test_moment_spherical_lincomb():
                 ]
             ),
         ),
-        moment_spherical_lincomb(
+        moment_mix(
+            basis,
+            np.zeros(3),
+            np.array(
+                [
+                    [0, 0, 0],
+                    [1, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 1],
+                    [2, 0, 0],
+                    [0, 2, 0],
+                    [0, 0, 2],
+                    [1, 1, 0],
+                    [1, 0, 1],
+                    [0, 1, 1],
+                ]
+            ),
+            ["spherical"] * 8,
+        ),
+    )
+
+
+def test_moment_spherical_lincomb():
+    """Test gbasis.moment.moment_spherical_lincomb."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    moment_obj = Moment(basis)
+    transform = np.random.rand(14, 18)
+    assert np.allclose(
+        moment_obj.construct_array_lincomb(
+            transform,
+            "spherical",
+            moment_coord=np.zeros(3),
+            moment_orders=np.array(
+                [
+                    [0, 0, 0],
+                    [1, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 1],
+                    [2, 0, 0],
+                    [0, 2, 0],
+                    [0, 0, 2],
+                    [1, 1, 0],
+                    [1, 0, 1],
+                    [0, 1, 1],
+                ]
+            ),
+        ),
+        moment_lincomb(
             basis,
             transform,
             np.zeros(3),
