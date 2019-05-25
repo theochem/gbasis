@@ -236,8 +236,8 @@ def test_contruct_array_mix():
         test.construct_array_mix(["cartesian"] * 3, a=3),
 
 
-def test_contruct_array_spherical_lincomb():
-    """Test BaseOneIndex.construct_array_spherical_lincomb."""
+def test_contruct_array_lincomb():
+    """Test BaseOneIndex.construct_array_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     sph_transform = generate_transformation(1, contractions.angmom_components, "left")
     orb_transform = np.random.rand(3, 3)
@@ -253,21 +253,38 @@ def test_contruct_array_spherical_lincomb():
     )
     test = Test([contractions])
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform),
+        test.construct_array_lincomb(orb_transform, "cartesian"),
+        orb_transform.dot(np.arange(9).reshape(3, 3)) * 2,
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(orb_transform, "spherical"),
         orb_transform.dot(sph_transform).dot(np.arange(9).reshape(3, 3)) * 2,
     )
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform, a=3),
+        test.construct_array_lincomb(orb_transform, "spherical", a=3),
         orb_transform.dot(sph_transform).dot(np.arange(9).reshape(3, 3)) * 3,
     )
     with pytest.raises(TypeError):
-        test.construct_array_spherical_lincomb(bad_keyword=3)
+        test.construct_array_lincomb(orb_transform, "bad")
+    with pytest.raises(TypeError):
+        test.construct_array_lincomb(orb_transform, "spherical", bad_keyword=3)
 
     orb_transform = np.random.rand(3, 6)
     test = Test([contractions, contractions])
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform),
+        test.construct_array_lincomb(orb_transform, "spherical"),
         orb_transform.dot(
             np.vstack([sph_transform.dot(np.arange(9, dtype=float).reshape(3, 3)) * 2] * 2)
+        ),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(orb_transform, ["spherical", "cartesian"]),
+        orb_transform.dot(
+            np.vstack(
+                [
+                    sph_transform.dot(np.arange(9, dtype=float).reshape(3, 3)) * 2,
+                    np.arange(9, dtype=float).reshape(3, 3) * 2,
+                ]
+            )
         ),
     )

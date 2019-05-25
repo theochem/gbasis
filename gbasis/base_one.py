@@ -38,9 +38,12 @@ class BaseOneIndex(BaseGaussianRelatedArray):
     construct_array_spherical(self) : np.ndarray(K_sph, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
-    construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, ...)
-        Return the array associated with linear combinations of spherical Gaussians (linear
-        combinations of atomic orbitals).
+    construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, ...)
+        Return the array associated with all of the contraction in the given coordinate system.
+        `K_cont` is the total number of contractions within the given basis set.
+    construct_array_lincomb(self, transform, coord_type) : np.ndarray(K_orbs, ...)
+        Return the array associated with linear combinations of contractions in the given coordinate
+        system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
@@ -98,7 +101,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         than the arbitrary number of keywords (as is done here).
 
         The methods `construct_array_cartesian`, `construct_array_spherical`, and
-        `construct_array_spherical_lincomb` depend on this function to produce an array whose first
+        `construct_array_lincomb` depend on this function to produce an array whose first
         index corresponds to the contraction (within a generalized contraction) and second index
         corresponds to the angular momentum vector. These other methods **will** fail with little
         warning if the shape of the output is different. Even if there is only one contraction (i.e.
@@ -173,7 +176,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         return np.concatenate(matrices_spherical, axis=0)
 
     def construct_array_mix(self, coord_types, **kwargs):
-        """Return the array associated with all of the contraction in the given orbital types.
+        """Return the array associated with all of the contraction in the given coordinate system.
 
         Parameters
         ----------
@@ -187,10 +190,10 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray(K, ...)
+        array : np.ndarray(K_cont, ...)
             Array associated with the spherical contrations of the basis set.
             First index of the array is associated with each spherical contraction in the basis set.
-            `K_spherical` is the total number of Cartesian contractions within the given basis set.
+            `K_cont` is the total number of contractions within the given basis set.
 
         Raises
         ------
@@ -235,8 +238,8 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
         return np.concatenate(matrices, axis=0)
 
-    def construct_array_spherical_lincomb(self, transform, **kwargs):
-        r"""Return the array associated with linear combinations of spherical Gaussians (LCAO's).
+    def construct_array_lincomb(self, transform, coord_type, **kwargs):
+        r"""Return the array associated with linear combinations of contractions.
 
         .. math::
 
@@ -245,10 +248,18 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
         Parameters
         ----------
-        transform : np.ndarray(K_orbs, K_sph)
-            Array associated with the linear combinations of spherical Gaussians (LCAO's).
-            Transformation is applied to the left, i.e. the sum is over the second index of
-            `transform` and first index of the array for contracted spherical Gaussians.
+        transform : np.ndarray(K_orbs, K_cont)
+            Transformation matrix from contractions in the given coordinate system (e.g. AO) to
+            linear combinations of contractions (e.g. MO).
+            Transformation is applied to the left.
+            Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+            contractions (i.e. AO).
+        coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
+            Types of the coordinate system for the contractions.
+            If "cartesian", then all of the contractions are treated as Cartesian contractions.
+            If "spherical", then all of the contractions are treated as spherical contractions.
+            If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+            coordinate type of each ContractedCartesianGaussians instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
@@ -258,10 +269,25 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         Returns
         -------
         array : np.ndarray(K_orbs, ...)
-            Array whose first index is associated with the linear combinations of the contracted
-            spherical Gaussians.
+            Array whose first index is associated with the linear combinations of the contractions.
             `K_orbs` is the number of basis functions produced after the linear combinations.
 
+        Raises
+        ------
+        TypeError
+            If `coord_type` is not one of "cartesian", "spherical", or a list/tuple of these
+            strings.
+
         """
-        array_spherical = self.construct_array_spherical(**kwargs)
-        return np.tensordot(transform, array_spherical, (1, 0))
+        if coord_type == "cartesian":
+            array = self.construct_array_cartesian(**kwargs)
+        elif coord_type == "spherical":
+            array = self.construct_array_spherical(**kwargs)
+        elif isinstance(coord_type, (list, tuple)):
+            array = self.construct_array_mix(coord_type, **kwargs)
+        else:
+            raise TypeError(
+                "`coord_type` must be one of 'cartesian', 'spherical', or a list/tuple of these "
+                "strings."
+            )
+        return np.tensordot(transform, array, (1, 0))
