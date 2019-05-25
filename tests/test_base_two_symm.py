@@ -481,8 +481,8 @@ def test_contruct_array_mix():
         test.construct_array_mix(["cartesian"] * 3, a=3),
 
 
-def test_contruct_array_spherical_lincomb():
-    """Test BaseTwoIndexSymmetric.construct_array_spherical_lincomb."""
+def test_contruct_array_lincomb():
+    """Test BaseTwoIndexSymmetric.construct_array_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     sph_transform = generate_transformation(1, contractions.angmom_components, "left")
     orb_transform = np.random.rand(3, 3)
@@ -499,7 +499,11 @@ def test_contruct_array_spherical_lincomb():
     contractions.norm_cont = np.ones((1, 3))
     test = Test([contractions])
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform),
+        test.construct_array_lincomb(orb_transform, "cartesian"),
+        (orb_transform.dot(np.arange(9).reshape(3, 3)).dot(orb_transform.T).T * 2),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(orb_transform, "spherical"),
         (
             orb_transform.dot(sph_transform)
             .dot(np.arange(9).reshape(3, 3))
@@ -510,7 +514,7 @@ def test_contruct_array_spherical_lincomb():
         ),
     )
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform, a=3),
+        test.construct_array_lincomb(orb_transform, "spherical", a=3),
         (
             orb_transform.dot(sph_transform)
             .dot(np.arange(9).reshape(3, 3))
@@ -521,9 +525,10 @@ def test_contruct_array_spherical_lincomb():
         ),
     )
     with pytest.raises(TypeError):
-        test.construct_array_spherical_lincomb(bad_keyword=3)
+        test.construct_array_lincomb(orb_transform, "spherical", bad_keyword=3)
+    with pytest.raises(TypeError):
+        test.construct_array_lincomb(orb_transform, "bad", keyword=3)
 
-    orb_transform = np.random.rand(8, 8)
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
         dict_overwrite={
@@ -544,7 +549,7 @@ def test_contruct_array_spherical_lincomb():
     sph_transform_two = generate_transformation(2, cont_two.angmom_components, "left")
     orb_transform = np.random.rand(8, 8)
     assert np.allclose(
-        test.construct_array_spherical_lincomb(orb_transform, a=4),
+        test.construct_array_lincomb(orb_transform, "spherical", a=4),
         np.swapaxes(
             np.tensordot(
                 orb_transform,
@@ -617,13 +622,70 @@ def test_contruct_array_spherical_lincomb():
             1,
         ),
     )
+    orb_transform = np.random.rand(9, 9)
+    assert np.allclose(
+        test.construct_array_lincomb(orb_transform, ("spherical", "cartesian"), a=4),
+        np.swapaxes(
+            np.tensordot(
+                orb_transform,
+                np.tensordot(
+                    orb_transform,
+                    np.concatenate(
+                        [
+                            np.concatenate(
+                                [
+                                    np.tensordot(
+                                        sph_transform_one,
+                                        np.tensordot(
+                                            sph_transform_one,
+                                            np.arange(18).reshape(3, 3, 2),
+                                            (1, 0),
+                                        ),
+                                        (1, 1),
+                                    )
+                                    * 4,
+                                    np.tensordot(
+                                        sph_transform_one, np.arange(36).reshape(3, 6, 2), (1, 0)
+                                    )
+                                    * 4,
+                                ],
+                                axis=1,
+                            ),
+                            np.concatenate(
+                                [
+                                    np.swapaxes(
+                                        np.tensordot(
+                                            sph_transform_one,
+                                            np.arange(36).reshape(3, 6, 2),
+                                            (1, 0),
+                                        ),
+                                        0,
+                                        1,
+                                    )
+                                    * 4,
+                                    np.swapaxes(np.arange(72).reshape(6, 6, 2), 0, 1) * 4,
+                                ],
+                                axis=1,
+                            ),
+                        ],
+                        axis=0,
+                    ),
+                    (1, 0),
+                ),
+                (1, 1),
+            ),
+            0,
+            1,
+        ),
+    )
 
 
 def test_compare_two_asymm():
     """Test BaseTwoIndexSymmetric by comparing it against BaseTwoIndexAsymmetric."""
     cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    orb_transform = np.random.rand(8, 8)
+    sph_orb_transform = np.random.rand(8, 8)
+    cart_orb_transform = np.random.rand(9, 9)
 
     def construct_array_contraction(self, cont_one, cont_two, a=2):
         """Temporary symmetric function for testing."""
@@ -673,6 +735,14 @@ def test_compare_two_asymm():
         test_symm.construct_array_spherical(), test_asymm.construct_array_spherical()
     )
     assert np.allclose(
-        test_symm.construct_array_spherical_lincomb(orb_transform),
-        test_asymm.construct_array_spherical_lincomb(orb_transform, orb_transform),
+        test_symm.construct_array_lincomb(sph_orb_transform, "spherical"),
+        test_asymm.construct_array_lincomb(
+            sph_orb_transform, sph_orb_transform, "spherical", "spherical"
+        ),
+    )
+    assert np.allclose(
+        test_symm.construct_array_lincomb(cart_orb_transform, "cartesian"),
+        test_asymm.construct_array_lincomb(
+            cart_orb_transform, cart_orb_transform, "cartesian", "cartesian"
+        ),
     )
