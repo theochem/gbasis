@@ -1,7 +1,13 @@
 """Test gbasis.overlap."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.contractions import ContractedCartesianGaussians, make_contractions
-from gbasis.overlap import Overlap, overlap_cartesian, overlap_spherical, overlap_spherical_lincomb
+from gbasis.overlap import (
+    Overlap,
+    overlap_cartesian,
+    overlap_lincomb,
+    overlap_mix,
+    overlap_spherical,
+)
 from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
@@ -92,8 +98,21 @@ def test_overlap_spherical():
     assert np.allclose(overlap_obj.construct_array_spherical(), overlap_spherical(basis))
 
 
-def test_overlap_spherical_lincomb():
-    """Test gbasis.eval.overlap_spherical_lincomb."""
+def test_overlap_mix():
+    """Test gbasis.eval.overlap_mix."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    overlap_obj = Overlap(basis)
+    assert np.allclose(
+        overlap_obj.construct_array_mix(["spherical"] * 8), overlap_mix(basis, ["spherical"] * 8)
+    )
+
+
+def test_overlap_lincomb():
+    """Test gbasis.eval.overlap_lincomb."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -101,8 +120,8 @@ def test_overlap_spherical_lincomb():
     overlap_obj = Overlap(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        overlap_obj.construct_array_spherical_lincomb(transform),
-        overlap_spherical_lincomb(basis, transform),
+        overlap_obj.construct_array_lincomb(transform, "spherical"),
+        overlap_lincomb(basis, transform),
     )
 
 
