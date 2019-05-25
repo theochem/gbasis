@@ -6,8 +6,9 @@ from gbasis.contractions import ContractedCartesianGaussians, make_contractions
 from gbasis.eval_deriv import (
     EvalDeriv,
     evaluate_deriv_basis_cartesian,
+    evaluate_deriv_basis_lincomb,
+    evaluate_deriv_basis_mix,
     evaluate_deriv_basis_spherical,
-    evaluate_deriv_basis_spherical_lincomb,
 )
 from gbasis.parsers import parse_nwchem
 import numpy as np
@@ -175,27 +176,53 @@ def test_evaluate_deriv_basis_spherical():
     )
 
 
-def test_evaluate_deriv_basis_spherical_lincomb():
-    """Test gbasis.eval.evaluate_deriv_basis_spherical_lincomb."""
+def test_evaluate_deriv_basis_mix():
+    """Test gbasis.eval.evaluate_deriv_basis_mix."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     eval_obj = EvalDeriv(basis)
-    transform = np.random.rand(14, 18)
     assert np.allclose(
-        eval_obj.construct_array_spherical_lincomb(
-            transform, coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+        eval_obj.construct_array_mix(
+            ["cartesian"] * 8, coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis_spherical_lincomb(
-            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), transform
+        evaluate_deriv_basis_mix(
+            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), ["cartesian"] * 8
         ),
     )
     assert np.allclose(
-        eval_obj.construct_array_spherical_lincomb(
-            transform, coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+        eval_obj.construct_array_mix(
+            ["spherical"] * 8, coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis_spherical_lincomb(
-            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), transform
+        evaluate_deriv_basis_mix(
+            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), ["spherical"] * 8
+        ),
+    )
+
+
+def test_evaluate_deriv_basis_lincomb():
+    """Test gbasis.eval.evaluate_deriv_basis_lincomb."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    eval_obj = EvalDeriv(basis)
+    cart_transform = np.random.rand(14, 19)
+    sph_transform = np.random.rand(14, 18)
+    assert np.allclose(
+        eval_obj.construct_array_lincomb(
+            cart_transform, "cartesian", coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+        ),
+        evaluate_deriv_basis_lincomb(
+            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), cart_transform, "cartesian"
+        ),
+    )
+    assert np.allclose(
+        eval_obj.construct_array_lincomb(
+            sph_transform, "spherical", coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+        ),
+        evaluate_deriv_basis_lincomb(
+            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform, "spherical"
         ),
     )
