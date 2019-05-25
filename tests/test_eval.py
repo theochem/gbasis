@@ -4,8 +4,9 @@ from gbasis.contractions import ContractedCartesianGaussians, make_contractions
 from gbasis.eval import (
     Eval,
     evaluate_basis_cartesian,
+    evaluate_basis_lincomb,
+    evaluate_basis_mix,
     evaluate_basis_spherical,
-    evaluate_basis_spherical_lincomb,
 )
 from gbasis.parsers import parse_nwchem
 import numpy as np
@@ -113,8 +114,36 @@ def test_evaluate_basis_spherical():
     )
 
 
-def test_evaluate_basis_spherical_lincomb():
-    """Test gbasis.eval.evaluate_basis_spherical_lincomb."""
+def test_evaluate_basis_mix():
+    """Test gbasis.eval.evaluate_basis_mix."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+
+    # cartesian and spherical are the same for s orbital
+    basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
+    assert np.allclose(
+        evaluate_basis_spherical(basis, np.array([[0, 0, 0]])),
+        evaluate_basis_mix(basis, np.array([[0, 0, 0]]), ["spherical"]),
+    )
+    assert np.allclose(
+        evaluate_basis_cartesian(basis, np.array([[0, 0, 0]])),
+        evaluate_basis_mix(basis, np.array([[0, 0, 0]]), ["cartesian"]),
+    )
+
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    assert np.allclose(
+        evaluate_basis_spherical(basis, np.array([[1, 1, 1]])),
+        evaluate_basis_mix(basis, np.array([[1, 1, 1]]), ["spherical"] * 8),
+    )
+    assert np.allclose(
+        evaluate_basis_cartesian(basis, np.array([[1, 1, 1]])),
+        evaluate_basis_mix(basis, np.array([[1, 1, 1]]), ["cartesian"] * 8),
+    )
+
+
+def test_evaluate_basis_lincomb():
+    """Test gbasis.eval.evaluate_basis_lincomb."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -122,6 +151,6 @@ def test_evaluate_basis_spherical_lincomb():
     eval_obj = Eval(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        eval_obj.construct_array_spherical_lincomb(transform, coords=np.array([[1, 1, 1]])),
-        evaluate_basis_spherical_lincomb(basis, np.array([[1, 1, 1]]), transform),
+        eval_obj.construct_array_lincomb(transform, "spherical", coords=np.array([[1, 1, 1]])),
+        evaluate_basis_lincomb(basis, np.array([[1, 1, 1]]), transform, "spherical"),
     )
