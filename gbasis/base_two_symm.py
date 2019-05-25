@@ -44,9 +44,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
     construct_array_spherical(self, **kwargs) : np.ndarray(K_sph, K_sph, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
-    construct_array_spherical_lincomb(self, transform, **kwargs) : np.ndarray(K_orbs, K_orbs, ...)
-        Return the array associated with linear combinations of spherical Gaussians (linear
-        combinations of atomic orbitals).
+    construct_array_lincomb(self, transform, coord_type) : np.ndarray(K_orbs, K_orbs, ...)
+        Return the array associated with linear combinations of contractions in the given coordinate
+        system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
@@ -115,7 +115,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         than the arbitrary number of keywords (as is done here).
 
         The methods `construct_array_cartesian`, `construct_array_spherical`, and
-        `construct_array_spherical_lincomb` depend on this function to produce an array whose first
+        `construct_array_lincomb` depend on this function to produce an array whose first
         and second indices correspond to the contraction (within a generalized contraction) and
         the angular momentum vector of `contractions_one`, and third and fourth indices correspond
         to the contraction (within a generalized contraction) and the angular momentum vector of
@@ -263,9 +263,11 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray
+        array : np.ndarray(K_cont, K_cont, ...)
             Array associated with the atomic orbitals associated with the given set of contracted
             Cartesian Gaussians.
+            First and second indices of the array are associated with two contractions in the given
+            coordinate system. `K_cont` is the total number of contractions within the instance.
 
         Raises
         ------
@@ -335,8 +337,8 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             [np.concatenate(row_blocks, axis=1) for row_blocks in all_blocks], axis=0
         )
 
-    def construct_array_spherical_lincomb(self, transform, **kwargs):
-        r"""Return the array associated with linear combinations of spherical Gaussians (LCAO's).
+    def construct_array_lincomb(self, transform, coord_type, **kwargs):
+        r"""Return the array associated with linear combinations of contractions.
 
         .. math::
 
@@ -344,9 +346,18 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Parameters
         ----------
-        transform : np.ndarray
-            Array associated with the linear combinations of spherical Gaussians (LCAO's) associated
-            with the first and second index.
+        transform : np.ndarray(K_orbs, K_cont)
+            Transformation matrix from contractions in the given coordinate system (e.g. AO) to
+            linear combinations of contractions (e.g. MO).
+            Transformation is applied to the left.
+            Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+            contractions (i.e. AO).
+        coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
+            Types of the coordinate system for the contractions.
+            If "cartesian", then all of the contractions are treated as Cartesian contractions.
+            If "spherical", then all of the contractions are treated as spherical contractions.
+            If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+            coordinate type of each ContractedCartesianGaussians instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
@@ -357,14 +368,30 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         -------
         array : np.ndarray(K_orbs, K_orbs, ...)
             Array whose first and second indices are associated with the linear combinations of the
-            contracted spherical Gaussians.
+            contractions.
             First and second indices of the array correspond to the linear combination of contracted
             spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
             combinations.
 
+        Raises
+        ------
+        TypeError
+            If `coord_type` is not one of "cartesian", "spherical", or a list/tuple of these
+            strings.
+
         """
-        array_transformed = self.construct_array_spherical(**kwargs)
-        array_transformed = np.tensordot(transform, array_transformed, (1, 0))
-        array_transformed = np.tensordot(transform, array_transformed, (1, 1))
-        array_transformed = np.swapaxes(array_transformed, 0, 1)
-        return array_transformed
+        if coord_type == "cartesian":
+            array = self.construct_array_cartesian(**kwargs)
+        elif coord_type == "spherical":
+            array = self.construct_array_spherical(**kwargs)
+        elif isinstance(coord_type, (list, tuple)):
+            array = self.construct_array_mix(coord_type, **kwargs)
+        else:
+            raise TypeError(
+                "`coord_type` must be one of 'cartesian', 'spherical', or a list/tuple of these "
+                "strings."
+            )
+        array = np.tensordot(transform, array, (1, 0))
+        array = np.tensordot(transform, array, (1, 1))
+        array = np.swapaxes(array, 0, 1)
+        return array
