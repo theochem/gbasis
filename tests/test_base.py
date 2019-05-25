@@ -71,13 +71,13 @@ def test_contruct_array_spherical():
         Test([contractions])
 
 
-def test_contruct_array_spherical_lincomb():
-    """Test base.BaseGaussianRelatedArray.construct_array_spherical_lincomb."""
-    # enable only the abstract method construct_array_spherical_lincomb
+def test_contruct_array_lincomb():
+    """Test base.BaseGaussianRelatedArray.construct_array_lincomb."""
+    # enable only the abstract method construct_array_lincomb
     Test = disable_abstract(  # noqa: N806
         BaseGaussianRelatedArray,
         dict_overwrite={
-            "construct_array_spherical_lincomb": BaseGaussianRelatedArray.construct_array_spherical_lincomb  # noqa: E501
+            "construct_array_lincomb": BaseGaussianRelatedArray.construct_array_lincomb
         },
     )
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
