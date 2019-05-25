@@ -55,9 +55,13 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph)
         Return the one-electron integrals associated with spherical Gaussians (atomic orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
-    construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
-        Return the one-electron integrals associated with linear combinations of spherical Gaussians
-        (linear combinations of atomic orbitals).
+    construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, K_cont)
+        Return the one-electron integrals associated with the contraction in the given coordinate
+        system.
+        `K_cont` is the total number of contractions within the given basis set.
+    construct_array_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
+        Return the one-electron integrals associated with the linear combinations of contractions in
+        the given coordinate system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
@@ -289,7 +293,7 @@ def point_charge_cartesian(basis, coords_points, charges_points):
 
 
 def point_charge_spherical(basis, coords_points, charges_points):
-    """Return the nuclear electron attraction integrals of the basis set in the spherical form.
+    """Return the point-charge interation integrals of the basis set in the spherical form.
 
     Parameters
     ----------
@@ -317,8 +321,39 @@ def point_charge_spherical(basis, coords_points, charges_points):
     )
 
 
-def point_charge_spherical_lincomb(basis, transform, coords_points, charges_points):
-    """Return the nuclear electron attraction integrals of the LCAO's in the spherical form.
+def point_charge_mix(basis, coords_points, charges_points, coord_types):
+    """Return the point-charge interation integrals of basis set in the given coordinate systems.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords_points : np.ndarray(3,)
+        Coordinate of the point charge.
+        Rows correspond to the different point charges and columns correspond to the x, y, and z
+        components.
+    charges_points : float
+        Charge of the point charge.
+    coord_types : list/tuple of str
+        Types of the coordinate system for each ContractedCartesianGaussians.
+        Each entry must be one of "cartesian" or "spherical".
+
+    Returns
+    -------
+    array : np.ndarray(K_orbs, K_orbs)
+        Array whose first and second indices are associated with the linear combinations of the
+        contractions.
+        First and second indices of the array correspond to the linear combination of contractions.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
+
+    """
+    return PointChargeIntegral(basis).construct_array_mix(
+        coord_types, coords_points=coords_points, charges_points=charges_points
+    )
+
+
+def point_charge_lincomb(basis, transform, coords_points, charges_points, coord_type="spherical"):
+    """Return the point-charge interaction integrals of the linera combination of basis set.
 
     Parameters
     ----------
@@ -334,17 +369,23 @@ def point_charge_spherical_lincomb(basis, transform, coords_points, charges_poin
         components.
     charges_points : np.ndarray(N)
         Charge of the point charges.
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
     array : np.ndarray(K_orbs, K_orbs, N)
         Array whose first and second indices are associated with the linear combinations of the
-        contracted spherical Gaussians.
-        First and second indices of the array correspond to the linear combination of contracted
-        spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
-        combinations.
+        contractions.
+        First and second indices of the array correspond to the linear combination of contractions.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
-    return PointChargeIntegral(basis).construct_array_spherical_lincomb(
-        transform, coords_points=coords_points, charges_points=charges_points
+    return PointChargeIntegral(basis).construct_array_lincomb(
+        transform, coord_type, coords_points=coords_points, charges_points=charges_points
     )

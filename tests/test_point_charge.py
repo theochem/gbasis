@@ -3,8 +3,9 @@ from gbasis.contractions import ContractedCartesianGaussians, make_contractions
 from gbasis.parsers import parse_nwchem
 from gbasis.point_charge import (
     point_charge_cartesian,
+    point_charge_lincomb,
+    point_charge_mix,
     point_charge_spherical,
-    point_charge_spherical_lincomb,
     PointChargeIntegral,
 )
 import numpy as np
@@ -157,8 +158,26 @@ def test_point_charge_spherical():
     )
 
 
-def test_point_charge_spherical_lincomb():
-    """Test gbasis.point_charge.point_charge_spherical_lincomb."""
+def test_point_charge_mix():
+    """Test gbasis.point_charge.point_charge_mix."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    point_charge_obj = PointChargeIntegral(basis)
+
+    coords_points = np.random.rand(5, 3)
+    charges_points = np.random.rand(5)
+    assert np.allclose(
+        point_charge_obj.construct_array_mix(
+            ["spherical"] * 8, coords_points=coords_points, charges_points=charges_points
+        ),
+        point_charge_mix(basis, coords_points, charges_points, ["spherical"] * 8),
+    )
+
+
+def test_point_charge_lincomb():
+    """Test gbasis.point_charge.point_charge_lincomb."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -169,10 +188,10 @@ def test_point_charge_spherical_lincomb():
     charges_points = np.random.rand(5)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        point_charge_obj.construct_array_spherical_lincomb(
-            transform, coords_points=coords_points, charges_points=charges_points
+        point_charge_obj.construct_array_lincomb(
+            transform, ["spherical"] * 8, coords_points=coords_points, charges_points=charges_points
         ),
-        point_charge_spherical_lincomb(
+        point_charge_lincomb(
             basis, transform, coords_points=coords_points, charges_points=charges_points
         ),
     )
