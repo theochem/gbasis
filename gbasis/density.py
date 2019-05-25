@@ -1,6 +1,6 @@
 """Density Evaluation."""
-from gbasis.eval import evaluate_basis_spherical_lincomb
-from gbasis.eval_deriv import evaluate_deriv_basis_spherical_lincomb
+from gbasis.eval import evaluate_basis_lincomb
+from gbasis.eval_deriv import evaluate_deriv_basis_lincomb
 import numpy as np
 from scipy.special import comb
 
@@ -61,7 +61,7 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def eval_density(one_density_matrix, basis, coords, transform):
+def eval_density(one_density_matrix, basis, coords, transform, coord_type="spherical"):
     """Return the density of the given transformed basis set at the given coordinates.
 
     Parameters
@@ -72,27 +72,33 @@ def eval_density(one_density_matrix, basis, coords, transform):
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
     density : np.ndarray(N,)
         Density evaluated at different grid points.
 
-    Notes
-    -----
-    The transformation matrix corresponds to the spherical contractions. If your transformation
-    matrix corresponds to Cartesian contractions, please raise an issue.
-
     """
-    orb_eval = evaluate_basis_spherical_lincomb(basis, coords, transform)
+    orb_eval = evaluate_basis_lincomb(basis, coords, transform, coord_type=coord_type)
     return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
 
 
-def eval_deriv_density(orders, one_density_matrix, basis, coords, transform):
+def eval_deriv_density(
+    orders, one_density_matrix, basis, coords, transform, coord_type="spherical"
+):
     """Return the derivative of density of the given transformed basis set at the given coordinates.
 
     Parameters
@@ -105,10 +111,19 @@ def eval_deriv_density(orders, one_density_matrix, basis, coords, transform):
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -134,11 +149,11 @@ def eval_deriv_density(orders, one_density_matrix, basis, coords, transform):
                 num_occurence = comb(total_l_x, l_x) * comb(total_l_y, l_y) * comb(total_l_z, l_z)
                 orders_one = np.array([l_x, l_y, l_z])
                 orders_two = orders - orders_one
-                deriv_orb_eval_one = evaluate_deriv_basis_spherical_lincomb(
-                    basis, coords, orders_one, transform
+                deriv_orb_eval_one = evaluate_deriv_basis_lincomb(
+                    basis, coords, orders_one, transform, coord_type=coord_type
                 )
-                deriv_orb_eval_two = evaluate_deriv_basis_spherical_lincomb(
-                    basis, coords, orders_two, transform
+                deriv_orb_eval_two = evaluate_deriv_basis_lincomb(
+                    basis, coords, orders_two, transform, coord_type=coord_type
                 )
                 density = one_density_matrix.dot(deriv_orb_eval_two)
                 density *= deriv_orb_eval_one
@@ -147,7 +162,7 @@ def eval_deriv_density(orders, one_density_matrix, basis, coords, transform):
     return output
 
 
-def eval_density_gradient(one_density_matrix, basis, coords, transform):
+def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_type="spherical"):
     """Return the gradient of the density evaluated at the given coordinates.
 
     Parameters
@@ -158,10 +173,19 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -171,14 +195,35 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform):
     """
     return np.array(
         [
-            eval_deriv_density(np.array([1, 0, 0]), one_density_matrix, basis, coords, transform),
-            eval_deriv_density(np.array([0, 1, 0]), one_density_matrix, basis, coords, transform),
-            eval_deriv_density(np.array([0, 0, 1]), one_density_matrix, basis, coords, transform),
+            eval_deriv_density(
+                np.array([1, 0, 0]),
+                one_density_matrix,
+                basis,
+                coords,
+                transform,
+                coord_type=coord_type,
+            ),
+            eval_deriv_density(
+                np.array([0, 1, 0]),
+                one_density_matrix,
+                basis,
+                coords,
+                transform,
+                coord_type=coord_type,
+            ),
+            eval_deriv_density(
+                np.array([0, 0, 1]),
+                one_density_matrix,
+                basis,
+                coords,
+                transform,
+                coord_type=coord_type,
+            ),
         ]
     ).T
 
 
-def eval_density_laplacian(one_density_matrix, basis, coords, transform):
+def eval_density_laplacian(one_density_matrix, basis, coords, transform, coord_type="spherical"):
     """Return the Laplacian of the density evaluated at the given coordinates.
 
     Parameters
@@ -189,10 +234,19 @@ def eval_density_laplacian(one_density_matrix, basis, coords, transform):
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -200,13 +254,19 @@ def eval_density_laplacian(one_density_matrix, basis, coords, transform):
         Laplacian of the density evaluated at the given coordinates.
 
     """
-    output = eval_deriv_density(np.array([2, 0, 0]), one_density_matrix, basis, coords, transform)
-    output += eval_deriv_density(np.array([0, 2, 0]), one_density_matrix, basis, coords, transform)
-    output += eval_deriv_density(np.array([0, 0, 2]), one_density_matrix, basis, coords, transform)
+    output = eval_deriv_density(
+        np.array([2, 0, 0]), one_density_matrix, basis, coords, transform, coord_type=coord_type
+    )
+    output += eval_deriv_density(
+        np.array([0, 2, 0]), one_density_matrix, basis, coords, transform, coord_type=coord_type
+    )
+    output += eval_deriv_density(
+        np.array([0, 0, 2]), one_density_matrix, basis, coords, transform, coord_type=coord_type
+    )
     return output
 
 
-def eval_density_hessian(one_density_matrix, basis, coords, transform):
+def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_type="spherical"):
     """Return the Hessian of the density evaluated at the given coordinates.
 
     Parameters
@@ -217,10 +277,19 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform):
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -234,7 +303,12 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform):
         [
             [
                 eval_deriv_density(
-                    orders_one + orders_two, one_density_matrix, basis, coords, transform
+                    orders_one + orders_two,
+                    one_density_matrix,
+                    basis,
+                    coords,
+                    transform,
+                    coord_type=coord_type,
                 )
                 for orders_one in np.identity(3, dtype=int)
             ]
@@ -243,7 +317,9 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform):
     ).T
 
 
-def eval_posdef_kinetic_energy_density(one_density_matrix, basis, coords, transform):
+def eval_posdef_kinetic_energy_density(
+    one_density_matrix, basis, coords, transform, coord_type="spherical"
+):
     """Return evaluations of positive definite kinetic energy density.
 
     Parameters
@@ -254,10 +330,19 @@ def eval_posdef_kinetic_energy_density(one_density_matrix, basis, coords, transf
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -268,7 +353,9 @@ def eval_posdef_kinetic_energy_density(one_density_matrix, basis, coords, transf
     """
     output = np.zeros(coords.shape[0])
     for orders in np.identity(3, dtype=int):
-        deriv_orb_eval = evaluate_deriv_basis_spherical_lincomb(basis, coords, orders, transform)
+        deriv_orb_eval = evaluate_deriv_basis_lincomb(
+            basis, coords, orders, transform, coord_type=coord_type
+        )
         density = one_density_matrix.dot(deriv_orb_eval)
         density *= deriv_orb_eval
         density = np.sum(density, axis=0)
