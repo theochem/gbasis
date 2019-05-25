@@ -2,14 +2,16 @@
 from gbasis.contractions import make_contractions
 from gbasis.nuclear_electron_attraction import (
     nuclear_electron_attraction_cartesian,
+    nuclear_electron_attraction_lincomb,
+    nuclear_electron_attraction_mix,
     nuclear_electron_attraction_spherical,
-    nuclear_electron_attraction_spherical_lincomb,
 )
 from gbasis.parsers import parse_nwchem
 from gbasis.point_charge import (
     point_charge_cartesian,
+    point_charge_lincomb,
+    point_charge_mix,
     point_charge_spherical,
-    point_charge_spherical_lincomb,
 )
 import numpy as np
 from utils import find_datafile, HortonContractions
@@ -87,8 +89,24 @@ def test_nuclear_electron_attraction_spherical():
     )
 
 
-def test_nuclear_electron_attraction_spherical_lincomb():
-    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_spherical_lincomb."""
+def test_nuclear_electron_attraction_mix():
+    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_mix."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+
+    nuclear_coords = np.random.rand(5, 3)
+    nuclear_charges = np.random.rand(5)
+    ref = point_charge_mix(basis, nuclear_coords, nuclear_charges, ["spherical"] * 8)
+    assert np.allclose(
+        ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
+        nuclear_electron_attraction_mix(basis, nuclear_coords, nuclear_charges, ["spherical"] * 8),
+    )
+
+
+def test_nuclear_electron_attraction_lincomb():
+    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_lincomb."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -97,10 +115,8 @@ def test_nuclear_electron_attraction_spherical_lincomb():
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
     transform = np.random.rand(14, 18)
-    ref = point_charge_spherical_lincomb(basis, transform, nuclear_coords, nuclear_charges)
+    ref = point_charge_lincomb(basis, transform, nuclear_coords, nuclear_charges)
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_spherical_lincomb(
-            basis, transform, nuclear_coords, nuclear_charges
-        ),
+        nuclear_electron_attraction_lincomb(basis, transform, nuclear_coords, nuclear_charges),
     )
