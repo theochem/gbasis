@@ -41,9 +41,13 @@ class Eval(BaseOneIndex):
         coordinates.
         `K_sph` is the total number of spherical contractions within the instance.
         `N` is the number of coordinates at which the contractions are evaluated.
-    construct_array_spherical_lincomb(self, transform, coords) : np.ndarray(K_orbs, N)
-        Return the evaluations of the linear combinations of spherical Gaussians (linear
-        combinations of atomic orbitals).
+    construct_array_mix(self, coord_types, coords) : np.ndarray(K_cont, N)
+        Return the evaluatations of the contraction in the given coordinate system.
+        `K_cont` is the total number of contractions within the given basis set.
+        `N` is the number of coordinates at which the contractions are evaluated.
+    construct_array_lincomb(self, transform, coord_type, coords) : np.ndarray(K_orbs, N)
+        Return the evaluations of the linear combinations of contractions in the given coordinate
+        system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
         `N` is the number of coordinates at which the contractions are evaluated.
 
@@ -82,7 +86,7 @@ class Eval(BaseOneIndex):
         Note
         ----
         Since all of the keyword arguments of `construct_array_cartesian`,
-        `construct_array_spherical`, and `construct_array_spherical_lincomb` are ultimately passed
+        `construct_array_spherical`, and `construct_array_lincomb` are ultimately passed
         down to this method, all of the mentioned methods must be called with the keyword arguments
         `coords` and `orders`.
 
@@ -147,8 +151,8 @@ def evaluate_basis_spherical(basis, coords):
     return Eval(basis).construct_array_spherical(coords=coords)
 
 
-def evaluate_basis_spherical_lincomb(basis, coords, transform):
-    """Evaluate a basis set in the spherical form at the given coordinates.
+def evaluate_basis_mix(basis, coords, coord_types):
+    """Evaluate a basis set in the given coordinate system at the given coordinates.
 
     Parameters
     ----------
@@ -156,18 +160,50 @@ def evaluate_basis_spherical_lincomb(basis, coords, transform):
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
+    coord_types : list/tuple of str
+        Types of the coordinate system for each ContractedCartesianGaussians.
+        Each entry must be one of "cartesian" or "spherical".
+
+    Returns
+    -------
+    eval_array : np.ndarray(K_cont, N)
+        Evaluations of the contractions of the given coordinate types at the given coordinates.
+        `K_cont` is the total number of contractions within the given basis set.
+        `N` is the number of coordinates at which the contractions are evaluated.
+
+    """
+    return Eval(basis).construct_array_mix(coord_types, coords=coords)
+
+
+def evaluate_basis_lincomb(basis, coords, transform, coord_type="spherical"):
+    """Return the evaluations of the linear combination of the given basis set.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
 
     Returns
     -------
     eval_array : np.ndarray(K_orbs, N)
-        Evaluations of the linear combinations of spherical Gaussians (linear combinations of atomic
-        orbitals).
+        Evaluations of the linear combinations of contractions.
         `K_orbs` is the number of basis functions produced after the linear combinations.
         `N` is the number of coordinates at which the contractions are evaluated.
 
     """
-    return Eval(basis).construct_array_spherical_lincomb(transform, coords=coords)
+    return Eval(basis).construct_array_lincomb(transform, coord_type, coords=coords)
