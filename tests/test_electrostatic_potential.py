@@ -98,6 +98,28 @@ def test_electrostatic_potential_base():
             np.random.rand(3, 3),
             np.array([1, 2]),
         )
+    # check threshold_dist types
+    with pytest.raises(TypeError):
+        _electrostatic_potential_base(
+            point_charge_cartesian,
+            basis,
+            np.identity(103),
+            np.random.rand(10, 3),
+            np.random.rand(2, 3),
+            np.array([1, 2]),
+            threshold_dist=None,
+        )
+    # check threshold_dist value
+    with pytest.raises(ValueError):
+        _electrostatic_potential_base(
+            point_charge_cartesian,
+            basis,
+            np.identity(103),
+            np.random.rand(10, 3),
+            np.random.rand(2, 3),
+            np.array([1, 2]),
+            threshold_dist=-0.1,
+        )
 
 
 def test_electrostatic_potential_cartesian():

@@ -6,7 +6,13 @@ import numpy as np
 # FIXME: check if density_matrix has the right shape. otherwise, hartree potential needs to be
 # obtained first, which is quite expensive
 def _electrostatic_potential_base(
-    base_func, basis, density_matrix, coords_points, nuclear_coords, nuclear_charges
+    base_func,
+    basis,
+    density_matrix,
+    coords_points,
+    nuclear_coords,
+    nuclear_charges,
+    threshold_dist=0.0,
 ):
     """Return the electrostatic potentials of the basis set in the Cartesian form.
 
@@ -26,6 +32,11 @@ def _electrostatic_potential_base(
         Rows correspond to the atoms and columns correspond to the x, y, and z components.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
+    threshold_dist : {float, 0.0}
+        Threshold for rejecting nuclei whose distances to the points are less than the provided
+        value. i.e. nuclei that are closer to the point than the threshold are discarded when
+        computing the electrostatic potential of the point.
+        Default value is 0.0, i.e. no nuclei are discarded.
 
     Returns
     -------
@@ -42,10 +53,12 @@ def _electrostatic_potential_base(
         If `density_matrix_cart` is not a two-dimensional numpy array.
         If `nuclear_coords` is not a two-dimensional numpy array with 3 columns.
         If `nuclear_charges` is not a one-dimensional numpy array.
+        If `threshold_dist` is not a int/float.
     ValueError
         If `density_matrix_cart` must be a symmetric (square) matrix.
         If bumber of rows in `nuclear_coords` is not equal to the number of elements in
         `nuclear_charges`.
+        If `threshold_dist` is less than 0.
 
     Notes
     -----
@@ -75,16 +88,27 @@ def _electrostatic_potential_base(
             "Number of rows in `nuclear_coords` must be equal to the number of elements in "
             "`nuclear_charges`."
         )
+    if not isinstance(threshold_dist, (int, float)):
+        raise TypeError("`threshold_dist` must be a int/float.")
+    if threshold_dist < 0:
+        raise ValueError("`threshold_dist` must be greater than or equal to zero.")
 
     hartree_potential = base_func(basis, coords_points, -np.ones(coords_points.shape[0]))
     hartree_potential *= density_matrix[:, :, None]
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))
 
-    external_potential = -np.sum(
+    # silence warning for dividing by zero
+    old_settings = np.seterr(divide="ignore")
+    external_potential = (
         nuclear_charges[None, :]
-        / np.sum((coords_points[:, :, None] - nuclear_coords.T[None, :, :]) ** 2, axis=1) ** 0.5,
-        axis=1,
+        / np.sum((coords_points[:, :, None] - nuclear_coords.T[None, :, :]) ** 2, axis=1) ** 0.5
     )
+    # zero out potentials of elements that are too close to the nucleus
+    external_potential[external_potential > 1.0 / np.array(threshold_dist)] = 0
+    # restore old settings
+    np.seterr(**old_settings)
+    # sum over potentials for each dimension
+    external_potential = -np.sum(external_potential, axis=1)
 
     return -(external_potential + hartree_potential)
 
