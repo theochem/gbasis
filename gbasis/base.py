@@ -23,9 +23,9 @@ class BaseGaussianRelatedArray(abc.ABC):
         Return the array associated with Cartesian Gaussians.
     construct_array_spherical(self, **kwargs) : np.ndarray
         Return the array associated with spherical Gaussians (atomic orbitals).
-    construct_array_spherical_lincomb(self, *transform, **kwargs) : np.ndarray
-        Return the array associated with linear combinations of spherical Gaussians (linear
-        combinations of atomic orbitals).
+    construct_array_lincomb(self, *transform, coord_types, **kwargs) : np.ndarray
+        Return the array associated with linear combinations of contractions in the given coordinate
+        system.
 
     """
 
@@ -148,8 +148,8 @@ class BaseGaussianRelatedArray(abc.ABC):
         """
 
     @abc.abstractmethod
-    def construct_array_spherical_lincomb(self, *transform, **kwargs):
-        """Return the array associated with linear combinations of spherical Gaussians (LCAO's).
+    def construct_array_lincomb(self, *transform, coord_type, **kwargs):
+        """Return the array associated with linear combinations of contractions.
 
         Parameters
         ----------
@@ -157,6 +157,12 @@ class BaseGaussianRelatedArray(abc.ABC):
             Transformation matrix that will be used for linearly combining the spherical
             contractions.
             Note that multiple instances may be needed to construct the array.
+        coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
+            Types of the coordinate system for the contractions.
+            If "cartesian", then all of the contractions are treated as Cartesian contractions.
+            If "spherical", then all of the contractions are treated as spherical contractions.
+            If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+            coordinate type of each ContractedCartesianGaussians instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
 
