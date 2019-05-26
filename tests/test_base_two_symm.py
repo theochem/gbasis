@@ -73,15 +73,15 @@ def test_contruct_array_cartesian():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(cont_one.num_contr * cont_two.num_contr, dtype=float).reshape(
-                    1, cont_one.num_contr, 1, cont_two.num_contr
+                np.arange(cont_one.num_cart * cont_two.num_cart, dtype=float).reshape(
+                    1, cont_one.num_cart, 1, cont_two.num_cart
                 )
                 * a
             )
         },
     )
-    cont_one.norm_cont = np.ones((1, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((1, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((1, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
     assert np.allclose(
         test.construct_array_cartesian(),
@@ -106,8 +106,8 @@ def test_contruct_array_cartesian():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(cont_one.num_contr * cont_two.num_contr * 2, dtype=float).reshape(
-                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
+                np.arange(cont_one.num_cart * cont_two.num_cart * 2, dtype=float).reshape(
+                    1, cont_one.num_cart, 1, cont_two.num_cart, 2
                 )
                 * a
             )
@@ -162,22 +162,22 @@ def test_contruct_array_cartesian():
             # NOTE: assume that cont_one and cont_two will always be cont_one and cont_two defined
             # above
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: np.arange(
-                2 * cont_one.num_contr * 2 * cont_two.num_contr, dtype=float
-            ).reshape(2, cont_one.num_contr, 2, cont_two.num_contr)
+                2 * cont_one.num_cart * 2 * cont_two.num_cart, dtype=float
+            ).reshape(2, cont_one.num_cart, 2, cont_two.num_cart)
             * a
         },
     )
-    cont_one.norm_cont = np.ones((2, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((2, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((2, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((2, cont_two.num_cart))
     test = Test([cont_one, cont_two])
-    matrix_11 = np.arange(2 * cont_one.num_contr * 2 * cont_one.num_contr).reshape(
-        2, cont_one.num_contr, 2, cont_one.num_contr
+    matrix_11 = np.arange(2 * cont_one.num_cart * 2 * cont_one.num_cart).reshape(
+        2, cont_one.num_cart, 2, cont_one.num_cart
     )
-    matrix_12 = np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr).reshape(
-        2, cont_one.num_contr, 2, cont_two.num_contr
+    matrix_12 = np.arange(2 * cont_one.num_cart * 2 * cont_two.num_cart).reshape(
+        2, cont_one.num_cart, 2, cont_two.num_cart
     )
-    matrix_22 = np.arange(2 * cont_two.num_contr * 2 * cont_two.num_contr).reshape(
-        2, cont_two.num_contr, 2, cont_two.num_contr
+    matrix_22 = np.arange(2 * cont_two.num_cart * 2 * cont_two.num_cart).reshape(
+        2, cont_two.num_cart, 2, cont_two.num_cart
     )
     assert np.allclose(
         test.construct_array_cartesian(),
@@ -263,15 +263,15 @@ def test_contruct_array_spherical():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(cont_one.num_contr * cont_two.num_contr * 2, dtype=float).reshape(
-                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
+                np.arange(cont_one.num_cart * cont_two.num_cart * 2, dtype=float).reshape(
+                    1, cont_one.num_cart, 1, cont_two.num_cart, 2
                 )
                 * a
             )
         },
     )
-    cont_one.norm_cont = np.ones((1, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((1, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((1, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
     assert np.allclose(
         test.construct_array_spherical(a=4),
@@ -324,29 +324,29 @@ def test_contruct_array_spherical():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr, dtype=float).reshape(
-                    2, cont_one.num_contr, 2, cont_two.num_contr
+                np.arange(2 * cont_one.num_cart * 2 * cont_two.num_cart, dtype=float).reshape(
+                    2, cont_one.num_cart, 2, cont_two.num_cart
                 )
                 * a
             )
         },
     )
-    cont_one.norm_cont = np.ones((2, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((2, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((2, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((2, cont_two.num_cart))
     test = Test([cont_one, cont_two])
 
-    matrix_11 = np.arange(2 * cont_one.num_contr * 2 * cont_one.num_contr).reshape(
-        2, cont_one.num_contr, 2, cont_one.num_contr
+    matrix_11 = np.arange(2 * cont_one.num_cart * 2 * cont_one.num_cart).reshape(
+        2, cont_one.num_cart, 2, cont_one.num_cart
     )
     matrix_11 = np.swapaxes(np.tensordot(transform_one, matrix_11, (1, 1)), 0, 1)
     matrix_11 = np.moveaxis(np.tensordot(transform_one, matrix_11, (1, 3)), 0, 3)
-    matrix_12 = np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr).reshape(
-        2, cont_one.num_contr, 2, cont_two.num_contr
+    matrix_12 = np.arange(2 * cont_one.num_cart * 2 * cont_two.num_cart).reshape(
+        2, cont_one.num_cart, 2, cont_two.num_cart
     )
     matrix_12 = np.swapaxes(np.tensordot(transform_one, matrix_12, (1, 1)), 0, 1)
     matrix_12 = np.moveaxis(np.tensordot(transform_two, matrix_12, (1, 3)), 0, 3)
-    matrix_22 = np.arange(2 * cont_two.num_contr * 2 * cont_two.num_contr).reshape(
-        2, cont_two.num_contr, 2, cont_two.num_contr
+    matrix_22 = np.arange(2 * cont_two.num_cart * 2 * cont_two.num_cart).reshape(
+        2, cont_two.num_cart, 2, cont_two.num_cart
     )
     matrix_22 = np.swapaxes(np.tensordot(transform_two, matrix_22, (1, 1)), 0, 1)
     matrix_22 = np.moveaxis(np.tensordot(transform_two, matrix_22, (1, 3)), 0, 3)
@@ -422,8 +422,8 @@ def test_contruct_array_mix():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(cont_one.num_contr * cont_two.num_contr * 2, dtype=float).reshape(
-                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
+                np.arange(cont_one.num_cart * cont_two.num_cart * 2, dtype=float).reshape(
+                    1, cont_one.num_cart, 1, cont_two.num_cart, 2
                 )
                 * a
             )
@@ -447,15 +447,15 @@ def test_contruct_array_mix():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(2 * cont_one.num_contr * 2 * cont_two.num_contr, dtype=float).reshape(
-                    2, cont_one.num_contr, 2, cont_two.num_contr
+                np.arange(2 * cont_one.num_cart * 2 * cont_two.num_cart, dtype=float).reshape(
+                    2, cont_one.num_cart, 2, cont_two.num_cart
                 )
                 * a
             )
         },
     )
-    cont_one.norm_cont = np.ones((2, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((2, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((2, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((2, cont_two.num_cart))
     test = Test([cont_one, cont_two])
     assert np.allclose(
         test.construct_array_spherical(), test.construct_array_mix(["spherical"] * 2)
@@ -533,8 +533,8 @@ def test_contruct_array_lincomb():
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
-                np.arange(cont_one.num_contr * cont_two.num_contr * 2, dtype=float).reshape(
-                    1, cont_one.num_contr, 1, cont_two.num_contr, 2
+                np.arange(cont_one.num_cart * cont_two.num_cart * 2, dtype=float).reshape(
+                    1, cont_one.num_cart, 1, cont_two.num_cart, 2
                 )
                 * a
             )
@@ -542,8 +542,8 @@ def test_contruct_array_lincomb():
     )
     cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_one.norm_cont = np.ones((1, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((1, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((1, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
     sph_transform_one = generate_transformation(1, cont_one.angmom_components, "left")
     sph_transform_two = generate_transformation(2, cont_two.angmom_components, "left")
@@ -689,8 +689,8 @@ def test_compare_two_asymm():
 
     def construct_array_contraction(self, cont_one, cont_two, a=2):
         """Temporary symmetric function for testing."""
-        one_size = cont_one.num_contr
-        two_size = cont_two.num_contr
+        one_size = cont_one.num_cart
+        two_size = cont_two.num_cart
         output = (
             np.arange(one_size)[None, :, None, None, None]
             + np.arange(two_size)[None, None, None, :, None]
@@ -706,8 +706,8 @@ def test_compare_two_asymm():
         BaseTwoIndexAsymmetric,
         dict_overwrite={"construct_array_contraction": construct_array_contraction},
     )
-    cont_one.norm_cont = np.ones((1, cont_one.num_contr))
-    cont_two.norm_cont = np.ones((1, cont_two.num_contr))
+    cont_one.norm_cont = np.ones((1, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((1, cont_two.num_cart))
 
     test_symm = TestSymmetric([cont_one, cont_two])
     test_asymm = TestAsymmetric([cont_one, cont_two], [cont_one, cont_two])
