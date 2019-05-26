@@ -3,24 +3,19 @@ from gbasis.point_charge import point_charge_cartesian, point_charge_mix, point_
 import numpy as np
 
 
-# FIXME: check if density_matrix has the right shape. otherwise, hartree potential needs to be
-# obtained first, which is quite expensive
 def _electrostatic_potential_base(
-    base_func,
     basis,
     density_matrix,
     coords_points,
     nuclear_coords,
     nuclear_charges,
-    coord_types=None,
+    coord_type,
     threshold_dist=0.0,
 ):
     """Return the electrostatic potentials of the basis set in the Cartesian form.
 
     Parameters
     ----------
-    base_func : {point_charge_cartesian, point_charge_spherical}
-        Function.
     basis : list/tuple of ContractedCartesianGaussians
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     density_matrix : np.ndarray(K, K)
@@ -33,14 +28,17 @@ def _electrostatic_potential_base(
         Rows correspond to the atoms and columns correspond to the x, y, and z components.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
+    coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
     threshold_dist : {float, 0.0}
         Threshold for rejecting nuclei whose distances to the points are less than the provided
         value. i.e. nuclei that are closer to the point than the threshold are discarded when
         computing the electrostatic potential of the point.
         Default value is 0.0, i.e. no nuclei are discarded.
-    coord_types : {list/tuple of str, None}
-        Types of the coordinate system for each ContractedCartesianGaussians.
-        Each entry must be one of "cartesian" or "spherical".
 
     Returns
     -------
@@ -71,6 +69,7 @@ def _electrostatic_potential_base(
     `gbasis.electrostatic_potential_electrostatic_potential_sphrical`.
 
     """
+    # pylint: disable=R0912
     if not (isinstance(density_matrix, np.ndarray) and density_matrix.ndim == 2):
         raise TypeError("`density_matrix_cart` must be given as a two-dimensional numpy array.")
     if not (
@@ -97,11 +96,44 @@ def _electrostatic_potential_base(
     if threshold_dist < 0:
         raise ValueError("`threshold_dist` must be greater than or equal to zero.")
 
-    if coord_types is None:
-        hartree_potential = base_func(basis, coords_points, -np.ones(coords_points.shape[0]))
+    if coord_type == "cartesian":
+        if sum(cont.num_cart * cont.num_seg_cont for cont in basis) != density_matrix.shape[0]:
+            raise ValueError(
+                "`density_matrix` does not have number of rows/columns that is equal to the total "
+                "number of Cartesian contractions (atomic orbitals)."
+            )
+        hartree_potential = point_charge_cartesian(
+            basis, coords_points, -np.ones(coords_points.shape[0])
+        )
+    elif coord_type == "spherical":
+        if sum(cont.num_sph * cont.num_seg_cont for cont in basis) != density_matrix.shape[0]:
+            raise ValueError(
+                "`density_matrix` does not have number of rows/columns that is equal to the total "
+                "number of spherical contractions (atomic orbitals)."
+            )
+        hartree_potential = point_charge_spherical(
+            basis, coords_points, -np.ones(coords_points.shape[0])
+        )
+    elif isinstance(coord_type, (list, tuple)):
+        if (
+            sum(
+                cont.num_sph * cont.num_seg_cont
+                if j == "spherical"
+                else cont.num_cart * cont.num_seg_cont
+                for cont, j in zip(basis, coord_type)
+            )
+            != density_matrix.shape[0]
+        ):
+            raise ValueError(
+                "`density_matrix` does not have number of rows/columns that is equal to the total "
+                "number of contractions in the given coordinate systems (atomic orbitals)."
+            )
+        hartree_potential = point_charge_mix(
+            basis, coords_points, -np.ones(coords_points.shape[0]), coord_types=coord_type
+        )
     else:
-        hartree_potential = base_func(
-            basis, coords_points, -np.ones(coords_points.shape[0]), coord_types=coord_types
+        raise TypeError(
+            "`coord_type` must be 'spherical', 'cartesian', or a list/tuple of these strings."
         )
     hartree_potential *= density_matrix[:, :, None]
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))
@@ -176,12 +208,12 @@ def electrostatic_potential_cartesian(
 
     """
     return _electrostatic_potential_base(
-        point_charge_cartesian,
         basis,
         density_matrix_cart,
         coords_points,
         nuclear_coords,
         nuclear_charges,
+        "cartesian",
         threshold_dist=threshold_dist,
     )
 
@@ -240,12 +272,12 @@ def electrostatic_potential_spherical(
 
     """
     return _electrostatic_potential_base(
-        point_charge_spherical,
         basis,
         density_matrix_sph,
         coords_points,
         nuclear_coords,
         nuclear_charges,
+        "spherical",
         threshold_dist=threshold_dist,
     )
 
@@ -314,7 +346,6 @@ def electrostatic_potential_mix(
 
     """
     return _electrostatic_potential_base(
-        point_charge_mix,
         basis,
         density_matrix_mix,
         coords_points,

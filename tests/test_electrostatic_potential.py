@@ -7,7 +7,6 @@ from gbasis.electrostatic_potential import (
     electrostatic_potential_spherical,
 )
 from gbasis.parsers import parse_nwchem
-from gbasis.point_charge import point_charge_cartesian
 import numpy as np
 import pytest
 from utils import find_datafile, HortonContractions
@@ -29,101 +28,138 @@ def test_electrostatic_potential_base():
     # check density_matrix type
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103).tolist(),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
+            "cartesian",
         )
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103).flatten(),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
+            "cartesian",
         )
     # check nuclear_coords
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3).tolist(),
             np.array([1, 2]),
+            "cartesian",
         )
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 4),
             np.array([1, 2]),
+            "cartesian",
         )
     # check nuclear charges
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]).reshape(1, 2),
+            "cartesian",
         )
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]).tolist(),
+            "cartesian",
         )
     # check density_matrix symmetry
     with pytest.raises(ValueError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.eye(103, 102),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
+            "cartesian",
         )
     # check nuclear_coords and nuclear_charges shapes
     with pytest.raises(ValueError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(3, 3),
             np.array([1, 2]),
+            "cartesian",
         )
     # check threshold_dist types
     with pytest.raises(TypeError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
+            "cartesian",
             threshold_dist=None,
         )
     # check threshold_dist value
     with pytest.raises(ValueError):
         _electrostatic_potential_base(
-            point_charge_cartesian,
             basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
+            "cartesian",
             threshold_dist=-0.1,
+        )
+    # check coord_types type
+    with pytest.raises(TypeError):
+        _electrostatic_potential_base(
+            basis,
+            np.identity(103),
+            np.random.rand(10, 3),
+            np.random.rand(2, 3),
+            np.array([1, 2]),
+            "bad",
+        )
+    with pytest.raises(ValueError):
+        _electrostatic_potential_base(
+            basis,
+            np.identity(88),
+            np.random.rand(10, 3),
+            np.random.rand(2, 3),
+            np.array([1, 2]),
+            "cartesian",
+        )
+    with pytest.raises(ValueError):
+        _electrostatic_potential_base(
+            basis,
+            np.identity(103),
+            np.random.rand(10, 3),
+            np.random.rand(2, 3),
+            np.array([1, 2]),
+            "spherical",
+        )
+    with pytest.raises(ValueError):
+        _electrostatic_potential_base(
+            basis,
+            np.identity(103),
+            np.random.rand(10, 3),
+            np.random.rand(2, 3),
+            np.array([1, 2]),
+            ["spherical"] * 9,
         )
 
 
