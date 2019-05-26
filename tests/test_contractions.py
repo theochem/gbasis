@@ -264,6 +264,13 @@ def test_num_sph():
         last_num_sph = test.num_sph + 2
 
 
+def test_num_seg_cont():
+    """Test ContractedCartesianGaussians.num_seg_cont."""
+    test = skip_init(ContractedCartesianGaussians)
+    test._coeffs = np.random.rand(10, 21)
+    assert test.num_seg_cont == 21
+
+
 def test_make_contractions():
     """Test gbasis.contractions.make_contractions."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
