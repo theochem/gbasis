@@ -45,8 +45,10 @@ class ContractedCartesianGaussians:
         The normalization constant for each Cartesian Gaussian primitive.
     norm_const : np.ndarray(M, L)
         Normalization constants of the contractions of each angular momentum.
-    num_contr : int
-        The number of Cartesian Gaussian primitives in the shell (L).
+    num_cart : int
+        The number of Cartesian contracted Gaussians in the shell of angular momentum, :math:`l`.
+    num_sph : int
+        The number of spherical contracted Gaussian in the shell of angular momentum, :math:`l`.
 
     Methods
     -------
@@ -347,16 +349,28 @@ class ContractedCartesianGaussians:
         )
 
     @property
-    def num_contr(self):
+    def num_cart(self):
         """Return the number of Cartesian contracted Gaussian functions of given angular momentum.
 
         Returns
         -------
-        num_contr : int
-            Number of contracted Cartesian Gaussian functions of angular momentum, :math:`angmom`.
+        num_cart : int
+            Number of contracted Cartesian Gaussian functions of angular momentum, `angmom`.
 
         """
         return (self.angmom + 1) * (self.angmom + 2) // 2
+
+    @property
+    def num_sph(self):
+        """Return the number of spherical contracted Gaussian functions of given angular momentum.
+
+        Returns
+        -------
+        num_sph : int
+            Number of spherical Cartesian Gaussian functions of angular momentum, `angmom`.
+
+        """
+        return 1 + 2 * self.angmom
 
     def assign_norm_cont(self):
         r"""Store the normalization constants of the contractions.

@@ -244,14 +244,24 @@ def test_norm_prim():
     assert np.isclose(test.norm_prim[7], 0.6920252830162908851679097)
 
 
-def test_num_contr():
-    """Test ContractedCartesianGaussians.num_contr."""
+def test_num_cart():
+    """Test ContractedCartesianGaussians.num_cart."""
     test = skip_init(ContractedCartesianGaussians)
-    last_num_contr = 0
+    last_num_cart = 0
     for i in range(100):
         test._angmom = i
-        assert test.num_contr == last_num_contr + i + 1
-        last_num_contr = test.num_contr
+        assert test.num_cart == last_num_cart + i + 1
+        last_num_cart = test.num_cart
+
+
+def test_num_sph():
+    """Test ContractedCartesianGaussians.num_sph."""
+    test = skip_init(ContractedCartesianGaussians)
+    last_num_sph = 1
+    for i in range(100):
+        test._angmom = i
+        assert test.num_sph == last_num_sph
+        last_num_sph = test.num_sph + 2
 
 
 def test_make_contractions():
