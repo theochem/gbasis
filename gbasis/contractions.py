@@ -372,6 +372,18 @@ class ContractedCartesianGaussians:
         """
         return 1 + 2 * self.angmom
 
+    @property
+    def num_seg_cont(self):
+        """Return the number of segmented contractions.
+
+        Returns
+        -------
+        num_seg_cont : int
+            Number of segmented contractions.
+
+        """
+        return self.coeffs.shape[1]
+
     def assign_norm_cont(self):
         r"""Store the normalization constants of the contractions.
 
