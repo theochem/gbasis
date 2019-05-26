@@ -123,7 +123,7 @@ def _electrostatic_potential_base(
 
 
 def electrostatic_potential_cartesian(
-    basis, density_matrix_cart, coords_points, nuclear_coords, nuclear_charges
+    basis, density_matrix_cart, coords_points, nuclear_coords, nuclear_charges, threshold_dist=0.0
 ):
     """Return the electrostatic potentials of the basis set in the Cartesian form.
 
@@ -141,6 +141,11 @@ def electrostatic_potential_cartesian(
         Rows correspond to the atoms and columns correspond to the x, y, and z components.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
+    threshold_dist : {float, 0.0}
+        Threshold for rejecting nuclei whose distances to the points are less than the provided
+        value. i.e. nuclei that are closer to the point than the threshold are discarded when
+        computing the electrostatic potential of the point.
+        Default value is 0.0, i.e. no nuclei are discarded.
 
     Returns
     -------
@@ -177,11 +182,12 @@ def electrostatic_potential_cartesian(
         coords_points,
         nuclear_coords,
         nuclear_charges,
+        threshold_dist=threshold_dist,
     )
 
 
 def electrostatic_potential_spherical(
-    basis, density_matrix_sph, coords_points, nuclear_coords, nuclear_charges
+    basis, density_matrix_sph, coords_points, nuclear_coords, nuclear_charges, threshold_dist=0.0
 ):
     """Return the electrostatic potentials of the basis set in the spherical form.
 
@@ -199,6 +205,11 @@ def electrostatic_potential_spherical(
         Rows correspond to the atoms and columns correspond to the x, y, and z components.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
+    threshold_dist : {float, 0.0}
+        Threshold for rejecting nuclei whose distances to the points are less than the provided
+        value. i.e. nuclei that are closer to the point than the threshold are discarded when
+        computing the electrostatic potential of the point.
+        Default value is 0.0, i.e. no nuclei are discarded.
 
     Returns
     -------
@@ -235,11 +246,18 @@ def electrostatic_potential_spherical(
         coords_points,
         nuclear_coords,
         nuclear_charges,
+        threshold_dist=threshold_dist,
     )
 
 
 def electrostatic_potential_mix(
-    basis, density_matrix_mix, coords_points, nuclear_coords, nuclear_charges, coord_types
+    basis,
+    density_matrix_mix,
+    coords_points,
+    nuclear_coords,
+    nuclear_charges,
+    coord_types,
+    threshold_dist=0.0,
 ):
     """Return the electrostatic potentials of the basis set in the given coordinate systems.
 
@@ -260,6 +278,11 @@ def electrostatic_potential_mix(
     coord_types : list/tuple of str
         Types of the coordinate system for each ContractedCartesianGaussians.
         Each entry must be one of "cartesian" or "spherical".
+    threshold_dist : {float, 0.0}
+        Threshold for rejecting nuclei whose distances to the points are less than the provided
+        value. i.e. nuclei that are closer to the point than the threshold are discarded when
+        computing the electrostatic potential of the point.
+        Default value is 0.0, i.e. no nuclei are discarded.
 
     Returns
     -------
@@ -298,4 +321,5 @@ def electrostatic_potential_mix(
         nuclear_coords,
         nuclear_charges,
         coord_types,
+        threshold_dist=threshold_dist,
     )
