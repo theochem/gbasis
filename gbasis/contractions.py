@@ -315,8 +315,8 @@ class ContractedCartesianGaussians:
         return np.array(
             [
                 (x, y, self.angmom - x - y)
-                for x in range(self.angmom + 1)
-                for y in range(self.angmom - x + 1)
+                for x in range(self.angmom + 1)[::-1]
+                for y in range(self.angmom - x + 1)[::-1]
             ]
         )
 
