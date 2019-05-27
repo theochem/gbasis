@@ -1,0 +1,213 @@
+"""Module for evaluating the kinetic energy integral."""
+from gbasis._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.base_two_symm import BaseTwoIndexSymmetric
+from gbasis.contractions import ContractedCartesianGaussians
+import numpy as np
+
+
+class KineticEnergyIntegral(BaseTwoIndexSymmetric):
+    """Class for obtaining the kinetic energy integral for a set of Gaussian contractions.
+
+    Attributes
+    ----------
+    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+        Sets of contractions associated with each axis of the array.
+
+    Properties
+    ----------
+    contractions : tuple of ContractedCartesianGaussians
+        Contractions that are associated with the first and second indices of the array.
+
+    Methods
+    -------
+    __init__(self, contractions)
+        Initialize.
+    construct_array_contraction(contractions_one, contractions_two) :
+    np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+        Return the kinetic energy integral associated with a `ContractedCartesianGaussians`
+        instance.
+        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        associated with the first index.
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
+        with the first index.
+        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        associated with the second index.
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
+        with the second index.
+    construct_array_cartesian(self) : np.ndarray(K_cart, K_cart)
+        Return the kinetic energy integral associated with Cartesian Gaussians.
+        `K_cart` is the total number of Cartesian contractions within the instance.
+    construct_array_spherical(self) : np.ndarray(K_sph, K_sph)
+        Return the kinetic energy integrals associated with spherical Gaussians (atomic orbitals).
+        `K_sph` is the total number of spherical contractions within the instance.
+    construct_array_mix(self, coord_types) : np.ndarray(K_cont, K_cont)
+        Return the kinetic energy integrals associated with the contraction in the given coordinate
+        system.
+        `K_cont` is the total number of contractions within the given basis set.
+    construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
+        Return the kinetic energy integral associated with linear combinations of spherical
+        Gaussians (linear combinations of atomic orbitals).
+        `K_orbs` is the number of basis functions produced after the linear combinations.
+
+    """
+
+    @staticmethod
+    def construct_array_contraction(contractions_one, contractions_two):
+        """Return the evaluations of the given contractions at the given coordinates.
+
+        Parameters
+        ----------
+        contractions_one : ContractedCartesianGaussians
+            Contracted Cartesian Gaussians (of the same shell) associated with the first index of
+            the kinetic energy integral.
+        contractions_two : ContractedCartesianGaussians
+            Contracted Cartesian Gaussians (of the same shell) associated with the second index of
+            the kinetic energy integral.
+
+        Returns
+        -------
+        array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+            Kinetic energy integral associated with the given instances of
+            ContractedCartesianGaussians.
+            First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the first index.
+            Second axis corresponds to the angular momentum vector of the `contractions_one`.
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            associated with the first index.
+            Third axis corresponds to the segmented contraction within `contractions_two`. `M_2` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the second index.
+            Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            associated with the second index.
+
+        Raises
+        ------
+        TypeError
+            If contractions_one is not a ContractedCartesianGaussians instance.
+            If contractions_two is not a ContractedCartesianGaussians instance.
+
+        """
+        if not isinstance(contractions_one, ContractedCartesianGaussians):
+            raise TypeError("`contractions_one` must be a ContractedCartesianGaussians instance.")
+        if not isinstance(contractions_two, ContractedCartesianGaussians):
+            raise TypeError("`contractions_two` must be a ContractedCartesianGaussians instance.")
+
+        coord_a = contractions_one.coord
+        angmoms_a = contractions_one.angmom_components
+        alphas_a = contractions_one.exps
+        coeffs_a = contractions_one.coeffs
+        norm_a_prim = contractions_one.norm_prim
+        coord_b = contractions_two.coord
+        angmoms_b = contractions_two.angmom_components
+        alphas_b = contractions_two.exps
+        coeffs_b = contractions_two.coeffs
+        norm_b_prim = contractions_two.norm_prim
+        output = _compute_differential_operator_integrals(
+            np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]]),
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a_prim,
+            coord_b,
+            angmoms_b,
+            alphas_b,
+            coeffs_b,
+            norm_b_prim,
+        )
+        return -0.5 * np.sum(output, axis=0)
+
+
+def kinetic_energy_integral_cartesian(basis):
+    """Return the kinetic energy integral of the basis set in the Cartesian form.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+
+    Returns
+    -------
+    array : np.ndarray(K_cart, K_cart)
+        Array associated with the given set of contracted Cartesian Gaussians.
+        First and second indices of the array are associated with the contracted Cartesian
+        Gaussians. `K_cart` is the total number of Cartesian contractions within the instance.
+
+    """
+    return KineticEnergyIntegral(basis).construct_array_cartesian()
+
+
+def kinetic_energy_integral_spherical(basis):
+    """Return the kinetic energy integral of the basis set in the spherical form.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+
+    Returns
+    -------
+    array : np.ndarray(K_sph, K_sph)
+        Array associated with the given set of contracted spherical Gaussians.
+        First and second indices of the array are associated with two contracted spherical Gaussians
+        (atomic orbitals). `K_sph` is the total number of spherical contractions within the
+        instance.
+
+    """
+    return KineticEnergyIntegral(basis).construct_array_spherical()
+
+
+def kinetic_energy_integral_mix(basis, coord_types):
+    """Return the kinetic energy integral of the basis set in the given coordinate systems.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coord_types : list/tuple of str
+        Types of the coordinate system for each ContractedCartesianGaussians.
+        Each entry must be one of "cartesian" or "spherical".
+
+    Returns
+    -------
+    array : np.ndarray(K_cont, K_cont)
+        Array associated with the contractions in the given coordinate systems.
+        First and second indices of the array are associated with two contractions in the given
+        coordinate system. `K_cont` is the total number of contractions within the given basis set.
+
+    """
+    return KineticEnergyIntegral(basis).construct_array_mix(coord_types)
+
+
+def kinetic_energy_integral_lincomb(basis, transform, coord_type="spherical"):
+    """Return kinetic energy integral of the linearly combined basis set in the spherical form.
+
+    Parameters
+    ----------
+    basis : list/tuple of ContractedCartesianGaussians
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    transform : np.ndarray(K_orbs, K_sph)
+        Array associated with the linear combinations of spherical Gaussians (LCAO's).
+        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
+        and first index of the array for contracted spherical Gaussians.
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each ContractedCartesianGaussians instance.
+        Default value is "spherical".
+
+    Returns
+    -------
+    array : np.ndarray(K_orbs, K_orbs)
+        Array whose first and second indices are associated with the linear combinations of the
+        contracted spherical Gaussians.
+        First and second indices of the array correspond to the linear combination of contracted
+        spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
+        combinations.
+
+    """
+    return KineticEnergyIntegral(basis).construct_array_lincomb(transform, coord_type)
