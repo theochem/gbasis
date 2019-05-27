@@ -2,9 +2,88 @@
 import numpy as np
 
 
-# TODO: in the case of generalized Cartesian contraction where multiple shells have the same sets of
-# exponents but different sets of primitive coefficients, it will be helpful to vectorize the
-# `prim_coeffs` also.
+def _compute_overlap_helper(
+    integrals,
+    exps_sum,
+    harm_mean,
+    coord_a,
+    coord_b,
+    rel_coord_a,
+    rel_coord_b,
+    angmom_a_max,
+    angmom_b_max,
+):
+    r"""Return the overlap of the primitives.
+
+    This function is used for the recursion over the left and right angular momentum when computing
+    overlaps of primitives. It is used in `_compute_multipole_moment_integrals` to generate the
+    overlaps before recursing over the moments.
+
+    Parameters
+    ----------
+    integrals : np.ndarray(D+1, L_b_max + 1, L_a_max + 1, 3, K_b, K_a)
+        Integrals in which the results are stored.
+    exps_sum : np.ndarray(1, 1, 1, 1, K_b, K_a)
+        Sum of the exponents of the primitives on the left and right side.
+    harm_mean : np.ndarray(1, 1, 1, 1, K_b, K_a)
+        Harmonic mean of the exponents of the primitives on the left and right side.
+        .. math ::
+
+            \frac{\alpha_i \beta_j}{\alpha_i + \beta_j}
+
+    coord_a : np.ndarray(1, 1, 1, 3, 1, 1)
+        Coordinates of the primitivs on the left side.
+    coord_b : np.ndarray(1, 1, 1, 3, 1, 1)
+        Coordinates of the primitivs on the right side.
+    rel_coord_a : np.ndarray(1, 1, 1, 3, K_b, K_a)
+    rel_coord_b : np.ndarray(1, 1, 1, 3, K_b, K_a)
+    angmom_a_max : int
+        Maximum angular momentum on the left side to which the overlap will be recursively
+        calculated.
+    angmom_b_max : int
+        Maximum angular momentum on the right side to which the overlap will be recursively
+        calculated.
+
+    Returns
+    -------
+    integrals : np.ndarray(D+1, L_b_max + 1, L_a_max + 1, 3, K_b, K_a)
+        Integrals after storing the overlaps in the first element of the first dimension.
+        Though the integrals are stored as a side-effect (and it is not necessary to return this
+        variable), it is returned for consistency in notation.
+
+    """
+    # start of recursion
+    integrals[0, 0, 0, :, :, :] = np.sqrt(np.pi / exps_sum) * np.exp(
+        -harm_mean * (coord_a - coord_b) ** 2
+    )
+
+    # recurse over angular momentum for a
+    # NOTE: array is sliced to avoid an if statement for angmom_a_max > 0
+    integrals[0, 0, 1:2, :, :, :] = rel_coord_a * integrals[0, 0, 0:1, :, :, :]
+    for i in range(1, angmom_a_max):
+        integrals[0, 0, i + 1, :, :, :] = rel_coord_a * integrals[0, 0, i, :, :, :] + (
+            i * integrals[0, 0, i - 1, :, :, :] / (2 * exps_sum)
+        )
+
+    # recurse over angular momentum for b
+    i_range = np.arange(angmom_a_max + 1)[None, None, :, None, None, None]
+    # NOTE: array is sliced to avoid an if statement for angmom_b_max > 0
+    integrals[0, 1:2, 0, :, :, :] = rel_coord_b * integrals[0, 0:1, 0, :, :, :]
+    integrals[0, 1:2, 1:, :, :, :] = rel_coord_b * integrals[0, 0:1, 1:, :, :, :] + (
+        i_range[0, 0:1, 1:, :, :, :] * integrals[0, 0:1, :-1, :, :, :] / (2 * exps_sum)
+    )
+    for j in range(1, angmom_b_max):
+        integrals[0, j + 1, 0, :, :, :] = rel_coord_b * integrals[0, j, 0, :, :, :] + (
+            j * integrals[0, j - 1, 0, :, :, :] / (2 * exps_sum)
+        )
+        integrals[0, j + 1, 1:, :, :, :] = rel_coord_b * integrals[0, j, 1:, :, :, :] + (
+            i_range[0, 0, 1:, :, :, :] * integrals[0, j, :-1, :, :, :]
+            + j * integrals[0, j - 1, 1:, :, :, :]
+        ) / (2 * exps_sum)
+
+    return integrals
+
+
 # FIXME: returns nan when exponent is zero
 def _compute_multipole_moment_integrals(
     coord_moment,
@@ -118,35 +197,21 @@ def _compute_multipole_moment_integrals(
     # harmonic mean
     harm_mean = exps_a * exps_b / exps_sum
 
-    # start of recursion
-    integrals[0, 0, 0, :, :, :] = np.sqrt(np.pi / exps_sum) * np.exp(
-        -harm_mean * (coord_a - coord_b) ** 2
+    # compute overlap
+    integrals = _compute_overlap_helper(
+        integrals,
+        exps_sum,
+        harm_mean,
+        coord_a,
+        coord_b,
+        rel_coord_a,
+        rel_coord_b,
+        angmom_a_max,
+        angmom_b_max,
     )
 
-    # recurse over angular momentum for a
-    # NOTE: array is sliced to avoid an if statement for angmom_a_max > 0
-    integrals[0, 0, 1:2, :, :, :] = rel_coord_a * integrals[0, 0, 0:1, :, :, :]
-    for i in range(1, angmom_a_max):
-        integrals[0, 0, i + 1, :, :, :] = rel_coord_a * integrals[0, 0, i, :, :, :] + (
-            i * integrals[0, 0, i - 1, :, :, :] / (2 * exps_sum)
-        )
-
-    # recurse over angular momentum for b
-    i_range = np.arange(angmom_a_max + 1)[None, None, :, None, None, None]
-    # NOTE: array is sliced to avoid an if statement for angmom_b_max > 0
-    integrals[0, 1:2, 0, :, :, :] = rel_coord_b * integrals[0, 0:1, 0, :, :, :]
-    integrals[0, 1:2, 1:, :, :, :] = rel_coord_b * integrals[0, 0:1, 1:, :, :, :] + (
-        i_range[0, 0:1, 1:, :, :, :] * integrals[0, 0:1, :-1, :, :, :] / (2 * exps_sum)
-    )
-    for j in range(1, angmom_b_max):
-        integrals[0, j + 1, 0, :, :, :] = rel_coord_b * integrals[0, j, 0, :, :, :] + (
-            j * integrals[0, j - 1, 0, :, :, :] / (2 * exps_sum)
-        )
-        integrals[0, j + 1, 1:, :, :, :] = rel_coord_b * integrals[0, j, 1:, :, :, :] + (
-            i_range[0, 0, 1:, :, :, :] * integrals[0, j, :-1, :, :, :]
-            + j * integrals[0, j - 1, 1:, :, :, :]
-        ) / (2 * exps_sum)
     # recurse over order of moment
+    i_range = np.arange(angmom_a_max + 1)[None, None, :, None, None, None]
     j_range = np.arange(angmom_b_max + 1)[None, :, None, None, None, None]
     # NOTE: array is sliced to avoid an if statement for angmom_b_max > 0
     integrals[1:2, 0, 0, :, :, :] = rel_coord_moment * integrals[0:1, 0, 0, :, :, :]
@@ -191,7 +256,6 @@ def _compute_multipole_moment_integrals(
     # NOTE: axis 3 for dimension (x, y, z) of the coordinate has been removed
 
     # transform the primitives
-    # FIXME: support generalized contraction
     norm_a = norm_a[np.newaxis, np.newaxis, :, np.newaxis, :]
     integrals = np.tensordot(integrals * norm_a, coeffs_a, (4, 0))
     # NOTE: axis for primitive of contraction a has been removed (axis 4), and axis for segmented
