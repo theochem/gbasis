@@ -92,19 +92,6 @@ def test_evaluate_basis_spherical():
         eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
         evaluate_basis_spherical(basis, np.array([[0, 0, 0]])),
     )
-    # z dimension is untouched when transforming to spherical
-    assert np.allclose(
-        eval_obj.construct_array_cartesian(coords=np.array([[1, 0, 0]])),
-        evaluate_basis_spherical(basis, np.array([[1, 0, 0]])),
-    )
-    assert not np.allclose(
-        eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 1]])),
-        evaluate_basis_spherical(basis, np.array([[0, 0, 1]])),
-    )
-    assert np.allclose(
-        eval_obj.construct_array_spherical(coords=np.array([[0, 0, 1]])),
-        evaluate_basis_spherical(basis, np.array([[0, 0, 1]])),
-    )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)

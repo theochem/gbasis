@@ -207,25 +207,25 @@ def test_angmom_components():
     test._angmom = 0
     assert np.allclose(test.angmom_components, [(0, 0, 0)])
     test._angmom = 1
-    assert np.allclose(test.angmom_components, [(0, 0, 1), (0, 1, 0), (1, 0, 0)])
+    assert np.allclose(test.angmom_components, [(1, 0, 0), (0, 1, 0), (0, 0, 1)])
     test._angmom = 2
     assert np.allclose(
-        test.angmom_components, [(0, 0, 2), (0, 1, 1), (0, 2, 0), (1, 0, 1), (1, 1, 0), (2, 0, 0)]
+        test.angmom_components, [(2, 0, 0), (1, 1, 0), (1, 0, 1), (0, 2, 0), (0, 1, 1), (0, 0, 2)]
     )
     test._angmom = 3
     assert np.allclose(
         test.angmom_components,
         [
-            (0, 0, 3),
-            (0, 1, 2),
-            (0, 2, 1),
-            (0, 3, 0),
-            (1, 0, 2),
-            (1, 1, 1),
-            (1, 2, 0),
-            (2, 0, 1),
-            (2, 1, 0),
             (3, 0, 0),
+            (2, 1, 0),
+            (2, 0, 1),
+            (1, 2, 0),
+            (1, 1, 1),
+            (1, 0, 2),
+            (0, 3, 0),
+            (0, 2, 1),
+            (0, 1, 2),
+            (0, 0, 3),
         ],
     )
     test._angmom = 10

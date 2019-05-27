@@ -99,7 +99,7 @@ def test_construct_array_contraction():
             * 1
             * 3
             * (-1)
-        )[::-1],
+        ),
     )
 
     test_one = ContractedCartesianGaussians(
@@ -118,7 +118,7 @@ def test_construct_array_contraction():
             * 1
             * 3
             * (-1)
-        )[::-1],
+        ),
     )
 
 
