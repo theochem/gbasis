@@ -1,5 +1,5 @@
 """Test gbasis.point_charge."""
-from gbasis.contractions import ContractedCartesianGaussians, make_contractions
+from gbasis.contractions import GeneralizedContractionShell, make_contractions
 from gbasis.parsers import parse_nwchem
 from gbasis.point_charge import (
     point_charge_cartesian,
@@ -39,9 +39,9 @@ def test_boys_func():
 def test_construct_array_contraction():
     """Test gbasis.point_charge.PointChargeIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
-    test_one = ContractedCartesianGaussians(0, coord_one, 0, np.array([1.0]), np.array([0.1]))
+    test_one = GeneralizedContractionShell(0, coord_one, 0, np.array([1.0]), np.array([0.1]))
     coord_two = np.array([1.5, 2, 3])
-    test_two = ContractedCartesianGaussians(0, coord_two, 0, np.array([3.0]), np.array([0.2]))
+    test_two = GeneralizedContractionShell(0, coord_two, 0, np.array([3.0]), np.array([0.2]))
     coord = np.array([[0, 0, 0]])
     charge = np.array([1])
     coord_wac = (0.1 * coord_one + 0.2 * coord_two) / (0.1 + 0.2)
@@ -75,10 +75,10 @@ def test_construct_array_contraction():
         ),
     )
 
-    test_one = ContractedCartesianGaussians(
+    test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), 0, np.array([1.0]), np.array([0.1])
     )
-    test_two = ContractedCartesianGaussians(
+    test_two = GeneralizedContractionShell(
         0, np.array([1.5, 2, 3]), 0, np.array([3.0]), np.array([0.2])
     )
     v_000_000 = [
@@ -102,10 +102,10 @@ def test_construct_array_contraction():
         ),
     )
 
-    test_one = ContractedCartesianGaussians(
+    test_one = GeneralizedContractionShell(
         0, np.array([0.5, 1, 1.5]), 0, np.array([1.0]), np.array([0.1])
     )
-    test_two = ContractedCartesianGaussians(
+    test_two = GeneralizedContractionShell(
         1, np.array([1.5, 2, 3]), 0, np.array([3.0]), np.array([0.2])
     )
     assert np.allclose(

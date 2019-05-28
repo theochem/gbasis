@@ -13,7 +13,7 @@ def nuclear_electron_attraction_cartesian(basis, nuclear_coords, nuclear_charges
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     nuclear_coords : np.ndarray(N_nuc, 3)
         Coordinates of each atom.
@@ -36,7 +36,7 @@ def nuclear_electron_attraction_spherical(basis, nuclear_coords, nuclear_charges
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     nuclear_coords : np.ndarray(N_nuc, 3)
         Coordinates of each atom.
@@ -60,14 +60,14 @@ def nuclear_electron_attraction_mix(basis, nuclear_coords, nuclear_charges, coor
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     nuclear_coords : np.ndarray(N_nuc, 3)
         Coordinates of each atom.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
     coord_types : list/tuple of str
-        Types of the coordinate system for each ContractedCartesianGaussians.
+        Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
 
     Returns
@@ -88,7 +88,7 @@ def nuclear_electron_attraction_lincomb(
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     transform : np.ndarray(K_orbs, K_sph)
         Array associated with the linear combinations of spherical Gaussians (LCAO's).
@@ -103,7 +103,7 @@ def nuclear_electron_attraction_lincomb(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns

@@ -16,7 +16,7 @@ def _electrostatic_potential_base(
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     density_matrix : np.ndarray(K, K)
         Density matrix constructed using the given basis set.
@@ -33,7 +33,7 @@ def _electrostatic_potential_base(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
     threshold_dist : {float, 0.0}
         Threshold for rejecting nuclei whose distances to the points are less than the provided
         value. i.e. nuclei that are closer to the point than the threshold are discarded when
@@ -161,7 +161,7 @@ def electrostatic_potential_cartesian(
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     density_matrix_cart : np.ndarray(K_cart, K_cart)
         Density matrix constructed using the Cartesian forms of the given basis set.
@@ -225,7 +225,7 @@ def electrostatic_potential_spherical(
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     density_matrix_sph : np.ndarray(K_sph, K_sph)
         Density matrix constructed using the Cartesian forms of the given basis set.
@@ -295,7 +295,7 @@ def electrostatic_potential_mix(
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     density_matrix_mix : np.ndarray(K_cont, K_cont)
         Density matrix constructed using the Cartesian forms of the given basis set.
@@ -308,7 +308,7 @@ def electrostatic_potential_mix(
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
     coord_types : list/tuple of str
-        Types of the coordinate system for each ContractedCartesianGaussians.
+        Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
     threshold_dist : {float, 0.0}
         Threshold for rejecting nuclei whose distances to the points are less than the provided

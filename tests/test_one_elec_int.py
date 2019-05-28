@@ -1,6 +1,6 @@
 """Test gbasis._one_elec_int."""
 from gbasis._one_elec_int import _compute_one_elec_integrals
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 import pytest
 from scipy.special import hyp1f1
@@ -49,10 +49,10 @@ def boys_func(order, weighted_dist):
 )
 def test_compute_one_elec_int_v_recursion():
     """Test vertical recursion in _one_elec_int._compute_one_elec_integrals."""
-    contr_one = ContractedCartesianGaussians(
+    contr_one = GeneralizedContractionShell(
         3, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.25])
     )
-    contr_two = ContractedCartesianGaussians(
+    contr_two = GeneralizedContractionShell(
         2, np.array([1.5, 2, 3]), 0, np.array([3.0, 4.0]), np.array([0.02, 0.01])
     )
     coord_a = contr_one.coord
@@ -104,11 +104,11 @@ def test_compute_one_elec_int_v_recursion():
 )
 def test_compute_one_elec_int_s_type():
     """Test _one_elec_int._compute_one_electron_integrals for s-type primitives."""
-    # ContractedCartesianGaussians(angmom, coord, charge, coeffs, exps)
-    s_type_one = ContractedCartesianGaussians(
+    # GeneralizedContractionShell(angmom, coord, charge, coeffs, exps)
+    s_type_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), 0, np.array([1.0]), np.array([0.1])
     )
-    s_type_two = ContractedCartesianGaussians(
+    s_type_two = GeneralizedContractionShell(
         1, np.array([1.5, 2, 3]), 0, np.array([3.0]), np.array([0.02])
     )
     coord_a = s_type_one.coord
@@ -178,11 +178,11 @@ def test_compute_one_elec_int_s_type():
 )
 def test_compute_one_elec_int_multiple_contractions():
     """Test _one_elec_int._compute_one_electron_integrals for s-type contractions."""
-    # ContractedCartesianGaussians(angmom, coord, charge, coeffs, exps)
-    contr_one = ContractedCartesianGaussians(
+    # GeneralizedContractionShell(angmom, coord, charge, coeffs, exps)
+    contr_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.25])
     )
-    contr_two = ContractedCartesianGaussians(
+    contr_two = GeneralizedContractionShell(
         1, np.array([1.5, 2, 3]), 0, np.array([3.0, 4.0]), np.array([0.02, 0.01])
     )
     coord_a = contr_one.coord
@@ -224,10 +224,10 @@ def test_compute_one_elec_int_multiple_contractions():
 )
 def test_compute_one_elec_int_generalized_contraction():
     """Test _one_elec_int._compute_one_electron_integrals for generalized contractions."""
-    contr_one = ContractedCartesianGaussians(
+    contr_one = GeneralizedContractionShell(
         3, np.array([0.5, 1, 1.5]), 0, np.array([[1.0, 2.0], [1.5, 2.5]]), np.array([0.1, 0.25])
     )
-    contr_two = ContractedCartesianGaussians(
+    contr_two = GeneralizedContractionShell(
         2, np.array([1.5, 2, 3]), 0, np.array([[3.0, 4.0], [3.5, 4.5]]), np.array([0.02, 0.01])
     )
     coord_a = contr_one.coord

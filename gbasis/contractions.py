@@ -3,23 +3,65 @@ import numpy as np
 from scipy.special import factorial2
 
 
-class ContractedCartesianGaussians:
-    r"""Data class for contracted Cartesian Gaussians of the same angular momentum.
+class GeneralizedContractionShell:
+    r"""Data class for generalized contractions.
+
+    Generalized contractions are defined to be a set of contractions that have the same angular
+    momentum, center, and the same set of exponents. To avoid confusion with the term
+    "contraction", we add "shell" to indicate that this instance refers to a collection of
+    contractions.
+
+    A Cartesian **primitive**, :math:`g_i`, is
 
     .. math::
 
-        \phi_{\vec{a}, A} (\mathbf{r}) &=
-        \sum_i d_i (x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}
-        \exp{-\alpha_i |\vec{r} - \vec{R}_A|^2}\\
-        &= \sum_i d_i g_{i} (\vec{r} | \vec{a}, \vec{R}_A)
+        g_i (\mathbf{r} | \vec{a}, \vec{R}_A) =
+        N_g (\alpha, \vec{a})
+        (x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}
+        \exp{-\alpha_i |\vec{r} - \vec{R}_A|^2}
 
-    where :math:`\vec{r} = (x, y, z)`, :math:`\vec{R}_A = (X_A, Y_A, Z_A)`,
-    :math:`\vec{a} = (a_x, a_y, a_z)`, and :math:`g_i` is a Gaussian primitive.
+    where :math:`\vec{a} = (a_x, a_y, az)` is the angular momentum components in the Cartesian
+    coordinate, :math:`\vec{R}_A` is the coordinate of the center :math:`A`, :math:`N_g` is the
+    normalization constant of the primitive, and :math:`\alpha_i` is the exponent of the primitive.
 
-    Since the integrals involving these contractions are computed using recursive relations that
-    modify the :math:`\vec{a}`, we group the primitives that share the same properties (i.e.
-    :math:`\vec{R}_A` and :math:`\alpha_i`) except for the :math:`\vec{a}` in the hopes of
-    vectorizing and storing repeating elements.
+    A **Cartesian contraction** is a linear combination of Cartesian primitives:
+
+    .. math::
+
+        \phi_{\vec{a}, \vec{R}_A} (\mathbf{r}) =
+        N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_i g_i (\vec{r} | \vec{a}, \vec{R}_A)
+
+    where :math:`d_i` is the contraction coefficient of the primitive and :math:`N_{\phi}` is the
+    normalization constant of the contraction.
+
+    Note that the Cartesian contraction depends on the angular momentum components in the Cartesian
+    coordinate, :math:`\vec{a}`. At a given angular momentum, :math:`\ell`, we have
+    :math:`\frac{(\ell + 1) (\ell + 2)}{2}` different components. We can linearly transform these
+    contractions to obtain the :math:`2 \ell + 1` **spherical contractions**. Since we can convert
+    the contractions in one coordinate system to another, we use the term **contraction** to
+    describe both cases, unless otherwise stated.
+
+    In order to obtain the spherical contractions, we need the contractions at different angular
+    momentum components. We will denote the collection of these contractions as
+    **segmented contraction shell**. Note that contractions within segmented contraction shell all
+    have the same angular momentum, center, and the same set of exponents and contraction
+    coefficients.
+
+    Now, some basis sets, e.g. ANO-RCC, group together multiple segmented contractions that only
+    differ by the contraction coefficients and angular momentums. Here, we denote a collection of
+    contractions with the same angular momentum, center, and the same set of exponents as
+    **generalized contraction shell**. Note that **we do not support generalized contraction with
+    different angular momentum**.
+
+    We can think of generalized contraction shell as a union of segmented contraction shells with
+    the same angular momentum, center, and the same set of exponents. Now, the contraction
+    coefficients depend on the specific segmented contraction shell, :math:`j`, to which the
+    contraction belongs:
+
+    .. math::
+
+        \phi_{j, \vec{a}, \vec{R}_A} (\mathbf{r}) =
+        N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)
 
     Attributes
     ----------
@@ -63,7 +105,7 @@ class ContractedCartesianGaussians:
     """
 
     def __init__(self, angmom, coord, charge, coeffs, exps):
-        r"""Initialize a ContractedCartesianGaussians instance.
+        r"""Initialize a GeneralizedContractionShell instance.
 
         Attributes
         ----------
@@ -441,7 +483,7 @@ def make_contractions(basis_dict, atoms, coords, charges=None):
 
     Returns
     -------
-    basis : tuple of ContractedCartesianGaussians
+    basis : tuple of GeneralizedContractionShell
         Contractions for each atom.
         Contractions are ordered in the same order as in the values of `basis_dict`.
 
@@ -475,5 +517,5 @@ def make_contractions(basis_dict, atoms, coords, charges=None):
     basis = []
     for atom, coord, charge in zip(atoms, coords, charges):
         for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(ContractedCartesianGaussians(angmom, coord, charge, coeffs, exps))
+            basis.append(GeneralizedContractionShell(angmom, coord, charge, coeffs, exps))
     return tuple(basis)

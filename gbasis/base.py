@@ -1,7 +1,7 @@
 """Base class for arrays that depend on one or more contracted Gaussians."""
 import abc
 
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 
 
 class BaseGaussianRelatedArray(abc.ABC):
@@ -9,16 +9,16 @@ class BaseGaussianRelatedArray(abc.ABC):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Contractions that are associated with each index of the array.
-        Each tuple of ContractedCartesianGaussians corresponds to an index of the array.
+        Each tuple of GeneralizedContractionShell corresponds to an index of the array.
 
     Methods
     -------
     __init__(self, *axes_contractions)
         Initialize.
     construct_array_contraction(self, *contraction, **kwargs) : np.ndarray
-        Return the array associated with a `ContractedCartesianGaussians` instance.
+        Return the array associated with a `GeneralizedContractionShell` instance.
     construct_array_cartesian(self, **kwargs) : np.ndarray
         Return the array associated with Cartesian Gaussians.
     construct_array_spherical(self, **kwargs) : np.ndarray
@@ -34,14 +34,14 @@ class BaseGaussianRelatedArray(abc.ABC):
 
         Parameters
         ----------
-        contractions : list/tuple of ContractedCartesianGaussians
+        contractions : list/tuple of GeneralizedContractionShell
             Contractions that are associated with each index of the array.
             First contractions is associated with the first index, etc.
 
         Raises
         ------
         TypeError
-            If `axes_contractions` is not given as a list or tuple of ContractedCartesianGaussians.
+            If `axes_contractions` is not given as a list or tuple of GeneralizedContractionShell.
         ValueError
             If `axes_contractions` is an empty list or tuple.
 
@@ -49,15 +49,15 @@ class BaseGaussianRelatedArray(abc.ABC):
         for each_contractions in contractions:
             if not isinstance(each_contractions, (list, tuple)):
                 raise TypeError(
-                    "Contractions must be given as a list or tuple of ContractedCartesianGaussians "
+                    "Contractions must be given as a list or tuple of GeneralizedContractionShell "
                     "instance"
                 )
             if not each_contractions:
-                raise ValueError("At least one `ContractedCartesianGaussians` must be given.")
+                raise ValueError("At least one `GeneralizedContractionShell` must be given.")
             for contraction in each_contractions:
-                if not isinstance(contraction, ContractedCartesianGaussians):
+                if not isinstance(contraction, GeneralizedContractionShell):
                     raise TypeError(
-                        "Given contractions must be instances of the ContractedCartesianGaussians "
+                        "Given contractions must be instances of the GeneralizedContractionShell "
                         "class."
                     )
         self._axes_contractions = tuple(
@@ -70,7 +70,7 @@ class BaseGaussianRelatedArray(abc.ABC):
 
         Parameters
         ----------
-        contractions : ContractedCartesianGaussians
+        contractions : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
             array.
             Note that multiple instances may be needed to construct the array.
@@ -80,12 +80,12 @@ class BaseGaussianRelatedArray(abc.ABC):
         Returns
         -------
         array_contraction : np.ndarray
-            Array associated with the given instance(s) of ContractedCartesianGaussians.
+            Array associated with the given instance(s) of GeneralizedContractionShell.
 
         Notes
         -----
         The next level of classes will be divided by number of indices associated with
-        ContractedCartesianGaussians. Then this method's parameters will likely be different from
+        GeneralizedContractionShell. Then this method's parameters will likely be different from
         it's children. This means that using this method's API blindly (by simply copying and
         pasting) will not be suitable for all its children. Here, we allow arbitrary number of
         `contractions` to indicate that its children may have different number of `contractions` in
@@ -134,7 +134,7 @@ class BaseGaussianRelatedArray(abc.ABC):
         Parameters
         ----------
         coord_types : list/tuple of str
-            Types of the coordinate system for each ContractedCartesianGaussians.
+            Types of the coordinate system for each GeneralizedContractionShell.
             Each entry must be one of "cartesian" or "spherical".
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
@@ -162,7 +162,7 @@ class BaseGaussianRelatedArray(abc.ABC):
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each ContractedCartesianGaussians instance.
+            coordinate type of each GeneralizedContractionShell instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
 
@@ -175,7 +175,7 @@ class BaseGaussianRelatedArray(abc.ABC):
         Notes
         -----
         The next level of classes will be divided by number of indices associated with
-        ContractedCartesianGaussians. Then this method's parameters will likely be different from
+        GeneralizedContractionShell. Then this method's parameters will likely be different from
         it's children. This means that using this method's API blindly (by simply copying and
         pasting) will not be suitable for all its children. Here, we allow arbitrary number of
         `transform` to indicate that its children may have different number of `transform` in

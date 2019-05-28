@@ -68,7 +68,7 @@ def eval_density(one_density_matrix, basis, coords, transform, coord_type="spher
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix.
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -83,7 +83,7 @@ def eval_density(one_density_matrix, basis, coords, transform, coord_type="spher
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns
@@ -107,7 +107,7 @@ def eval_deriv_density(
         Orders of the derivative.
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix.
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -122,7 +122,7 @@ def eval_deriv_density(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns
@@ -169,7 +169,7 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_ty
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix.
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -184,7 +184,7 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_ty
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns
@@ -230,7 +230,7 @@ def eval_density_laplacian(one_density_matrix, basis, coords, transform, coord_t
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix.
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -245,7 +245,7 @@ def eval_density_laplacian(one_density_matrix, basis, coords, transform, coord_t
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns
@@ -273,7 +273,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_typ
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix.
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -288,7 +288,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_typ
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns
@@ -326,7 +326,7 @@ def eval_posdef_kinetic_energy_density(
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix.
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -341,7 +341,7 @@ def eval_posdef_kinetic_energy_density(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns

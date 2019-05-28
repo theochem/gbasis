@@ -1,7 +1,7 @@
 """Functions for evaluating Gaussian primitives."""
 from gbasis._deriv import _eval_deriv_contractions
 from gbasis.base_one import BaseOneIndex
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
 
@@ -13,13 +13,13 @@ class EvalDeriv(BaseOneIndex):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Contractions that are associated with each index of the array.
-        Each tuple of ContractedCartesianGaussians corresponds to an index of the array.
+        Each tuple of GeneralizedContractionShell corresponds to an index of the array.
 
     Properties
     ----------
-    contractions : tuple of ContractedCartesianGaussians
+    contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first index of the array.
 
     Methods
@@ -59,7 +59,7 @@ class EvalDeriv(BaseOneIndex):
 
         Parameters
         ----------
-        contractions : ContractedCartesianGaussians
+        contractions : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
             array.
         coords : np.ndarray(N, 3)
@@ -70,7 +70,7 @@ class EvalDeriv(BaseOneIndex):
         Returns
         -------
         array_contraction : np.ndarray(M, L_cart, N)
-            Array associated with the given instance(s) of ContractedCartesianGaussians.
+            Array associated with the given instance(s) of GeneralizedContractionShell.
             First index corresponds to segmented contractions within the given generalized
             contraction (same exponents and angular momentum, but different coefficients). `M` is
             the number of segmented contractions with the same exponents (and angular momentum).
@@ -82,7 +82,7 @@ class EvalDeriv(BaseOneIndex):
         Raises
         ------
         TypeError
-            If contractions is not a ContractedCartesianGaussians instance.
+            If contractions is not a GeneralizedContractionShell instance.
             If coords is not a two-dimensional numpy array with 3 columns.
             If orders is not a one-dimensional numpy array with 3 elements.
         ValueError
@@ -97,8 +97,8 @@ class EvalDeriv(BaseOneIndex):
         `coords` and `orders`.
 
         """
-        if not isinstance(contractions, ContractedCartesianGaussians):
-            raise TypeError("`contractions` must be a ContractedCartesianGaussians instance.")
+        if not isinstance(contractions, GeneralizedContractionShell):
+            raise TypeError("`contractions` must be a GeneralizedContractionShell instance.")
         if not (isinstance(coords, np.ndarray) and coords.ndim == 2 and coords.shape[1] == 3):
             raise TypeError(
                 "`coords` must be given as a two-dimensional numpy array with 3 columnms."
@@ -128,7 +128,7 @@ def evaluate_deriv_basis_cartesian(basis, coords, orders):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -152,7 +152,7 @@ def evaluate_deriv_basis_spherical(basis, coords, orders):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -176,14 +176,14 @@ def evaluate_deriv_basis_mix(basis, coords, orders, coord_types):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
     orders : np.ndarray(3,)
         Orders of the derivative.
     coord_types : list/tuple of str
-        Types of the coordinate system for each ContractedCartesianGaussians.
+        Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
 
     Returns
@@ -203,7 +203,7 @@ def evaluate_deriv_basis_lincomb(basis, coords, orders, transform, coord_type="s
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords : np.ndarray(N, 3)
         Points in space where the contractions are evaluated.
@@ -220,7 +220,7 @@ def evaluate_deriv_basis_lincomb(basis, coords, orders, transform, coord_type="s
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns

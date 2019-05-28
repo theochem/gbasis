@@ -15,12 +15,12 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
 
     Properties
     ----------
-    contractions : tuple of ContractedCartesianGaussians
+    contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
 
     Methods
@@ -29,7 +29,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         Initialize.
     construct_array_contraction(self, contraction, **kwargs) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
-        Return the array associated with a `ContractedCartesianGaussians` instance.
+        Return the array associated with a `GeneralizedContractionShell` instance.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -56,7 +56,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Parameters
         ----------
-        contractions : list/tuple of ContractedCartesianGaussians
+        contractions : list/tuple of GeneralizedContractionShell
             Contractions that are associated with the first and second indices of the array.
 
         """
@@ -68,7 +68,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        contractions : tuple of ContractedCartesianGaussians
+        contractions : tuple of GeneralizedContractionShell
             Contractions that are associated with the first index of the array.
 
         """
@@ -81,10 +81,10 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         Parameters
         ----------
-        contractions_one : ContractedCartesianGaussians
+        contractions_one : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
             the array.
-        contractions_two : ContractedCartesianGaussians
+        contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
         kwargs : dict
@@ -93,7 +93,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         Returns
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
-            Array associated with the given instances of ContractedCartesianGaussians.
+            Array associated with the given instances of GeneralizedContractionShell.
             First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
@@ -256,7 +256,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         Parameters
         ----------
         coord_types : list/tuple of str
-            Types of the coordinate system for each ContractedCartesianGaussians.
+            Types of the coordinate system for each GeneralizedContractionShell.
             Each entry must be one of "cartesian" or "spherical".
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
@@ -276,7 +276,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         ValueError
             If `coord_types` has an entry that is not "cartesian" or "spherical".
             If `coord_types` has different number of entries as the number of
-            ContractedCartesianGaussians (`contractions`) in instance.
+            GeneralizedContractionShell (`contractions`) in instance.
 
         """
         if not isinstance(coord_types, (list, tuple)):
@@ -288,7 +288,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         if len(coord_types) != len(self.contractions):
             raise ValueError(
                 "`coord_types` must have the same number of entries as the number of "
-                "ContractedCartesianGaussians in the instance."
+                "GeneralizedContractionShell in the instance."
             )
 
         triu_blocks = []
@@ -357,7 +357,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each ContractedCartesianGaussians instance.
+            coordinate type of each GeneralizedContractionShell instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will

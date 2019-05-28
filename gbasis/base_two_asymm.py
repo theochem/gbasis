@@ -16,14 +16,14 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
 
     Properties
     ----------
-    contractions_one : tuple of ContractedCartesianGaussians
+    contractions_one : tuple of GeneralizedContractionShell
         Contractions that are associated with the first index of the array.
-    contractions_two : tuple of ContractedCartesianGaussians
+    contractions_two : tuple of GeneralizedContractionShell
         Contractions that are associated with the second index of the array.
 
     Methods
@@ -32,7 +32,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         Initialize.
     construct_array_contraction(self, contractions_one, contractions_two, **kwargs) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
-        Return the array associated with a `ContractedCartesianGaussians` instance.
+        Return the array associated with a `GeneralizedContractionShell` instance.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -65,9 +65,9 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         Parameters
         ----------
-        contractions_one : list/tuple of ContractedCartesianGaussians
+        contractions_one : list/tuple of GeneralizedContractionShell
             Contractions that are associated with the first index of the array.
-        contractions_two : list/tuple of ContractedCartesianGaussians
+        contractions_two : list/tuple of GeneralizedContractionShell
             Contractions that are associated with the second index of the array.
 
         """
@@ -79,7 +79,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        contractions_one : tuple of ContractedCartesianGaussians
+        contractions_one : tuple of GeneralizedContractionShell
             Contractions that are associated with the first index of the array.
 
         """
@@ -91,7 +91,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        contractions_two : tuple of ContractedCartesianGaussians
+        contractions_two : tuple of GeneralizedContractionShell
             Contractions that are associated with the second index of the array.
 
         """
@@ -103,10 +103,10 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         Parameters
         ----------
-        contractions_one : ContractedCartesianGaussians
+        contractions_one : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
             the array.
-        contractions_two : ContractedCartesianGaussians
+        contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
         kwargs : dict
@@ -115,7 +115,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         Returns
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
-            Array associated with the given instance(s) of ContractedCartesianGaussians.
+            Array associated with the given instance(s) of GeneralizedContractionShell.
             First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
@@ -253,11 +253,11 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         Parameters
         ----------
         coord_types_one : list/tuple of str
-            Types of the coordinate system for ContractedCartesianGaussians associated with the
+            Types of the coordinate system for GeneralizedContractionShell associated with the
             first index of the array.
             Each entry must be one of "cartesian" or "spherical".
         coord_types_two : list/tuple of str
-            Types of the coordinate system for ContractedCartesianGaussians associated with the
+            Types of the coordinate system for GeneralizedContractionShell associated with the
             second index of the array.
             Each entry must be one of "cartesian" or "spherical".
         kwargs : dict
@@ -279,10 +279,10 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         ValueError
             If `coord_types_one` has an entry that is not "cartesian" or "spherical".
             If `coord_types_one` has different number of entries as the number of
-            ContractedCartesianGaussians (`contractions`) in instance.
+            GeneralizedContractionShell (`contractions`) in instance.
             If `coord_types_two` has an entry that is not "cartesian" or "spherical".
             If `coord_types_two` has different number of entries as the number of
-            ContractedCartesianGaussians (`contractions`) in instance.
+            GeneralizedContractionShell (`contractions`) in instance.
 
         """
         if not isinstance(coord_types_one, (list, tuple)):
@@ -300,12 +300,12 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         if len(coord_types_one) != len(self.contractions_one):
             raise ValueError(
                 "`coord_types_one` must have the same number of entries as the number of "
-                "ContractedCartesianGaussians in the instance."
+                "GeneralizedContractionShell in the instance."
             )
         if len(coord_types_two) != len(self.contractions_two):
             raise ValueError(
                 "`coord_types_two` must have the same number of entries as the number of "
-                "ContractedCartesianGaussians in the instance."
+                "GeneralizedContractionShell in the instance."
             )
 
         matrices_spherical = []
@@ -371,13 +371,13 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each ContractedCartesianGaussians instance.
+            coordinate type of each GeneralizedContractionShell instance.
         coord_type_two : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
             Types of the coordinate system for the contractions associated with the second index.
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each ContractedCartesianGaussians instance.
+            coordinate type of each GeneralizedContractionShell instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will

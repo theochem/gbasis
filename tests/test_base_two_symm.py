@@ -1,7 +1,7 @@
 """Test gbasis.base_two_symm."""
 from gbasis.base_two_asymm import BaseTwoIndexAsymmetric
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.spherical import generate_transformation
 import numpy as np
 import pytest
@@ -12,7 +12,7 @@ def test_init():
     """Test BaseTwoIndexSymmetric.__init__."""
     Test = disable_abstract(BaseTwoIndexSymmetric)  # noqa: N806
     test = skip_init(Test)
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     Test.__init__(test, [contractions])
     assert test._axes_contractions[0][0] == contractions
     with pytest.raises(TypeError):
@@ -22,7 +22,7 @@ def test_init():
 def test_contractions():
     """Test BaseTwoIndexSymmetric.constractions."""
     Test = disable_abstract(BaseTwoIndexSymmetric)  # noqa: N806
-    cont = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     test = Test([cont])
     assert test.contractions[0] == cont
 
@@ -36,7 +36,7 @@ def test_contruct_array_contraction():
             "construct_array_contraction": BaseTwoIndexSymmetric.construct_array_contraction
         },
     )
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -49,7 +49,7 @@ def test_contruct_array_contraction():
 # to the tril blocks because the ordering is different.
 def test_contruct_array_cartesian():
     """Test BaseTwoIndexSymmetric.construct_array_cartesian."""
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
         dict_overwrite={
@@ -67,8 +67,8 @@ def test_contruct_array_cartesian():
     assert np.allclose(test.construct_array_cartesian(), np.ones((4, 4)) * 2)
     assert np.allclose(test.construct_array_cartesian(a=3), np.ones((4, 4)) * 3)
 
-    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
         dict_overwrite={
@@ -229,7 +229,7 @@ def test_contruct_array_cartesian():
 # to the tril blocks because the ordering is different.
 def test_contruct_array_spherical():
     """Test BaseTwoIndexSymmetric.construct_array_spherical."""
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     transform = generate_transformation(
         1, contractions.angmom_components, contractions.spherical_order, "left"
     )
@@ -256,8 +256,8 @@ def test_contruct_array_spherical():
     with pytest.raises(TypeError):
         test.construct_array_spherical(bad_keyword=3)
 
-    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     transform_one = generate_transformation(
         1, cont_one.angmom_components, cont_one.spherical_order, "left"
     )
@@ -400,7 +400,7 @@ def test_contruct_array_spherical():
 
 def test_contruct_array_mix():
     """Test BaseTwoIndex.construct_array_mix."""
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
 
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
@@ -421,8 +421,8 @@ def test_contruct_array_mix():
         test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"], a=3)
     )
 
-    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
 
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
@@ -489,7 +489,7 @@ def test_contruct_array_mix():
 
 def test_contruct_array_lincomb():
     """Test BaseTwoIndexSymmetric.construct_array_lincomb."""
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     sph_transform = generate_transformation(
         1, contractions.angmom_components, contractions.spherical_order, "left"
     )
@@ -548,8 +548,8 @@ def test_contruct_array_lincomb():
             )
         },
     )
-    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     cont_one.norm_cont = np.ones((1, cont_one.num_cart))
     cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
@@ -694,8 +694,8 @@ def test_contruct_array_lincomb():
 
 def test_compare_two_asymm():
     """Test BaseTwoIndexSymmetric by comparing it against BaseTwoIndexAsymmetric."""
-    cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     sph_orb_transform = np.random.rand(8, 8)
     cart_orb_transform = np.random.rand(9, 9)
 
