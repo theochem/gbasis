@@ -108,44 +108,70 @@ def test_real_solid_harmonic():
 def test_generate_transformation():
     """Test spherical.generate_transformation."""
     assert np.array_equal(
-        generate_transformation(0, np.array([(0, 0, 0)]), "right"), np.array([[1.0]])
+        generate_transformation(0, np.array([(0, 0, 0)]), (0,), "right"), np.array([[1.0]])
     )
     assert np.array_equal(
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), "right"),
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "right"
+        ),
         np.array([[0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]),
     )
     assert np.array_equal(
-        generate_transformation(0, np.array([(0, 0, 0)]), "right").T,
-        generate_transformation(0, np.array([(0, 0, 0)]), "left"),
+        generate_transformation(0, np.array([(0, 0, 0)]), (0,), "right").T,
+        generate_transformation(0, np.array([(0, 0, 0)]), (0,), "left"),
     )
     assert np.array_equal(
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), "right").T,
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), "left"),
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "right"
+        ).T,
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "left"),
     )
     with pytest.raises(TypeError):
-        generate_transformation(0.0, np.array([(0, 0, 0)]), "right")
+        generate_transformation(0.0, np.array([(0, 0, 0)]), (0,), "right")
     with pytest.raises(TypeError):
-        generate_transformation(0, 0, "right")
+        generate_transformation(0, 0, (0,), "right")
     with pytest.raises(ValueError):
-        generate_transformation(-1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), "right")
+        generate_transformation(
+            -1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "right"
+        )
     with pytest.raises(ValueError):
-        generate_transformation(0, np.array([(0, 0, 0, 0)]), "right")
+        generate_transformation(0, np.array([(0, 0, 0, 0)]), (0,), "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 1)]), "right")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 1)]), (-1, 0, 1), "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]), "right")
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]), (-1, 0, 1), "right"
+        )
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0)]), "right")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0)]), (-1, 0, 1), "right")
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 0, 0), (0, 0, 2)]), "right")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 0, 0), (0, 0, 2)]), (-1, 0, 1), "right")
     with pytest.raises(TypeError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), 1)
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), 1)
     with pytest.raises(TypeError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), None)
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), None)
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), "up")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "up")
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), "")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "")
+    # check spherical_order type
+    with pytest.raises(TypeError):
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), np.array([-1, 0, 1]), "left"
+        )
+    with pytest.raises(TypeError):
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), {-1, 0, 1}, "left")
+    with pytest.raises(TypeError):
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), [-1, 0, 1.0], "left"
+        )
+    # check spherical_order value
+    with pytest.raises(ValueError):
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1, 1), "left"
+        )
+    with pytest.raises(ValueError):
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 2, 1), "left")
 
 
 # FIXME: cannot reproduce horton results for the angular momentum 4. I  have a feeling that the
@@ -168,7 +194,10 @@ def test_generate_transformation_horton():
     answer = answer[[4, 2, 0, 1, 3], :]
     assert np.allclose(
         generate_transformation(
-            2, np.array([[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1], [0, 0, 2]]), "left"
+            2,
+            np.array([[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1], [0, 0, 2]]),
+            (-2, -1, 0, 1, 2),
+            "left",
         ),
         answer,
     )
@@ -203,6 +232,7 @@ def test_generate_transformation_horton():
                     [0, 0, 3],
                 ]
             ),
+            (-3, -2, -1, 0, 1, 2, 3),
             "left",
         ),
         answer,
@@ -341,6 +371,7 @@ def test_generate_transformation_horton():
     #                 [0, 0, 4],
     #             ]
     #         ),
+    #         (-4, -3, -2, -1, 0, 1, 2, 3, 4),
     #         "left",
     #     ),
     #     answer,
