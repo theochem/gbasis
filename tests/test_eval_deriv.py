@@ -22,7 +22,7 @@ def test_eval_deriv_construct_array_contraction():
     coords = np.array([[2, 3, 4]])
     orders = np.array([0, 0, 0])
     contractions = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
@@ -59,7 +59,7 @@ def test_eval_deriv_construct_array_contraction():
         orders[k] = 1
 
         test = GeneralizedContractionShell(
-            1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+            1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
         )
         answer = np.array(
             [
@@ -99,7 +99,7 @@ def test_eval_deriv_construct_array_contraction():
         orders[l] += 1
 
         test = GeneralizedContractionShell(
-            1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+            1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
         )
         answer = np.array(
             [

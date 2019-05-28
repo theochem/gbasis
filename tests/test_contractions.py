@@ -6,28 +6,6 @@ import pytest
 from utils import find_datafile, skip_init
 
 
-def test_charge_setter():
-    """Test setter for GeneralizedContractionShell.charge."""
-    test = skip_init(GeneralizedContractionShell)
-    test.charge = 2
-    assert isinstance(test._charge, float) and test._charge == 2
-    test.charge = -2
-    assert isinstance(test._charge, float) and test._charge == -2
-    test.charge = 2.5
-    assert isinstance(test._charge, float) and test._charge == 2.5
-    with pytest.raises(TypeError):
-        test.charge = "0"
-    with pytest.raises(TypeError):
-        test.charge = None
-
-
-def test_charge_getter():
-    """Test getter for GeneralizedContractionShell.charge."""
-    test = skip_init(GeneralizedContractionShell)
-    test._charge = 2
-    assert test.charge == 2
-
-
 def test_coord_setter():
     """Test setter for GeneralizedContractionShell.coord."""
     test = skip_init(GeneralizedContractionShell)
@@ -190,13 +168,11 @@ def tests_init():
     test = GeneralizedContractionShell(
         1,
         np.array([0, 1, 2]),
-        0,
         np.array([1, 2, 3, 4], dtype=float),
         np.array([5, 6, 7, 8], dtype=float),
     )
     assert test._angmom == 1
     assert np.allclose(test._coord, np.array([0, 1, 2]))
-    assert test._charge == 0
     assert np.allclose(test._coeffs, np.array([[1], [2], [3], [4]]))
     assert np.allclose(test._exps, np.array([5, 6, 7, 8]))
 
@@ -249,9 +225,9 @@ def test_spherical_order():
 # TODO: add more tests
 def test_norm_prim():
     """Test GeneralizedContractionShell.norm_prim."""
-    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
+    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]))
     assert np.isclose(test.norm_prim, 0.2519794355383807303479140)
-    test = GeneralizedContractionShell(3, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.5]))
+    test = GeneralizedContractionShell(3, np.array([0, 0, 0]), np.array([1.0]), np.array([0.5]))
     assert np.isclose(test.norm_prim[7], 0.6920252830162908851679097)
 
 
@@ -304,22 +280,12 @@ def test_make_contractions():
 
     with pytest.raises(TypeError):
         make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0])
-    with pytest.raises(TypeError):
-        make_contractions(
-            basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), np.array([[0, 0]])
-        )
-
-    with pytest.raises(ValueError):
-        make_contractions(
-            basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), np.array([0, 0, 0])
-        )
 
     test = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
     assert isinstance(test, tuple)
     assert len(test) == 2
     assert test[0].angmom == 0
     assert np.allclose(test[0].coord, np.array([0, 0, 0]))
-    assert test[0].charge == 0
     assert np.allclose(
         test[0].coeffs,
         np.array(
@@ -339,7 +305,6 @@ def test_make_contractions():
     )
     assert test[1].angmom == 0
     assert np.allclose(test[1].coord, np.array([1, 1, 1]))
-    assert test[1].charge == 0
     assert np.allclose(
         test[1].coeffs,
         np.array(
@@ -361,14 +326,14 @@ def test_make_contractions():
 
 def test_assign_norm_cont():
     """Test GeneralizedContractionShell.assign_norm_cont."""
-    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
+    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]))
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)
 
-    test = GeneralizedContractionShell(1, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
+    test = GeneralizedContractionShell(1, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]))
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)
 
-    test = GeneralizedContractionShell(2, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
+    test = GeneralizedContractionShell(2, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]))
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)

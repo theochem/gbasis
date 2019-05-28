@@ -104,7 +104,7 @@ class GeneralizedContractionShell:
 
     """
 
-    def __init__(self, angmom, coord, charge, coeffs, exps):
+    def __init__(self, angmom, coord, coeffs, exps):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Attributes
@@ -117,8 +117,6 @@ class GeneralizedContractionShell:
 
         coord : np.ndarray(3,)
             Coordinate of the center of the Gaussian primitives.
-        charge : float
-            Charge at the center of the Gaussian primitives.
         coeffs : {np.ndarray(K,), np.ndarray(K, M)}
             Contraction coefficients, :math:`\{d_i\}`, of the primitives.
             If a two-dimensional array is given, the first axis corresponds to the primitive and the
@@ -131,43 +129,9 @@ class GeneralizedContractionShell:
         """
         self.angmom = angmom
         self.coord = coord
-        self.charge = charge
         self.coeffs = coeffs
         self.exps = exps
         self.assign_norm_cont()
-
-    @property
-    def charge(self):
-        """Charge at the center of the Gaussian primitives.
-
-        Returns
-        -------
-        charge : float
-            Point charge at the center of the Gaussian primitive.
-
-        """
-        return self._charge
-
-    @charge.setter
-    def charge(self, charge):
-        """Set the charge at the center of the Gaussian primitives.
-
-        Parameters
-        ----------
-        charge : {float, int}
-            Point charge at the center of the Gaussian primitive.
-
-        Raises
-        ------
-        TypeError
-            If charge is not given as an integer or a float.
-
-        """
-        if isinstance(charge, int):
-            charge = float(charge)
-        if not isinstance(charge, float):
-            raise TypeError("Charge must be given as an integer or a float.")
-        self._charge = charge
 
     @property
     def coord(self):
@@ -466,7 +430,7 @@ class GeneralizedContractionShell:
         self.norm_cont **= -0.5
 
 
-def make_contractions(basis_dict, atoms, coords, charges=None):
+def make_contractions(basis_dict, atoms, coords):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
@@ -477,9 +441,6 @@ def make_contractions(basis_dict, atoms, coords, charges=None):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
-    charges : np.ndarray(N,)
-        Charges of each atom.
-        Default is 0 for each atom (neutral).
 
     Returns
     -------
@@ -492,10 +453,8 @@ def make_contractions(basis_dict, atoms, coords, charges=None):
     TypeError
         If atoms is not a list or tuple of strings.
         If coords is not a two-dimensional numpy array with 3 columns.
-        If charges is not a one-dimensional numpy array.
     ValueError
         If the length of atoms is not equal to the number of rows of coords.
-        If the length of charges is not equal to the length of atoms.
 
     """
     if not (isinstance(atoms, (list, tuple)) and all(isinstance(i, str) for i in atoms)):
@@ -507,15 +466,8 @@ def make_contractions(basis_dict, atoms, coords, charges=None):
     if len(atoms) != coords.shape[0]:
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 
-    if charges is None:
-        charges = np.zeros(len(atoms))
-    elif not (isinstance(charges, np.ndarray) and charges.ndim == 1):
-        raise TypeError("Charges must be given as a one-dimensional numpy array.")
-    if charges.size != len(atoms):
-        raise ValueError("Number of charges must be equal to the number of atoms.")
-
     basis = []
-    for atom, coord, charge in zip(atoms, coords, charges):
+    for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(GeneralizedContractionShell(angmom, coord, charge, coeffs, exps))
+            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps))
     return tuple(basis)
