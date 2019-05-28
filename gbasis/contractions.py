@@ -49,6 +49,8 @@ class ContractedCartesianGaussians:
         The number of Cartesian contracted Gaussians in the shell of angular momentum, :math:`l`.
     num_sph : int
         The number of spherical contracted Gaussian in the shell of angular momentum, :math:`l`.
+    spherical_order : tuple of int
+        Ordering of the spherical primitives/contractions.
 
     Methods
     -------
@@ -319,6 +321,18 @@ class ContractedCartesianGaussians:
                 for y in range(self.angmom - x + 1)[::-1]
             ]
         )
+
+    @property
+    def spherical_order(self):
+        """Return the ordering of the spherical primitives/contractions.
+
+        Returns
+        -------
+        spherical_order : tuple of int
+            Order of the spherical primitives.
+
+        """
+        return tuple(range(-self.angmom, self.angmom + 1))
 
     @property
     def norm_prim(self):

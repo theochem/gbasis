@@ -232,6 +232,19 @@ def test_angmom_components():
     assert len(test.angmom_components) == 11 * 12 / 2
 
 
+def test_spherical_order():
+    """Test ContractedCartesianGaussians.spherical_order."""
+    test = skip_init(ContractedCartesianGaussians)
+    test._angmom = 0
+    assert np.allclose(test.spherical_order, (0, ))
+    test._angmom = 1
+    assert np.allclose(test.spherical_order, (-1, 0, 1))
+    test._angmom = 2
+    assert np.allclose(test.spherical_order, (-2, -1, 0, 1, 2))
+    test._angmom = 3
+    assert np.allclose(test.spherical_order, (-3, -2, -1, 0, 1, 2, 3))
+
+
 # TODO: Test norm using actual integrals
 # TODO: add more tests
 def test_norm_prim():
