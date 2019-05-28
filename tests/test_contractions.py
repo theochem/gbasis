@@ -236,7 +236,7 @@ def test_spherical_order():
     """Test ContractedCartesianGaussians.spherical_order."""
     test = skip_init(ContractedCartesianGaussians)
     test._angmom = 0
-    assert np.allclose(test.spherical_order, (0, ))
+    assert np.allclose(test.spherical_order, (0,))
     test._angmom = 1
     assert np.allclose(test.spherical_order, (-1, 0, 1))
     test._angmom = 2

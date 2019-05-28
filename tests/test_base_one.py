@@ -79,7 +79,9 @@ def test_contruct_array_cartesian():
 def test_contruct_array_spherical():
     """Test BaseOneIndex.construct_array_spherical."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    transform = generate_transformation(1, contractions.angmom_components, "left")
+    transform = generate_transformation(
+        1, contractions.angmom_components, contractions.spherical_order, "left"
+    )
 
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
@@ -239,7 +241,9 @@ def test_contruct_array_mix():
 def test_contruct_array_lincomb():
     """Test BaseOneIndex.construct_array_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    sph_transform = generate_transformation(1, contractions.angmom_components, "left")
+    sph_transform = generate_transformation(
+        1, contractions.angmom_components, contractions.spherical_order, "left"
+    )
     orb_transform = np.random.rand(3, 3)
 
     Test = disable_abstract(  # noqa: N806
