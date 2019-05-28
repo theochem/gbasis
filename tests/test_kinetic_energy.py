@@ -18,10 +18,10 @@ from utils import find_datafile, HortonContractions
 def test_kinetic_energy_construct_array_contraction():
     """Test gbasis.kinetic_energy.KineticEnergyIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), 0, np.array([3.0, 4.0]), np.array([0.2, 0.02])
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02])
     )
     answer = np.array(
         [
@@ -231,7 +231,7 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
     basis = make_contractions(
         basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     )
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_kinetic_energy_integral = np.load(
         find_datafile("data_horton_hhe_cart_kinetic_energy_integral.npy")
@@ -252,7 +252,7 @@ def test_kinetic_energy_integral_horton_anorcc_bec():
     basis = make_contractions(
         basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
     )
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_kinetic_energy_integral = np.load(
         find_datafile("data_horton_bec_cart_kinetic_energy_integral.npy")

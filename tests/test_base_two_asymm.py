@@ -11,7 +11,7 @@ def test_init():
     """Test BaseTwoIndexAsymmetric.__init__."""
     Test = disable_abstract(BaseTwoIndexAsymmetric)  # noqa: N806
     test = skip_init(Test)
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     Test.__init__(test, [contractions], [contractions])
     assert test._axes_contractions == ((contractions,), (contractions,))
     with pytest.raises(TypeError):
@@ -23,8 +23,8 @@ def test_init():
 def test_contractions_one():
     """Test BaseTwoIndexAsymmetric.constractions_one."""
     Test = disable_abstract(BaseTwoIndexAsymmetric)  # noqa: N806
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     test = Test([cont_one], [cont_two])
     assert test.contractions_one[0] == cont_one
 
@@ -32,8 +32,8 @@ def test_contractions_one():
 def test_contractions_two():
     """Test BaseTwoIndexAsymmetric.constractions_two."""
     Test = disable_abstract(BaseTwoIndexAsymmetric)  # noqa: N806
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     test = Test([cont_one], [cont_two])
     assert test.contractions_two[0] == cont_two
 
@@ -47,14 +47,14 @@ def test_contruct_array_contraction():
             "construct_array_contraction": BaseTwoIndexAsymmetric.construct_array_contraction
         },
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])
 
 
 def test_contruct_array_cartesian():
     """Test BaseTwoIndexAsymmetric.construct_array_cartesian."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexAsymmetric,
         dict_overwrite={
@@ -80,8 +80,8 @@ def test_contruct_array_cartesian():
             )
         },
     )
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    cont_two = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     cont_one.norm_cont = np.ones((1, 2))
     cont_two.norm_cont = np.ones((1, 5))
     test = Test([cont_one, cont_one], [cont_two])
@@ -105,7 +105,7 @@ def test_contruct_array_cartesian():
 
 def test_contruct_array_spherical():
     """Test BaseTwoIndexAsymmetric.construct_array_spherical."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     transform = generate_transformation(
         1, contractions.angmom_components, contractions.spherical_order, "left"
     )
@@ -194,7 +194,7 @@ def test_contruct_array_spherical():
 
 def test_contruct_array_mix():
     """Test BaseTwoIndexAsymmetric.construct_array_mix."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
 
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexAsymmetric,
@@ -299,7 +299,7 @@ def test_contruct_array_mix():
 
 def test_contruct_array_lincomb():
     """Test BaseTwoIndexAsymmetric.construct_array_lincomb."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     sph_transform = generate_transformation(
         1, contractions.angmom_components, contractions.spherical_order, "left"
     )

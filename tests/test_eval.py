@@ -18,7 +18,7 @@ from utils import find_datafile
 def test_eval_construct_array_contraction():
     """Test gbasis.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
     answer = np.array(
         [

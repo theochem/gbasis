@@ -292,7 +292,7 @@ def test_eval_density_horton():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_density = np.load(find_datafile("data_horton_hhe_sph_density.npy"))
 
@@ -317,7 +317,7 @@ def test_eval_density_gradient_horton():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_density_gradient = np.load(find_datafile("data_horton_hhe_sph_density_gradient.npy"))
 
@@ -343,7 +343,7 @@ def test_eval_hessian_deriv_horton():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_density_hessian = np.zeros((10 ** 3, 3, 3))
     horton_density_hessian[:, [0, 0, 0, 1, 1, 2], [0, 1, 2, 1, 2, 2]] = np.load(
@@ -375,7 +375,7 @@ def test_eval_laplacian_deriv_horton():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_density_laplacian = np.load(find_datafile("data_horton_hhe_sph_density_laplacian.npy"))
 
@@ -401,7 +401,7 @@ def test_eval_posdef_kinetic_energy_density():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_density_kinetic_density = np.load(
         find_datafile("data_horton_hhe_sph_posdef_kinetic_density.npy")

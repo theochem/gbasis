@@ -29,7 +29,7 @@ def test_nuclear_electron_attraction_horton_anorcc_hhe():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_nucattract.npy"))
     assert np.allclose(
@@ -49,7 +49,7 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["Be", "C"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_nucattract = np.load(find_datafile("data_horton_bec_cart_nucattract.npy"))
     assert np.allclose(

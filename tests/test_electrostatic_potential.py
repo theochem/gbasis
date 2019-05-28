@@ -23,7 +23,7 @@ def test_electrostatic_potential_base():
     basis_dict = parse_nwchem(test_basis)
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     # check density_matrix type
     with pytest.raises(TypeError):
@@ -176,7 +176,7 @@ def test_electrostatic_potential_cartesian():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
@@ -204,7 +204,7 @@ def test_electrostatic_potential_spherical():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
@@ -232,7 +232,7 @@ def test_electrostatic_potential_mix():
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.charge, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)

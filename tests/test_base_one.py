@@ -11,7 +11,7 @@ def test_init():
     """Test BaseOneIndex.__init__."""
     Test = disable_abstract(BaseOneIndex)  # noqa: N806
     test = skip_init(Test)
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     Test.__init__(test, [contractions])
     assert test._axes_contractions == ((contractions,),)
     with pytest.raises(TypeError):
@@ -21,7 +21,7 @@ def test_init():
 def test_contractions():
     """Test BaseOneIndex.constractions."""
     Test = disable_abstract(BaseOneIndex)  # noqa: N806
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     test = Test([contractions])
     assert test.contractions[0] == contractions
 
@@ -33,14 +33,14 @@ def test_contruct_array_contraction():
         BaseOneIndex,
         dict_overwrite={"construct_array_contraction": BaseOneIndex.construct_array_contraction},
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])
 
 
 def test_contruct_array_cartesian():
     """Test BaseOneIndex.construct_array_cartesian."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     contractions.norm_cont = np.ones((1, 5))
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
@@ -78,7 +78,7 @@ def test_contruct_array_cartesian():
 
 def test_contruct_array_spherical():
     """Test BaseOneIndex.construct_array_spherical."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     transform = generate_transformation(
         1, contractions.angmom_components, contractions.spherical_order, "left"
     )
@@ -108,9 +108,7 @@ def test_contruct_array_spherical():
         np.vstack([transform.dot(np.arange(9).reshape(3, 3)) * 2] * 2),
     )
 
-    contractions = GeneralizedContractionShell(
-        1, np.array([1, 2, 3]), 0, np.ones((1, 2)), np.ones(1)
-    )
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1))
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
         dict_overwrite={
@@ -157,7 +155,7 @@ def test_contruct_array_spherical():
 
 def test_contruct_array_mix():
     """Test BaseOneIndex.construct_array_mix."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
 
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
@@ -192,9 +190,7 @@ def test_contruct_array_mix():
         test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
     )
 
-    contractions = GeneralizedContractionShell(
-        1, np.array([1, 2, 3]), 0, np.ones((1, 2)), np.ones(1)
-    )
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1))
     Test = disable_abstract(  # noqa: N806
         BaseOneIndex,
         dict_overwrite={
@@ -240,7 +236,7 @@ def test_contruct_array_mix():
 
 def test_contruct_array_lincomb():
     """Test BaseOneIndex.construct_array_lincomb."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     sph_transform = generate_transformation(
         1, contractions.angmom_components, contractions.spherical_order, "left"
     )
