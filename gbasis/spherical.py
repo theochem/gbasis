@@ -218,11 +218,11 @@ def real_solid_harmonic(angmom, mag):
     return harmonic
 
 
-def generate_transformation(angmom, cartesian_order, apply_from):
+def generate_transformation(angmom, cartesian_order, spherical_order, apply_from):
     r"""Generate the transformation matrix for a given shell.
 
-    The Cartesian primitives are ordered as given in cartesian_order. The spherical
-    Gaussians are ordered in ascending order from -(angmom) to angmom.
+    The Cartesian contractions are ordered as given in `cartesian_order`. The spherical contractions
+    are ordered as given in `spherical_order`.
 
     Parameters
     ----------
@@ -231,8 +231,10 @@ def generate_transformation(angmom, cartesian_order, apply_from):
     cartesian_order : np.ndarray((angmom + 1) * (angmom + 2) / 2, 3)
         The x, y, and z components of the angular momentum for each primitive,
         (:math:`\vec{a} = (a_x, a_y, a_z)`, where :math:`a_x + a_y + a_z = l`).
-        The order in which the primitives are given defines the order in which
+        The order in which the contractions are given defines the order in which
         they will appear in the transformation matrix.
+    spherical_order : (2 * angmom + 1)-tuple/list of int
+        Order of the spherical contractions that are produced by the transformation matrix.
     apply_from : str
         The side on which the transformation matrix is applied. One of {"left", "right"}.
 
@@ -247,10 +249,14 @@ def generate_transformation(angmom, cartesian_order, apply_from):
         If angmom is not an integer.
         If cartesian_order is not an array.
         If each member of cartesian_order is not a tuple.
+        If `spherical_order` is not a list/tuple of integers
     ValueError
         If angmom is negative.
         If cartesian_order does not have shape (angmom, 3).
-        If the components of any primitive do not sum to angmom.
+        If the Cartesian components of any contracitons do not sum to angmom.
+        If `apply_from` is not one of "left" or "right".
+        If `spherical_order` does not contain exactly 2 * angmom + 1 integers that ranges from
+        -angmom to angmom.
 
     """
     if not isinstance(angmom, int):
@@ -274,12 +280,26 @@ def generate_transformation(angmom, cartesian_order, apply_from):
             "Specify the side of application for the transformation using 'left' or 'right'"
         )
 
+    if not (
+        isinstance(spherical_order, (tuple, list))
+        and all(isinstance(i, int) for i in spherical_order)
+    ):
+        raise TypeError("`spherical_order` must be given as a list or a tuple.")
+    if not (
+        len(spherical_order) == 2 * angmom + 1
+        and set(spherical_order) == set(range(-angmom, angmom + 1))
+    ):
+        raise ValueError(
+            "`spherical_order` must contain exactly 2 * angmom + 1 integers that ranges from "
+            " -angmom to angmom."
+        )
+
     order = {
         components: index for index, components in enumerate(list(map(tuple, cartesian_order)))
     }
     transform = np.zeros(((angmom + 1) * (angmom + 2) // 2, 2 * angmom + 1))
 
-    for mag in range(-angmom, angmom + 1):
+    for mag in spherical_order:
         harmonic = real_solid_harmonic(angmom, mag)
         for components, coeff in harmonic.items():
             transform[order[components], mag + angmom] = coeff
