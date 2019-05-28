@@ -159,7 +159,9 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         matrices_spherical = []
         for cont in self.contractions:
             # get transformation from cartesian to spherical (applied to left)
-            transform = generate_transformation(cont.angmom, cont.angmom_components, "left")
+            transform = generate_transformation(
+                cont.angmom, cont.angmom_components, cont.spherical_order, "left"
+            )
             # evaluate the function at the given points
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # normalize contractions
@@ -220,7 +222,9 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         matrices = []
         for cont, coord_type in zip(self.contractions, coord_types):
             # get transformation from cartesian to spherical (applied to left)
-            transform = generate_transformation(cont.angmom, cont.angmom_components, "left")
+            transform = generate_transformation(
+                cont.angmom, cont.angmom_components, cont.spherical_order, "left"
+            )
             # evaluate the function at the given points
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # normalize contractions

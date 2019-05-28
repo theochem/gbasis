@@ -230,7 +230,9 @@ def test_contruct_array_cartesian():
 def test_contruct_array_spherical():
     """Test BaseTwoIndexSymmetric.construct_array_spherical."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    transform = generate_transformation(1, contractions.angmom_components, "left")
+    transform = generate_transformation(
+        1, contractions.angmom_components, contractions.spherical_order, "left"
+    )
 
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
@@ -256,8 +258,12 @@ def test_contruct_array_spherical():
 
     cont_one = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     cont_two = ContractedCartesianGaussians(2, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    transform_one = generate_transformation(1, cont_one.angmom_components, "left")
-    transform_two = generate_transformation(2, cont_two.angmom_components, "left")
+    transform_one = generate_transformation(
+        1, cont_one.angmom_components, cont_one.spherical_order, "left"
+    )
+    transform_two = generate_transformation(
+        2, cont_two.angmom_components, cont_two.spherical_order, "left"
+    )
 
     Test = disable_abstract(  # noqa: N806
         BaseTwoIndexSymmetric,
@@ -484,7 +490,9 @@ def test_contruct_array_mix():
 def test_contruct_array_lincomb():
     """Test BaseTwoIndexSymmetric.construct_array_lincomb."""
     contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
-    sph_transform = generate_transformation(1, contractions.angmom_components, "left")
+    sph_transform = generate_transformation(
+        1, contractions.angmom_components, contractions.spherical_order, "left"
+    )
     orb_transform = np.random.rand(3, 3)
 
     Test = disable_abstract(  # noqa: N806
@@ -545,8 +553,12 @@ def test_contruct_array_lincomb():
     cont_one.norm_cont = np.ones((1, cont_one.num_cart))
     cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
-    sph_transform_one = generate_transformation(1, cont_one.angmom_components, "left")
-    sph_transform_two = generate_transformation(2, cont_two.angmom_components, "left")
+    sph_transform_one = generate_transformation(
+        1, cont_one.angmom_components, cont_one.spherical_order, "left"
+    )
+    sph_transform_two = generate_transformation(
+        2, cont_two.angmom_components, cont_two.spherical_order, "left"
+    )
     orb_transform = np.random.rand(8, 8)
     assert np.allclose(
         test.construct_array_lincomb(orb_transform, "spherical", a=4),
