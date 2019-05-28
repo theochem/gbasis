@@ -1,7 +1,7 @@
 """Module for computing the moments of a basis set."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
 
@@ -10,12 +10,12 @@ class Moment(BaseTwoIndexSymmetric):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the moment.
 
     Properties
     ----------
-    contractions : tuple of ContractedCartesianGaussians
+    contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
 
     Methods
@@ -23,7 +23,7 @@ class Moment(BaseTwoIndexSymmetric):
     __init__(self, contractions)
         Initialize.
     construct_array_contraction(self, contraction) : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
-        Return the moment associated with a `ContractedCartesianGaussians` instance.
+        Return the moment associated with a `GeneralizedContractionShell` instance.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -57,10 +57,10 @@ class Moment(BaseTwoIndexSymmetric):
 
         Parameters
         ----------
-        contractions_one : ContractedCartesianGaussians
+        contractions_one : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
             the array.
-        contractions_two : ContractedCartesianGaussians
+        contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
         moment_coord : np.ndarray(3,)
@@ -73,7 +73,7 @@ class Moment(BaseTwoIndexSymmetric):
         Returns
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, D)
-            Moment associated with the given instances of ContractedCartesianGaussians.
+            Moment associated with the given instances of GeneralizedContractionShell.
             First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
@@ -92,8 +92,8 @@ class Moment(BaseTwoIndexSymmetric):
         Raises
         ------
         TypeError
-            If contractions_one is not a ContractedCartesianGaussians instance.
-            If contractions_two is not a ContractedCartesianGaussians instance.
+            If contractions_one is not a GeneralizedContractionShell instance.
+            If contractions_two is not a GeneralizedContractionShell instance.
             If moment_coord is not a one-dimensional numpy array with 3 elements.
             If moment_orders is not a two-dimensional numpy array with 3 columns and dtype int.
 
@@ -109,10 +109,10 @@ class Moment(BaseTwoIndexSymmetric):
 
         """
         # pylint: disable=R0914
-        if not isinstance(contractions_one, ContractedCartesianGaussians):
-            raise TypeError("`contractions_one` must be a ContractedCartesianGaussians instance.")
-        if not isinstance(contractions_two, ContractedCartesianGaussians):
-            raise TypeError("`contractions_two` must be a ContractedCartesianGaussians instance.")
+        if not isinstance(contractions_one, GeneralizedContractionShell):
+            raise TypeError("`contractions_one` must be a GeneralizedContractionShell instance.")
+        if not isinstance(contractions_two, GeneralizedContractionShell):
+            raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
         if not (
             isinstance(moment_coord, np.ndarray)
             and moment_coord.ndim == 1
@@ -161,7 +161,7 @@ def moment_cartesian(basis, moment_coord, moment_orders):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     moment_coord : np.ndarray(3,)
         Center of the moment.
@@ -195,7 +195,7 @@ def moment_spherical(basis, moment_coord, moment_orders):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     moment_coord : np.ndarray(3,)
         Center of the moment.
@@ -230,7 +230,7 @@ def moment_mix(basis, moment_coord, moment_orders, coord_types):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     moment_coord : np.ndarray(3,)
         Center of the moment.
@@ -239,7 +239,7 @@ def moment_mix(basis, moment_coord, moment_orders, coord_types):
         Note that a two dimensional array must be given, even if there is only one set of orders
         of the moment.
     coord_types : list/tuple of str
-        Types of the coordinate system for each ContractedCartesianGaussians.
+        Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
 
     Returns
@@ -267,7 +267,7 @@ def moment_lincomb(basis, transform, moment_coord, moment_orders, coord_type="sp
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     transform : np.ndarray(K_orbs, K_sph)
         Array associated with the linear combinations of spherical Gaussians (LCAO's).
@@ -284,7 +284,7 @@ def moment_lincomb(basis, transform, moment_coord, moment_orders, coord_type="sp
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns

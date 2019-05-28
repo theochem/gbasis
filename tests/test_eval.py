@@ -1,6 +1,6 @@
 """Test gbasis.eval."""
 from gbasis._deriv import _eval_deriv_contractions
-from gbasis.contractions import ContractedCartesianGaussians, make_contractions
+from gbasis.contractions import GeneralizedContractionShell, make_contractions
 from gbasis.eval import (
     Eval,
     evaluate_basis_cartesian,
@@ -17,7 +17,7 @@ from utils import find_datafile
 
 def test_eval_construct_array_contraction():
     """Test gbasis.eval.Eval.construct_array_contraction."""
-    test = ContractedCartesianGaussians(
+    test = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
     answer = np.array(

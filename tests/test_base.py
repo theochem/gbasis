@@ -1,6 +1,6 @@
 """Test gbasis.base.BaseGuassianRelatedArray."""
 from gbasis.base import BaseGaussianRelatedArray
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 import pytest
 from utils import disable_abstract, skip_init
@@ -10,7 +10,7 @@ def test_init():
     """Test base.BaseGaussianRelatedArray."""
     Test = disable_abstract(BaseGaussianRelatedArray)  # noqa: N806
     test = skip_init(Test)
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     assert not hasattr(test, "_axes_contractions")
     with pytest.raises(TypeError):
         Test.__init__(test, set([contractions]))
@@ -38,7 +38,7 @@ def test_contruct_array_contraction():
             "construct_array_contraction": BaseGaussianRelatedArray.construct_array_contraction
         },
     )
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -52,7 +52,7 @@ def test_contruct_array_cartesian():
             "construct_array_cartesian": BaseGaussianRelatedArray.construct_array_cartesian
         },
     )
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -66,7 +66,7 @@ def test_contruct_array_spherical():
             "construct_array_spherical": BaseGaussianRelatedArray.construct_array_spherical
         },
     )
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -80,6 +80,6 @@ def test_contruct_array_lincomb():
             "construct_array_lincomb": BaseGaussianRelatedArray.construct_array_lincomb
         },
     )
-    contractions = ContractedCartesianGaussians(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
+    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), 0, np.ones(1), np.ones(1))
     with pytest.raises(TypeError):
         Test([contractions])

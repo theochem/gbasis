@@ -1,5 +1,5 @@
 """Test gbasis.contractions."""
-from gbasis.contractions import ContractedCartesianGaussians, make_contractions
+from gbasis.contractions import GeneralizedContractionShell, make_contractions
 from gbasis.parsers import parse_nwchem
 import numpy as np
 import pytest
@@ -7,8 +7,8 @@ from utils import find_datafile, skip_init
 
 
 def test_charge_setter():
-    """Test setter for ContractedCartesianGaussians.charge."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test setter for GeneralizedContractionShell.charge."""
+    test = skip_init(GeneralizedContractionShell)
     test.charge = 2
     assert isinstance(test._charge, float) and test._charge == 2
     test.charge = -2
@@ -22,15 +22,15 @@ def test_charge_setter():
 
 
 def test_charge_getter():
-    """Test getter for ContractedCartesianGaussians.charge."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test getter for GeneralizedContractionShell.charge."""
+    test = skip_init(GeneralizedContractionShell)
     test._charge = 2
     assert test.charge == 2
 
 
 def test_coord_setter():
-    """Test setter for ContractedCartesianGaussians.coord."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test setter for GeneralizedContractionShell.coord."""
+    test = skip_init(GeneralizedContractionShell)
     test.coord = np.array([1.0, 2.0, 3.0])
     assert (
         isinstance(test._coord, np.ndarray)
@@ -53,15 +53,15 @@ def test_coord_setter():
 
 
 def test_coord_getter():
-    """Test getter for ContractedCartesianGaussians.coord."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test getter for GeneralizedContractionShell.coord."""
+    test = skip_init(GeneralizedContractionShell)
     test._coord = 2
     assert test.coord == 2
 
 
 def test_angmom_setter():
-    """Test setter for ContractedCartesianGaussians.angmom."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test setter for GeneralizedContractionShell.angmom."""
+    test = skip_init(GeneralizedContractionShell)
     test.angmom = 1
     assert isinstance(test._angmom, int) and test._angmom == 1
     test.angmom = 0
@@ -77,15 +77,15 @@ def test_angmom_setter():
 
 
 def test_angmom_getter():
-    """Test getter for ContractedCartesianGaussians.angmom."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test getter for GeneralizedContractionShell.angmom."""
+    test = skip_init(GeneralizedContractionShell)
     test._angmom = 1
     assert test.angmom == 1
 
 
 def test_exps_setter():
-    """Test setter for ContractedCartesianGaussians.exps."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test setter for GeneralizedContractionShell.exps."""
+    test = skip_init(GeneralizedContractionShell)
     test.exps = np.array([1.0, 2.0, 3.0])
     assert (
         isinstance(test._exps, np.ndarray)
@@ -93,7 +93,7 @@ def test_exps_setter():
         and np.allclose(test._exps, np.array([1, 2, 3]))
     )
 
-    test = skip_init(ContractedCartesianGaussians)
+    test = skip_init(GeneralizedContractionShell)
     test.coeffs = np.array([1.0, 2.0, 3.0])
     test.exps = np.array([1.0, 2.0, 3.0])
     assert (
@@ -102,7 +102,7 @@ def test_exps_setter():
         and np.allclose(test._exps, np.array([1, 2, 3]))
     )
 
-    test = skip_init(ContractedCartesianGaussians)
+    test = skip_init(GeneralizedContractionShell)
     with pytest.raises(TypeError):
         test.exps = [1, 2, 3]
     with pytest.raises(TypeError):
@@ -116,15 +116,15 @@ def test_exps_setter():
 
 
 def test_exps_getter():
-    """Test getter for ContractedCartesianGaussians.exps."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test getter for GeneralizedContractionShell.exps."""
+    test = skip_init(GeneralizedContractionShell)
     test._exps = [2.0, 3.0]
     assert test.exps == [2.0, 3.0]
 
 
 def test_coeffs_setter():
-    """Test setter for ContractedCartesianGaussians.coeffs."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test setter for GeneralizedContractionShell.coeffs."""
+    test = skip_init(GeneralizedContractionShell)
     test.coeffs = np.array([1.0, 2.0, 3.0])
     assert (
         isinstance(test._coeffs, np.ndarray)
@@ -132,7 +132,7 @@ def test_coeffs_setter():
         and np.allclose(test._coeffs, np.array([[1], [2], [3]]))
     )
 
-    test = skip_init(ContractedCartesianGaussians)
+    test = skip_init(GeneralizedContractionShell)
     test.exps = np.array([4.0, 5.0, 6.0])
     test.coeffs = np.array([1.0, 2.0, 3.0])
     assert (
@@ -141,7 +141,7 @@ def test_coeffs_setter():
         and np.allclose(test._coeffs, np.array([[1], [2], [3]]))
     )
 
-    test = skip_init(ContractedCartesianGaussians)
+    test = skip_init(GeneralizedContractionShell)
     test.exps = np.array([4.0, 5.0, 6.0])
     test.coeffs = np.array([[1.0], [2.0], [3.0]])
     assert (
@@ -150,7 +150,7 @@ def test_coeffs_setter():
         and np.allclose(test._coeffs, np.array([[1], [2], [3]]))
     )
 
-    test = skip_init(ContractedCartesianGaussians)
+    test = skip_init(GeneralizedContractionShell)
     test.exps = np.array([4.0, 5.0, 6.0])
     test.coeffs = np.array([[1.0, 4.0], [2.0, 5.0], [3.0, 6.0]])
     assert (
@@ -159,7 +159,7 @@ def test_coeffs_setter():
         and np.allclose(test._coeffs, np.array([[1, 4], [2, 5], [3, 6]]))
     )
 
-    test = skip_init(ContractedCartesianGaussians)
+    test = skip_init(GeneralizedContractionShell)
     with pytest.raises(TypeError):
         test.coeffs = [1, 2, 3]
     with pytest.raises(TypeError):
@@ -179,15 +179,15 @@ def test_coeffs_setter():
 
 
 def test_coeffs_getter():
-    """Test getter for ContractedCartesianGaussians.coeffs."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test getter for GeneralizedContractionShell.coeffs."""
+    test = skip_init(GeneralizedContractionShell)
     test._coeffs = [2.0, 3.0]
     assert test.coeffs == [2.0, 3.0]
 
 
 def tests_init():
-    """Test ContractedCartesianGaussians.__init__."""
-    test = ContractedCartesianGaussians(
+    """Test GeneralizedContractionShell.__init__."""
+    test = GeneralizedContractionShell(
         1,
         np.array([0, 1, 2]),
         0,
@@ -202,8 +202,8 @@ def tests_init():
 
 
 def test_angmom_components():
-    """Test ContractedCartesianGaussians.angmom_components."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test GeneralizedContractionShell.angmom_components."""
+    test = skip_init(GeneralizedContractionShell)
     test._angmom = 0
     assert np.allclose(test.angmom_components, [(0, 0, 0)])
     test._angmom = 1
@@ -233,8 +233,8 @@ def test_angmom_components():
 
 
 def test_spherical_order():
-    """Test ContractedCartesianGaussians.spherical_order."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test GeneralizedContractionShell.spherical_order."""
+    test = skip_init(GeneralizedContractionShell)
     test._angmom = 0
     assert np.allclose(test.spherical_order, (0,))
     test._angmom = 1
@@ -248,18 +248,16 @@ def test_spherical_order():
 # TODO: Test norm using actual integrals
 # TODO: add more tests
 def test_norm_prim():
-    """Test ContractedCartesianGaussians.norm_prim."""
-    test = ContractedCartesianGaussians(
-        0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
-    )
+    """Test GeneralizedContractionShell.norm_prim."""
+    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
     assert np.isclose(test.norm_prim, 0.2519794355383807303479140)
-    test = ContractedCartesianGaussians(3, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.5]))
+    test = GeneralizedContractionShell(3, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.5]))
     assert np.isclose(test.norm_prim[7], 0.6920252830162908851679097)
 
 
 def test_num_cart():
-    """Test ContractedCartesianGaussians.num_cart."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test GeneralizedContractionShell.num_cart."""
+    test = skip_init(GeneralizedContractionShell)
     last_num_cart = 0
     for i in range(100):
         test._angmom = i
@@ -268,8 +266,8 @@ def test_num_cart():
 
 
 def test_num_sph():
-    """Test ContractedCartesianGaussians.num_sph."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test GeneralizedContractionShell.num_sph."""
+    test = skip_init(GeneralizedContractionShell)
     last_num_sph = 1
     for i in range(100):
         test._angmom = i
@@ -278,8 +276,8 @@ def test_num_sph():
 
 
 def test_num_seg_cont():
-    """Test ContractedCartesianGaussians.num_seg_cont."""
-    test = skip_init(ContractedCartesianGaussians)
+    """Test GeneralizedContractionShell.num_seg_cont."""
+    test = skip_init(GeneralizedContractionShell)
     test._coeffs = np.random.rand(10, 21)
     assert test.num_seg_cont == 21
 
@@ -362,21 +360,15 @@ def test_make_contractions():
 
 
 def test_assign_norm_cont():
-    """Test ContractedCartesianGaussians.assign_norm_cont."""
-    test = ContractedCartesianGaussians(
-        0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
-    )
+    """Test GeneralizedContractionShell.assign_norm_cont."""
+    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)
 
-    test = ContractedCartesianGaussians(
-        1, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
-    )
+    test = GeneralizedContractionShell(1, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)
 
-    test = ContractedCartesianGaussians(
-        2, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25])
-    )
+    test = GeneralizedContractionShell(2, np.array([0, 0, 0]), 0, np.array([1.0]), np.array([0.25]))
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)

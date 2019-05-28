@@ -1,7 +1,7 @@
 """Functions for computing overlap of a basis set."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
 
@@ -10,12 +10,12 @@ class Overlap(BaseTwoIndexSymmetric):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
 
     Properties
     ----------
-    contractions : tuple of ContractedCartesianGaussians
+    contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
 
     Methods
@@ -24,7 +24,7 @@ class Overlap(BaseTwoIndexSymmetric):
         Initialize.
     construct_array_contraction(contractions_one, contractions_two) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
-        Return the overlap associated with a `ContractedCartesianGaussians` instance.
+        Return the overlap associated with a `GeneralizedContractionShell` instance.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -55,17 +55,17 @@ class Overlap(BaseTwoIndexSymmetric):
 
         Parameters
         ----------
-        contractions_one : ContractedCartesianGaussians
+        contractions_one : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
             the overlap.
-        contractions_two : ContractedCartesianGaussians
+        contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the overlap.
 
         Returns
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
-            Overlap associated with the given instances of ContractedCartesianGaussians.
+            Overlap associated with the given instances of GeneralizedContractionShell.
             First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
@@ -82,14 +82,14 @@ class Overlap(BaseTwoIndexSymmetric):
         Raises
         ------
         TypeError
-            If contractions_one is not a ContractedCartesianGaussians instance.
-            If contractions_two is not a ContractedCartesianGaussians instance.
+            If contractions_one is not a GeneralizedContractionShell instance.
+            If contractions_two is not a GeneralizedContractionShell instance.
 
         """
-        if not isinstance(contractions_one, ContractedCartesianGaussians):
-            raise TypeError("`contractions_one` must be a ContractedCartesianGaussians instance.")
-        if not isinstance(contractions_two, ContractedCartesianGaussians):
-            raise TypeError("`contractions_two` must be a ContractedCartesianGaussians instance.")
+        if not isinstance(contractions_one, GeneralizedContractionShell):
+            raise TypeError("`contractions_one` must be a GeneralizedContractionShell instance.")
+        if not isinstance(contractions_two, GeneralizedContractionShell):
+            raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
 
         coord_a = contractions_one.coord
         angmoms_a = contractions_one.angmom_components
@@ -122,7 +122,7 @@ def overlap_cartesian(basis):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
 
     Returns
@@ -141,7 +141,7 @@ def overlap_spherical(basis):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
 
     Returns
@@ -162,10 +162,10 @@ def overlap_mix(basis, coord_types):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coord_types : list/tuple of str
-        Types of the coordinate system for each ContractedCartesianGaussians.
+        Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
 
     Returns
@@ -184,7 +184,7 @@ def overlap_lincomb(basis, transform, coord_type="spherical"):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     transform : np.ndarray(K_orbs, K_sph)
         Array associated with the linear combinations of spherical Gaussians (LCAO's).
@@ -195,7 +195,7 @@ def overlap_lincomb(basis, transform, coord_type="spherical"):
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns

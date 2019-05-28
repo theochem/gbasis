@@ -1,7 +1,7 @@
 """Module for computing point charge integrals."""
 from gbasis._one_elec_int import _compute_one_elec_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 from scipy.special import hyp1f1  # pylint: disable=E0611
 
@@ -22,12 +22,12 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     Attributes
     ----------
-    _axes_contractions : tuple of tuple of ContractedCartesianGaussians
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
 
     Properties
     ----------
-    contractions : tuple of ContractedCartesianGaussians
+    contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
 
     Methods
@@ -40,7 +40,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         primitives on the left and right side, respectively.
     construct_array_contraction(self, contractions_one, contractions_two, coords_points,
                                 charges_points)
-        Return the point charge integrals for the given `ContractedCartesianGaussians` instances.
+        Return the point charge integrals for the given `GeneralizedContractionShell` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
@@ -122,10 +122,10 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
         Parameters
         ----------
-        contractions_one : ContractedCartesianGaussians
+        contractions_one : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
             the array.
-        contractions_two : ContractedCartesianGaussians
+        contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
         coords_points : np.ndarray(N, 3)
@@ -139,7 +139,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, N)
             Point charge integral associated with the given instances of
-            ContractedCartesianGaussians.
+            GeneralizedContractionShell.
             First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
@@ -157,8 +157,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         Raises
         ------
         TypeError
-            If `contractions_one` is not a ContractedCartesianGaussians instance.
-            If `contractions_two` is not a ContractedCartesianGaussians instance.
+            If `contractions_one` is not a GeneralizedContractionShell instance.
+            If `contractions_two` is not a GeneralizedContractionShell instance.
             If `coords_points` is not a two-dimensional numpy array of dtype int/float with 3
             columns.
             If `charges_points` is not a one-dimensional numpy array of int/float.
@@ -169,10 +169,10 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         """
         # pylint: disable=R0914
 
-        if not isinstance(contractions_one, ContractedCartesianGaussians):
-            raise TypeError("`contractions_one` must be a ContractedCartesianGaussians instance.")
-        if not isinstance(contractions_two, ContractedCartesianGaussians):
-            raise TypeError("`contractions_two` must be a ContractedCartesianGaussians instance.")
+        if not isinstance(contractions_one, GeneralizedContractionShell):
+            raise TypeError("`contractions_one` must be a GeneralizedContractionShell instance.")
+        if not isinstance(contractions_two, GeneralizedContractionShell):
+            raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
         if not (
             isinstance(coords_points, np.ndarray)
             and coords_points.ndim == 2
@@ -270,7 +270,7 @@ def point_charge_cartesian(basis, coords_points, charges_points):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords_points : np.ndarray(N, 3)
         Coordinates of the point charges.
@@ -297,7 +297,7 @@ def point_charge_spherical(basis, coords_points, charges_points):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords_points : np.ndarray(3,)
         Coordinate of the point charge.
@@ -326,7 +326,7 @@ def point_charge_mix(basis, coords_points, charges_points, coord_types):
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     coords_points : np.ndarray(3,)
         Coordinate of the point charge.
@@ -335,7 +335,7 @@ def point_charge_mix(basis, coords_points, charges_points, coord_types):
     charges_points : float
         Charge of the point charge.
     coord_types : list/tuple of str
-        Types of the coordinate system for each ContractedCartesianGaussians.
+        Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
 
     Returns
@@ -357,7 +357,7 @@ def point_charge_lincomb(basis, transform, coords_points, charges_points, coord_
 
     Parameters
     ----------
-    basis : list/tuple of ContractedCartesianGaussians
+    basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
     transform : np.ndarray(K_orbs, K_sph)
         Array associated with the linear combinations of spherical Gaussians (LCAO's).
@@ -374,7 +374,7 @@ def point_charge_lincomb(basis, transform, coords_points, charges_points, coord_
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each ContractedCartesianGaussians instance.
+        coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
 
     Returns

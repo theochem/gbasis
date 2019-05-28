@@ -64,7 +64,7 @@ def _compute_one_elec_integrals(
     Returns
     -------
     integrals : np.ndarray(L_a + 1, L_a + 1, L_a + 1, L_b + 1, L_b + 1, L_b + 1, M_a, M_b)
-        One electron integrals for the given `ContractedCartesianGaussian` instances.
+        One electron integrals for the given `GeneralizedContractionShell` instances.
         First, second, and third index correspond to the `x`, `y`, and `z` components of the
         angular momentum for contraction a.
         Fourth, fifth, and sixth index correspond to the `x`, `y`, and `z` components of the

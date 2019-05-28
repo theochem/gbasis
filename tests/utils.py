@@ -2,7 +2,7 @@
 import itertools as it
 import os
 
-from gbasis.contractions import ContractedCartesianGaussians
+from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
 
@@ -171,8 +171,8 @@ def find_datafile(file_name):
     return os.path.join(os.path.dirname(__file__), file_name)
 
 
-class HortonContractions(ContractedCartesianGaussians):
-    """ContractedCartesianGaussians following HORTON's angular momentum convention."""
+class HortonContractions(GeneralizedContractionShell):
+    """GeneralizedContractionShell following HORTON's angular momentum convention."""
 
     @property
     def angmom_components(self):

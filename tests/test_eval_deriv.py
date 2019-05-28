@@ -2,7 +2,7 @@
 import itertools as it
 
 from gbasis._deriv import _eval_deriv_contractions
-from gbasis.contractions import ContractedCartesianGaussians, make_contractions
+from gbasis.contractions import GeneralizedContractionShell, make_contractions
 from gbasis.eval_deriv import (
     EvalDeriv,
     evaluate_deriv_basis_cartesian,
@@ -21,7 +21,7 @@ def test_eval_deriv_construct_array_contraction():
     """Test gbasis.eval_deriv.EvalDeriv.construct_array_contraction."""
     coords = np.array([[2, 3, 4]])
     orders = np.array([0, 0, 0])
-    contractions = ContractedCartesianGaussians(
+    contractions = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
     with pytest.raises(TypeError):
@@ -58,7 +58,7 @@ def test_eval_deriv_construct_array_contraction():
         orders = np.zeros(3, dtype=int)
         orders[k] = 1
 
-        test = ContractedCartesianGaussians(
+        test = GeneralizedContractionShell(
             1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
         )
         answer = np.array(
@@ -98,7 +98,7 @@ def test_eval_deriv_construct_array_contraction():
         orders[k] += 1
         orders[l] += 1
 
-        test = ContractedCartesianGaussians(
+        test = GeneralizedContractionShell(
             1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
         )
         answer = np.array(

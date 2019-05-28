@@ -1,6 +1,6 @@
 """Test gbasis.overlap."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
-from gbasis.contractions import ContractedCartesianGaussians, make_contractions
+from gbasis.contractions import GeneralizedContractionShell, make_contractions
 from gbasis.overlap import (
     Overlap,
     overlap_cartesian,
@@ -17,10 +17,10 @@ from utils import find_datafile, HortonContractions
 
 def test_overlap_construct_array_contraction():
     """Test gbasis.overlap.Overlap.construct_array_contraction."""
-    test_one = ContractedCartesianGaussians(
+    test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), 0, np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
-    test_two = ContractedCartesianGaussians(
+    test_two = GeneralizedContractionShell(
         2, np.array([1.5, 2, 3]), 0, np.array([3.0, 4.0]), np.array([0.2, 0.02])
     )
     answer = np.array(
