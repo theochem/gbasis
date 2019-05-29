@@ -65,41 +65,53 @@ class GeneralizedContractionShell:
 
     Attributes
     ----------
+    coord : np.ndarray(3,)
+        Coordinate of the center of the contractions.
     angmom : int
-        Angular momentum of the set of contractions.
+        Angular momentum of the contractions.
         .. math::
 
-            l = \sum_i \vec{a} = a_x + a_y + a_z
+            \ell = \sum_i (\vec{a})_i = a_x + a_y + a_z
 
     angmom_components_cart : np.ndarray(L, 3)
         Components of the angular momentum.
-    coord : np.ndarray(3,)
-        Coordinate of the center of the Gaussian primitives.
     charge : float
         Charge at the center of the Gaussian primitives.
-    coeffs : np.ndarray(K, M)
-        Contraction coefficients, :math:`\{d_i\}`, of the primitives.
-        First axis corresponds to the primitive and the second axis corresponds to the different
-        segmented contractions (same exponents and angular momentum but different coefficients).
     exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}`.
-    norm_prim : np.ndarray(L, K)
-        The normalization constant for each Cartesian Gaussian primitive.
-    norm_const : np.ndarray(M, L)
-        Normalization constants of the contractions of each angular momentum.
-    num_cart : int
-        The number of Cartesian contracted Gaussians in the shell of angular momentum, :math:`l`.
-    num_sph : int
-        The number of spherical contracted Gaussian in the shell of angular momentum, :math:`l`.
+    coeffs : np.ndarray(K, M)
+        Contraction coefficients, :math:`\{d_{ij}\}`, of the primitives.
+        First axis corresponds to the primitive and the second axis corresponds to the segmented
+        contraction shell.
+    norm_cont : np.ndarray(M, L)
+        Normalization constants of the Cartesian contractions of different angular momentum
+        components and segmented contraction shells.
+
+    Properties
+    ----------
+    angmom_components_cart : np.ndarray(L, 3)
+        The x, y, and z components of the angular momentum vectors
+        (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
+        :math:`L` is the number of Cartesian contracted Gaussian functions for the given
+        angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
     angmom_components_sph : tuple of int
-        Ordering of the spherical primitives/contractions.
+        Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
+        transforming the contractions from the Cartesian to spherical coordinate system.
+    norm_prim : np.ndarray(L, K)
+        The normalization constants of the Cartesian Gaussian primitives.
+        :math:`L` is the number of contracted Cartesian Gaussian functions for the given angular
+        momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
+    num_cart : int
+        Number of Cartesian contractions of angular momentum, `angmom`.
+    num_sph : int
+        Number of spherical contractions of angular momentum, `angmom`.
 
     Methods
     -------
-    __init__(self, angmom, coord, charge, coeffs, exps)
+    __init__(self, angmom, coord, coeffs, exps)
         Initialize.
-    assign_norm_contr
-        Normalize the contractions to have an overlap of 1.
+    assign_norm_contr(self)
+        Assign normalization constants for the contractions.
 
 
     """
@@ -116,12 +128,11 @@ class GeneralizedContractionShell:
                 \sum_i \vec{a} = a_x + a_y + a_z
 
         coord : np.ndarray(3,)
-            Coordinate of the center of the Gaussian primitives.
+            Coordinate of the center of the contractions.
         coeffs : {np.ndarray(K,), np.ndarray(K, M)}
-            Contraction coefficients, :math:`\{d_i\}`, of the primitives.
+            Contraction coefficients, :math:`\{d_{ij}\}`, of the primitives.
             If a two-dimensional array is given, the first axis corresponds to the primitive and the
-            second axis corresponds to the different contractions that have the same exponents (and
-            angular momentum) but different coefficients.
+            second axis corresponds to the segmented contraction shell.
             If a one-dimensional array is given, a newaxis will be inserted in the second dimension.
         exps : np.ndarray(K,)
             Exponents of the primitives, :math:`\{\alpha_i\}`.
@@ -135,24 +146,24 @@ class GeneralizedContractionShell:
 
     @property
     def coord(self):
-        """Coordinate of the center of the Gaussian primitives.
+        """Coordinate of the center of the contractions.
 
         Returns
         -------
-        coord : float
-            Coordinate of the center of the Gaussian primitive.
+        coord : np.ndarray(3,)
+            Coordinate of the center of the contractions.
 
         """
         return self._coord
 
     @coord.setter
     def coord(self, coord):
-        """Set the coordinate of the center of the Gaussian primitives.
+        """Set the coordinate of the center of the contractions.
 
         Parameters
         ----------
-        coord : {float, int}
-            Coordinate of the center of the Gaussian primitive.
+        coord : np.ndarray(3,)
+            Coordinate of the center of the contractions.
 
         Raises
         ------
@@ -180,7 +191,7 @@ class GeneralizedContractionShell:
             Angular momentum of the set of contractions.
             .. math::
 
-                \sum_i \vec{a} = a_x + a_y + a_z
+                \sum_i (\vec{a})_i = a_x + a_y + a_z
 
         """
         return self._angmom
@@ -195,7 +206,7 @@ class GeneralizedContractionShell:
             Angular momentum of the set of contractions.
             .. math::
 
-                \sum_i \vec{a} = a_x + a_y + a_z
+                \sum_i (\vec{a})_i = a_x + a_y + a_z
 
         Raises
         ------
@@ -256,9 +267,9 @@ class GeneralizedContractionShell:
         Returns
         -------
         coeffs : np.ndarray(K, M)
-            Contraction coefficients, :math:`\{d_i\}`, of the primitives.
-            First axis corresponds to the primitive and the second axis corresponds to the different
-            segmented contractions (same exponents and angular momentum but different coefficients).
+            Contraction coefficients, :math:`\{d_{ij}\}`, of the primitives.
+            First axis corresponds to the primitive and the second axis corresponds to the segmented
+            contraction shell.
 
         """
         return self._coeffs
@@ -270,27 +281,28 @@ class GeneralizedContractionShell:
         Parameters
         ----------
         coeffs : {np.ndarray(K,), np.ndarray(K, M)}
-            Contraction coefficients, :math:`\{d_i\}`, of the primitives.
+            Contraction coefficients, :math:`\{d_{ij}\}`, of the primitives.
             If a two-dimensional array is given, the first axis corresponds to the primitive and the
-            second axis corresponds to the different contractions that have the same exponents (and
-            angular momentum) but different coefficients.
+            second axis corresponds to the segmented contraction shell.
             If a one-dimensional array is given, a newaxis will be inserted in the second dimension.
 
         Raises
         ------
         TypeError
-            If coeffs is not a numpy array of data type of float.
+            If `coeffs` is not a numpy array of data type of float.
         ValueError
-            If exps and coeffs are not arrays of the same size.
+            If `coeffs` is not a one or two dimensional array.
+            If `coeffs` refers to generalized contraction (i.e. two dimensional array) and does not
+            have the same number of rows as there are exponents (i.e. primitives).
+            If `coeffs` refers to segmented contraction (i.e. one dimensional array) and does not
+            have the same number of elements as there are exponents (i.e. primitives).
 
         """
         if not (isinstance(coeffs, np.ndarray) and coeffs.dtype == float):
             raise TypeError("Contraction coefficients must be a numpy array of data type float.")
+        if coeffs.ndim not in [1, 2]:
+            raise ValueError("Coefficients array must be given as a one- or two-dimensional array.")
         if hasattr(self, "_exps"):
-            if coeffs.ndim not in [1, 2]:
-                raise ValueError(
-                    "Coefficients array must be given as a one- or two-dimensional array."
-                )
             if coeffs.ndim == 2 and coeffs.shape[0] != self.exps.shape[0]:
                 raise ValueError(
                     "Coefficients array for generalized contractions must be given as a two-"
@@ -314,8 +326,8 @@ class GeneralizedContractionShell:
         Returns
         -------
         angmom_components_cart : np.ndarray(L, 3)
-            The x, y, and z components of the angular momentum vectors (
-            :math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
+            The x, y, and z components of the angular momentum vectors
+            (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
             :math:`L` is the number of Cartesian contracted Gaussian functions for the given
             angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
 
@@ -343,7 +355,7 @@ class GeneralizedContractionShell:
 
     @property
     def norm_prim(self):
-        r"""Compute the normalization constant for a Cartesian Gaussian primitive.
+        r"""Return the normalization constants of the Cartesian Gaussian primitives.
 
             .. math::
 
@@ -353,11 +365,11 @@ class GeneralizedContractionShell:
 
         Returns
         -------
-        norm : np.ndarray(L, K)
-            The normalization constant of each of the Cartesian Gaussian primitives of the Cartesian
-            contraction at each exponent.
+        norm_prim : np.ndarray(L, K)
+            The normalization constants of the Cartesian Gaussian primitives.
             :math:`L` is the number of contracted Cartesian Gaussian functions for the given angular
             momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
+            :math:`K` is the number of exponents (i.e. primitives).
 
         """
         exponents = self.exps[np.newaxis, :]
@@ -371,24 +383,24 @@ class GeneralizedContractionShell:
 
     @property
     def num_cart(self):
-        """Return the number of Cartesian contracted Gaussian functions of given angular momentum.
+        """Return the number of Cartesian contractions of the given angular momentum.
 
         Returns
         -------
         num_cart : int
-            Number of contracted Cartesian Gaussian functions of angular momentum, `angmom`.
+            Number of Cartesian contractions of angular momentum, `angmom`.
 
         """
         return (self.angmom + 1) * (self.angmom + 2) // 2
 
     @property
     def num_sph(self):
-        """Return the number of spherical contracted Gaussian functions of given angular momentum.
+        """Return the number of spherical contractions of the given angular momentum.
 
         Returns
         -------
         num_sph : int
-            Number of spherical Cartesian Gaussian functions of angular momentum, `angmom`.
+            Number of spherical contractions of angular momentum, `angmom`.
 
         """
         return 1 + 2 * self.angmom
