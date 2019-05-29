@@ -1,6 +1,6 @@
 """Test gbasis.contractions."""
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
-from gbasis.parsers import parse_nwchem
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from utils import find_datafile, skip_init

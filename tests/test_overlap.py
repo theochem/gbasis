@@ -1,6 +1,6 @@
 """Test gbasis.overlap."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.overlap import (
     Overlap,
     overlap_cartesian,
@@ -8,7 +8,7 @@ from gbasis.overlap import (
     overlap_mix,
     overlap_spherical,
 )
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2

@@ -1,4 +1,4 @@
-"""Data classes for contracted Gaussians."""
+"""Data class for contractions of Gaussian-type primitives."""
 import numpy as np
 from scipy.special import factorial2
 
@@ -441,46 +441,3 @@ class GeneralizedContractionShell:
 
         self.norm_cont = np.einsum("ijij->ij", Overlap.construct_array_contraction(self, self))
         self.norm_cont **= -0.5
-
-
-def make_contractions(basis_dict, atoms, coords):
-    """Return the contractions that correspond to the given atoms for the given basis.
-
-    Parameters
-    ----------
-    basis_dict : dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)
-        Output of the parsers from gbasis.parsers.
-    atoms : N-list/tuple of str
-        Atoms at which the contractions are centered.
-    coords : np.ndarray(N, 3)
-        Coordinates of each atom.
-
-    Returns
-    -------
-    basis : tuple of GeneralizedContractionShell
-        Contractions for each atom.
-        Contractions are ordered in the same order as in the values of `basis_dict`.
-
-    Raises
-    ------
-    TypeError
-        If atoms is not a list or tuple of strings.
-        If coords is not a two-dimensional numpy array with 3 columns.
-    ValueError
-        If the length of atoms is not equal to the number of rows of coords.
-
-    """
-    if not (isinstance(atoms, (list, tuple)) and all(isinstance(i, str) for i in atoms)):
-        raise TypeError("Atoms must be provided as a list or tuple.")
-    if not (isinstance(coords, np.ndarray) and coords.ndim == 2 and coords.shape[1] == 3):
-        raise TypeError(
-            "Coordinates must be provided as a two-dimensional numpy array with three columns."
-        )
-    if len(atoms) != coords.shape[0]:
-        raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
-
-    basis = []
-    for atom, coord in zip(atoms, coords):
-        for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps))
-    return tuple(basis)

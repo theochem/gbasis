@@ -1,12 +1,11 @@
 """Test gbasis.nuclear_electron_attraction."""
-from gbasis.contractions import make_contractions
 from gbasis.nuclear_electron_attraction import (
     nuclear_electron_attraction_cartesian,
     nuclear_electron_attraction_lincomb,
     nuclear_electron_attraction_mix,
     nuclear_electron_attraction_spherical,
 )
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.point_charge import (
     point_charge_cartesian,
     point_charge_lincomb,

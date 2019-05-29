@@ -1,6 +1,6 @@
 """Test gbasis.kinetic_energy."""
 from gbasis._diff_operator_int import _compute_differential_operator_integrals
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.kinetic_energy import (
     kinetic_energy_integral_cartesian,
     kinetic_energy_integral_lincomb,
@@ -8,7 +8,7 @@ from gbasis.kinetic_energy import (
     kinetic_energy_integral_spherical,
     KineticEnergyIntegral,
 )
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2

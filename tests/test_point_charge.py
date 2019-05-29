@@ -1,6 +1,6 @@
 """Test gbasis.point_charge."""
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
-from gbasis.parsers import parse_nwchem
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.point_charge import (
     point_charge_cartesian,
     point_charge_lincomb,

@@ -1,6 +1,6 @@
 """Test gbasis.eval."""
 from gbasis._deriv import _eval_deriv_contractions
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.eval import (
     Eval,
     evaluate_basis_cartesian,
@@ -8,7 +8,7 @@ from gbasis.eval import (
     evaluate_basis_mix,
     evaluate_basis_spherical,
 )
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2
