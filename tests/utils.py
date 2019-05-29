@@ -175,7 +175,7 @@ class HortonContractions(GeneralizedContractionShell):
     """GeneralizedContractionShell following HORTON's angular momentum convention."""
 
     @property
-    def angmom_components(self):
+    def angmom_components_cart(self):
         """Angular momentum components for HORTON's convention."""
         return np.array(
             [

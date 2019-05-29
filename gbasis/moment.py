@@ -130,12 +130,12 @@ class Moment(BaseTwoIndexSymmetric):
             )
 
         coord_a = contractions_one.coord
-        angmoms_a = contractions_one.angmom_components
+        angmoms_a = contractions_one.angmom_components_cart
         exps_a = contractions_one.exps
         coeffs_a = contractions_one.coeffs
         norm_a_prim = contractions_one.norm_prim
         coord_b = contractions_two.coord
-        angmoms_b = contractions_two.angmom_components
+        angmoms_b = contractions_two.angmom_components_cart
         exps_b = contractions_two.exps
         coeffs_b = contractions_two.coeffs
         norm_b_prim = contractions_two.norm_prim

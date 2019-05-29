@@ -211,11 +211,17 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         for i, cont_one in enumerate(self.contractions):
             # get transformation from cartesian to spherical (applied to left)
             transform_one = generate_transformation(
-                cont_one.angmom, cont_one.angmom_components, cont_one.spherical_order, "left"
+                cont_one.angmom,
+                cont_one.angmom_components_cart,
+                cont_one.angmom_components_sph,
+                "left",
             )
             for cont_two in self.contractions[i:]:
                 transform_two = generate_transformation(
-                    cont_two.angmom, cont_two.angmom_components, cont_two.spherical_order, "left"
+                    cont_two.angmom,
+                    cont_two.angmom_components_cart,
+                    cont_two.angmom_components_sph,
+                    "left",
                 )
                 # evaluate
                 block_sph = self.construct_array_contraction(cont_one, cont_two, **kwargs)
@@ -295,11 +301,17 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         for i, (cont_one, type_one) in enumerate(zip(self.contractions, coord_types)):
             # get transformation from cartesian to spherical (applied to left)
             transform_one = generate_transformation(
-                cont_one.angmom, cont_one.angmom_components, cont_one.spherical_order, "left"
+                cont_one.angmom,
+                cont_one.angmom_components_cart,
+                cont_one.angmom_components_sph,
+                "left",
             )
             for cont_two, type_two in zip(self.contractions[i:], coord_types[i:]):
                 transform_two = generate_transformation(
-                    cont_two.angmom, cont_two.angmom_components, cont_two.spherical_order, "left"
+                    cont_two.angmom,
+                    cont_two.angmom_components_cart,
+                    cont_two.angmom_components_sph,
+                    "left",
                 )
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)

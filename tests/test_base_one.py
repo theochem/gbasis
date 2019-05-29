@@ -80,7 +80,7 @@ def test_contruct_array_spherical():
     """Test BaseOneIndex.construct_array_spherical."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     transform = generate_transformation(
-        1, contractions.angmom_components, contractions.spherical_order, "left"
+        1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
 
     Test = disable_abstract(  # noqa: N806
@@ -238,7 +238,7 @@ def test_contruct_array_lincomb():
     """Test BaseOneIndex.construct_array_lincomb."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     sph_transform = generate_transformation(
-        1, contractions.angmom_components, contractions.spherical_order, "left"
+        1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
     orb_transform = np.random.rand(3, 3)
 

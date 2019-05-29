@@ -100,7 +100,7 @@ class Eval(BaseOneIndex):
 
         alphas = contractions.exps
         prim_coeffs = contractions.coeffs
-        angmom_comps = contractions.angmom_components
+        angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
         norm_prim = contractions.norm_prim
         output = _eval_deriv_contractions(
