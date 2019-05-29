@@ -224,12 +224,12 @@ def test_angmom_components_sph():
 
 # TODO: Test norm using actual integrals
 # TODO: add more tests
-def test_norm_prim():
-    """Test GeneralizedContractionShell.norm_prim."""
+def test_norm_prim_cart():
+    """Test GeneralizedContractionShell.norm_prim_cart."""
     test = GeneralizedContractionShell(0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]))
-    assert np.isclose(test.norm_prim, 0.2519794355383807303479140)
+    assert np.isclose(test.norm_prim_cart, 0.2519794355383807303479140)
     test = GeneralizedContractionShell(3, np.array([0, 0, 0]), np.array([1.0]), np.array([0.5]))
-    assert np.isclose(test.norm_prim[7], 0.6920252830162908851679097)
+    assert np.isclose(test.norm_prim_cart[7], 0.6920252830162908851679097)
 
 
 def test_num_cart():
