@@ -97,7 +97,7 @@ class GeneralizedContractionShell:
     angmom_components_sph : tuple of int
         Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
         transforming the contractions from the Cartesian to spherical coordinate system.
-    norm_prim : np.ndarray(L, K)
+    norm_prim_cart : np.ndarray(L, K)
         The normalization constants of the Cartesian Gaussian primitives.
         :math:`L` is the number of contracted Cartesian Gaussian functions for the given angular
         momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
@@ -354,7 +354,7 @@ class GeneralizedContractionShell:
         return tuple(range(-self.angmom, self.angmom + 1))
 
     @property
-    def norm_prim(self):
+    def norm_prim_cart(self):
         r"""Return the normalization constants of the Cartesian Gaussian primitives.
 
             .. math::
@@ -365,7 +365,7 @@ class GeneralizedContractionShell:
 
         Returns
         -------
-        norm_prim : np.ndarray(L, K)
+        norm_prim_cart : np.ndarray(L, K)
             The normalization constants of the Cartesian Gaussian primitives.
             :math:`L` is the number of contracted Cartesian Gaussian functions for the given angular
             momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`

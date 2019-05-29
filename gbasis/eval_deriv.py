@@ -116,9 +116,9 @@ class EvalDeriv(BaseOneIndex):
         prim_coeffs = contractions.coeffs
         angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
-        norm_prim = contractions.norm_prim
+        norm_prim_cart = contractions.norm_prim_cart
         output = _eval_deriv_contractions(
-            coords, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim
+            coords, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
         )
         return output
 
