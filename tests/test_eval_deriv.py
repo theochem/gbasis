@@ -2,7 +2,7 @@
 import itertools as it
 
 from gbasis._deriv import _eval_deriv_contractions
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.eval_deriv import (
     EvalDeriv,
     evaluate_deriv_basis_cartesian,
@@ -10,7 +10,7 @@ from gbasis.eval_deriv import (
     evaluate_deriv_basis_mix,
     evaluate_deriv_basis_spherical,
 )
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2

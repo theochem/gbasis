@@ -1,8 +1,8 @@
 """Test gbasis.moment."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
-from gbasis.contractions import GeneralizedContractionShell, make_contractions
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.moment import Moment, moment_cartesian, moment_lincomb, moment_mix, moment_spherical
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2

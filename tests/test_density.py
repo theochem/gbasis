@@ -1,5 +1,4 @@
 """Test gbasis.density."""
-from gbasis.contractions import make_contractions
 from gbasis.density import (
     eval_density,
     eval_density_gradient,
@@ -11,7 +10,7 @@ from gbasis.density import (
 )
 from gbasis.eval import evaluate_basis_lincomb
 from gbasis.eval_deriv import evaluate_deriv_basis_lincomb
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from utils import find_datafile, HortonContractions

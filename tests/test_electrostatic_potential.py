@@ -1,12 +1,11 @@
 """Tests for gbasis.electrostatic_potential."""
-from gbasis.contractions import make_contractions
 from gbasis.electrostatic_potential import (
     _electrostatic_potential_base,
     electrostatic_potential_cartesian,
     electrostatic_potential_mix,
     electrostatic_potential_spherical,
 )
-from gbasis.parsers import parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from utils import find_datafile, HortonContractions
