@@ -61,9 +61,9 @@ def test_kinetic_energy_construct_array_contraction():
                         ]
                     ),
                 )
-                for angmom_comp_two in test_two.angmom_components
+                for angmom_comp_two in test_two.angmom_components_cart
             ]
-            for angmom_comp_one in test_one.angmom_components
+            for angmom_comp_one in test_one.angmom_components_cart
         ]
     )
     answer += np.array(
@@ -104,9 +104,9 @@ def test_kinetic_energy_construct_array_contraction():
                         ]
                     ),
                 )
-                for angmom_comp_two in test_two.angmom_components
+                for angmom_comp_two in test_two.angmom_components_cart
             ]
-            for angmom_comp_one in test_one.angmom_components
+            for angmom_comp_one in test_one.angmom_components_cart
         ]
     )
     answer += np.array(
@@ -147,9 +147,9 @@ def test_kinetic_energy_construct_array_contraction():
                         ]
                     ),
                 )
-                for angmom_comp_two in test_two.angmom_components
+                for angmom_comp_two in test_two.angmom_components_cart
             ]
-            for angmom_comp_one in test_one.angmom_components
+            for angmom_comp_one in test_one.angmom_components_cart
         ]
     )
     assert np.allclose(

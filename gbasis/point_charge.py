@@ -201,12 +201,12 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
         coord_a = contractions_one.coord
         angmom_a = contractions_one.angmom
-        angmoms_a = contractions_one.angmom_components
+        angmoms_a = contractions_one.angmom_components_cart
         exps_a = contractions_one.exps
         coeffs_a = contractions_one.coeffs
         coord_b = contractions_two.coord
         angmom_b = contractions_two.angmom
-        angmoms_b = contractions_two.angmom_components
+        angmoms_b = contractions_two.angmom_components_cart
         exps_b = contractions_two.exps
         coeffs_b = contractions_two.coeffs
 

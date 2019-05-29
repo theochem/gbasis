@@ -42,7 +42,7 @@ def test_eval_construct_array_contraction():
                     ]
                 ),
             )
-            for angmom_comp in test.angmom_components
+            for angmom_comp in test.angmom_components_cart
         ]
     ).reshape(3, 1)
     assert np.allclose(

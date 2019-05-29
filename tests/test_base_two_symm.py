@@ -231,7 +231,7 @@ def test_contruct_array_spherical():
     """Test BaseTwoIndexSymmetric.construct_array_spherical."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     transform = generate_transformation(
-        1, contractions.angmom_components, contractions.spherical_order, "left"
+        1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
 
     Test = disable_abstract(  # noqa: N806
@@ -259,10 +259,10 @@ def test_contruct_array_spherical():
     cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     transform_one = generate_transformation(
-        1, cont_one.angmom_components, cont_one.spherical_order, "left"
+        1, cont_one.angmom_components_cart, cont_one.angmom_components_sph, "left"
     )
     transform_two = generate_transformation(
-        2, cont_two.angmom_components, cont_two.spherical_order, "left"
+        2, cont_two.angmom_components_cart, cont_two.angmom_components_sph, "left"
     )
 
     Test = disable_abstract(  # noqa: N806
@@ -491,7 +491,7 @@ def test_contruct_array_lincomb():
     """Test BaseTwoIndexSymmetric.construct_array_lincomb."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     sph_transform = generate_transformation(
-        1, contractions.angmom_components, contractions.spherical_order, "left"
+        1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
     orb_transform = np.random.rand(3, 3)
 
@@ -554,10 +554,10 @@ def test_contruct_array_lincomb():
     cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
     sph_transform_one = generate_transformation(
-        1, cont_one.angmom_components, cont_one.spherical_order, "left"
+        1, cont_one.angmom_components_cart, cont_one.angmom_components_sph, "left"
     )
     sph_transform_two = generate_transformation(
-        2, cont_two.angmom_components, cont_two.spherical_order, "left"
+        2, cont_two.angmom_components_cart, cont_two.angmom_components_sph, "left"
     )
     orb_transform = np.random.rand(8, 8)
     assert np.allclose(

@@ -214,14 +214,20 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         for cont_one in self.contractions_one:
             # get transformation from cartesian to spherical for the first index (applied to left)
             transform_one = generate_transformation(
-                cont_one.angmom, cont_one.angmom_components, cont_one.spherical_order, "left"
+                cont_one.angmom,
+                cont_one.angmom_components_cart,
+                cont_one.angmom_components_sph,
+                "left",
             )
             matrices_spherical_cols = []
             for cont_two in self.contractions_two:
                 # get transformation from cartesian to spherical for the first index (applied to
                 # left)
                 transform_two = generate_transformation(
-                    cont_two.angmom, cont_two.angmom_components, cont_two.spherical_order, "left"
+                    cont_two.angmom,
+                    cont_two.angmom_components_cart,
+                    cont_two.angmom_components_sph,
+                    "left",
                 )
                 # evaluate
                 matrix_contraction = self.construct_array_contraction(cont_one, cont_two, **kwargs)
@@ -312,14 +318,20 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         for cont_one, type_one in zip(self.contractions_one, coord_types_one):
             # get transformation from cartesian to spherical for the first index (applied to left)
             transform_one = generate_transformation(
-                cont_one.angmom, cont_one.angmom_components, cont_one.spherical_order, "left"
+                cont_one.angmom,
+                cont_one.angmom_components_cart,
+                cont_one.angmom_components_sph,
+                "left",
             )
             matrices_spherical_cols = []
             for cont_two, type_two in zip(self.contractions_two, coord_types_two):
                 # get transformation from cartesian to spherical for the first index (applied to
                 # left)
                 transform_two = generate_transformation(
-                    cont_two.angmom, cont_two.angmom_components, cont_two.spherical_order, "left"
+                    cont_two.angmom,
+                    cont_two.angmom_components_cart,
+                    cont_two.angmom_components_sph,
+                    "left",
                 )
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)

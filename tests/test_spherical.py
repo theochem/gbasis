@@ -154,7 +154,7 @@ def test_generate_transformation():
         generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "up")
     with pytest.raises(ValueError):
         generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "")
-    # check spherical_order type
+    # check angmom_components_sph type
     with pytest.raises(TypeError):
         generate_transformation(
             1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), np.array([-1, 0, 1]), "left"
@@ -165,7 +165,7 @@ def test_generate_transformation():
         generate_transformation(
             1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), [-1, 0, 1.0], "left"
         )
-    # check spherical_order value
+    # check angmom_components_sph value
     with pytest.raises(ValueError):
         generate_transformation(
             1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1, 1), "left"

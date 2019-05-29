@@ -177,20 +177,21 @@ def tests_init():
     assert np.allclose(test._exps, np.array([5, 6, 7, 8]))
 
 
-def test_angmom_components():
-    """Test GeneralizedContractionShell.angmom_components."""
+def test_angmom_components_cart():
+    """Test GeneralizedContractionShell.angmom_components_cart."""
     test = skip_init(GeneralizedContractionShell)
     test._angmom = 0
-    assert np.allclose(test.angmom_components, [(0, 0, 0)])
+    assert np.allclose(test.angmom_components_cart, [(0, 0, 0)])
     test._angmom = 1
-    assert np.allclose(test.angmom_components, [(1, 0, 0), (0, 1, 0), (0, 0, 1)])
+    assert np.allclose(test.angmom_components_cart, [(1, 0, 0), (0, 1, 0), (0, 0, 1)])
     test._angmom = 2
     assert np.allclose(
-        test.angmom_components, [(2, 0, 0), (1, 1, 0), (1, 0, 1), (0, 2, 0), (0, 1, 1), (0, 0, 2)]
+        test.angmom_components_cart,
+        [(2, 0, 0), (1, 1, 0), (1, 0, 1), (0, 2, 0), (0, 1, 1), (0, 0, 2)],
     )
     test._angmom = 3
     assert np.allclose(
-        test.angmom_components,
+        test.angmom_components_cart,
         [
             (3, 0, 0),
             (2, 1, 0),
@@ -205,20 +206,20 @@ def test_angmom_components():
         ],
     )
     test._angmom = 10
-    assert len(test.angmom_components) == 11 * 12 / 2
+    assert len(test.angmom_components_cart) == 11 * 12 / 2
 
 
-def test_spherical_order():
-    """Test GeneralizedContractionShell.spherical_order."""
+def test_angmom_components_sph():
+    """Test GeneralizedContractionShell.angmom_components_sph."""
     test = skip_init(GeneralizedContractionShell)
     test._angmom = 0
-    assert np.allclose(test.spherical_order, (0,))
+    assert np.allclose(test.angmom_components_sph, (0,))
     test._angmom = 1
-    assert np.allclose(test.spherical_order, (-1, 0, 1))
+    assert np.allclose(test.angmom_components_sph, (-1, 0, 1))
     test._angmom = 2
-    assert np.allclose(test.spherical_order, (-2, -1, 0, 1, 2))
+    assert np.allclose(test.angmom_components_sph, (-2, -1, 0, 1, 2))
     test._angmom = 3
-    assert np.allclose(test.spherical_order, (-3, -2, -1, 0, 1, 2, 3))
+    assert np.allclose(test.angmom_components_sph, (-3, -2, -1, 0, 1, 2, 3))
 
 
 # TODO: Test norm using actual integrals

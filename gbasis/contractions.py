@@ -71,7 +71,7 @@ class GeneralizedContractionShell:
 
             l = \sum_i \vec{a} = a_x + a_y + a_z
 
-    angmom_components : np.ndarray(L, 3)
+    angmom_components_cart : np.ndarray(L, 3)
         Components of the angular momentum.
     coord : np.ndarray(3,)
         Coordinate of the center of the Gaussian primitives.
@@ -91,7 +91,7 @@ class GeneralizedContractionShell:
         The number of Cartesian contracted Gaussians in the shell of angular momentum, :math:`l`.
     num_sph : int
         The number of spherical contracted Gaussian in the shell of angular momentum, :math:`l`.
-    spherical_order : tuple of int
+    angmom_components_sph : tuple of int
         Ordering of the spherical primitives/contractions.
 
     Methods
@@ -308,16 +308,16 @@ class GeneralizedContractionShell:
             self._coeffs = coeffs
 
     @property
-    def angmom_components(self):
-        r"""Components of the angular momentum.
+    def angmom_components_cart(self):
+        r"""Return the components of the angular momentum vectors for the given angular momentum.
 
         Returns
         -------
-        angmom_components : np.ndarray(L, 3)
-            The x, y, and z components of the angular momentum (:math:`\vec{a} = (a_x, a_y, a_z)`
-            where :math:`a_x + a_y + a_z = l`).
-            :math:`L` is the number of Cartesian contracted Gaussian functions for the given angular
-            momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
+        angmom_components_cart : np.ndarray(L, 3)
+            The x, y, and z components of the angular momentum vectors (
+            :math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
+            :math:`L` is the number of Cartesian contracted Gaussian functions for the given
+            angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
 
         """
         return np.array(
@@ -329,13 +329,14 @@ class GeneralizedContractionShell:
         )
 
     @property
-    def spherical_order(self):
-        """Return the ordering of the spherical primitives/contractions.
+    def angmom_components_sph(self):
+        """Return the ordering of the magnetic quantum numbers for the given angular momentum.
 
         Returns
         -------
-        spherical_order : tuple of int
-            Order of the spherical primitives.
+        angmom_components_sph : tuple of int
+            Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
+            transforming the contractions from the Cartesian to spherical coordinate system.
 
         """
         return tuple(range(-self.angmom, self.angmom + 1))
@@ -360,12 +361,12 @@ class GeneralizedContractionShell:
 
         """
         exponents = self.exps[np.newaxis, :]
-        angmom_components = self.angmom_components[:, :, np.newaxis]
+        angmom_components_cart = self.angmom_components_cart[:, :, np.newaxis]
 
         return (
             (2 * exponents / np.pi) ** (3 / 4)
             * ((4 * exponents) ** (self.angmom / 2))
-            / np.sqrt(np.prod(factorial2(2 * angmom_components - 1), axis=1))
+            / np.sqrt(np.prod(factorial2(2 * angmom_components_cart - 1), axis=1))
         )
 
     @property
