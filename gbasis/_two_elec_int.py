@@ -379,24 +379,26 @@ def _compute_two_elec_integrals(
     )
     integrals_cont = np.tensordot(integrals_cont * norm_d, coeffs_d, (6, 0))
 
-    # NOTE: Ordering convention for horizontal recursion (d) of integrals
+    # NOTE: Ordering convention for horizontal recursion of first and second indices of d
     # axis 0 : d_x (size: angmom_d + 1)
     # axis 1 : d_y (size: angmom_d + 1)
-    # axis 2 : d_z (size: angmom_d + 1)
-    # axis 3 : c_x (size: m_max_c)
-    # axis 4 : c_y (size: m_max_c)
-    # axis 5 : c_z (size: m_max_c)
-    # axis 6 : a_x (size: m_max_a)
-    # axis 7 : a_y (size: m_max_a)
-    # axis 8 : a_z (size: m_max_a)
-    # axis 9 : segmented contraction a (size: M_a)
-    # axis 10 : segmented contraction c (size: M_c)
-    # axis 11 : segmented contraction b (size: M_b)
-    # axis 12 : segmented contraction d (size: M_d)
+    # axis 2 : c_x (size: m_max_c)
+    # axis 3 : c_y (size: m_max_c)
+    # axis 4 : c_z (size: m_max_c)
+    # axis 5 : a_x (size: m_max_a)
+    # axis 6 : a_y (size: m_max_a)
+    # axis 7 : a_z (size: m_max_a)
+    # axis 8 : segmented contraction a (size: M_a)
+    # axis 9 : segmented contraction c (size: M_c)
+    # axis 10 : segmented contraction b (size: M_b)
+    # axis 11 : segmented contraction d (size: M_d)
     # FIXME: memory heavy here
+    # NOTE: For higher angular momentum (> 6), the third index makes pushes the memory usage over
+    # a limit (to tens of GB of memory for a single primitive), so we only recurse the first two
+    # indices, then select the desired angular momentum components, then recurse over the third
+    # index.
     integrals_horiz_d = np.zeros(
         (
-            angmom_d + 1,
             angmom_d + 1,
             angmom_d + 1,
             m_max_c,
@@ -411,59 +413,113 @@ def _compute_two_elec_integrals(
             coeffs_d.shape[1],
         )
     )
-    integrals_horiz_d[0, 0, 0, :, :, :, :, :, :, :, :, :, :] = (
-        integrals_cont[:, :, :, :m_max_a, :m_max_a, :m_max_a, :, :, :, :]
-    )
+    integrals_horiz_d[0, 0, :, :, :, :, :, :, :, :, :, :] = integrals_cont[
+        :, :, :, :m_max_a, :m_max_a, :m_max_a, :, :, :, :
+    ]
     # TODO: check if actually discarded
 
     # FIXME: rearrange indices for slightly better indexing (i.e. order z, y, x)
     # Horizontal recursion for first index of d
     for d in range(0, angmom_d):
-        integrals_horiz_d[d + 1, 0, 0, :-1, :, :, :, :, :, :, :, :, :] = (
-            integrals_horiz_d[d, 0, 0, 1:, :, :, :, :, :, :, :, :, :]
-            + rel_dist_two[0] * integrals_horiz_d[d, 0, 0, :-1, :, :, :, :, :, :, :, :, :]
+        integrals_horiz_d[d + 1, 0, :-1, :, :, :, :, :, :, :, :, :] = (
+            integrals_horiz_d[d, 0, 1:, :, :, :, :, :, :, :, :, :]
+            + rel_dist_two[0] * integrals_horiz_d[d, 0, :-1, :, :, :, :, :, :, :, :, :]
         )
     # Horizontal recursion for the second index of d
     for d in range(0, angmom_d):
-        integrals_horiz_d[:, d + 1, 0, :, :-1, :, :, :, :, :, :, :, :] = (
-            integrals_horiz_d[:, d, 0, :, 1:, :, :, :, :, :, :, :, :]
-            + rel_dist_two[1] * integrals_horiz_d[:, d, 0, :, :-1, :, :, :, :, :, :, :, :]
-        )
-    # Horizontal recursion for the third index of d
-    for d in range(0, angmom_d):
-        integrals_horiz_d[:, :, d + 1, :, :, :-1, :, :, :, :, :, :, :] = (
-            integrals_horiz_d[:, :, d, :, :, 1:, :, :, :, :, :, :, :]
-            + rel_dist_two[2] * integrals_horiz_d[:, :, d, :, :, :-1, :, :, :, :, :, :, :]
+        integrals_horiz_d[:, d + 1, :, :-1, :, :, :, :, :, :, :, :] = (
+            integrals_horiz_d[:, d, :, 1:, :, :, :, :, :, :, :, :]
+            + rel_dist_two[1] * integrals_horiz_d[:, d, :, :-1, :, :, :, :, :, :, :, :]
         )
 
-    # remove unneeded angular momentum components
+    # NOTE: we select the angular momentum components of the recursed indices (x and y) here instead
+    # at the end in order to construct a smaller (intermediate) array thereby decreasing memory
+    # usage
+    # NOTE: Ordering convention for horizontal recursion of third index of d
+    # axis 0 : d_z (size: angmom_d + 1)
+    # axis 1 : c_z (size: m_max_c)
+    # axis 2 : angular momentum component of d (size: L_d)
+    # axis 3 : angular momentum component of c (size: L_c)
+    # axis 4 : a_x (size: m_max_a)
+    # axis 5 : a_y (size: m_max_a)
+    # axis 6 : a_z (size: m_max_a)
+    # axis 7 : segmented contraction a (size: M_a)
+    # axis 8 : segmented contraction c (size: M_c)
+    # axis 9 : segmented contraction b (size: M_b)
+    # axis 10 : segmented contraction d (size: M_d)
+    integrals_horiz_d2 = np.zeros(
+        (
+            angmom_d + 1,
+            m_max_c,
+            angmom_components_d.shape[0],
+            angmom_components_c.shape[0],
+            m_max_a,
+            m_max_a,
+            m_max_a,
+            coeffs_a.shape[1],
+            coeffs_c.shape[1],
+            coeffs_b.shape[1],
+            coeffs_d.shape[1],
+        )
+    )
+
+    # remove unneeded angular momentum components (x and y)
     angmoms_c_x, angmoms_c_y, angmoms_c_z = angmom_components_c.T
     angmoms_d_x, angmoms_d_y, angmoms_d_z = angmom_components_d.T
-    integrals_horiz_d = integrals_horiz_d[
-        angmoms_d_x.reshape(-1, 1),
-        angmoms_d_y.reshape(-1, 1),
+    integrals_horiz_d2[0] = np.transpose(
+        integrals_horiz_d[
+            angmoms_d_x.reshape(-1, 1),
+            angmoms_d_y.reshape(-1, 1),
+            angmoms_c_x.reshape(1, -1),
+            angmoms_c_y.reshape(1, -1),
+            :,
+            :,
+            :,
+            :,
+            :,
+            :,
+            :,
+            :,
+        ],
+        (2, 0, 1, 3, 4, 5, 6, 7, 8, 9),
+    )
+
+    # Horizontal recursion for the third index of d
+    for d in range(0, angmom_d):
+        integrals_horiz_d2[d + 1, :-1, :, :, :, :, :, :, :, :, :] = (
+            integrals_horiz_d2[d, 1:, :, :, :, :, :, :, :, :, :]
+            + rel_dist_two[2] * integrals_horiz_d2[d, :-1, :, :, :, :, :, :, :, :, :]
+        )
+
+    # remove unneeded angular momentum components (z)
+    integrals_horiz_d2 = integrals_horiz_d2[
         angmoms_d_z.reshape(-1, 1),
-        angmoms_c_x.reshape(1, -1),
-        angmoms_c_y.reshape(1, -1),
         angmoms_c_z.reshape(1, -1),
+        np.arange(angmoms_d_z.size).reshape(-1, 1),
+        np.arange(angmoms_c_z.size).reshape(1, -1),
+        :,
+        :,
+        :,
+        :,
+        :,
+        :,
+        :,
     ]
 
-    # NOTE: Ordering convention for horizontal recursion (b) of integrals
+    # NOTE: Ordering convention for horizontal recursion of first and second indices of b
     # axis 0 : b_x (size: angmom_b + 1)
     # axis 1 : b_y (size: angmom_b + 1)
-    # axis 2 : b_z (size: angmom_b + 1)
-    # axis 3 : a_x (size: m_max_a)
-    # axis 4 : a_y (size: m_max_a)
-    # axis 5 : a_z (size: m_max_a)
-    # axis 6 : angular momentum component (size: L_d)
-    # axis 7 : angular momentum component (size: L_c)
-    # axis 8 : segmented contraction a (size: M_a)
-    # axis 9 : segmented contraction c (size: M_c)
-    # axis 10 : segmented contraction b (size: M_b)
-    # axis 11 : segmented contraction d (size: M_d)
+    # axis 2 : a_x (size: m_max_a)
+    # axis 3 : a_y (size: m_max_a)
+    # axis 4 : a_z (size: m_max_a)
+    # axis 5 : angular momentum component of d (size: L_d)
+    # axis 6 : angular momentum component of c (size: L_c)
+    # axis 7 : segmented contraction a (size: M_a)
+    # axis 8 : segmented contraction c (size: M_c)
+    # axis 9 : segmented contraction b (size: M_b)
+    # axis 10 : segmented contraction d (size: M_d)
     integrals_horiz_b = np.zeros(
         (
-            angmom_b + 1,
             angmom_b + 1,
             angmom_b + 1,
             m_max_a,
@@ -477,46 +533,95 @@ def _compute_two_elec_integrals(
             coeffs_d.shape[1],
         )
     )
-    integrals_horiz_b[0, 0, 0, :, :, :, :, :, :, :, :, :] = (
-        np.transpose(
-            integrals_horiz_d[:, :, :, :, :, :, :, :, :],
-            (2, 3, 4, 0, 1, 5, 6, 7, 8),
-        )
+    integrals_horiz_b[0, 0, :, :, :, :, :, :, :, :, :] = np.transpose(
+        integrals_horiz_d2[:, :, :, :, :, :, :, :, :], (2, 3, 4, 0, 1, 5, 6, 7, 8)
     )
     # TODO: check if actually discarded
-    # Horizontal recursion for first index of d
+    # Horizontal recursion for first index of b
     for b in range(0, angmom_b):
-        integrals_horiz_b[b + 1, 0, 0, :-1, :, :, :, :, :, :, :, :] = (
-            integrals_horiz_b[b, 0, 0, 1:, :, :, :, :, :, :, :, :]
-            + rel_dist_one[0] * integrals_horiz_b[b, 0, 0, :-1, :, :, :, :, :, :, :, :]
+        integrals_horiz_b[b + 1, 0, :-1, :, :, :, :, :, :, :, :] = (
+            integrals_horiz_b[b, 0, 1:, :, :, :, :, :, :, :, :]
+            + rel_dist_one[0] * integrals_horiz_b[b, 0, :-1, :, :, :, :, :, :, :, :]
         )
-    # Horizontal recursion for the seconb index of b
+    # Horizontal recursion for the second index of b
     for b in range(0, angmom_b):
-        integrals_horiz_b[:, b + 1, 0, :, :-1, :, :, :, :, :, :, :] = (
-            integrals_horiz_b[:, b, 0, :, 1:, :, :, :, :, :, :, :]
-            + rel_dist_one[1] * integrals_horiz_b[:, b, 0, :, :-1, :, :, :, :, :, :, :]
-        )
-    # Horizontal recursion for the thirb index of b
-    for b in range(0, angmom_b):
-        integrals_horiz_b[:, :, b + 1, :, :, :-1, :, :, :, :, :, :] = (
-            integrals_horiz_b[:, :, b, :, :, 1:, :, :, :, :, :, :]
-            + rel_dist_one[2] * integrals_horiz_b[:, :, b, :, :, :-1, :, :, :, :, :, :]
+        integrals_horiz_b[:, b + 1, :, :-1, :, :, :, :, :, :, :] = (
+            integrals_horiz_b[:, b, :, 1:, :, :, :, :, :, :, :]
+            + rel_dist_one[1] * integrals_horiz_b[:, b, :, :-1, :, :, :, :, :, :, :]
         )
 
-    # remove unneeded angular momentum components
+    # NOTE: we select the angular momentum components of the recursed indices (x and y) here instead
+    # at the end in order to construct a smaller (intermediate) array thereby decreasing memory
+    # usage
+    # NOTE: Ordering convention for horizontal recursion of third index of b
+    # axis 0 : b_z (size: angmom_b + 1)
+    # axis 1 : a_z (size: m_max_a)
+    # axis 2 : angular momentum component of b (size: L_b)
+    # axis 3 : angular momentum component of a (size: L_a)
+    # axis 4 : angular momentum component of d (size: L_d)
+    # axis 5 : angular momentum component of c (size: L_c)
+    # axis 6 : segmented contraction a (size: M_a)
+    # axis 7 : segmented contraction c (size: M_c)
+    # axis 8 : segmented contraction b (size: M_b)
+    # axis 9 : segmented contraction d (size: M_d)
+    integrals_horiz_b2 = np.zeros(
+        (
+            angmom_b + 1,
+            m_max_a,
+            angmom_components_b.shape[0],
+            angmom_components_a.shape[0],
+            angmom_components_d.shape[0],
+            angmom_components_c.shape[0],
+            coeffs_a.shape[1],
+            coeffs_c.shape[1],
+            coeffs_b.shape[1],
+            coeffs_d.shape[1],
+        )
+    )
+
+    # remove unneeded angular momentum components (x and y)
     angmoms_a_x, angmoms_a_y, angmoms_a_z = angmom_components_a.T
     angmoms_b_x, angmoms_b_y, angmoms_b_z = angmom_components_b.T
-    integrals_horiz_b = integrals_horiz_b[
-        angmoms_b_x.reshape(-1, 1),
-        angmoms_b_y.reshape(-1, 1),
+    integrals_horiz_b2[0] = np.transpose(
+        integrals_horiz_b[
+            angmoms_b_x.reshape(-1, 1),
+            angmoms_b_y.reshape(-1, 1),
+            angmoms_a_x.reshape(1, -1),
+            angmoms_a_y.reshape(1, -1),
+            :,
+            :,
+            :,
+            :,
+            :,
+            :,
+            :,
+        ],
+        (2, 0, 1, 3, 4, 5, 6, 7, 8),
+    )
+
+    # Horizontal recursion for the third index of b
+    for b in range(0, angmom_b):
+        integrals_horiz_b2[b + 1, :-1, :, :, :, :, :, :, :, :] = (
+            integrals_horiz_b2[b, 1:, :, :, :, :, :, :, :, :]
+            + rel_dist_one[2] * integrals_horiz_b2[b, :-1, :, :, :, :, :, :, :, :]
+        )
+
+    # remove unneeded angular momentum components (z)
+    integrals_horiz_b2 = integrals_horiz_b2[
         angmoms_b_z.reshape(-1, 1),
-        angmoms_a_x.reshape(1, -1),
-        angmoms_a_y.reshape(1, -1),
         angmoms_a_z.reshape(1, -1),
+        np.arange(angmoms_b_z.size).reshape(-1, 1),
+        np.arange(angmoms_a_z.size).reshape(1, -1),
+        :,
+        :,
+        :,
+        :,
+        :,
+        :,
     ]
 
     # rearrange to more sensible order
-    integrals = np.transpose(integrals_horiz_b, (1, 0, 3, 2, 4, 6, 5, 7))
+    integrals = np.transpose(integrals_horiz_b2, (1, 0, 3, 2, 4, 6, 5, 7))
 
     # Get normalzation constants that correspond to the angular momentum components
     norm_a = 1 / np.sqrt(np.prod(factorial2(2 * angmom_components_a - 1), axis=1)).reshape(

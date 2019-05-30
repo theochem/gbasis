@@ -456,10 +456,10 @@ def test_two_int_brute():
 
 def test_compute_two_elec_integrals_prim():
     """Test gbasis._two_elec_int._compute_two_elec_integrals on primitives."""
-    angmom_a = 6
-    angmom_b = 6
-    angmom_c = 6
-    angmom_d = 6
+    angmom_a = 7
+    angmom_b = 7
+    angmom_c = 7
+    angmom_d = 7
     print(
         _compute_two_elec_integrals(
             boys_func,
