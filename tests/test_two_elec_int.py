@@ -1,6 +1,7 @@
 """Test gbasis._two_elec_int."""
-from gbasis._two_elec_int import _compute_two_elec_integrals
+from gbasis._two_elec_int import _compute_two_elec_integrals, _compute_two_elec_integrals_angmom_zero
 import numpy as np
+import pytest
 from scipy.special import factorial2, hyp1f1  # pylint: disable=E0611
 
 
@@ -454,59 +455,233 @@ def test_two_int_brute():
     )
 
 
-def test_compute_two_elec_integrals_prim():
-    """Test gbasis._two_elec_int._compute_two_elec_integrals on primitives."""
-    angmom_a = 7
-    angmom_b = 7
-    angmom_c = 7
-    angmom_d = 7
-    print(
-        _compute_two_elec_integrals(
+def test_compute_two_elec_integrals_angmom_zero_prim():
+    """Test gbasis._two_elec_int._compute_two_elec_integrals_angmom_zero on primitives."""
+    assert np.allclose(
+        _compute_two_elec_integrals_angmom_zero(
             boys_func,
             np.array([0.2, 0.4, 0.6]),
-            angmom_a,
-            np.array(
-                [
-                    (x, y, angmom_a - x - y)
-                    for x in range(angmom_a + 1)[::-1]
-                    for y in range(angmom_a - x + 1)[::-1]
-                ]
-            ),
             np.array([0.1]),
             np.array([[1.0]]),
             np.array([1.0, 1.5, 2.0]),
-            angmom_b,
-            np.array(
-                [
-                    (x, y, angmom_b - x - y)
-                    for x in range(angmom_b + 1)[::-1]
-                    for y in range(angmom_b - x + 1)[::-1]
-                ]
-            ),
             np.array([0.2]),
             np.array([[1.0]]),
             np.array([0.1, 0.3, 0.5]),
-            angmom_c,
-            np.array(
-                [
-                    (x, y, angmom_c - x - y)
-                    for x in range(angmom_c + 1)[::-1]
-                    for y in range(angmom_c - x + 1)[::-1]
-                ]
-            ),
             np.array([0.3]),
             np.array([[1.0]]),
             np.array([1.1, 1.6, 2.1]),
-            angmom_d,
-            np.array(
-                [
-                    (x, y, angmom_d - x - y)
-                    for x in range(angmom_d + 1)[::-1]
-                    for y in range(angmom_d - x + 1)[::-1]
-                ]
-            ),
             np.array([0.4]),
             np.array([[1.0]]),
-        ).shape
+        ),
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
     )
-    print(two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True))
+
+
+def test_compute_two_elec_integrals_prim():
+    """Test gbasis._two_elec_int._compute_two_elec_integrals on primitives."""
+    with pytest.raises(ValueError):
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        )
+
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            1,
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                two_int_brute(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
+                two_int_brute(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
+                two_int_brute(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
+            ]
+        ).reshape(3, 1, 1, 1, 1, 1, 1, 1),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                two_int_brute(0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
+                two_int_brute(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
+                two_int_brute(0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, output=True),
+            ]
+        ).reshape(1, 3, 1, 1, 1, 1, 1, 1),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                two_int_brute(0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, output=True),
+                two_int_brute(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, output=True),
+                two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, output=True),
+            ]
+        ).reshape(1, 1, 3, 1, 1, 1, 1, 1),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            1,
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, output=True),
+                two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, output=True),
+                two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, output=True),
+            ]
+        ).reshape(1, 1, 1, 3, 1, 1, 1, 1),
+    )
+
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            2,
+            np.array([[0, 0, 2]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            2,
+            np.array([[2, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        two_int_brute(0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 1, 0, output=True),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[2.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            2,
+            np.array([[0, 0, 2]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            2,
+            np.array([[2, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        2 * two_int_brute(0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 1, 0, output=True),
+    )
