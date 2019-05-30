@@ -456,27 +456,55 @@ def test_two_int_brute():
 
 def test_compute_two_elec_integrals_prim():
     """Test gbasis._two_elec_int._compute_two_elec_integrals on primitives."""
-    angmom_a = 4
-    angmom_b = 4
-    angmom_c = 4
-    angmom_d = 3
+    angmom_a = 6
+    angmom_b = 6
+    angmom_c = 6
+    angmom_d = 6
     print(
         _compute_two_elec_integrals(
             boys_func,
             np.array([0.2, 0.4, 0.6]),
             angmom_a,
+            np.array(
+                [
+                    (x, y, angmom_a - x - y)
+                    for x in range(angmom_a + 1)[::-1]
+                    for y in range(angmom_a - x + 1)[::-1]
+                ]
+            ),
             np.array([0.1]),
             np.array([[1.0]]),
             np.array([1.0, 1.5, 2.0]),
             angmom_b,
+            np.array(
+                [
+                    (x, y, angmom_b - x - y)
+                    for x in range(angmom_b + 1)[::-1]
+                    for y in range(angmom_b - x + 1)[::-1]
+                ]
+            ),
             np.array([0.2]),
             np.array([[1.0]]),
             np.array([0.1, 0.3, 0.5]),
             angmom_c,
+            np.array(
+                [
+                    (x, y, angmom_c - x - y)
+                    for x in range(angmom_c + 1)[::-1]
+                    for y in range(angmom_c - x + 1)[::-1]
+                ]
+            ),
             np.array([0.3]),
             np.array([[1.0]]),
             np.array([1.1, 1.6, 2.1]),
             angmom_d,
+            np.array(
+                [
+                    (x, y, angmom_d - x - y)
+                    for x in range(angmom_d + 1)[::-1]
+                    for y in range(angmom_d - x + 1)[::-1]
+                ]
+            ),
             np.array([0.4]),
             np.array([[1.0]]),
         ).shape

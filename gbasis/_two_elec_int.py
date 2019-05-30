@@ -11,18 +11,22 @@ def _compute_two_elec_integrals(
     boys_func,
     coord_a,
     angmom_a,
+    angmom_components_a,
     exps_a,
     coeffs_a,
     coord_b,
     angmom_b,
+    angmom_components_b,
     exps_b,
     coeffs_b,
     coord_c,
     angmom_c,
+    angmom_components_c,
     exps_c,
     coeffs_c,
     coord_d,
     angmom_d,
+    angmom_components_d,
     exps_d,
     coeffs_d,
 ):
@@ -95,14 +99,17 @@ def _compute_two_elec_integrals(
 
     Returns
     -------
-    integrals : np.ndarray(L_a + 1, L_a + 1, L_a + 1, L_b + 1, L_b + 1, L_b + 1, M_a, M_b)
-        One electron integrals for the given `GeneralizedContractionShell` instances.
-        First, second, and third index correspond to the `x`, `y`, and `z` components of the
-        angular momentum for contraction a.
-        Fourth, fifth, and sixth index correspond to the `x`, `y`, and `z` components of the
-        angular momentum for contraction b.
-        Seventh index corresponds to the segmented contractions of contraction a.
-        Eighth index corresponds to the segmented contractions of contraction b.
+    integrals : np.ndarray(L_a, L_b, L_c, L_d, M_a, M_b, M_c, M_d)
+        Two-electron integrals **in Chemists' notation** of the four generalized contraction shells
+        (a, b, c, d).
+        First index correspond to angular momentum components of contraction a.
+        Second index correspond to angular momentum components of contraction b.
+        Third index correspond to angular momentum components of contraction c.
+        Fourth index correspond to angular momentum components of contraction d.
+        Fifth index corresponds to the segmented contractions of contraction a.
+        Sixth index corresponds to the segmented contractions of contraction b.
+        Seventh index corresponds to the segmented contractions of contraction c.
+        Eighth index corresponds to the segmented contractions of contraction d.
 
     """
 
@@ -351,23 +358,25 @@ def _compute_two_elec_integrals(
             - exps_sum_one / exps_sum_two * integrals_etransf[:, :, c, :, :, 2:]
         )
 
-    # Get normalization constants that correspond to the exponents (and the angular momentum)
+    # Contract primitives (after normalizing)
     norm_a = (((2 * exps_a / np.pi) ** (3 / 4)) * ((4 * exps_a) ** (angmom_a / 2))).reshape(
         1, 1, 1, 1, 1, 1, 1, 1, 1, -1
     )
-    norm_b = (((2 * exps_b / np.pi) ** (3 / 4)) * ((4 * exps_b) ** (angmom_b / 2))).reshape(
-        1, 1, 1, 1, 1, 1, 1, -1, 1, 1
-    )
+    integrals_cont = np.tensordot(integrals_etransf * norm_a, coeffs_a, (9, 0))
+
     norm_c = (((2 * exps_c / np.pi) ** (3 / 4)) * ((4 * exps_c) ** (angmom_c / 2))).reshape(
         1, 1, 1, 1, 1, 1, 1, 1, -1, 1
     )
+    integrals_cont = np.tensordot(integrals_cont * norm_c, coeffs_c, (8, 0))
+
+    norm_b = (((2 * exps_b / np.pi) ** (3 / 4)) * ((4 * exps_b) ** (angmom_b / 2))).reshape(
+        1, 1, 1, 1, 1, 1, 1, -1, 1, 1
+    )
+    integrals_cont = np.tensordot(integrals_cont * norm_b, coeffs_b, (7, 0))
+
     norm_d = (((2 * exps_d / np.pi) ** (3 / 4)) * ((4 * exps_d) ** (angmom_d / 2))).reshape(
         1, 1, 1, 1, 1, 1, -1, 1, 1, 1
     )
-    # Contract primitives
-    integrals_cont = np.tensordot(integrals_etransf * norm_a, coeffs_a, (9, 0))
-    integrals_cont = np.tensordot(integrals_cont * norm_c, coeffs_c, (8, 0))
-    integrals_cont = np.tensordot(integrals_cont * norm_b, coeffs_b, (7, 0))
     integrals_cont = np.tensordot(integrals_cont * norm_d, coeffs_d, (6, 0))
 
     # NOTE: Ordering convention for horizontal recursion (d) of integrals
@@ -427,6 +436,18 @@ def _compute_two_elec_integrals(
             + rel_dist_two[2] * integrals_horiz_d[:, :, d, :, :, :-1, :, :, :, :, :, :, :]
         )
 
+    # remove unneeded angular momentum components
+    angmoms_c_x, angmoms_c_y, angmoms_c_z = angmom_components_c.T
+    angmoms_d_x, angmoms_d_y, angmoms_d_z = angmom_components_d.T
+    integrals_horiz_d = integrals_horiz_d[
+        angmoms_d_x.reshape(-1, 1),
+        angmoms_d_y.reshape(-1, 1),
+        angmoms_d_z.reshape(-1, 1),
+        angmoms_c_x.reshape(1, -1),
+        angmoms_c_y.reshape(1, -1),
+        angmoms_c_z.reshape(1, -1),
+    ]
+
     # NOTE: Ordering convention for horizontal recursion (b) of integrals
     # axis 0 : b_x (size: angmom_b + 1)
     # axis 1 : b_y (size: angmom_b + 1)
@@ -434,16 +455,12 @@ def _compute_two_elec_integrals(
     # axis 3 : a_x (size: m_max_a)
     # axis 4 : a_y (size: m_max_a)
     # axis 5 : a_z (size: m_max_a)
-    # axis 6 : d_x (size: angmom_d + 1)
-    # axis 7 : d_y (size: angmom_d + 1)
-    # axis 8 : d_z (size: angmom_d + 1)
-    # axis 9 : c_x (size: angmom_c + 1)
-    # axis 10 : c_y (size: angmom_c + 1)
-    # axis 11 : c_z (size: angmom_c + 1)
-    # axis 12 : segmented contraction a (size: M_a)
-    # axis 13 : segmented contraction c (size: M_c)
-    # axis 14 : segmented contraction b (size: M_b)
-    # axis 15 : segmented contraction d (size: M_d)
+    # axis 6 : angular momentum component (size: L_d)
+    # axis 7 : angular momentum component (size: L_c)
+    # axis 8 : segmented contraction a (size: M_a)
+    # axis 9 : segmented contraction c (size: M_c)
+    # axis 10 : segmented contraction b (size: M_b)
+    # axis 11 : segmented contraction d (size: M_d)
     integrals_horiz_b = np.zeros(
         (
             angmom_b + 1,
@@ -452,81 +469,73 @@ def _compute_two_elec_integrals(
             m_max_a,
             m_max_a,
             m_max_a,
-            angmom_d + 1,
-            angmom_d + 1,
-            angmom_d + 1,
-            angmom_c + 1,
-            angmom_c + 1,
-            angmom_c + 1,
+            angmom_components_d.shape[0],
+            angmom_components_c.shape[0],
             coeffs_a.shape[1],
             coeffs_c.shape[1],
             coeffs_b.shape[1],
             coeffs_d.shape[1],
         )
     )
-    integrals_horiz_b[0, 0, 0, :, :, :, :, :, :, :, :, :, :, :, :, :] = (
+    integrals_horiz_b[0, 0, 0, :, :, :, :, :, :, :, :, :] = (
         np.transpose(
-            integrals_horiz_d[:, :, :, :angmom_c + 1, :angmom_c + 1, :angmom_c + 1, :, :, :, :, :, :, :],
-            (6, 7, 8, 0, 1, 2, 3, 4, 5, 9, 10, 11, 12)
+            integrals_horiz_d[:, :, :, :, :, :, :, :, :],
+            (2, 3, 4, 0, 1, 5, 6, 7, 8),
         )
     )
     # TODO: check if actually discarded
     # Horizontal recursion for first index of d
     for b in range(0, angmom_b):
-        integrals_horiz_b[b + 1, 0, 0, :-1, :, :, :, :, :, :, :, :, :, :, :, :] += (
-            integrals_horiz_b[b, 0, 0, 1:, :, :, :, :, :, :, :, :, :, :, :, :]
-            + rel_dist_one[0] * integrals_horiz_b[b, 0, 0, :-1, :, :, :, :, :, :, :, :, :, :, :, :]
+        integrals_horiz_b[b + 1, 0, 0, :-1, :, :, :, :, :, :, :, :] = (
+            integrals_horiz_b[b, 0, 0, 1:, :, :, :, :, :, :, :, :]
+            + rel_dist_one[0] * integrals_horiz_b[b, 0, 0, :-1, :, :, :, :, :, :, :, :]
         )
     # Horizontal recursion for the seconb index of b
     for b in range(0, angmom_b):
-        integrals_horiz_b[:, b + 1, 0, :, :-1, :, :, :, :, :, :, :, :, :, :, :] = (
-            integrals_horiz_b[:, b, 0, :, 1:, :, :, :, :, :, :, :, :, :, :, :]
-            + rel_dist_one[1] * integrals_horiz_b[:, b, 0, :, :-1, :, :, :, :, :, :, :, :, :, :, :]
+        integrals_horiz_b[:, b + 1, 0, :, :-1, :, :, :, :, :, :, :] = (
+            integrals_horiz_b[:, b, 0, :, 1:, :, :, :, :, :, :, :]
+            + rel_dist_one[1] * integrals_horiz_b[:, b, 0, :, :-1, :, :, :, :, :, :, :]
         )
     # Horizontal recursion for the thirb index of b
     for b in range(0, angmom_b):
-        integrals_horiz_b[:, :, b + 1, :, :, :-1, :, :, :, :, :, :, :, :, :, :] = (
-            integrals_horiz_b[:, :, b, :, :, 1:, :, :, :, :, :, :, :, :, :, :]
-            + rel_dist_one[2] * integrals_horiz_b[:, :, b, :, :, :-1, :, :, :, :, :, :, :, :, :, :]
+        integrals_horiz_b[:, :, b + 1, :, :, :-1, :, :, :, :, :, :] = (
+            integrals_horiz_b[:, :, b, :, :, 1:, :, :, :, :, :, :]
+            + rel_dist_one[2] * integrals_horiz_b[:, :, b, :, :, :-1, :, :, :, :, :, :]
         )
 
+    # remove unneeded angular momentum components
+    angmoms_a_x, angmoms_a_y, angmoms_a_z = angmom_components_a.T
+    angmoms_b_x, angmoms_b_y, angmoms_b_z = angmom_components_b.T
+    integrals_horiz_b = integrals_horiz_b[
+        angmoms_b_x.reshape(-1, 1),
+        angmoms_b_y.reshape(-1, 1),
+        angmoms_b_z.reshape(-1, 1),
+        angmoms_a_x.reshape(1, -1),
+        angmoms_a_y.reshape(1, -1),
+        angmoms_a_z.reshape(1, -1),
+    ]
+
     # rearrange to more sensible order
-    integrals = np.transpose(
-        # discard higher order angular momentum needed for the recursions
-        integrals_horiz_b[:, :, :, : angmom_a + 1, : angmom_a + 1, : angmom_a + 1],
-        (3, 4, 5, 0, 1, 2, 9, 10, 11, 6, 7, 8, 12, 14, 13, 15)
-    )
+    integrals = np.transpose(integrals_horiz_b, (1, 0, 3, 2, 4, 6, 5, 7))
 
     # Get normalzation constants that correspond to the angular momentum components
-    angmoms_a = np.arange(angmom_a + 1)
-    norm_a = 1 / np.sqrt(
-        factorial2(2 * angmoms_a.reshape(-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_a.reshape(1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_a.reshape(1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
+    norm_a = 1 / np.sqrt(np.prod(factorial2(2 * angmom_components_a - 1), axis=1)).reshape(
+        -1, 1, 1, 1, 1, 1, 1, 1
     )
     integrals *= norm_a
 
-    angmoms_b = np.arange(angmom_b + 1)
-    norm_b = 1 / np.sqrt(
-        factorial2(2 * angmoms_b.reshape(1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_b.reshape(1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_b.reshape(1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
+    norm_b = 1 / np.sqrt(np.prod(factorial2(2 * angmom_components_b - 1), axis=1)).reshape(
+        1, -1, 1, 1, 1, 1, 1, 1
     )
     integrals *= norm_b
 
-    angmoms_c = np.arange(angmom_c + 1)
-    norm_c = 1 / np.sqrt(
-        factorial2(2 * angmoms_c.reshape(1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_c.reshape(1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_c.reshape(1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1) - 1)
+    norm_c = 1 / np.sqrt(np.prod(factorial2(2 * angmom_components_c - 1), axis=1)).reshape(
+        1, 1, -1, 1, 1, 1, 1, 1
     )
     integrals *= norm_c
 
-    angmoms_d = np.arange(angmom_d + 1)
-    norm_d = 1 / np.sqrt(
-        factorial2(2 * angmoms_d.reshape(1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_d.reshape(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1) - 1)
-        * factorial2(2 * angmoms_d.reshape(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1) - 1)
+    norm_d = 1 / np.sqrt(np.prod(factorial2(2 * angmom_components_d - 1), axis=1)).reshape(
+        1, 1, 1, -1, 1, 1, 1, 1
     )
     integrals *= norm_d
 
