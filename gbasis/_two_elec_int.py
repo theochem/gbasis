@@ -1,12 +1,10 @@
 """Two-electron integrals involving Contracted Cartesian Gaussians."""
 import numpy as np
 from scipy.special import factorial2
-from memory_profiler import profile
 
 
 # pylint: disable=C0103,R0914,R0915
 # FIXME: returns nan when exponent is zero
-@profile
 def _compute_two_elec_integrals(
     boys_func,
     coord_a,
