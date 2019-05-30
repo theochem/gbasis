@@ -2,8 +2,146 @@
 import numpy as np
 from scipy.special import factorial2
 
-
 # pylint: disable=C0103,R0914,R0915
+
+
+def _compute_two_elec_integrals_angmom_zero(
+    boys_func,
+    coord_a,
+    exps_a,
+    coeffs_a,
+    coord_b,
+    exps_b,
+    coeffs_b,
+    coord_c,
+    exps_c,
+    coeffs_c,
+    coord_d,
+    exps_d,
+    coeffs_d,
+):
+    r"""Return the two-electron integrals for electron-electron repulsion for the s orbital case.
+
+    All of the contractions are assumed to have angular momentum zero.
+
+    .. math::
+
+        \int \int \phi^*_a(\mathbf{r}_1) \phi_b(\mathbf{r}_1) g(\mathbf{r}_1 - \mathbf{r}_2)
+        \phi^*_c(\mathbf{r}_2) \phi_d(\mathbf{r}_2) d\mathbf{r}_1 d\mathbf{r}_2
+
+    Parameters
+    ----------
+    boys_func : function(orders, weighted_dist)
+        Boys function used to evaluate the one-electron integral.
+        `orders` is the orders of the Boys integral that will be evaluated. It should be a
+        three-dimensional numpy array of integers with shape `(M, 1, 1, 1)` where `M` is the number
+        of orders that will be evaluated.
+        `weighted_dist` is the weighted interatomic distance, i.e.
+        :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
+        the exponent of the ith primitive on the left side and the :math:`\beta_j` is the exponent
+        of the jth primitive on the right side. It should be a four-dimensional numpy array of
+        floats with shape `(1, N, K_b, K_a)` where `N` is the number of point charges, `K_a` and
+        `K_b` are the number of primitives on the left and right side, respectively.
+        Output is the Boys function evaluated for each order and the weighted interactomic distance.
+        It will be a three-dimensional numpy array of shape `(M, N, K_b, K_a)`.
+    coord_a : np.ndarray(3,)
+        Center of the contraction a.
+    exps_a : np.ndarray(K_a,)
+        Exponents of the primitives in contraction a.
+    coeffs_a : np.ndarray(K_a, M_a)
+        Contraction coefficients of the primitives in contraction a.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    coord_b : np.ndarray(3,)
+        Center of the contraction b.
+    exps_b : np.ndarray(K_b,)
+        Exponents of the primitives in contraction b.
+    coeffs_b : np.ndarray(K_b, M_b)
+        Contraction coefficients of the primitives in contraction b.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    coord_c : np.ndarray(3,)
+        Center of the contraction c.
+    exps_c : np.ndarray(K_c,)
+        Exponents of the primitives in contraction c.
+    coeffs_c : np.ndarray(K_c, M_c)
+        Contraction coefficients of the primitives in contraction c.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    coord_d : np.ndarray(3,)
+        Center of the contraction d.
+    exps_d : np.ndarray(K_d,)
+        Exponents of the primitives in contraction d.
+    coeffs_d : np.ndarray(K_d, M_d)
+        Contraction coefficients of the primitives in contraction d.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+
+    Returns
+    -------
+    integrals : np.ndarray(1, 1, 1, 1, M_a, M_b, M_c, M_d)
+        Two-electron integrals **in Chemists' notation** of the four generalized contraction shells
+        (a, b, c, d).
+        First index correspond to angular momentum components of contraction a.
+        Second index correspond to angular momentum components of contraction b.
+        Third index correspond to angular momentum components of contraction c.
+        Fourth index correspond to angular momentum components of contraction d.
+        Fifth index corresponds to the segmented contractions of contraction a.
+        Sixth index corresponds to the segmented contractions of contraction b.
+        Seventh index corresponds to the segmented contractions of contraction c.
+        Eighth index corresponds to the segmented contractions of contraction d.
+
+    Notes
+    -----
+    All of the contractions are assumed to have angular momentum of zero.
+
+    """
+    coord_a = coord_a[:, np.newaxis, np.newaxis, np.newaxis, np.newaxis]
+    coord_b = coord_b[:, np.newaxis, np.newaxis, np.newaxis, np.newaxis]
+    coord_c = coord_c[:, np.newaxis, np.newaxis, np.newaxis, np.newaxis]
+    coord_d = coord_d[:, np.newaxis, np.newaxis, np.newaxis, np.newaxis]
+
+    exps_a = exps_a[np.newaxis, np.newaxis, np.newaxis, :]
+    exps_b = exps_b[np.newaxis, :, np.newaxis, np.newaxis]
+    exps_c = exps_c[np.newaxis, np.newaxis, :, np.newaxis]
+    exps_d = exps_d[:, np.newaxis, np.newaxis, np.newaxis]
+
+    harm_mean_one = (exps_a * exps_b) / (exps_a + exps_b)
+    harm_mean_two = (exps_c * exps_d) / (exps_c + exps_d)
+    harm_mean = (exps_a + exps_b) * (exps_c + exps_d) / (exps_a + exps_b + exps_c + exps_d)
+
+    coord_wac = (exps_a * coord_a + exps_b * coord_b) / (exps_a + exps_b) - (
+        exps_c * coord_c + exps_d * coord_d
+    ) / (exps_c + exps_d)
+
+    integrals = (
+        (2 * np.pi ** 2.5)
+        / ((exps_a + exps_b) * (exps_c + exps_d) * (exps_a + exps_b + exps_c + exps_d) ** 0.5)
+        * boys_func(0, (harm_mean * np.sum(coord_wac ** 2, axis=0))[:, :, :, :])
+        * np.exp(-harm_mean_one * np.sum((coord_a - coord_b) ** 2, axis=0))
+        * np.exp(-harm_mean_two * np.sum((coord_c - coord_d) ** 2, axis=0))
+    )
+
+    norm_a = ((2 * exps_a / np.pi) ** (3 / 4)).reshape(1, 1, 1, -1)
+    integrals = np.tensordot(integrals * norm_a, coeffs_a, (3, 0))
+
+    norm_c = ((2 * exps_c / np.pi) ** (3 / 4)).reshape(1, 1, -1, 1)
+    integrals = np.tensordot(integrals * norm_c, coeffs_c, (2, 0))
+
+    norm_b = ((2 * exps_b / np.pi) ** (3 / 4)).reshape(1, -1, 1, 1)
+    integrals = np.tensordot(integrals * norm_b, coeffs_b, (1, 0))
+
+    norm_d = ((2 * exps_d / np.pi) ** (3 / 4)).reshape(-1, 1, 1, 1)
+    integrals = np.tensordot(integrals * norm_d, coeffs_d, (0, 0))
+
+    integrals = np.transpose(integrals, (0, 2, 1, 3))
+    return integrals[None, None, None, None]
+
+
 # FIXME: returns nan when exponent is zero
 def _compute_two_elec_integrals(
     boys_func,
@@ -54,6 +192,10 @@ def _compute_two_elec_integrals(
         Center of the contraction a.
     angmom_a : int
         Angular momentum of the contraction a.
+    angmom_components_a : int
+        Angular momentum components of the contraction a.
+        All of the angular momentum components (in the x, y, and z) must add up to the angular
+        momentum.
     exps_a : np.ndarray(K_a,)
         Exponents of the primitives in contraction a.
     coeffs_a : np.ndarray(K_a, M_a)
@@ -65,6 +207,10 @@ def _compute_two_elec_integrals(
         Center of the contraction b.
     angmom_b : int
         Angular momentum of the contraction b.
+    angmom_components_b : int
+        Angular momentum components of the contraction b.
+        All of the angular momentum components (in the x, y, and z) must add up to the angular
+        momentum.
     exps_b : np.ndarray(K_b,)
         Exponents of the primitives in contraction b.
     coeffs_b : np.ndarray(K_b, M_b)
@@ -76,6 +222,10 @@ def _compute_two_elec_integrals(
         Center of the contraction c.
     angmom_c : int
         Angular momentum of the contraction c.
+    angmom_components_c : int
+        Angular momentum components of the contraction c.
+        All of the angular momentum components (in the x, y, and z) must add up to the angular
+        momentum.
     exps_c : np.ndarray(K_c,)
         Exponents of the primitives in contraction c.
     coeffs_c : np.ndarray(K_c, M_c)
@@ -87,6 +237,10 @@ def _compute_two_elec_integrals(
         Center of the contraction d.
     angmom_d : int
         Angular momentum of the contraction d.
+    angmom_components_d : int
+        Angular momentum components of the contraction d.
+        All of the angular momentum components (in the x, y, and z) must add up to the angular
+        momentum.
     exps_d : np.ndarray(K_d,)
         Exponents of the primitives in contraction d.
     coeffs_d : np.ndarray(K_d, M_d)
@@ -108,6 +262,16 @@ def _compute_two_elec_integrals(
         Sixth index corresponds to the segmented contractions of contraction b.
         Seventh index corresponds to the segmented contractions of contraction c.
         Eighth index corresponds to the segmented contractions of contraction d.
+
+    Raises
+    ------
+    ValueError
+        If angular momentum of all four of the contractions (a, b, c, d) are zero.
+
+    Notes
+    -----
+    The case where all four of the contractions have angular momentum of zero is not supported. Use
+    `gbasis._two_elec_int._compute_two_elec_integrals` instead.
 
     """
 
@@ -263,14 +427,14 @@ def _compute_two_elec_integrals(
     # NOTE: At this point, numpy (v1.16.3) does not support broadcasting two zero size arrays of
     # different shapes (e.g. shape(0, 1) and shape(1, 0))into one another. The slices 1:2 on the 0th
     # and the 3rd axis causes problems when they both have dimension zero. There doesn't seem to be
-    # an easy enough way around it, so the array is reshaped flat (reshape always returns a view) to
-    # make their shapes the same (i.e. 0 and 0). The slices are used because the alternative is an
-    # if statement, which I think may inhibit optimization by some post processing compilers
-    integrals_etransf[1:2, 0, 0, 0:1, :, :, :, :, :, :].reshape(-1)[:] = (
+    # an easy enough way around it, so the breaking case (all contractions have angular momentum of
+    # 0) is not is upported. Use `_compute_two_elec_integrals_angmom_zero` for this case.
+    # FIXME: i couldn't get the base case (all angmom of zero) to work.
+    integrals_etransf[1:2, 0, 0, 0:1, :, :, :, :, :, :] = (
         (rel_coord_c[0] + exps_sum_one / exps_sum_two * rel_coord_a[0])
         * integrals_etransf[0:1, 0, 0, 0:1]
         - exps_sum_one / exps_sum_two * integrals_etransf[0:1, 0, 0, 1:2]
-    ).reshape(-1)
+    )
     integrals_etransf[1:2, 0, 0, 1:-1, :, :, :, :, :, :] = (
         (rel_coord_c[0] + exps_sum_one / exps_sum_two * rel_coord_a[0])
         * integrals_etransf[0:1, 0, 0, 1:-1]
@@ -296,11 +460,11 @@ def _compute_two_elec_integrals(
             - exps_sum_one / exps_sum_two * integrals_etransf[c, 0, 0, 2:]
         )
     # electron transfer recursion for second index
-    integrals_etransf[:, 1:2, 0, :, 0:1, :, :, :, :, :].reshape(-1)[:] = (
+    integrals_etransf[:, 1:2, 0, :, 0:1, :, :, :, :, :] = (
         (rel_coord_c[1] + exps_sum_one / exps_sum_two * rel_coord_a[1])
         * integrals_etransf[:, 0:1, 0, :, 0:1]
         - exps_sum_one / exps_sum_two * integrals_etransf[:, 0:1, 0, :, 1:2]
-    ).reshape(-1)
+    )
     integrals_etransf[:, 1:2, 0, :, 1:-1, :, :, :, :, :] = (
         (rel_coord_c[1] + exps_sum_one / exps_sum_two * rel_coord_a[1])
         * integrals_etransf[:, 0:1, 0, :, 1:-1]
@@ -326,11 +490,11 @@ def _compute_two_elec_integrals(
             - exps_sum_one / exps_sum_two * integrals_etransf[:, c, 0, :, 2:]
         )
     # electron transfer recursion for third index
-    integrals_etransf[:, :, 1:2, :, :, 0:1, :, :, :, :].reshape(-1)[:] = (
+    integrals_etransf[:, :, 1:2, :, :, 0:1, :, :, :, :] = (
         (rel_coord_c[2] + exps_sum_one / exps_sum_two * rel_coord_a[2])
         * integrals_etransf[:, :, 0:1, :, :, 0:1]
         - exps_sum_one / exps_sum_two * integrals_etransf[:, :, 0:1, :, :, 1:2]
-    ).reshape(-1)
+    )
     integrals_etransf[:, :, 1:2, :, :, 1:-1, :, :, :, :] = (
         (rel_coord_c[2] + exps_sum_one / exps_sum_two * rel_coord_a[2])
         * integrals_etransf[:, :, 0:1, :, :, 1:-1]
