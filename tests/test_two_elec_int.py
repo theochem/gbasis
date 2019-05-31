@@ -1,5 +1,8 @@
 """Test gbasis._two_elec_int."""
-from gbasis._two_elec_int import _compute_two_elec_integrals, _compute_two_elec_integrals_angmom_zero
+from gbasis._two_elec_int import (
+    _compute_two_elec_integrals,
+    _compute_two_elec_integrals_angmom_zero,
+)
 import numpy as np
 import pytest
 from scipy.special import factorial2, hyp1f1  # pylint: disable=E0611
@@ -42,27 +45,42 @@ def boys_func(order, weighted_dist):
     return hyp1f1(order + 1 / 2, order + 3 / 2, -weighted_dist) / (2 * order + 1)
 
 
-def two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2, l_0, l_1, l_2, m, output=False):
+def two_int_brute(
+    i_0,
+    i_1,
+    i_2,
+    j_0,
+    j_1,
+    j_2,
+    k_0,
+    k_1,
+    k_2,
+    l_0,
+    l_1,
+    l_2,
+    m,
+    alpha=0.1,
+    beta=0.2,
+    gamma=0.3,
+    delta=0.4,
+    output=False,
+):
     """Return the answer to the two-electron integral tests.
 
     Data for first primitive on the left:
     - Coordinate: [0.2, 0.4, 0.6]
-    - Exponents: [0.1]
     - Coefficients: [1.0]
 
     Data for first primitive on the right:
     - Coordinate: [1.0, 1.5, 2.0]
-    - Exponents: [0.2]
     - Coefficients: [1.0]
 
     Data for second primitive on the left:
     - Coordinate: [0.1, 0.3, 0.5]
-    - Exponents: [0.3]
     - Coefficients: [1.0]
 
     Data for second primitive on the right:
     - Coordinate: [1.1, 1.6, 2.1]
-    - Exponents: [0.4]
     - Coefficients: [1.0]
 
 
@@ -101,10 +119,6 @@ def two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2, l_0, l_1, l_2, m,
     answer : float
 
     """
-    alpha = 0.1
-    beta = 0.2
-    gamma = 0.3
-    delta = 0.4
     zeta = alpha + beta
     eta = gamma + delta
     rho = zeta * eta / (zeta + eta)
@@ -177,119 +191,405 @@ def two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2, l_0, l_1, l_2, m,
     # vertical recursion
     if i_1 == i_2 == j_0 == j_1 == j_2 == k_0 == k_1 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
-            (x_p - x_a) * two_int_brute(i_0 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m)
+            (x_p - x_a)
+            * two_int_brute(i_0 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta)
             - rho
             / zeta
             * (x_p - x_q)
-            * two_int_brute(i_0 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1)
+            * two_int_brute(
+                i_0 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+            )
             + (i_0 - 1)
             / 2
             / zeta
             * (
-                two_int_brute(i_0 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m)
-                - rho / zeta * two_int_brute(i_0 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1)
+                two_int_brute(
+                    i_0 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                )
+                - rho
+                / zeta
+                * two_int_brute(
+                    i_0 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                )
             )
         ) * norm
     if i_2 == j_0 == j_1 == j_2 == k_0 == k_1 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
-            (y_p - y_a) * two_int_brute(i_0, i_1 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m)
+            (y_p - y_a)
+            * two_int_brute(
+                i_0, i_1 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
             - rho
             / zeta
             * (y_p - y_q)
-            * two_int_brute(i_0, i_1 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1)
+            * two_int_brute(
+                i_0, i_1 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+            )
             + (i_1 - 1)
             / 2
             / zeta
             * (
-                two_int_brute(i_0, i_1 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m)
-                - rho / zeta * two_int_brute(i_0, i_1 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1)
+                two_int_brute(
+                    i_0, i_1 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                )
+                - rho
+                / zeta
+                * two_int_brute(
+                    i_0, i_1 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                )
             )
         ) * norm
     if j_0 == j_1 == j_2 == k_0 == k_1 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
-            (z_p - z_a) * two_int_brute(i_0, i_1, i_2 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, m)
+            (z_p - z_a)
+            * two_int_brute(
+                i_0, i_1, i_2 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
             - rho
             / zeta
             * (z_p - z_q)
-            * two_int_brute(i_0, i_1, i_2 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1)
+            * two_int_brute(
+                i_0, i_1, i_2 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+            )
             + (i_2 - 1)
             / 2
             / zeta
             * (
-                two_int_brute(i_0, i_1, i_2 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, m)
-                - rho / zeta * two_int_brute(i_0, i_1, i_2 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1)
+                two_int_brute(
+                    i_0, i_1, i_2 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                )
+                - rho
+                / zeta
+                * two_int_brute(
+                    i_0, i_1, i_2 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                )
             )
         ) * norm
     # electron transfer
     if j_0 == j_1 == j_2 == k_1 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
             ((x_q - x_c) + zeta / eta * (x_p - x_a))
-            * two_int_brute(i_0, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m)
-            + i_0 / 2 / eta * two_int_brute(i_0 - 1, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m)
-            + (k_0 - 1) / 2 / eta * two_int_brute(i_0, i_1, i_2, 0, 0, 0, k_0 - 2, 0, 0, 0, 0, 0, m)
-            - zeta / eta * two_int_brute(i_0 + 1, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m)
+            * two_int_brute(
+                i_0, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
+            + i_0
+            / 2
+            / eta
+            * two_int_brute(
+                i_0 - 1, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
+            + (k_0 - 1)
+            / 2
+            / eta
+            * two_int_brute(
+                i_0, i_1, i_2, 0, 0, 0, k_0 - 2, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
+            - zeta
+            / eta
+            * two_int_brute(
+                i_0 + 1, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
         ) * norm
     if j_0 == j_1 == j_2 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
             ((y_q - y_c) + zeta / eta * (y_p - y_a))
-            * two_int_brute(i_0, i_1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m)
-            + i_1 / 2 / eta * two_int_brute(i_0, i_1 - 1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m)
+            * two_int_brute(
+                i_0, i_1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
+            + i_1
+            / 2
+            / eta
+            * two_int_brute(
+                i_0, i_1 - 1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
             + (k_1 - 1)
             / 2
             / eta
-            * two_int_brute(i_0, i_1, i_2, 0, 0, 0, k_0, k_1 - 2, 0, 0, 0, 0, m)
-            - zeta / eta * two_int_brute(i_0, i_1 + 1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m)
+            * two_int_brute(
+                i_0, i_1, i_2, 0, 0, 0, k_0, k_1 - 2, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
+            - zeta
+            / eta
+            * two_int_brute(
+                i_0, i_1 + 1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
         ) * norm
     if j_0 == j_1 == j_2 == l_0 == l_1 == l_2 == 0:
         return (
             ((z_q - z_c) + zeta / eta * (z_p - z_a))
-            * two_int_brute(i_0, i_1, i_2, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m)
+            * two_int_brute(
+                i_0, i_1, i_2, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
             + i_2
             / 2
             / eta
-            * two_int_brute(i_0, i_1, i_2 - 1, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m)
+            * two_int_brute(
+                i_0, i_1, i_2 - 1, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
             + (k_2 - 1)
             / 2
             / eta
-            * two_int_brute(i_0, i_1, i_2, 0, 0, 0, k_0, k_1, k_2 - 2, 0, 0, 0, m)
-            - zeta / eta * two_int_brute(i_0, i_1, i_2 + 1, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m)
+            * two_int_brute(
+                i_0, i_1, i_2, 0, 0, 0, k_0, k_1, k_2 - 2, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
+            - zeta
+            / eta
+            * two_int_brute(
+                i_0, i_1, i_2 + 1, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m, alpha, beta, gamma, delta
+            )
         ) * norm
-    # horizontal recurision for b
+    # horizontal recursion for b
     if j_1 == j_2 == l_0 == l_1 == l_2 == 0:
         return (
-            two_int_brute(i_0 + 1, i_1, i_2, j_0 - 1, 0, 0, k_0, k_1, k_2, 0, 0, 0, m)
+            two_int_brute(
+                i_0 + 1,
+                i_1,
+                i_2,
+                j_0 - 1,
+                0,
+                0,
+                k_0,
+                k_1,
+                k_2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
             + (x_a - x_b)
-            * two_int_brute(i_0, i_1, i_2, j_0 - 1, j_1, j_2, k_0, k_1, k_2, 0, 0, 0, m)
+            * two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0 - 1,
+                j_1,
+                j_2,
+                k_0,
+                k_1,
+                k_2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
         ) * norm
     if j_2 == l_0 == l_1 == l_2 == 0:
         return (
-            two_int_brute(i_0, i_1 + 1, i_2, j_0, j_1 - 1, 0, k_0, k_1, k_2, 0, 0, 0, m)
+            two_int_brute(
+                i_0,
+                i_1 + 1,
+                i_2,
+                j_0,
+                j_1 - 1,
+                0,
+                k_0,
+                k_1,
+                k_2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
             + (y_a - y_b)
-            * two_int_brute(i_0, i_1, i_2, j_0, j_1 - 1, j_2, k_0, k_1, k_2, 0, 0, 0, m)
+            * two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0,
+                j_1 - 1,
+                j_2,
+                k_0,
+                k_1,
+                k_2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
         ) * norm
     if l_0 == l_1 == l_2 == 0:
         return (
-            two_int_brute(i_0, i_1, i_2 + 1, j_0, j_1, j_2 - 1, k_0, k_1, k_2, 0, 0, 0, m)
+            two_int_brute(
+                i_0,
+                i_1,
+                i_2 + 1,
+                j_0,
+                j_1,
+                j_2 - 1,
+                k_0,
+                k_1,
+                k_2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
             + (z_a - z_b)
-            * two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2 - 1, k_0, k_1, k_2, 0, 0, 0, m)
+            * two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0,
+                j_1,
+                j_2 - 1,
+                k_0,
+                k_1,
+                k_2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
         ) * norm
-    # horizontal recurision for d
+    # horizontal recursion for d
     if l_1 == l_2 == 0:
         return (
-            two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0 + 1, k_1, k_2, l_0 - 1, 0, 0, m)
+            two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0,
+                j_1,
+                j_2,
+                k_0 + 1,
+                k_1,
+                k_2,
+                l_0 - 1,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
             + (x_c - x_d)
-            * two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2, l_0 - 1, 0, 0, m)
+            * two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0,
+                j_1,
+                j_2,
+                k_0,
+                k_1,
+                k_2,
+                l_0 - 1,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
         ) * norm
     if l_2 == 0:
         return (
-            two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1 + 1, k_2, l_0, l_1 - 1, 0, m)
+            two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0,
+                j_1,
+                j_2,
+                k_0,
+                k_1 + 1,
+                k_2,
+                l_0,
+                l_1 - 1,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
             + (y_c - y_d)
-            * two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2, l_0, l_1 - 1, 0, m)
+            * two_int_brute(
+                i_0,
+                i_1,
+                i_2,
+                j_0,
+                j_1,
+                j_2,
+                k_0,
+                k_1,
+                k_2,
+                l_0,
+                l_1 - 1,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+            )
         ) * norm
     return (
-        two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2 + 1, l_0, l_1, l_2 - 1, m)
+        two_int_brute(
+            i_0,
+            i_1,
+            i_2,
+            j_0,
+            j_1,
+            j_2,
+            k_0,
+            k_1,
+            k_2 + 1,
+            l_0,
+            l_1,
+            l_2 - 1,
+            m,
+            alpha,
+            beta,
+            gamma,
+            delta,
+        )
         + (z_c - z_d)
-        * two_int_brute(i_0, i_1, i_2, j_0, j_1, j_2, k_0, k_1, k_2, l_0, l_1, l_2 - 1, m)
+        * two_int_brute(
+            i_0,
+            i_1,
+            i_2,
+            j_0,
+            j_1,
+            j_2,
+            k_0,
+            k_1,
+            k_2,
+            l_0,
+            l_1,
+            l_2 - 1,
+            m,
+            alpha,
+            beta,
+            gamma,
+            delta,
+        )
     ) * norm
 
 
@@ -454,6 +754,31 @@ def test_two_int_brute():
         two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, output=True), -0.12506077396766221
     )
 
+    # different exponents
+    assert np.allclose(
+        two_int_brute(
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            2,
+            0,
+            0,
+            0,
+            output=True,
+            alpha=0.2,
+            beta=0.3,
+            gamma=0.4,
+            delta=0.5,
+        ),
+        -0.015147214477383354,
+    )
+
 
 def test_compute_two_elec_integrals_angmom_zero_prim():
     """Test gbasis._two_elec_int._compute_two_elec_integrals_angmom_zero on primitives."""
@@ -474,6 +799,82 @@ def test_compute_two_elec_integrals_angmom_zero_prim():
             np.array([[1.0]]),
         ),
         two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals_angmom_zero(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            np.array([0.1, 0.15]),
+            np.array([[1.0], [2.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        1 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, alpha=0.1)
+        + 2 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, alpha=0.15),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals_angmom_zero(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            np.array([0.2, 0.25]),
+            np.array([[1.0], [2.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        1 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, beta=0.2)
+        + 2 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, beta=0.25),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals_angmom_zero(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            np.array([0.3, 0.35]),
+            np.array([[1.0], [2.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        1 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, gamma=0.3)
+        + 2 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, gamma=0.35),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals_angmom_zero(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            np.array([0.4, 0.45]),
+            np.array([[1.0], [2.0]]),
+        ),
+        1 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, delta=0.4)
+        + 2 * two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, output=True, delta=0.45),
     )
 
 
@@ -684,4 +1085,260 @@ def test_compute_two_elec_integrals_prim():
             np.array([[1.0]]),
         ),
         2 * two_int_brute(0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 1, 0, output=True),
+    )
+
+
+def test_compute_two_elec_integrals_segmented_contractions():
+    """Test gbasis._two_elec_int._compute_two_elec_integrals on segmented contractions."""
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1, 0.15]),
+            np.array([[1.0], [0.5]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, alpha=0.1)
+        + 0.5 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, alpha=0.15),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2, 0.25]),
+            np.array([[1.0], [0.6]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, beta=0.2)
+        + 0.6 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, beta=0.25),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3, 0.35]),
+            np.array([[1.0], [0.7]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, gamma=0.3)
+        + 0.7 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, gamma=0.35),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4, 0.45]),
+            np.array([[1.0], [0.8]]),
+        ),
+        1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.4)
+        + 0.8 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.45),
+    )
+
+
+def test_compute_two_elec_integrals_generalized_contractions():
+    """Test gbasis._two_elec_int._compute_two_elec_integrals on generalized contractions."""
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1, 0.15]),
+            np.array([[1.0, 2.0], [0.5, 1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, alpha=0.1)
+                + 0.5
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, alpha=0.15),
+                2 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, alpha=0.1)
+                + 1.0
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, alpha=0.15),
+            ]
+        ).reshape(1, 1, 1, 1, 2, 1, 1, 1),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2, 0.25]),
+            np.array([[1.0, 0.9], [0.6, 0.5]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, beta=0.2)
+                + 0.6
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, beta=0.25),
+                0.9 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, beta=0.2)
+                + 0.5
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, beta=0.25),
+            ]
+        ).reshape(1, 1, 1, 1, 1, 2, 1, 1),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3, 0.35]),
+            np.array([[1.0, 0.8], [0.7, 0.8]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4]),
+            np.array([[1.0]]),
+        ),
+        np.array(
+            [
+                1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, gamma=0.3)
+                + 0.7
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, gamma=0.35),
+                0.8 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, gamma=0.3)
+                + 0.8
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, gamma=0.35),
+            ]
+        ).reshape(1, 1, 1, 1, 1, 1, 2, 1),
+    )
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.2, 0.4, 0.6]),
+            2,
+            np.array([[0, 1, 1]]),
+            np.array([0.1]),
+            np.array([[1.0]]),
+            np.array([1.0, 1.5, 2.0]),
+            1,
+            np.array([[0, 0, 1]]),
+            np.array([0.2]),
+            np.array([[1.0]]),
+            np.array([0.1, 0.3, 0.5]),
+            1,
+            np.array([[1, 0, 0]]),
+            np.array([0.3]),
+            np.array([[1.0]]),
+            np.array([1.1, 1.6, 2.1]),
+            3,
+            np.array([[1, 1, 1]]),
+            np.array([0.4, 0.45]),
+            np.array([[1.0, 1.1], [0.8, 0.9]]),
+        ),
+        np.array(
+            [
+                1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.4)
+                + 0.8
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.45),
+                1.1 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.4)
+                + 0.9
+                * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.45),
+            ]
+        ),
     )
