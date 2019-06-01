@@ -4,7 +4,13 @@ from gbasis._two_elec_int import (
     _compute_two_elec_integrals_angmom_zero,
 )
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.electron_repulsion import ElectronRepulsionIntegral
+from gbasis.electron_repulsion import (
+    electron_repulsion_cartesian,
+    electron_repulsion_lincomb,
+    electron_repulsion_mix,
+    electron_repulsion_spherical,
+    ElectronRepulsionIntegral,
+)
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -136,3 +142,54 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
     test = ElectronRepulsionIntegral(basis).construct_array_cartesian()
     test = np.einsum("ijkl->ikjl", test)
     assert np.allclose(horton_elec_repulsion, test)
+
+
+def test_electron_repulsion_cartesian():
+    """Test gbasis.electron_repulsion.electron_repulsion_cartesian."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+
+    erep_obj = ElectronRepulsionIntegral(basis)
+    assert np.allclose(erep_obj.construct_array_cartesian(), electron_repulsion_cartesian(basis))
+
+
+def test_electron_repulsion_spherical():
+    """Test gbasis.electron_repulsion.electron_repulsion_spherical."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+
+    erep_obj = ElectronRepulsionIntegral(basis)
+    assert np.allclose(erep_obj.construct_array_spherical(), electron_repulsion_spherical(basis))
+
+
+def test_electron_repulsion_mix():
+    """Test gbasis.electron_repulsion.electron_repulsion_mix."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+
+    erep_obj = ElectronRepulsionIntegral(basis)
+    assert np.allclose(
+        erep_obj.construct_array_mix(["spherical"] * 3),
+        electron_repulsion_mix(basis, ["spherical"] * 3),
+    )
+
+
+def test_electron_repulsion_lincomb():
+    """Test gbasis.electron_repulsion.electron_repulsion_lincomb."""
+    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
+        test_basis = f.read()
+    basis_dict = parse_nwchem(test_basis)
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+
+    erep_obj = ElectronRepulsionIntegral(basis)
+    transform = np.random.rand(3, 5)
+    assert np.allclose(
+        erep_obj.construct_array_lincomb(transform, "spherical"),
+        electron_repulsion_lincomb(basis, transform),
+    )
