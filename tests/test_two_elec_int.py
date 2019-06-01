@@ -63,6 +63,10 @@ def two_int_brute(
     beta=0.2,
     gamma=0.3,
     delta=0.4,
+    coord_a=(0.2, 0.4, 0.6),
+    coord_b=(1.0, 1.5, 2.0),
+    coord_c=(0.1, 0.3, 0.5),
+    coord_d=(1.1, 1.6, 2.1),
     output=False,
 ):
     """Return the answer to the two-electron integral tests.
@@ -122,10 +126,10 @@ def two_int_brute(
     zeta = alpha + beta
     eta = gamma + delta
     rho = zeta * eta / (zeta + eta)
-    x_a, y_a, z_a = 0.2, 0.4, 0.6
-    x_b, y_b, z_b = 1.0, 1.5, 2.0
-    x_c, y_c, z_c = 0.1, 0.3, 0.5
-    x_d, y_d, z_d = 1.1, 1.6, 2.1
+    x_a, y_a, z_a = coord_a
+    x_b, y_b, z_b = coord_b
+    x_c, y_c, z_c = coord_c
+    x_d, y_d, z_d = coord_d
 
     x_p = (alpha * x_a + beta * x_b) / zeta
     y_p = (alpha * y_a + beta * y_b) / zeta
@@ -192,24 +196,106 @@ def two_int_brute(
     if i_1 == i_2 == j_0 == j_1 == j_2 == k_0 == k_1 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
             (x_p - x_a)
-            * two_int_brute(i_0 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta)
+            * two_int_brute(
+                i_0 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
+            )
             - rho
             / zeta
             * (x_p - x_q)
             * two_int_brute(
-                i_0 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                i_0 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m + 1,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (i_0 - 1)
             / 2
             / zeta
             * (
                 two_int_brute(
-                    i_0 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                    i_0 - 2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    m,
+                    alpha,
+                    beta,
+                    gamma,
+                    delta,
+                    coord_a,
+                    coord_b,
+                    coord_c,
+                    coord_d,
                 )
                 - rho
                 / zeta
                 * two_int_brute(
-                    i_0 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                    i_0 - 2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    m + 1,
+                    alpha,
+                    beta,
+                    gamma,
+                    delta,
+                    coord_a,
+                    coord_b,
+                    coord_c,
+                    coord_d,
                 )
             )
         ) * norm
@@ -217,25 +303,105 @@ def two_int_brute(
         return (
             (y_p - y_a)
             * two_int_brute(
-                i_0, i_1 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             - rho
             / zeta
             * (y_p - y_q)
             * two_int_brute(
-                i_0, i_1 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                i_0,
+                i_1 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m + 1,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (i_1 - 1)
             / 2
             / zeta
             * (
                 two_int_brute(
-                    i_0, i_1 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                    i_0,
+                    i_1 - 2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    m,
+                    alpha,
+                    beta,
+                    gamma,
+                    delta,
+                    coord_a,
+                    coord_b,
+                    coord_c,
+                    coord_d,
                 )
                 - rho
                 / zeta
                 * two_int_brute(
-                    i_0, i_1 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                    i_0,
+                    i_1 - 2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    m + 1,
+                    alpha,
+                    beta,
+                    gamma,
+                    delta,
+                    coord_a,
+                    coord_b,
+                    coord_c,
+                    coord_d,
                 )
             )
         ) * norm
@@ -243,25 +409,105 @@ def two_int_brute(
         return (
             (z_p - z_a)
             * two_int_brute(
-                i_0, i_1, i_2 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             - rho
             / zeta
             * (z_p - z_q)
             * two_int_brute(
-                i_0, i_1, i_2 - 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m + 1,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (i_2 - 1)
             / 2
             / zeta
             * (
                 two_int_brute(
-                    i_0, i_1, i_2 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                    i_0,
+                    i_1,
+                    i_2 - 2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    m,
+                    alpha,
+                    beta,
+                    gamma,
+                    delta,
+                    coord_a,
+                    coord_b,
+                    coord_c,
+                    coord_d,
                 )
                 - rho
                 / zeta
                 * two_int_brute(
-                    i_0, i_1, i_2 - 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, m + 1, alpha, beta, gamma, delta
+                    i_0,
+                    i_1,
+                    i_2 - 2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    m + 1,
+                    alpha,
+                    beta,
+                    gamma,
+                    delta,
+                    coord_a,
+                    coord_b,
+                    coord_c,
+                    coord_d,
                 )
             )
         ) * norm
@@ -270,48 +516,208 @@ def two_int_brute(
         return (
             ((x_q - x_c) + zeta / eta * (x_p - x_a))
             * two_int_brute(
-                i_0, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + i_0
             / 2
             / eta
             * two_int_brute(
-                i_0 - 1, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0 - 1,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (k_0 - 1)
             / 2
             / eta
             * two_int_brute(
-                i_0, i_1, i_2, 0, 0, 0, k_0 - 2, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0 - 2,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             - zeta
             / eta
             * two_int_brute(
-                i_0 + 1, i_1, i_2, 0, 0, 0, k_0 - 1, 0, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0 + 1,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0 - 1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     if j_0 == j_1 == j_2 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
             ((y_q - y_c) + zeta / eta * (y_p - y_a))
             * two_int_brute(
-                i_0, i_1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0,
+                k_1 - 1,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + i_1
             / 2
             / eta
             * two_int_brute(
-                i_0, i_1 - 1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1 - 1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0,
+                k_1 - 1,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (k_1 - 1)
             / 2
             / eta
             * two_int_brute(
-                i_0, i_1, i_2, 0, 0, 0, k_0, k_1 - 2, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0,
+                k_1 - 2,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             - zeta
             / eta
             * two_int_brute(
-                i_0, i_1 + 1, i_2, 0, 0, 0, k_0, k_1 - 1, 0, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1 + 1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0,
+                k_1 - 1,
+                0,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     if j_0 == j_1 == j_2 == l_0 == l_1 == l_2 == 0:
@@ -324,18 +730,78 @@ def two_int_brute(
             / 2
             / eta
             * two_int_brute(
-                i_0, i_1, i_2 - 1, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2 - 1,
+                0,
+                0,
+                0,
+                k_0,
+                k_1,
+                k_2 - 1,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (k_2 - 1)
             / 2
             / eta
             * two_int_brute(
-                i_0, i_1, i_2, 0, 0, 0, k_0, k_1, k_2 - 2, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2,
+                0,
+                0,
+                0,
+                k_0,
+                k_1,
+                k_2 - 2,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             - zeta
             / eta
             * two_int_brute(
-                i_0, i_1, i_2 + 1, 0, 0, 0, k_0, k_1, k_2 - 1, 0, 0, 0, m, alpha, beta, gamma, delta
+                i_0,
+                i_1,
+                i_2 + 1,
+                0,
+                0,
+                0,
+                k_0,
+                k_1,
+                k_2 - 1,
+                0,
+                0,
+                0,
+                m,
+                alpha,
+                beta,
+                gamma,
+                delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     # horizontal recursion for b
@@ -359,6 +825,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (x_a - x_b)
             * two_int_brute(
@@ -379,6 +849,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     if j_2 == l_0 == l_1 == l_2 == 0:
@@ -401,6 +875,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (y_a - y_b)
             * two_int_brute(
@@ -421,6 +899,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     if l_0 == l_1 == l_2 == 0:
@@ -443,6 +925,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (z_a - z_b)
             * two_int_brute(
@@ -463,6 +949,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     # horizontal recursion for d
@@ -486,6 +976,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (x_c - x_d)
             * two_int_brute(
@@ -506,6 +1000,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     if l_2 == 0:
@@ -528,6 +1026,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
             + (y_c - y_d)
             * two_int_brute(
@@ -548,6 +1050,10 @@ def two_int_brute(
                 beta,
                 gamma,
                 delta,
+                coord_a,
+                coord_b,
+                coord_c,
+                coord_d,
             )
         ) * norm
     return (
@@ -569,6 +1075,10 @@ def two_int_brute(
             beta,
             gamma,
             delta,
+            coord_a,
+            coord_b,
+            coord_c,
+            coord_d,
         )
         + (z_c - z_d)
         * two_int_brute(
@@ -589,6 +1099,10 @@ def two_int_brute(
             beta,
             gamma,
             delta,
+            coord_a,
+            coord_b,
+            coord_c,
+            coord_d,
         )
     ) * norm
 
@@ -777,6 +1291,76 @@ def test_two_int_brute():
             delta=0.5,
         ),
         -0.015147214477383354,
+    )
+
+    # sspp
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, output=True), 0.09284062042556687
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, output=True), -0.07839464083963657
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, output=True), 0.0811247584910971
+    )
+    # ssdd
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, output=True), 0.09927994323113697
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, output=True), 0.11133452322791097
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, output=True), 0.09517166304851872
+    )
+    # ssff
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, output=True), 0.06503259723193466
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, output=True), -0.06833176852396329
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, output=True), 0.0875150768518511
+    )
+    # sspp diff exponets
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        0.011285298359112576,
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        -0.01128529835911257,
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        -3.724520910598359e-05,
+    )
+    # ssdd diff exponets
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        0.01300963655953441,
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        0.013009636559534408,
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        0.007474093219268355,
+    )
+    # ssff diff exponets
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        0.01162655601223461,
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        -0.011626556012234605,
+    )
+    assert np.allclose(
+        two_int_brute(0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0.01, 0.01, 1, 1, output=True),
+        0.0059448648293465006,
     )
 
 
@@ -1341,4 +1925,87 @@ def test_compute_two_elec_integrals_generalized_contractions():
                 * two_int_brute(0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, output=True, delta=0.45),
             ]
         ),
+    )
+
+
+@pytest.mark.xfail(
+    reason="Known Bug: integrals with larger angular momentum and exponents results in an overflow."
+)
+def test_compute_two_elec_integrals_overflow_horton():
+    """Test compute_two_elec_integrals against horton results for large exponents.
+
+    Note that the output of _compute_two_elec_integrals does not normalize the contractions.
+
+    """
+    assert np.allclose(
+        _compute_two_elec_integrals(
+            boys_func,
+            np.array([0.0, 0.0, 0.0]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array(
+                [
+                    1.8861445e02,
+                    2.8276596e01,
+                    6.4248300e00,
+                    1.8150410e00,
+                    5.9106300e-01,
+                    2.1214900e-01,
+                    7.9891000e-02,
+                    2.7962000e-02,
+                ]
+            ),
+            np.array(
+                [
+                    [-0.0212892],
+                    [-0.1095596],
+                    [-1.481826],
+                    [3.0272963],
+                    [-3.763086],
+                    [3.6574131],
+                    [-2.501237],
+                    [0.89405394],
+                ]
+            ),
+            np.array([0.8, 0.0, 0.0]),
+            0,
+            np.array([[0, 0, 0]]),
+            np.array(
+                [
+                    1.1492705e03,
+                    1.7204457e02,
+                    3.9080465e01,
+                    1.1036173e01,
+                    3.5641520e00,
+                    1.2404430e00,
+                    4.4731600e-01,
+                    1.6420600e-01,
+                    5.7472000e-02,
+                ]
+            ),
+            np.array(
+                [
+                    [0.01263588],
+                    [-0.0848571],
+                    [1.9186237],
+                    [-2.949231],
+                    [2.8122735],
+                    [-2.270835],
+                    [1.6543987],
+                    [-1.000829],
+                    [0.36960362],
+                ]
+            ),
+            np.array([0.8, 0.0, 0.0]),
+            3,
+            np.array([[3, 0, 0]]),
+            np.array([0.725333]),
+            np.array([[1.0]]),
+            np.array([0.8, 0.0, 0.0]),
+            3,
+            np.array([[3, 0, 0]]),
+            np.array([0.725333]),
+            np.array([[1.0]]),
+        ),
+        -0.02080288848109975,
     )
