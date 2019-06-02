@@ -94,10 +94,12 @@ def _compute_two_elec_integrals_angmom_zero(
         Sixth index corresponds to the segmented contractions of contraction b.
         Seventh index corresponds to the segmented contractions of contraction c.
         Eighth index corresponds to the segmented contractions of contraction d.
+        Note that the integrals are in Chemists' notation.
 
     Notes
     -----
     All of the contractions are assumed to have angular momentum of zero.
+    Integrals are in Chemists' notation.
 
     """
     coord_a = coord_a[:, np.newaxis, np.newaxis, np.newaxis, np.newaxis]

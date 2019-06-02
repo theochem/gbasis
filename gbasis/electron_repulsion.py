@@ -49,22 +49,27 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         associated with the fourth index.
         `L_cart_4` is the number of Cartesian contractions for the given angular momentum associated
         with the fourth index.
+        Note that the integrals are in Chemists' notation.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart, K_cart, K_cart)
         Return the electron-electron repulsion integrals associated with Cartesian Gaussians.
         `K_cart` is the total number of Cartesian contractions within the instance.
+        Note that the integrals are in Chemists' notation.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph, K_sph, K_sph)
         Return the electron-electron repulsion integrals associated with spherical Gaussians (atomic
         orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
+        Note that the integrals are in Chemists' notation.
     construct_array_mix(self, coord_types) : np.ndarray(K_cont, K_cont, K_cont, K_cont)
         Return the electron-electron repulsion integrals associated with all of the contraction in
         the given coordinate system.
         `K_cont` is the total number of contractions within the given basis set.
+        Note that the integrals are in Chemists' notation.
     construct_array_lincomb(self, transform, coord_type) :
     np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs)
         Return the electron-electron repulsion integrals associated with linear combinations of
         contractions in the given coordinate system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
+        Note that the integrals are in Chemists' notation.
 
     """
 
@@ -72,7 +77,7 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
 
     @classmethod
     def construct_array_contraction(cls, cont_one, cont_two, cont_three, cont_four):
-        """Return electron-electron repulsion interaction integral for the given contractions.
+        r"""Return electron-electron repulsion interaction integral for the given contractions.
 
         Parameters
         ----------
@@ -118,6 +123,9 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
             Eighth axis corresponds to the angular momentum vector of the `cont4`.`L_cart_4` is the
             number of Cartesian contractions for the given angular momentum associated with the
             fourth index.
+            Integrals are in Chemists' notation, i.e. `cont1` and `cont2` are associated with the
+            coordinate :math:`\mathbf{r}_1` and `cont3` and `cont4` are associated with coordinate
+            :math:`\mathbf{r}_2`.
 
         Raises
         ------
@@ -126,6 +134,14 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
             If `contractions_two` is not a GeneralizedContractionShell instance.
             If `contractions_three` is not a GeneralizedContractionShell instance.
             If `contractions_four` is not a GeneralizedContractionShell instance.
+
+        Notes
+        -----
+        The integrals are in Chemists' notation. This means that all of `construct_array_cartesian`,
+        `construct_array_spherical`, `construct_array_mix`, and `construct_array_lincomb` are in
+        Chemists' notation. To use Physicists' notation instead, see `electron_repulsion_cartesian`,
+        `electron_repulsion_spherical`, `electron_repulsion_mix`, and `electron_repulsion_lincomb`,
+        respectively.
 
         """
         # pylint: disable=R0914
@@ -187,13 +203,16 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         return integrals
 
 
-def electron_repulsion_cartesian(basis):
+def electron_repulsion_cartesian(basis, notation="physicist"):
     """Return the electron repulsion integrals of the basis set in Cartesian form.
 
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    notation : {"physicist", "chemist"}
+        Convention with which the integrals are ordered.
+        Default is Physicists' notation.
 
     Returns
     -------
@@ -202,17 +221,31 @@ def electron_repulsion_cartesian(basis):
         Indices of the array are associated with the contracted Cartesian Gaussians. `K_cart` is the
         total number of Cartesian contractions within the instance.
 
+    Raises
+    ------
+    ValueError
+        If `notation` is not one of "physicist" or "chemist".
+
     """
-    return ElectronRepulsionIntegral(basis).construct_array_cartesian()
+    if notation not in ["physicist", "chemist"]:
+        raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
+
+    array = ElectronRepulsionIntegral(basis).construct_array_cartesian()
+    if notation == "physicist":
+        array = np.transpose(array, (0, 2, 1, 3))
+    return array
 
 
-def electron_repulsion_spherical(basis):
+def electron_repulsion_spherical(basis, notation="physicist"):
     """Return the electron repulsion integrals of the basis set in the spherical form.
 
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    notation : {"physicist", "chemist"}
+        Convention with which the integrals are ordered.
+        Default is Physicists' notation.
 
     Returns
     -------
@@ -222,11 +255,22 @@ def electron_repulsion_spherical(basis):
         Indices of the array are associated with two contracted spherical Gaussians (atomic
         orbitals). `K_sph` is the total number of spherical contractions within the instance.
 
+    Raises
+    ------
+    ValueError
+        If `notation` is not one of "physicist" or "chemist".
+
     """
-    return ElectronRepulsionIntegral(basis).construct_array_spherical()
+    if notation not in ["physicist", "chemist"]:
+        raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
+
+    array = ElectronRepulsionIntegral(basis).construct_array_spherical()
+    if notation == "physicist":
+        array = np.transpose(array, (0, 2, 1, 3))
+    return array
 
 
-def electron_repulsion_mix(basis, coord_types):
+def electron_repulsion_mix(basis, coord_types, notation="physicist"):
     """Return the electron repulsion integrals of basis set in the given coordinate systems.
 
     Parameters
@@ -236,6 +280,9 @@ def electron_repulsion_mix(basis, coord_types):
     coord_types : list/tuple of str
         Types of the coordinate system for each GeneralizedContractionShell.
         Each entry must be one of "cartesian" or "spherical".
+    notation : {"physicist", "chemist"}
+        Convention with which the integrals are ordered.
+        Default is Physicists' notation.
 
     Returns
     -------
@@ -245,11 +292,22 @@ def electron_repulsion_mix(basis, coord_types):
         Indices of the array are associated with two contractions in the given coordinate system.
         `K_cont` is the total number of contractions within the given basis set.
 
+    Raises
+    ------
+    ValueError
+        If `notation` is not one of "physicist" or "chemist".
+
     """
-    return ElectronRepulsionIntegral(basis).construct_array_mix(coord_types)
+    if notation not in ["physicist", "chemist"]:
+        raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
+
+    array = ElectronRepulsionIntegral(basis).construct_array_mix(coord_types)
+    if notation == "physicist":
+        array = np.transpose(array, (0, 2, 1, 3))
+    return array
 
 
-def electron_repulsion_lincomb(basis, transform, coord_type="spherical"):
+def electron_repulsion_lincomb(basis, transform, coord_type="spherical", notation="physicist"):
     """Return the electron repulsion integrals of the linear combination of basis set.
 
     Parameters
@@ -267,6 +325,9 @@ def electron_repulsion_lincomb(basis, transform, coord_type="spherical"):
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
+    notation : {"physicist", "chemist"}
+        Convention with which the integrals are ordered.
+        Default is Physicists' notation.
 
     Returns
     -------
@@ -276,5 +337,16 @@ def electron_repulsion_lincomb(basis, transform, coord_type="spherical"):
         First and second indices of the array correspond to the linear combination of contractions.
         `K_orbs` is the number of basis functions produced after the linear combinations.
 
+    Raises
+    ------
+    ValueError
+        If `notation` is not one of "physicist" or "chemist".
+
     """
-    return ElectronRepulsionIntegral(basis).construct_array_lincomb(transform, coord_type)
+    if notation not in ["physicist", "chemist"]:
+        raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
+
+    array = ElectronRepulsionIntegral(basis).construct_array_lincomb(transform, coord_type)
+    if notation == "physicist":
+        array = np.transpose(array, (0, 2, 1, 3))
+    return array
