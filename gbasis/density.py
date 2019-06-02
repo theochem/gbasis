@@ -96,6 +96,78 @@ def eval_density(one_density_matrix, basis, coords, transform, coord_type="spher
     return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
 
 
+def eval_deriv_density_matrix(
+    orders_one, orders_two, one_density_matrix, basis, coords, transform, coord_type="spherical"
+):
+    r"""Return the derivative of the density matrix evaluated at the same point.
+
+    ..math::
+
+        \left.
+        \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
+        \frac{\partial^{q_x + q_y + q_z}}{\partial x_2^{q_x} \partial y_2^{q_y} \partial z_2^{q_z}}
+        \gamma(\mathbf{r}_1, \mathbf{r}_2)
+        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}_n} =
+        \sum_{ij} \gamma_{ij}
+        \left.
+        \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
+        \phi_i(\mathbf{r}_1)
+        \right|_{\mathbf{r}_1 = \mathbf{r}_n}
+        \left.
+        \frac{\partial^{q_x + q_y + q_z}}{\partial x_2^{q_x} \partial y_2^{q_y} \partial z_2^{q_z}}
+        \phi_j(\mathbf{r}_2)
+        \right|_{\mathbf{r}_1 = \mathbf{r}_n}
+
+    where :math:`\mathbf{r}_1` is the first coordinate, :math:`\mathbf{r}_2` is the second
+    coordinate, and :math:`\mathbf{r}_n` is the coordinate at which the derivative is evaluated.
+
+    Parameters
+    ----------
+    orders_one : np.ndarray(3,)
+        Orders of the derivative for the first coordinate.
+    orders_two : np.ndarray(3,)
+        Orders of the derivative for the second coordinate.
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix.
+    basis : list/tuple of GeneralizedContractionShell
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each GeneralizedContractionShell instance.
+        Default value is "spherical".
+
+    Returns
+    -------
+    deriv_density_matrix : np.ndarray(N,)
+        Derivative of the density matrix evaluated at the given coordinates.
+
+    """
+    deriv_orb_eval_one = evaluate_deriv_basis_lincomb(
+        basis, coords, orders_one, transform, coord_type=coord_type
+    )
+    if np.array_equal(orders_one, orders_two):
+        deriv_orb_eval_two = deriv_orb_eval_one
+    else:
+        deriv_orb_eval_two = evaluate_deriv_basis_lincomb(
+            basis, coords, orders_two, transform, coord_type=coord_type
+        )
+    density = one_density_matrix.dot(deriv_orb_eval_two)
+    density *= deriv_orb_eval_one
+    density = np.sum(density, axis=0)
+    return density
+
+
 def eval_deriv_density(
     orders, one_density_matrix, basis, coords, transform, coord_type="spherical"
 ):
@@ -149,15 +221,15 @@ def eval_deriv_density(
                 num_occurence = comb(total_l_x, l_x) * comb(total_l_y, l_y) * comb(total_l_z, l_z)
                 orders_one = np.array([l_x, l_y, l_z])
                 orders_two = orders - orders_one
-                deriv_orb_eval_one = evaluate_deriv_basis_lincomb(
-                    basis, coords, orders_one, transform, coord_type=coord_type
+                density = eval_deriv_density_matrix(
+                    orders_one,
+                    orders_two,
+                    one_density_matrix,
+                    basis,
+                    coords,
+                    transform,
+                    coord_type=coord_type,
                 )
-                deriv_orb_eval_two = evaluate_deriv_basis_lincomb(
-                    basis, coords, orders_two, transform, coord_type=coord_type
-                )
-                density = one_density_matrix.dot(deriv_orb_eval_two)
-                density *= deriv_orb_eval_one
-                density = np.sum(density, axis=0)
                 output += factor * num_occurence * density
     return output
 
@@ -353,11 +425,7 @@ def eval_posdef_kinetic_energy_density(
     """
     output = np.zeros(coords.shape[0])
     for orders in np.identity(3, dtype=int):
-        deriv_orb_eval = evaluate_deriv_basis_lincomb(
-            basis, coords, orders, transform, coord_type=coord_type
+        output += eval_deriv_density_matrix(
+            orders, orders, one_density_matrix, basis, coords, transform, coord_type=coord_type
         )
-        density = one_density_matrix.dot(deriv_orb_eval)
-        density *= deriv_orb_eval
-        density = np.sum(density, axis=0)
-        output += density
     return 0.5 * output
