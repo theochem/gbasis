@@ -429,3 +429,64 @@ def eval_posdef_kinetic_energy_density(
             orders, orders, one_density_matrix, basis, coords, transform, coord_type=coord_type
         )
     return 0.5 * output
+
+
+# TODO: test against a reference
+def eval_general_kinetic_energy_density(
+    one_density_matrix, basis, coords, transform, alpha, coord_type="spherical"
+):
+    r"""Return evaluations of general form of the kinetic energy density.
+
+    .. math::
+
+        t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)
+
+    where :math:`t_+` is the positive definite kinetic energy density.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix.
+    basis : list/tuple of GeneralizedContractionShell
+        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+    coords : np.ndarray(N, 3)
+        Points in space where the contractions are evaluated.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left.
+        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+        contractions (i.e. AO).
+    alpha : float
+        Parameter of the general form of the kinetic energy density.
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each GeneralizedContractionShell instance.
+        Default value is "spherical".
+
+    Returns
+    -------
+    general_kindetic_energy_density : np.ndarray(N,)
+        General kintic energy density of the given transformed basis set evaluated at the given
+        coordinates.
+
+    Raises
+    ------
+    TypeError
+        If `alpha` is not an integer or a float.
+
+    """
+    if not isinstance(alpha, (int, float)):
+        raise TypeError("`alpha` must be an int or float.")
+
+    general_kinetic_energy_density = eval_posdef_kinetic_energy_density(
+        one_density_matrix, basis, coords, transform, coord_type=coord_type
+    )
+    if alpha != 0:
+        general_kinetic_energy_density += alpha * eval_density_laplacian(
+            one_density_matrix, basis, coords, transform, coord_type=coord_type
+        )
+    return general_kinetic_energy_density
