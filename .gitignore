@@ -106,3 +106,10 @@ venv.bak/
 
 # vim
 *.swp
+
+# tex
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.toc
