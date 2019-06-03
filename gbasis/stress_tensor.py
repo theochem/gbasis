@@ -3,7 +3,6 @@ from gbasis.density import eval_density_laplacian, eval_deriv_density, eval_deri
 import numpy as np
 
 
-# TODO: if this is symmetric, then we can symmeterize it instead of computing the entire array
 # TODO: need to be tested against reference
 def eval_stress_tensor(
     one_density_matrix, basis, coords, transform, alpha=1, beta=0, coord_type="spherical"
@@ -88,7 +87,8 @@ def eval_stress_tensor(
         raise TypeError("`beta` must be an integer or a float.")
     output = np.zeros((3, 3, coords.shape[0]))
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
-        for j, orders_one in enumerate(np.identity(3, dtype=int)):
+        for j, orders_one in enumerate(np.identity(3, dtype=int)[i:]):
+            j += i
             if alpha != 0:
                 output[i, j] -= alpha * eval_deriv_density_matrix(
                     orders_one,
@@ -117,6 +117,7 @@ def eval_stress_tensor(
                         one_density_matrix, basis, coords, transform, coord_type=coord_type
                     )
                 )
+            output[j, i] = output[i, j]
     return np.transpose(output, (2, 1, 0))
 
 
