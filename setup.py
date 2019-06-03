@@ -24,7 +24,7 @@ setup(
     # Denotes that our long_description is in Markdown; valid values are
     # text/plain, text/x-rst, and text/markdown
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/theochem/gbasis",
     # This should be your name or the name of the organization which owns the
     # project.
     # author='',
@@ -40,10 +40,13 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        "Development Status :: 1 - Planning",
+        "Development Status :: 3 - Alpha",
         # Indicate who your project is intended for
-        "Intended Audience :: Quantum Chemists",
-        "Topic :: Gaussian :: Integral :: Differentiation :: Evaluation",
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Developers",
+        "Topic :: Scientific/Engineering :: Chemistry",
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Scientific/Engineering :: Mathematics",
         # Pick your license as you wish
         "License :: OSI Approved :: GNU Version 3",
         # Specify the Python versions you support here.
@@ -52,10 +55,10 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
-    keywords="gaussian integration differentiation evaluation density",
+    keywords="gaussian primitive contraction orbital integral differentiation evaluation density ",
     packages=find_packages(exclude=["docs", "tests"]),
     python_requires=">=3.5",
-    install_requires=["numpy", "scipy"],
+    install_requires=["numpy>=1.10", "scipy>=1.0"],
     extras_require={
         "dev": [
             "tox",
@@ -88,7 +91,7 @@ setup(
     # List additional URLs that are relevant to your project as a dict.
     project_urls={
         "Bug Reports": "https://github.com/theochem/gbasis/issues",
-        "Organization": "https://github.com/quantumelephant/",
+        "Organization": "https://github.com/theochem/",
         "Source": "https://github.com/theochem/gbasis/",
     },
 )
