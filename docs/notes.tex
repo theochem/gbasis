@@ -8,7 +8,7 @@
 \begin{document}
 \tableofcontents
 
-\section{Gaussian Primitive (Primitive)}
+\section{Gaussian Primitive}
 A Cartesian Gaussian primitive is
 \begin{equation}
   \label{eq:cart_prim}
@@ -19,7 +19,7 @@ A Cartesian Gaussian primitive is
 \end{equation}
 where $\mathbf{r} = (x, y, z)$, $\mathbf{R}_A$ is the center of the primitive,
 $\mathbf{a} = (a_x, a_y, a_z)$ is the Cartesian components of the angular
-momentum, $\ell = a_x + a_y + a_z$, and the
+momentum, $\ell = a_x + a_y + a_z$, and
 \begin{equation}
   \label{eq:cart_norm}
   \begin{split}
@@ -83,9 +83,9 @@ Real-valued solid harmonics are denoted with $S_{\ell m}$.
 \end{equation}
 In this module, we strictly utilize Cartesian Gaussian primitives at the lower
 level and transform to the spherical form whenever needed.
-Therefore, we will denote Cartesian primitives as primitives.
+Therefore, primitives will refer to Cartesian primitives unless otherwise stated.
 
-\subsection{Transformation of Spherical to Cartesian}
+\subsection{Transformation of Spherical Primitives to Cartesian Primitives}
 To transform the spherical primitives to Cartesian primitives, the (real) solid
 harmonics are first transformed into the Cartesian expressions.
 Using the equations from Helgaker 6.4.4,
@@ -145,7 +145,7 @@ with the spherical primitive.
   \end{split}
 \end{equation}
 
-\section{Contraction}
+\section{Contractions}
 Cartesian contractions are linear combinations of Cartesian primitives.
 \begin{equation}
   \label{eq:contraction}
@@ -220,7 +220,7 @@ To avoid confusion with the term contraction, we use the term ``shell of
 segmented contractions''.
 
 \subsection{Generalized Contractions}
-Generalized contractions is a set of contractions that have the same center
+Generalized contractions are a set of contractions that have the same center
 ($\mathbf{R}_A$) and exponents
 ($\boldsymbol{\alpha}$).
 \begin{equation}
@@ -389,7 +389,7 @@ These functions can be used to find the values of the orbitals at various
 points, such as a grid.
 
 \subsection{Evaluation of derivatives of contractions}
-In \verb|gbasis|, contractions can be derivatized to orbitrary orders.
+In \verb|gbasis|, contractions can be derivatized to arbitrary orders.
 The functions in module \verb|gbasis.eval_deriv| return the evaluations of the
 given derivative of the contractions at different coordinates.
 \begin{equation}
