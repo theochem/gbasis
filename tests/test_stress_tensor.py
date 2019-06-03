@@ -67,11 +67,6 @@ def test_eval_stress_tensor():
                 test_d[:, i, j], -0.25 * temp1 - 0.25 * temp2 + 0.25 * temp3 + 0.25 * temp4 - temp5
             )
 
-    assert np.allclose(test_a, np.swapaxes(test_a, 1, 2))
-    assert np.allclose(test_b, np.swapaxes(test_b, 1, 2))
-    assert np.allclose(test_c, np.swapaxes(test_c, 1, 2))
-    assert np.allclose(test_d, np.swapaxes(test_d, 1, 2))
-
 
 def test_eval_ehrenfest_force():
     """Test gbasis.stress_tensor.eval_ehrenfest_force."""
