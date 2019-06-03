@@ -392,7 +392,19 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_typ
 def eval_posdef_kinetic_energy_density(
     one_density_matrix, basis, coords, transform, coord_type="spherical"
 ):
-    """Return evaluations of positive definite kinetic energy density.
+    r"""Return evaluations of positive definite kinetic energy density.
+
+    ..math::
+
+        t_+ (\mathbf{r}_n)
+        &= \frac{1}{2} \left.
+          \nabla_{\mathbf{r}} \cdot \nabla_{\mathbf{r}'} \gamma(\mathbf{r}, \mathbf{r}')
+        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+        &= \frac{1}{2} \left(
+          \frac{\partial^2}{\partial x \partial x'} \gamma(\mathbf{r}, \mathbf{r}')
+          + \frac{\partial^2}{\partial y \partial y'} \gamma(\mathbf{r}, \mathbf{r}')
+          + \frac{\partial^2}{\partial z \partial z'} \gamma(\mathbf{r}, \mathbf{r}')
+        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
 
     Parameters
     ----------
