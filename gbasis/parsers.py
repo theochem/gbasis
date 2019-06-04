@@ -68,6 +68,94 @@ def parse_nwchem(nwchem_basis):
     return output
 
 
+def parse_gbs(gbs_basis):
+    """Parse Gaussian94 basis set file.
+
+    Parameters
+    ----------
+    gbs_basis : str
+        Contents of the Gaussian94 basis set file.
+
+    Returns
+    -------
+    basis_dict : dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)
+        Dictionary of the element to the list of angular momentum, exponents, and contraction
+        coefficients associated with each contraction at the given atom.
+
+    Notes
+    -----
+    Angular momentum symbol is hard-coded into this function. This means that if the selected basis
+    set has an angular momentum greater tha "k", an error will be raised.
+
+    Since Gaussian94 basis format does not explicitly state which contractions are generalized, we
+    infer that subsequent contractions belong to the same generalized shell if they have the same
+    exponents and angular momentum. If two contractions are not one after another or if they are
+    associated with more than one angular momentum, they are treated to be segmented contractions.
+
+    """
+    # pylint: disable=R0914
+    data = re.split(r"\n\s*(\w[\w]?)\s+\w+\s*\n", gbs_basis)
+    dict_angmom = {"s": 0, "p": 1, "d": 2, "f": 3, "g": 4, "h": 5, "i": 6, "k": 7}
+    # remove first part
+    if "\n" in data[0]:
+        data = data[1:]
+
+    atoms = data[::2]
+    basis = data[1::2]
+    # trim out headers at the end
+    output = {}
+    for atom, shells in zip(atoms, basis):
+        output.setdefault(atom, [])
+
+        shells = re.split(r"\n?\s*(\w+)\s+\w+\s+\w+\.\w+\s*\n", shells)
+        # remove the ends
+        atom_basis = shells[1:]
+        # get angular momentums
+        angmom_shells = atom_basis[::2]
+        # get exponents and coefficients
+        exps_coeffs_shells = atom_basis[1::2]
+        for angmom_seg, exp_coeffs in zip(angmom_shells, exps_coeffs_shells):
+            angmom_seg = [dict_angmom[i.lower()] for i in angmom_seg]
+            exps = []
+            coeffs_seg = []
+            exp_coeffs = exp_coeffs.split("\n")
+            for line in exp_coeffs:
+                test = re.search(
+                    r"^\s*([0-9\.DE\+\-]+)\s+((?:(?:[0-9\.DE\+\-]+)\s+)*(?:[0-9\.DE\+\-]+))\s*$",
+                    line,
+                )
+                try:
+                    exp, coeff_seg = test.groups()
+                    coeff_seg = re.split(r"\s+", coeff_seg)
+                except AttributeError:
+                    continue
+                # clean up
+                exp = float(exp.lower().replace("d", "e"))
+                coeff_seg = [float(i.lower().replace("d", "e")) for i in coeff_seg if i is not None]
+                exps.append(exp)
+                coeffs_seg.append(coeff_seg)
+            exps = np.array(exps)
+            coeffs_seg = np.array(coeffs_seg)
+
+            # if len(angmom_seg) == 1:
+            #     coeffs_seg = coeffs_seg[:, None]
+            for i, angmom in enumerate(angmom_seg):
+                if (
+                    output[atom]
+                    and output[atom][-1][0] == angmom
+                    and np.allclose(output[atom][-1][1], exps)
+                ):
+                    output[atom][-1] = (
+                        angmom,
+                        exps,
+                        np.hstack([output[atom][-1][2], coeffs_seg[:, i : i + 1]]),
+                    )
+                else:
+                    output[atom].append((angmom, exps, coeffs_seg[:, i : i + 1]))
+
+    return output
+
+
 def make_contractions(basis_dict, atoms, coords):
     """Return the contractions that correspond to the given atoms for the given basis.
 
