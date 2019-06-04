@@ -1,6 +1,7 @@
 """Test gbasis.wrapper."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.wrappers import from_iodata
+from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.wrappers import from_iodata, from_pyscf
 import numpy as np
 import pytest
 from utils import find_datafile
@@ -62,3 +63,34 @@ def test_from_iodata():
     with pytest.raises(ValueError):
         mol.obasis = mol.obasis._replace(primitive_normalization="L1")
         mol.gbasis_basis()
+
+
+def test_from_pyscf():
+    """Test gbasis.wrapper.from_pyscf."""
+    pytest.importorskip("pyscf")
+    from pyscf import gto
+
+    mol = gto.Mole()
+    mol.build(atom="""Kr 1.0 2.0 3.0""", basis="ano-rcc", unit="Bohr")
+    test = from_pyscf(mol)
+
+    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
+        basis_dict = f.read()
+
+    basis_dict = parse_nwchem(basis_dict)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[1, 2, 3]]))
+
+    with pytest.raises(ValueError):
+
+        class OtherName(gto.Mole):
+            pass
+
+        test = from_pyscf(OtherName())
+
+    assert len(test) == len(basis)
+    for i, j in zip(test, basis):
+        assert np.allclose(i.coord, j.coord)
+        assert i.angmom == j.angmom
+        assert np.allclose(i.exps, j.exps)
+        assert np.allclose(i.coeffs, j.coeffs)
+        assert np.allclose(i.norm_cont, j.norm_cont)

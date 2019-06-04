@@ -173,3 +173,54 @@ def from_iodata(mol):
             )
 
     return basis
+
+
+def from_pyscf(mol):
+    """Return basis set stored within the Mole instance in pyscf.
+
+    Parameters
+    ----------
+    mol : pyscf.gto.mole.Mole
+        Mole object in pyscf.
+
+    Returns
+    -------
+    basis : tuple of gbasis.contraciton.GeneralizedContractionShell
+        Contractions for each atom.
+        Contractions are ordered by the atom first, then the contractions as ordered in pyscf.
+
+    Raises
+    ------
+    ValueError
+        If `mol` is not a pyscf.gto.mole.Mole instance.
+
+    Notes
+    -----
+    This function touches the internal components of pyscf, which may or may not be documented. This
+    function will break as soon as the internal components change. If so, please raise an issue at
+    https://github.com/theochem/gbasis. It is supported for, at least, pyscf version 1.6.1.
+
+    """
+    # pylint: disable=W0212
+    if not (mol.__class__.__name__ == "Mole" and hasattr(mol, "_basis")):
+        raise ValueError("`mol` must be a pyscf.gto.mole.Mole instance.")
+
+    basis = []
+    for atom, coord in mol._atom:
+        basis_info = mol._basis[atom]
+
+        for shell in basis_info:
+            angmom = shell[0]
+
+            exps_coeffs = np.vstack(shell[1:])
+            exps = exps_coeffs[:, 0]
+
+            coeffs = exps_coeffs[:, 1:]
+
+            basis.append(
+                GeneralizedContractionShell(
+                    angmom, np.array(coord), np.array(coeffs), np.array(exps)
+                )
+            )
+
+    return tuple(basis)
