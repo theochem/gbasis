@@ -72,6 +72,7 @@ setup(
             "pytest-cov",
         ],
         "test": ["tox", "pytest", "pytest-cov"],
+        "iodata": ["tox", "iodata>0.1.7"],
     },
     # If there are data files included in your packages that need to be
     # installed, specify them here.
