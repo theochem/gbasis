@@ -73,6 +73,7 @@ setup(
         ],
         "test": ["tox", "pytest", "pytest-cov"],
         "iodata": ["tox", "iodata>0.1.7"],
+        "pyscf": ["tox", "pyscf>=1.6.1"],
     },
     # If there are data files included in your packages that need to be
     # installed, specify them here.
