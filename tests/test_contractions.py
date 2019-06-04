@@ -1,9 +1,8 @@
 """Test gbasis.contractions."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
-from utils import find_datafile, skip_init
+from utils import skip_init
 
 
 def test_coord_setter():
@@ -257,72 +256,6 @@ def test_num_seg_cont():
     test = skip_init(GeneralizedContractionShell)
     test._coeffs = np.random.rand(10, 21)
     assert test.num_seg_cont == 21
-
-
-def test_make_contractions():
-    """Test gbasis.contractions.make_contractions."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
-    with pytest.raises(TypeError):
-        make_contractions(basis_dict, {"H", "H"}, np.array([[0, 0, 0], [1, 1, 1]]))
-    with pytest.raises(TypeError):
-        make_contractions(basis_dict, [0, 0], np.array([[0, 0, 0], [1, 1, 1]]))
-
-    with pytest.raises(TypeError):
-        make_contractions(basis_dict, ["H", "H"], [[0, 0, 0], [1, 1, 1]])
-    with pytest.raises(TypeError):
-        make_contractions(basis_dict, ["H", "H"], np.array([0, 0, 0, 1, 1, 1]))
-    with pytest.raises(TypeError):
-        make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0, 2], [1, 1, 1, 2]]))
-
-    with pytest.raises(ValueError):
-        make_contractions(basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
-
-    with pytest.raises(TypeError):
-        make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0])
-
-    test = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
-    assert isinstance(test, tuple)
-    assert len(test) == 2
-    assert test[0].angmom == 0
-    assert np.allclose(test[0].coord, np.array([0, 0, 0]))
-    assert np.allclose(
-        test[0].coeffs,
-        np.array(
-            [
-                0.00916359628,
-                0.04936149294,
-                0.16853830490,
-                0.37056279970,
-                0.41649152980,
-                0.13033408410,
-            ]
-        ).reshape(6, 1),
-    )
-    assert np.allclose(
-        test[0].exps,
-        np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
-    )
-    assert test[1].angmom == 0
-    assert np.allclose(test[1].coord, np.array([1, 1, 1]))
-    assert np.allclose(
-        test[1].coeffs,
-        np.array(
-            [
-                0.00916359628,
-                0.04936149294,
-                0.16853830490,
-                0.37056279970,
-                0.41649152980,
-                0.13033408410,
-            ]
-        ).reshape(6, 1),
-    )
-    assert np.allclose(
-        test[1].exps,
-        np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
-    )
 
 
 def test_assign_norm_cont():
