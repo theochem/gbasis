@@ -97,7 +97,7 @@ def parse_gbs(gbs_basis):
     data = re.split(r"\n\s*(\w[\w]?)\s+\w+\s*\n", gbs_basis)
     dict_angmom = {"s": 0, "p": 1, "d": 2, "f": 3, "g": 4, "h": 5, "i": 6, "k": 7}
     # remove first part
-    if "\n" in data[0]:
+    if "\n" in data[0]:  # pragma: no branch
         data = data[1:]
 
     atoms = data[::2]
