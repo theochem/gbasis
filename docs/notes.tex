@@ -38,6 +38,7 @@
   stringstyle=\color{mymauve},
   tabsize=2,
   title=\lstname,
+  belowskip=-14pt,
 }
 
 
@@ -74,9 +75,9 @@ A Cartesian Gaussian primitive is
   (x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}
   \exp \left(-\alpha_i |\mathbf{r} - \mathbf{R}_A|^2 \right)
 \end{equation}
-where $\mathbf{r} = (x, y, z)$, $\mathbf{R}_A$ is the center of the primitive,
-$\mathbf{a} = (a_x, a_y, a_z)$ is the Cartesian components of the angular
-momentum, $\ell = a_x + a_y + a_z$, and
+where $\mathbf{r} = (x, y, z)$, $\mathbf{R}_A = (X_A, Y_A, Z_A)$ is the center
+of the primitive, $\mathbf{a} = (a_x, a_y, a_z)$ is the Cartesian components of
+the angular momentum, $\ell = a_x + a_y + a_z$, and
 \begin{equation}
   \label{eq:cart_norm}
   \begin{split}
@@ -97,7 +98,7 @@ momentum, $\ell = a_x + a_y + a_z$, and
     &= N_1 (\alpha_i, \ell) N_2 (\mathbf{a})
   \end{split}
 \end{equation}
-is the normalization constant of the primitive.
+is the normalization constant of the Cartesian primitive.
 In this module, the primitives are normalized.
 
 A spherical Gaussian primitive is
@@ -125,6 +126,7 @@ and
     \frac{(4 \alpha_i)^{\ell}}{(2\ell - 1)!!}
   }\\
 \end{equation}
+is the normalization constant of the spherical primitive.
 In this module, we treat all spherical harmonics to be real.
 
 The ``solid harmonic'' (Helgaker 6.4.2), $Y_{\ell m} (\phi, \theta) r^\ell$, can
@@ -180,11 +182,18 @@ where
   }
 \end{equation}
 
+By linearly transforming the all of primitives with different Cartesian
+expressions, $(x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}$, for the given
+angular momentum using Equation~\ref{eq:helgaker_6.4.47}, spherical primitives
+can be obtained, though they are normalized with the Cartesian normalization
+constants.
+
 Then, the normalization constant of the Cartesian primitive must be replaced
-with the spherical primitive.
+with the spherical primitive by multiplying the newly formed spherical
+primitives with the following factor.
 \begin{equation}
   \begin{split}
-    \frac{N(\alpha_i, \mathbf{a})}{N_s(\alpha_i, \ell)}
+    \frac{N_s(\alpha_i, \ell)}{N(\alpha_i, \mathbf{a})}
     &= \frac{
       \sqrt{
         \left(\frac{2 \alpha_i}{\pi} \right)^{\frac{3}{2}}
@@ -243,8 +252,8 @@ exponents of the primitive, and
     \right)^{-\frac{1}{2}}
 \end{split}
 \end{equation}
-is the normalization constant of the contraction.
-In this module, the contractions are normalized.
+is the L2 normalization constant of the contraction.
+In this module, the contractions are L2 normalized.
 
 Since the Cartesian expression,
 $(x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}$, separates out from the
@@ -258,7 +267,7 @@ the same properties.
 We will denote these groups as shells.
 
 \subsection{Segmented Contractions}
-In order to group transform the Cartesian contractions into spherical
+In order to transform the Cartesian contractions into spherical
 contractions, all of the Cartesian components are needed, i.e. all
 combinations of nonnegative integers $a_x$, $a_y$, and $a_z$ that adds up to
 $\ell$.
@@ -283,7 +292,7 @@ Generalized contractions are a set of contractions that have the same center
 \begin{equation}
   \label{eq:gen_contraction}
   \left\{
-    \phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}_{j\ell}, \mathbf{d}_k, \boldsymbol{\alpha}_k)
+    \phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}_{j\ell}, \mathbf{d}_k, \boldsymbol{\alpha})
     \middle|
     (a_{j\ell})_x + (a_{j\ell})_y + (a_{j\ell})_z = \ell
   \right\}
@@ -296,7 +305,7 @@ contractions with the same center ($\mathbf{R}_A$), same angular momentum
 \begin{equation}
   \label{eq:gen_contraction}
   \left\{
-    \phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha}_k)
+    \phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha})
     \middle|
     (a_j)_x + (a_j)_y + (a_j)_z = \ell
   \right\}
@@ -314,25 +323,19 @@ Basis set information is often stored in text format.
 In \verb|gbasis|, the Gaussian94 format (.gbs) and the NWChem format (.nwchem) are
 supported.
 
-\verb|gbasis| also interfaces to the module \verb|iodata|, which handles the
-inputs and outputs for different quantum chemistry formats, such as Gaussian
-formatted checkpoint files (.fchk) and AIM wavefunction files (.wfn and .wfx).
-It also interfaces to \verb|pyscf|, which is an ab initio computational
-chemistry program.
-
-Usage:
+Example:
 Supposed we have the following system:
 \begin{lstlisting}
-atoms = ["H", "H"]
-coords = np.array([[0, 0, 0], [0, 0, 1]])
+  atoms = ["H", "H"]
+  coords = np.array([[0, 0, 0], [0, 0, 1]])
 \end{lstlisting}
 \begin{itemize}
 \item To build a basis set from gbs file for the given atoms and coordinates,
-\begin{lstlisting}[xleftmargin=-25pt]
+  \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.parsers import parse_gbs, make_contractions
 
 with open("from_basissetexchange.gbs", "r")as f:
-    all_basis = f.read()
+all_basis = f.read()
 all_basis_dict = parse_gbs(all_basis)
 basis = make_contractions(all_basis_dict, atoms, coords)
 \end{lstlisting}
@@ -341,11 +344,15 @@ basis = make_contractions(all_basis_dict, atoms, coords)
 from gbasis.parsers import parse_nwchem, make_contractions
 
 with open("from_basissetexchange.nwchem", "r")as f:
-    all_basis = f.read()
+all_basis = f.read()
 all_basis_dict = parse_gbs(all_basis)
 basis = make_contractions(all_basis_dict, atoms, coords)
 \end{lstlisting}
 \end{itemize}
+
+\verb|gbasis| also interfaces to the module \verb|iodata|, which handles the
+inputs and outputs for different quantum chemistry formats, such as Gaussian
+formatted checkpoint files (.fchk) and AIM wavefunction files (.wfn and .wfx).
 
 Using \verb|iodata|, suppose we have the following system:
 \begin{lstlisting}
@@ -359,6 +366,10 @@ from gbasis.wrappers import from_iodata
 
 basis = from_iodata(mol)
 \end{lstlisting}
+
+
+\verb|gbasis| also interfaces to \verb|pyscf|, which is an ab initio computational
+chemistry program.
 
 Using \verb|pyscf|, suppose we have the following system:
 \begin{lstlisting}
@@ -389,7 +400,7 @@ of the same length as the basis set must be provided with each entry being
 \verb|"spherical"| or \verb|"cartesian"| to specify the coordinate system of the
 corresponding shell.
 
-Usage:
+Example:
 \begin{itemize}
 \item To treat all contractions to be spherical
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -417,14 +428,14 @@ The transformation is applied to the left, i.e.
 \begin{equation}
  \psi_i = \sum_j T_{ij} \phi_j
 \end{equation}
-where $\phi_j$ is a basis function before transformation and $\psi_i$ is a
-basis function after transformation.
+where $\{\phi_j\}$ is the basis set before transformation and $\{\psi_i\}$ is
+the basis function after transformation.
 The number of basis functions depends on the coordinate systems specified for
 each shell.
 Note that the transformation matrix assumes that the basis functions are ordered
 according to Section~\ref{sec:basis_ordering}.
 
-Usage:
+Example:
 \begin{lstlisting}
 output = high_level_function(basis, transform=transform_mo_ao)
 \end{lstlisting}
@@ -571,7 +582,7 @@ grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 The functions in module \verb|gbasis.eval| return the evaluations of the
 contractions at different coordinates:
 \begin{equation}
-  \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha}_k)
+  \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha})
 \end{equation}
 The returned value is an array whose rows corresponds to the basis function and
 columns corresponds to the coordinate, $\mathbf{r}_n$.
@@ -579,7 +590,7 @@ columns corresponds to the coordinate, $\mathbf{r}_n$.
 These functions can be used to find the values of the orbitals at various
 points, such as a grid.
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -601,12 +612,12 @@ The functions in module \verb|gbasis.eval_deriv| return the evaluations of the
 given derivative of the contractions at different coordinates.
 \begin{equation}
   \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
-  \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha}_k)
+  \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha})
 \end{equation}
 The returned value is an array whose rows corresponds to the basis function and
 columns corresponds to the coordinate, $\mathbf{r}_n$.
 
-Usage:
+Example:
 Suppose the following derivative of the contraction is desired:
 \begin{equation}
   \frac{\partial^3}{\partial x \partial y^2}
@@ -637,7 +648,7 @@ Suppose the \verb|one_dm| is the one-electron density matrix.
   \rho(\mathbf{r}_n) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}_n) \phi_j(\mathbf{r}_n)
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the density using density matrix expressed with respect to
   atomic orbitals,
@@ -670,7 +681,7 @@ output = evaluate_density(one_dm, basis, grid_3d, transform=transform_mo_ao, coo
   }
 \end{equation}
 
-Usage:
+Example:
 Suppose the following derivative of the density is desired:
 \begin{equation}
   \frac{\partial^3}{\partial x \partial y^2}
@@ -704,7 +715,7 @@ output = evaluate_deriv_density(
   \end{bmatrix}\\
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the gradient of the density using density matrix expressed
   with respect to atomic orbitals,
@@ -732,7 +743,7 @@ output = evaluate_density_gradient(
   + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the laplacian of the density using density matrix expressed
   with respect to atomic orbitals,
@@ -769,7 +780,7 @@ output = evaluate_density_laplacian(
   \end{bmatrix}\\
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the Hessian of the density using density matrix expressed
   with respect to atomic orbitals,
@@ -778,7 +789,6 @@ from gbasis.density import evaluate_density_hessian
 
 output = evaluate_density_hessian(one_dm, basis, grid_3d, coord_type="spherical")
 \end{lstlisting}
-  where
 \item To evaluate the Hessian of the density using density matrix expressed
   with respect to molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -861,7 +871,7 @@ Again, suppose \verb|one_dm| is the one-electron density matrix.
   \end{split}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the stress tensor ($\alpha=1$ and $\beta=0$)
   using density matrix expressed with respect to atomic orbitals,
@@ -940,7 +950,7 @@ Ehrenfest force is defined as the divergence of the stress tensor
 \end{equation}
 
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the Ehrenfest force ($\alpha=1$ and $\beta=0$)
   using density matrix expressed with respect to atomic orbitals,
@@ -996,7 +1006,7 @@ output = evaluate_ehrenfest_force(
   \end{split}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the Ehrenfest Hessian ($\alpha=1$ and $\beta=0$)
   using density matrix expressed with respect to atomic orbitals,
@@ -1039,7 +1049,7 @@ output = evaluate_ehrenfest_hessian(
   \end{split}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the positive-definite kinetic energy density using density
   matrix expressed with respect to atomic orbitals,
@@ -1063,7 +1073,7 @@ output = evaluate_posdef_kinetic_energy_density(
   t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To evaluate the general form of the kinetic energy density ($\alpha=1$)
   using density matrix expressed with respect to atomic orbitals,
@@ -1099,7 +1109,7 @@ output = evaluate_general_kinetic_energy_density(
   \int \phi_a (\mathbf{r}) \phi_b (\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To compute the overlap of a set of atomic orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -1126,7 +1136,7 @@ Multipole moment integral can be obtained for arbitrary moments.
   \int \phi_a (\mathbf{r}) (x - X_C)^{c_x} (y - Y_C)^{c_y} (z - Z_C)^{c_z} \phi_b (\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-Usage:
+Example:
 Suppose the integral of the following moments is desired:
 \begin{equation}
   (x - 1.5)^2 (y - 2.5)^3 (z - 3.5)
@@ -1140,8 +1150,7 @@ Suppose the integral of the following moments is desired:
 from gbasis.moment import moment_integral
 
 output = moment_integral(
-    basis, np.array([1.5, 2.5, 3.5]), np.array([[2, 3, 1], [1, 2, 3]]),
-coord_type="spherical"
+    basis, np.array([1.5, 2.5, 3.5]), np.array([[2, 3, 1], [1, 2, 3]]), coord_type="spherical"
 )
 \end{lstlisting}
 \item To compute the overlap of a set of molecular orbitals
@@ -1182,7 +1191,7 @@ supported.
   \end{split}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To compute the kinetic energy integral of a set of atomic orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -1212,7 +1221,7 @@ output = kinetic_energy_integral(basis, transform=transform_mo_ao, coord_type="s
   \end{split}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To compute the momentum integral of a set of atomic orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -1245,7 +1254,7 @@ output = momentum_integral(basis, transform=transform_mo_ao, coord_type="spheric
   \end{split}
 \end{equation}
 
-Usage:
+Example:
 \begin{itemize}
 \item To compute the angular momentum integral of a set of atomic orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
@@ -1266,7 +1275,7 @@ output = angular_momentum_integral(basis, transform=transform_mo_ao, coord_type=
   \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-Usage:
+Example:
 Suppose there are two point charges: $-3$ charge at $(0, 1, 2)$ and $5$ charge
 at $(3, 4, 6)$
 \begin{itemize}
@@ -1301,7 +1310,7 @@ output = point_charge_integral(
   -Z_C \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-Usage:
+Example:
 Suppose there are two nuclei: He at $(0, 1, 2)$ and Al at $(3, 4, 6)$
 \begin{itemize}
 \item To compute the nuclear-electron attraction integral of the set of atomic
@@ -1340,7 +1349,7 @@ output = nuclear_electron_attraction_integral(
   - \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-Usage:
+Example:
 Suppose there are two nuclei, He at $(0, 1, 2)$ and Al at $(3, 4, 6)$
 $(0, 1, 2)$ and $(3, 4, 6)$, the electrostatic potential is measured at
 points $(0.5, 1.5, 2.5)$ and $(2.5, 3.5, 5.5)$, and the one-electron density
@@ -1395,7 +1404,7 @@ In the Physicists' notation
 Though both conventions are supported at the higher level, lower level code uses
 the Chemists' notation.
 
-Usage:
+Example:
 \begin{itemize}
 \item To compute the electron repulsion integral of a set of atomic orbitals in
   Physicists' notation
