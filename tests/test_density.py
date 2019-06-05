@@ -9,8 +9,8 @@ from gbasis.density import (
     eval_general_kinetic_energy_density,
     eval_posdef_kinetic_energy_density,
 )
-from gbasis.eval import evaluate_basis_lincomb
-from gbasis.eval_deriv import evaluate_deriv_basis_lincomb
+from gbasis.eval import evaluate_basis
+from gbasis.eval_deriv import evaluate_deriv_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -71,7 +71,7 @@ def test_eval_density():
     density += density.T
     coords = np.random.rand(10, 3)
 
-    eval_orbs = evaluate_basis_lincomb(basis, coords, transform)
+    eval_orbs = evaluate_basis(basis, coords, transform)
     assert np.allclose(
         eval_density(density, basis, coords, transform),
         np.einsum("ij,ik,jk->k", density, eval_orbs, eval_orbs),
@@ -94,14 +94,14 @@ def test_eval_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 0, 0]), transform),
-            evaluate_basis_lincomb(basis, coords, transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 0, 0]), transform),
+            evaluate_basis(basis, coords, transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_basis_lincomb(basis, coords, transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 0, 0]), transform),
+            evaluate_basis(basis, coords, transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 0, 0]), transform),
         ),
     )
 
@@ -110,14 +110,14 @@ def test_eval_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 1, 0]), transform),
-            evaluate_basis_lincomb(basis, coords, transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 1, 0]), transform),
+            evaluate_basis(basis, coords, transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_basis_lincomb(basis, coords, transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 1, 0]), transform),
+            evaluate_basis(basis, coords, transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 1, 0]), transform),
         ),
     )
 
@@ -126,14 +126,14 @@ def test_eval_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 0, 1]), transform),
-            evaluate_basis_lincomb(basis, coords, transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 0, 1]), transform),
+            evaluate_basis(basis, coords, transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_basis_lincomb(basis, coords, transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 0, 1]), transform),
+            evaluate_basis(basis, coords, transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 0, 1]), transform),
         ),
     )
 
@@ -142,84 +142,84 @@ def test_eval_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 0, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 3, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 0, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 3, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 1, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 2, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 1, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 2, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 2, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 1, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 2, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 1, 0]), transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 3, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 0, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 3, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 0, 0]), transform),
         )
         + 2
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 0, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 3, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 0, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 3, 0]), transform),
         )
         + 2
         * 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 1, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 2, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 1, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 2, 0]), transform),
         )
         + 2
         * 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 2, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 1, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 2, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 1, 0]), transform),
         )
         + 2
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 3, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 0, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 3, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([1, 0, 0]), transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 0, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 3, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 0, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 3, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 1, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 2, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 1, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 2, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 2, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 1, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 2, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 1, 0]), transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([2, 3, 0]), transform),
-            evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 0, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([2, 3, 0]), transform),
+            evaluate_deriv_basis(basis, coords, np.array([0, 0, 0]), transform),
         ),
     )
 
@@ -242,38 +242,38 @@ def test_eval_density_gradient():
                 np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 0, 0]), transform),
-                    evaluate_basis_lincomb(basis, coords, transform),
+                    evaluate_deriv_basis(basis, coords, np.array([1, 0, 0]), transform),
+                    evaluate_basis(basis, coords, transform),
                 )
                 + np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_basis_lincomb(basis, coords, transform),
-                    evaluate_deriv_basis_lincomb(basis, coords, np.array([1, 0, 0]), transform),
+                    evaluate_basis(basis, coords, transform),
+                    evaluate_deriv_basis(basis, coords, np.array([1, 0, 0]), transform),
                 ),
                 np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 1, 0]), transform),
-                    evaluate_basis_lincomb(basis, coords, transform),
+                    evaluate_deriv_basis(basis, coords, np.array([0, 1, 0]), transform),
+                    evaluate_basis(basis, coords, transform),
                 )
                 + np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_basis_lincomb(basis, coords, transform),
-                    evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 1, 0]), transform),
+                    evaluate_basis(basis, coords, transform),
+                    evaluate_deriv_basis(basis, coords, np.array([0, 1, 0]), transform),
                 ),
                 np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 0, 1]), transform),
-                    evaluate_basis_lincomb(basis, coords, transform),
+                    evaluate_deriv_basis(basis, coords, np.array([0, 0, 1]), transform),
+                    evaluate_basis(basis, coords, transform),
                 )
                 + np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_basis_lincomb(basis, coords, transform),
-                    evaluate_deriv_basis_lincomb(basis, coords, np.array([0, 0, 1]), transform),
+                    evaluate_basis(basis, coords, transform),
+                    evaluate_deriv_basis(basis, coords, np.array([0, 0, 1]), transform),
                 ),
             ]
         ),
@@ -442,7 +442,7 @@ def test_eval_general_kinetic_energy_density_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_general_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88), 0),
+        eval_general_kinetic_energy_density(np.identity(88), basis, grid_3d, 0, np.identity(88)),
         horton_density_kinetic_density,
     )
 
@@ -461,9 +461,9 @@ def test_eval_general_kinetic_energy_density():
             np.identity(40), basis, points, np.identity(40), np.array(0)
         )
     with pytest.raises(TypeError):
-        eval_general_kinetic_energy_density(np.identity(40), basis, points, np.identity(40), None)
+        eval_general_kinetic_energy_density(np.identity(40), basis, points, None, np.identity(40))
     assert np.allclose(
-        eval_general_kinetic_energy_density(np.identity(40), basis, points, np.identity(40), 1),
+        eval_general_kinetic_energy_density(np.identity(40), basis, points, 1, np.identity(40)),
         eval_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40))
         + eval_density_laplacian(np.identity(40), basis, points, np.identity(40)),
     )
