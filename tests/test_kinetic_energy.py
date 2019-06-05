@@ -1,13 +1,7 @@
 """Test gbasis.kinetic_energy."""
 from gbasis._diff_operator_int import _compute_differential_operator_integrals
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.kinetic_energy import (
-    kinetic_energy_integral_cartesian,
-    kinetic_energy_integral_lincomb,
-    kinetic_energy_integral_mix,
-    kinetic_energy_integral_spherical,
-    KineticEnergyIntegral,
-)
+from gbasis.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -172,7 +166,7 @@ def test_kinetic_energy_integral_cartesian():
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_cartesian(),
-        kinetic_energy_integral_cartesian(basis),
+        kinetic_energy_integral(basis, coord_type="cartesian"),
     )
 
 
@@ -186,7 +180,7 @@ def test_kinetic_energy_integral_spherical():
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_spherical(),
-        kinetic_energy_integral_spherical(basis),
+        kinetic_energy_integral(basis, coord_type="spherical"),
     )
 
 
@@ -200,7 +194,7 @@ def test_kinetic_energy_integral_mix():
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_mix(["spherical"] * 8),
-        kinetic_energy_integral_mix(basis, ["spherical"] * 8),
+        kinetic_energy_integral(basis, coord_type=["spherical"] * 8),
     )
 
 
@@ -214,7 +208,7 @@ def test_kinetic_energy_integral_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_lincomb(transform, "spherical"),
-        kinetic_energy_integral_lincomb(basis, transform),
+        kinetic_energy_integral(basis, transform, coord_type="spherical"),
     )
 
 
@@ -236,7 +230,9 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
     horton_kinetic_energy_integral = np.load(
         find_datafile("data_horton_hhe_cart_kinetic_energy_integral.npy")
     )
-    assert np.allclose(kinetic_energy_integral_cartesian(basis), horton_kinetic_energy_integral)
+    assert np.allclose(
+        kinetic_energy_integral(basis, coord_type="cartesian"), horton_kinetic_energy_integral
+    )
 
 
 def test_kinetic_energy_integral_horton_anorcc_bec():
@@ -257,4 +253,6 @@ def test_kinetic_energy_integral_horton_anorcc_bec():
     horton_kinetic_energy_integral = np.load(
         find_datafile("data_horton_bec_cart_kinetic_energy_integral.npy")
     )
-    assert np.allclose(kinetic_energy_integral_cartesian(basis), horton_kinetic_energy_integral)
+    assert np.allclose(
+        kinetic_energy_integral(basis, coord_type="cartesian"), horton_kinetic_energy_integral
+    )
