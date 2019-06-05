@@ -40,17 +40,17 @@ def test_eval_construct_array_contraction():
         ]
     ).reshape(3, 1)
     assert np.allclose(
-        Eval.construct_array_contraction(coords=np.array([[2, 3, 4]]), contractions=test), answer
+        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=test), answer
     )
 
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(coords=np.array([[2, 3, 4]]), contractions=None)
+        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=None)
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(coords=np.array([[2, 3, 4]]), contractions={1: 2})
+        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions={1: 2})
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(coords=np.array([2, 3, 4]), contractions=test)
+        Eval.construct_array_contraction(points=np.array([2, 3, 4]), contractions=test)
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(coords=np.array([[3, 4]]), contractions=test)
+        Eval.construct_array_contraction(points=np.array([[3, 4]]), contractions=test)
 
 
 def test_evaluate_basis_cartesian():
@@ -61,7 +61,7 @@ def test_evaluate_basis_cartesian():
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
+        eval_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="cartesian"),
     )
 
@@ -76,21 +76,21 @@ def test_evaluate_basis_spherical():
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
+        eval_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
     # p orbitals are zero at center
     basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
+        eval_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_spherical(coords=np.array([[1, 1, 1]])),
+        eval_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
         evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type="spherical"),
     )
 
@@ -132,6 +132,6 @@ def test_evaluate_basis_lincomb():
     eval_obj = Eval(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        eval_obj.construct_array_lincomb(transform, "spherical", coords=np.array([[1, 1, 1]])),
+        eval_obj.construct_array_lincomb(transform, "spherical", points=np.array([[1, 1, 1]])),
         evaluate_basis(basis, np.array([[1, 1, 1]]), transform=transform, coord_type="spherical"),
     )

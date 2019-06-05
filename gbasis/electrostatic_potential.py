@@ -6,7 +6,7 @@ import numpy as np
 def electrostatic_potential(
     basis,
     one_density_matrix,
-    coords_points,
+    points,
     nuclear_coords,
     nuclear_charges,
     transform=None,
@@ -23,7 +23,7 @@ def electrostatic_potential(
         One-electron density matrix in terms of the given basis set.
         If the basis is transformed using `transform` keyword, then the density matrix is assumed to
         be expressed with respect to the transformed basis set.
-    coords_points : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -127,11 +127,7 @@ def electrostatic_potential(
             "`coord_type` must be 'spherical', 'cartesian', or a list/tuple of these strings."
         )
     hartree_potential = point_charge_integral(
-        basis,
-        coords_points,
-        -np.ones(coords_points.shape[0]),
-        transform=transform,
-        coord_type=coord_type,
+        basis, points, -np.ones(points.shape[0]), transform=transform, coord_type=coord_type
     )
     hartree_potential *= one_density_matrix[:, :, None]
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))
@@ -140,7 +136,7 @@ def electrostatic_potential(
     old_settings = np.seterr(divide="ignore")
     external_potential = (
         nuclear_charges[None, :]
-        / np.sum((coords_points[:, :, None] - nuclear_coords.T[None, :, :]) ** 2, axis=1) ** 0.5
+        / np.sum((points[:, :, None] - nuclear_coords.T[None, :, :]) ** 2, axis=1) ** 0.5
     )
     # zero out potentials of elements that are too close to the nucleus
     external_potential[external_potential > 1.0 / np.array(threshold_dist)] = 0

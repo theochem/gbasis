@@ -38,8 +38,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         Boys function used to evaluate the one-electron integral.
         `M` is the number of orders that will be evaluated. `K_a` and `K_b` are the number of
         primitives on the left and right side, respectively.
-    construct_array_contraction(self, contractions_one, contractions_two, coords_points,
-                                charges_points)
+    construct_array_contraction(self, contractions_one, contractions_two, points_coords,
+                                points_charges)
         Return the point charge integrals for the given `GeneralizedContractionShell` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
         associated with the first index.
@@ -116,7 +116,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     @classmethod
     def construct_array_contraction(
-        cls, contractions_one, contractions_two, coords_points, charges_points
+        cls, contractions_one, contractions_two, points_coords, points_charges
     ):
         """Return point charge interaction integral for the given contractions and point charges.
 
@@ -128,11 +128,11 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
-        coords_points : np.ndarray(N, 3)
+        points_coords : np.ndarray(N, 3)
             Coordinates of the point charges.
             Rows correspond to the different point charges and columns correspond to the x, y, and z
             components.
-        charges_points : np.ndarray(N)
+        points_charges : np.ndarray(N)
             Charge of the point charges.
 
         Returns
@@ -159,12 +159,12 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         TypeError
             If `contractions_one` is not a GeneralizedContractionShell instance.
             If `contractions_two` is not a GeneralizedContractionShell instance.
-            If `coords_points` is not a two-dimensional numpy array of dtype int/float with 3
+            If `points_coords` is not a two-dimensional numpy array of dtype int/float with 3
             columns.
-            If `charges_points` is not a one-dimensional numpy array of int/float.
+            If `points_charges` is not a one-dimensional numpy array of int/float.
         ValueError
-            If `coords_points` does not have the same number of rows as the size of
-            `charges_points`.
+            If `points_coords` does not have the same number of rows as the size of
+            `points_charges`.
 
         """
         # pylint: disable=R0914
@@ -174,27 +174,27 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
         if not (
-            isinstance(coords_points, np.ndarray)
-            and coords_points.ndim == 2
-            and coords_points.shape[1] == 3
-            and coords_points.dtype in [int, float]
+            isinstance(points_coords, np.ndarray)
+            and points_coords.ndim == 2
+            and points_coords.shape[1] == 3
+            and points_coords.dtype in [int, float]
         ):
             raise TypeError(
-                "`coords_points` must be a two-dimensional numpy array of dtype int/float with "
+                "`points_coords` must be a two-dimensional numpy array of dtype int/float with "
                 "three columns."
             )
         if not (
-            isinstance(charges_points, np.ndarray)
-            and charges_points.ndim == 1
-            and charges_points.dtype in [int, float]
+            isinstance(points_charges, np.ndarray)
+            and points_charges.ndim == 1
+            and points_charges.dtype in [int, float]
         ):
             raise TypeError(
-                "`charges_points` must be a one-dimensional numpy array of integers or floats."
+                "`points_charges` must be a one-dimensional numpy array of integers or floats."
             )
-        if coords_points.shape[0] != charges_points.size:
+        if points_coords.shape[0] != points_charges.size:
             raise ValueError(
-                "`coords_points` must have the same number of rows as there are elements in "
-                "`charges_points`."
+                "`points_coords` must have the same number of rows as there are elements in "
+                "`points_charges`."
             )
 
         # TODO: Overlap screening
@@ -221,7 +221,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             ab_swapped = True
 
         integrals = _compute_one_elec_integrals(
-            coords_points,
+            points_coords,
             cls.boys_func,
             coord_a,
             angmom_a,
@@ -245,7 +245,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
         # axis 4 : point charge
         output = (
-            -charges_points
+            -points_charges
             * integrals[
                 np.arange(coeffs_a.shape[1])[:, None, None, None, None],
                 angmoms_a_x[None, :, None, None, None],
@@ -255,7 +255,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
                 angmoms_b_x[None, None, None, :, None],
                 angmoms_b_y[None, None, None, :, None],
                 angmoms_b_z[None, None, None, :, None],
-                np.arange(coords_points.shape[0])[None, None, None, None, :],
+                np.arange(points_coords.shape[0])[None, None, None, None, :],
             ]
         )
 
@@ -266,7 +266,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
 
 def point_charge_integral(
-    basis, coords_points, charges_points, transform=None, coord_type="spherical"
+    basis, points_coords, points_charges, transform=None, coord_type="spherical"
 ):
     """Return the point-charge interaction integrals of basis set in the given coordinate systems.
 
@@ -276,11 +276,11 @@ def point_charge_integral(
         Shells of generalized contractions.
     points : np.ndarray(N, 3)
         Rows correspond to the points and columns correspond to the x, y, and z components.
-    coords_points : np.ndarray(N, 3)
+    points_coords : np.ndarray(N, 3)
         Coordinates of the point charges (in atomic units).
         Rows correspond to the different point charges and columns correspond to the x, y, and z
         components.
-    charges_points : np.ndarray(N)
+    points_charges : np.ndarray(N)
         Charge at each given point.
     transform : np.ndarray(K, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
@@ -308,16 +308,16 @@ def point_charge_integral(
     """
     if transform is not None:
         return PointChargeIntegral(basis).construct_array_lincomb(
-            transform, coord_type, coords_points=coords_points, charges_points=charges_points
+            transform, coord_type, points_coords=points_coords, points_charges=points_charges
         )
     if coord_type == "cartesian":
         return PointChargeIntegral(basis).construct_array_cartesian(
-            coords_points=coords_points, charges_points=charges_points
+            points_coords=points_coords, points_charges=points_charges
         )
     if coord_type == "spherical":
         return PointChargeIntegral(basis).construct_array_spherical(
-            coords_points=coords_points, charges_points=charges_points
+            points_coords=points_coords, points_charges=points_charges
         )
     return PointChargeIntegral(basis).construct_array_mix(
-        coord_type, coords_points=coords_points, charges_points=charges_points
+        coord_type, points_coords=points_coords, points_charges=points_charges
     )
