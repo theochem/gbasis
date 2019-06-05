@@ -13,38 +13,38 @@ from utils import find_datafile
 
 def test_eval_deriv_construct_array_contraction():
     """Test gbasis.eval_deriv.EvalDeriv.construct_array_contraction."""
-    coords = np.array([[2, 3, 4]])
+    points = np.array([[2, 3, 4]])
     orders = np.array([0, 0, 0])
     contractions = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            coords=[[2, 3, 4]], orders=orders, contractions=contractions
+            points=[[2, 3, 4]], orders=orders, contractions=contractions
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            coords=coords, orders=[0, 0, 0], contractions=contractions
+            points=points, orders=[0, 0, 0], contractions=contractions
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            coords=coords, orders=orders, contractions=contractions.__dict__
+            points=points, orders=orders, contractions=contractions.__dict__
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            coords=coords.reshape(3, 1), orders=orders, contractions=contractions
+            points=points.reshape(3, 1), orders=orders, contractions=contractions
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            coords=coords, orders=orders.reshape(1, 3), contractions=contractions
+            points=points, orders=orders.reshape(1, 3), contractions=contractions
         )
     with pytest.raises(ValueError):
         EvalDeriv.construct_array_contraction(
-            coords=coords, orders=np.array([-1, 0, 0]), contractions=contractions
+            points=points, orders=np.array([-1, 0, 0]), contractions=contractions
         )
     with pytest.raises(ValueError):
         EvalDeriv.construct_array_contraction(
-            coords=coords, orders=np.array([0.0, 0, 0]), contractions=contractions
+            points=points, orders=np.array([0.0, 0, 0]), contractions=contractions
         )
 
     # first order
@@ -82,7 +82,7 @@ def test_eval_deriv_construct_array_contraction():
         ).reshape(3, 1)
         assert np.allclose(
             EvalDeriv.construct_array_contraction(
-                coords=np.array([[2, 3, 4]]), orders=orders, contractions=test
+                points=np.array([[2, 3, 4]]), orders=orders, contractions=test
             ),
             answer,
         )
@@ -122,7 +122,7 @@ def test_eval_deriv_construct_array_contraction():
         ).reshape(3, 1)
         assert np.allclose(
             EvalDeriv.construct_array_contraction(
-                coords=np.array([[2, 3, 4]]), orders=orders, contractions=test
+                points=np.array([[2, 3, 4]]), orders=orders, contractions=test
             ),
             answer,
         )
@@ -137,7 +137,7 @@ def test_evaluate_deriv_basis_cartesian():
     eval_obj = EvalDeriv(basis)
     assert np.allclose(
         eval_obj.construct_array_cartesian(
-            coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), orders=np.array([0, 0, 0]), coord_type="cartesian"
@@ -145,7 +145,7 @@ def test_evaluate_deriv_basis_cartesian():
     )
     assert np.allclose(
         eval_obj.construct_array_cartesian(
-            coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), orders=np.array([2, 1, 0]), coord_type="cartesian"
@@ -162,7 +162,7 @@ def test_evaluate_deriv_basis_spherical():
     eval_obj = EvalDeriv(basis)
     assert np.allclose(
         eval_obj.construct_array_spherical(
-            coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), coord_type="spherical"
@@ -170,7 +170,7 @@ def test_evaluate_deriv_basis_spherical():
     )
     assert np.allclose(
         eval_obj.construct_array_spherical(
-            coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), coord_type="spherical"
@@ -187,7 +187,7 @@ def test_evaluate_deriv_basis_mix():
     eval_obj = EvalDeriv(basis)
     assert np.allclose(
         eval_obj.construct_array_mix(
-            ["cartesian"] * 8, coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            ["cartesian"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), coord_type=["cartesian"] * 8
@@ -195,7 +195,7 @@ def test_evaluate_deriv_basis_mix():
     )
     assert np.allclose(
         eval_obj.construct_array_mix(
-            ["spherical"] * 8, coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            ["spherical"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), coord_type=["spherical"] * 8
@@ -214,7 +214,7 @@ def test_evaluate_deriv_basis_lincomb():
     sph_transform = np.random.rand(14, 18)
     assert np.allclose(
         eval_obj.construct_array_lincomb(
-            cart_transform, "cartesian", coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            cart_transform, "cartesian", points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
             basis,
@@ -226,7 +226,7 @@ def test_evaluate_deriv_basis_lincomb():
     )
     assert np.allclose(
         eval_obj.construct_array_lincomb(
-            sph_transform, "spherical", coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            sph_transform, "spherical", points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
             basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform, coord_type="spherical"

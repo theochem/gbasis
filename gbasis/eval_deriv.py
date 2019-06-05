@@ -26,26 +26,26 @@ class EvalDeriv(BaseOneIndex):
     -------
     __init__(self, contractions)
         Initialize.
-    construct_array_contraction(contraction, coords, orders) : np.ndarray(M, L_cart, N)
+    construct_array_contraction(contraction, points, orders) : np.ndarray(M, L_cart, N)
         Return the evaluations of the given Cartesian contractions at the given coordinates.
         `M` is the number of segmented contractions with the same exponents (and angular momentum).
         `L_cart` is the number of Cartesian contractions for the given angular momentum.
         `N` is the number of coordinates at which the contractions are evaluated.
-    construct_array_cartesian(self, coords, orders) : np.ndarray(K_cart, N)
+    construct_array_cartesian(self, points, orders) : np.ndarray(K_cart, N)
         Return the evaluations of the derivatives of the Cartesian contractions of the instance at
         the given coordinates.
         `K_cart` is the total number of Cartesian contractions within the instance.
         `N` is the number of coordinates at which the contractions are evaluated.
-    construct_array_spherical(self, coords, orders) : np.ndarray(K_sph, N)
+    construct_array_spherical(self, points, orders) : np.ndarray(K_sph, N)
         Return the evaluations of the derivatives of the spherical contractions of the instance at
         the given coordinates.
         `K_sph` is the total number of spherical contractions within the instance.
         `N` is the number of coordinates at which the contractions are evaluated.
-    construct_array_mix(self, coord_types, coords, orders) : np.ndarray(K_cont, N)
+    construct_array_mix(self, coord_types, points, orders) : np.ndarray(K_cont, N)
         Return the array associated with all of the contraction in the given coordinate system.
         `K_cont` is the total number of contractions within the given basis set.
         `N` is the number of coordinates at which the contractions are evaluated.
-    construct_array_lincomb(self, transform, coord_type, coords, orders) : np.ndarray(K_orbs, N)
+    construct_array_lincomb(self, transform, coord_type, points, orders) : np.ndarray(K_orbs, N)
         Return the evaluatiosn of derivatives of the  linear combinations of contractions in the
         given coordinate system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
@@ -54,7 +54,7 @@ class EvalDeriv(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, coords, orders):
+    def construct_array_contraction(contractions, points, orders):
         """Return the array associated with a set of contracted Cartesian Gaussians.
 
         Parameters
@@ -62,7 +62,7 @@ class EvalDeriv(BaseOneIndex):
         contractions : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
             array.
-        coords : np.ndarray(N, 3)
+        points : np.ndarray(N, 3)
             Coordinates of the points in space (in atomic units) where the basis functions are
             evaluated.
             Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -85,7 +85,7 @@ class EvalDeriv(BaseOneIndex):
         ------
         TypeError
             If contractions is not a GeneralizedContractionShell instance.
-            If coords is not a two-dimensional numpy array with 3 columns.
+            If points is not a two-dimensional numpy array with 3 columns.
             If orders is not a one-dimensional numpy array with 3 elements.
         ValueError
             If orders has any negative numbers.
@@ -96,14 +96,14 @@ class EvalDeriv(BaseOneIndex):
         Since all of the keyword arguments of `construct_array_cartesian`,
         `construct_array_spherical`, and `construct_array_lincomb` are ultimately passed
         down to this method, all of the mentioned methods must be called with the keyword arguments
-        `coords` and `orders`.
+        `points` and `orders`.
 
         """
         if not isinstance(contractions, GeneralizedContractionShell):
             raise TypeError("`contractions` must be a GeneralizedContractionShell instance.")
-        if not (isinstance(coords, np.ndarray) and coords.ndim == 2 and coords.shape[1] == 3):
+        if not (isinstance(points, np.ndarray) and points.ndim == 2 and points.shape[1] == 3):
             raise TypeError(
-                "`coords` must be given as a two-dimensional numpy array with 3 columnms."
+                "`points` must be given as a two-dimensional numpy array with 3 columnms."
             )
         if not (isinstance(orders, np.ndarray) and orders.shape == (3,)):
             raise TypeError(
@@ -120,7 +120,7 @@ class EvalDeriv(BaseOneIndex):
         center = contractions.coord
         norm_prim_cart = contractions.norm_prim_cart
         output = _eval_deriv_contractions(
-            coords, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+            points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
         )
         return output
 
@@ -167,10 +167,10 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
     """
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
-            transform, coord_type, coords=points, orders=orders
+            transform, coord_type, points=points, orders=orders
         )
     if coord_type == "cartesian":
-        return EvalDeriv(basis).construct_array_cartesian(coords=points, orders=orders)
+        return EvalDeriv(basis).construct_array_cartesian(points=points, orders=orders)
     if coord_type == "spherical":
-        return EvalDeriv(basis).construct_array_spherical(coords=points, orders=orders)
-    return EvalDeriv(basis).construct_array_mix(coord_type, coords=points, orders=orders)
+        return EvalDeriv(basis).construct_array_spherical(points=points, orders=orders)
+    return EvalDeriv(basis).construct_array_mix(coord_type, points=points, orders=orders)

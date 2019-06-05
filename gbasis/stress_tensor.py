@@ -9,7 +9,7 @@ import numpy as np
 
 # TODO: need to be tested against reference
 def eval_stress_tensor(
-    one_density_matrix, basis, coords, alpha=1, beta=0, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, alpha=1, beta=0, transform=None, coord_type="spherical"
 ):
     r"""Return the stress tensor evaluated at the given coordinates.
 
@@ -53,7 +53,7 @@ def eval_stress_tensor(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -93,7 +93,7 @@ def eval_stress_tensor(
         raise TypeError("`alpha` must be an integer or a float.")
     if not isinstance(beta, (int, float)):
         raise TypeError("`beta` must be an integer or a float.")
-    output = np.zeros((3, 3, coords.shape[0]))
+    output = np.zeros((3, 3, points.shape[0]))
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
         for j, orders_one in enumerate(np.identity(3, dtype=int)[i:]):
             j += i
@@ -103,7 +103,7 @@ def eval_stress_tensor(
                     orders_two,
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -113,7 +113,7 @@ def eval_stress_tensor(
                     np.array([0, 0, 0]),
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -124,7 +124,7 @@ def eval_stress_tensor(
                     * eval_density_laplacian(
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -135,7 +135,7 @@ def eval_stress_tensor(
 
 # TODO: need to be tested against reference
 def eval_ehrenfest_force(
-    one_density_matrix, basis, coords, alpha=1, beta=0, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, alpha=1, beta=0, transform=None, coord_type="spherical"
 ):
     r"""Return the Ehrenfest force.
 
@@ -178,7 +178,7 @@ def eval_ehrenfest_force(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -218,7 +218,7 @@ def eval_ehrenfest_force(
         raise TypeError("`alpha` must be an integer or a float.")
     if not isinstance(beta, (int, float)):
         raise TypeError("`beta` must be an integer or a float.")
-    output = np.zeros((3, coords.shape[0]))
+    output = np.zeros((3, points.shape[0]))
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
         for orders_one in np.identity(3, dtype=int):
             if alpha != 0:
@@ -227,7 +227,7 @@ def eval_ehrenfest_force(
                     orders_two,
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -237,7 +237,7 @@ def eval_ehrenfest_force(
                     np.array([0, 0, 0]),
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -247,7 +247,7 @@ def eval_ehrenfest_force(
                     orders_one,
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -259,7 +259,7 @@ def eval_ehrenfest_force(
                         2 * orders_one + orders_two,
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -271,7 +271,7 @@ def eval_ehrenfest_force(
 def eval_ehrenfest_hessian(
     one_density_matrix,
     basis,
-    coords,
+    points,
     alpha=1,
     beta=0,
     transform=None,
@@ -329,7 +329,7 @@ def eval_ehrenfest_hessian(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -374,7 +374,7 @@ def eval_ehrenfest_hessian(
         raise TypeError("`alpha` must be an integer or a float.")
     if not isinstance(beta, (int, float)):
         raise TypeError("`beta` must be an integer or a float.")
-    output = np.zeros((3, 3, coords.shape[0]))
+    output = np.zeros((3, 3, points.shape[0]))
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
         for j, orders_three in enumerate(np.identity(3, dtype=int)):
             for orders_one in np.identity(3, dtype=int):
@@ -384,7 +384,7 @@ def eval_ehrenfest_hessian(
                         orders_two,
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -393,7 +393,7 @@ def eval_ehrenfest_hessian(
                         orders_two + orders_three,
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -403,7 +403,7 @@ def eval_ehrenfest_hessian(
                         np.array([0, 0, 0]),
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -412,7 +412,7 @@ def eval_ehrenfest_hessian(
                         orders_three,
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -422,7 +422,7 @@ def eval_ehrenfest_hessian(
                         orders_one,
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -431,7 +431,7 @@ def eval_ehrenfest_hessian(
                         orders_one + orders_three,
                         one_density_matrix,
                         basis,
-                        coords,
+                        points,
                         transform=transform,
                         coord_type=coord_type,
                     )
@@ -443,7 +443,7 @@ def eval_ehrenfest_hessian(
                             2 * orders_one + orders_two + orders_three,
                             one_density_matrix,
                             basis,
-                            coords,
+                            points,
                             transform=transform,
                             coord_type=coord_type,
                         )

@@ -61,7 +61,7 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def eval_density(one_density_matrix, basis, coords, transform=None, coord_type="spherical"):
+def eval_density(one_density_matrix, basis, points, transform=None, coord_type="spherical"):
     """Return the density of the given basis set at the given coordinates.
 
     Parameters
@@ -72,7 +72,7 @@ def eval_density(one_density_matrix, basis, coords, transform=None, coord_type="
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -96,7 +96,7 @@ def eval_density(one_density_matrix, basis, coords, transform=None, coord_type="
         Density evaluated at the given points.
 
     """
-    orb_eval = evaluate_basis(basis, coords, transform=transform, coord_type=coord_type)
+    orb_eval = evaluate_basis(basis, points, transform=transform, coord_type=coord_type)
     return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
 
 
@@ -105,7 +105,7 @@ def eval_deriv_reduced_density_matrix(
     orders_two,
     one_density_matrix,
     basis,
-    coords,
+    points,
     transform=None,
     coord_type="spherical",
 ):
@@ -143,7 +143,7 @@ def eval_deriv_reduced_density_matrix(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -168,13 +168,13 @@ def eval_deriv_reduced_density_matrix(
 
     """
     deriv_orb_eval_one = evaluate_deriv_basis(
-        basis, coords, orders_one, transform=transform, coord_type=coord_type
+        basis, points, orders_one, transform=transform, coord_type=coord_type
     )
     if np.array_equal(orders_one, orders_two):
         deriv_orb_eval_two = deriv_orb_eval_one
     else:
         deriv_orb_eval_two = evaluate_deriv_basis(
-            basis, coords, orders_two, transform=transform, coord_type=coord_type
+            basis, points, orders_two, transform=transform, coord_type=coord_type
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
     density *= deriv_orb_eval_one
@@ -183,7 +183,7 @@ def eval_deriv_reduced_density_matrix(
 
 
 def eval_deriv_density(
-    orders, one_density_matrix, basis, coords, transform=None, coord_type="spherical"
+    orders, one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     """Return the derivative of density of the given transformed basis set at the given coordinates.
 
@@ -197,7 +197,7 @@ def eval_deriv_density(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -224,7 +224,7 @@ def eval_deriv_density(
     # pylint: disable=R0914
     total_l_x, total_l_y, total_l_z = orders
 
-    output = np.zeros(coords.shape[0])
+    output = np.zeros(points.shape[0])
     for l_x in range(total_l_x // 2 + 1):
         # prevent double counting for the middle of the even total_l_x
         # e.g. If total_l_x == 4, then l_x is in [0, 1, 2, 3, 4]. Exploiting symmetry we only need
@@ -244,7 +244,7 @@ def eval_deriv_density(
                     orders_two,
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -253,7 +253,7 @@ def eval_deriv_density(
 
 
 def eval_density_gradient(
-    one_density_matrix, basis, coords, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     """Return the gradient of the density evaluated at the given coordinates.
 
@@ -265,7 +265,7 @@ def eval_density_gradient(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -295,7 +295,7 @@ def eval_density_gradient(
                 np.array([1, 0, 0]),
                 one_density_matrix,
                 basis,
-                coords,
+                points,
                 transform=transform,
                 coord_type=coord_type,
             ),
@@ -303,7 +303,7 @@ def eval_density_gradient(
                 np.array([0, 1, 0]),
                 one_density_matrix,
                 basis,
-                coords,
+                points,
                 transform=transform,
                 coord_type=coord_type,
             ),
@@ -311,7 +311,7 @@ def eval_density_gradient(
                 np.array([0, 0, 1]),
                 one_density_matrix,
                 basis,
-                coords,
+                points,
                 transform=transform,
                 coord_type=coord_type,
             ),
@@ -320,7 +320,7 @@ def eval_density_gradient(
 
 
 def eval_density_laplacian(
-    one_density_matrix, basis, coords, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     """Return the Laplacian of the density evaluated at the given coordinates.
 
@@ -332,7 +332,7 @@ def eval_density_laplacian(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -360,7 +360,7 @@ def eval_density_laplacian(
         np.array([2, 0, 0]),
         one_density_matrix,
         basis,
-        coords,
+        points,
         transform=transform,
         coord_type=coord_type,
     )
@@ -368,7 +368,7 @@ def eval_density_laplacian(
         np.array([0, 2, 0]),
         one_density_matrix,
         basis,
-        coords,
+        points,
         transform=transform,
         coord_type=coord_type,
     )
@@ -376,14 +376,14 @@ def eval_density_laplacian(
         np.array([0, 0, 2]),
         one_density_matrix,
         basis,
-        coords,
+        points,
         transform=transform,
         coord_type=coord_type,
     )
     return output
 
 
-def eval_density_hessian(one_density_matrix, basis, coords, transform=None, coord_type="spherical"):
+def eval_density_hessian(one_density_matrix, basis, points, transform=None, coord_type="spherical"):
     """Return the Hessian of the density evaluated at the given coordinates.
 
     Parameters
@@ -394,7 +394,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform=None, coor
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -427,7 +427,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform=None, coor
                     orders_one + orders_two,
                     one_density_matrix,
                     basis,
-                    coords,
+                    points,
                     transform=transform,
                     coord_type=coord_type,
                 )
@@ -439,7 +439,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform=None, coor
 
 
 def eval_posdef_kinetic_energy_density(
-    one_density_matrix, basis, coords, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     r"""Return evaluations of positive definite kinetic energy density.
 
@@ -463,7 +463,7 @@ def eval_posdef_kinetic_energy_density(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -488,14 +488,14 @@ def eval_posdef_kinetic_energy_density(
         given coordinates.
 
     """
-    output = np.zeros(coords.shape[0])
+    output = np.zeros(points.shape[0])
     for orders in np.identity(3, dtype=int):
         output += eval_deriv_reduced_density_matrix(
             orders,
             orders,
             one_density_matrix,
             basis,
-            coords,
+            points,
             transform=transform,
             coord_type=coord_type,
         )
@@ -504,7 +504,7 @@ def eval_posdef_kinetic_energy_density(
 
 # TODO: test against a reference
 def eval_general_kinetic_energy_density(
-    one_density_matrix, basis, coords, alpha, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, alpha, transform=None, coord_type="spherical"
 ):
     r"""Return evaluations of general form of the kinetic energy density.
 
@@ -522,7 +522,7 @@ def eval_general_kinetic_energy_density(
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    coords : np.ndarray(N, 3)
+    points : np.ndarray(N, 3)
         Coordinates of the points in space (in atomic units) where the basis functions are
         evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
@@ -558,10 +558,10 @@ def eval_general_kinetic_energy_density(
         raise TypeError("`alpha` must be an int or float.")
 
     general_kinetic_energy_density = eval_posdef_kinetic_energy_density(
-        one_density_matrix, basis, coords, transform=transform, coord_type=coord_type
+        one_density_matrix, basis, points, transform=transform, coord_type=coord_type
     )
     if alpha != 0:
         general_kinetic_energy_density += alpha * eval_density_laplacian(
-            one_density_matrix, basis, coords, transform=transform, coord_type=coord_type
+            one_density_matrix, basis, points, transform=transform, coord_type=coord_type
         )
     return general_kinetic_energy_density
