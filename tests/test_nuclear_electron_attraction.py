@@ -1,17 +1,7 @@
 """Test gbasis.nuclear_electron_attraction."""
-from gbasis.nuclear_electron_attraction import (
-    nuclear_electron_attraction_cartesian,
-    nuclear_electron_attraction_lincomb,
-    nuclear_electron_attraction_mix,
-    nuclear_electron_attraction_spherical,
-)
+from gbasis.nuclear_electron_attraction import nuclear_electron_attraction_integral
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.point_charge import (
-    point_charge_cartesian,
-    point_charge_lincomb,
-    point_charge_mix,
-    point_charge_spherical,
-)
+from gbasis.point_charge import point_charge_integral
 import numpy as np
 from utils import find_datafile, HortonContractions
 
@@ -32,7 +22,10 @@ def test_nuclear_electron_attraction_horton_anorcc_hhe():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_nucattract.npy"))
     assert np.allclose(
-        nuclear_electron_attraction_cartesian(basis, coords, np.array([1, 2])), horton_nucattract
+        nuclear_electron_attraction_integral(
+            basis, coords, np.array([1, 2]), coord_type="cartesian"
+        ),
+        horton_nucattract,
     )
 
 
@@ -52,7 +45,10 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
 
     horton_nucattract = np.load(find_datafile("data_horton_bec_cart_nucattract.npy"))
     assert np.allclose(
-        nuclear_electron_attraction_cartesian(basis, coords, np.array([4, 6])), horton_nucattract
+        nuclear_electron_attraction_integral(
+            basis, coords, np.array([4, 6]), coord_type="cartesian"
+        ),
+        horton_nucattract,
     )
 
 
@@ -65,10 +61,12 @@ def test_nuclear_electron_attraction_cartesian():
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
-    ref = point_charge_cartesian(basis, nuclear_coords, nuclear_charges)
+    ref = point_charge_integral(basis, nuclear_coords, nuclear_charges, coord_type="cartesian")
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_cartesian(basis, nuclear_coords, nuclear_charges),
+        nuclear_electron_attraction_integral(
+            basis, nuclear_coords, nuclear_charges, coord_type="cartesian"
+        ),
     )
 
 
@@ -81,10 +79,12 @@ def test_nuclear_electron_attraction_spherical():
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
-    ref = point_charge_spherical(basis, nuclear_coords, nuclear_charges)
+    ref = point_charge_integral(basis, nuclear_coords, nuclear_charges, coord_type="spherical")
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_spherical(basis, nuclear_coords, nuclear_charges),
+        nuclear_electron_attraction_integral(
+            basis, nuclear_coords, nuclear_charges, coord_type="spherical"
+        ),
     )
 
 
@@ -97,10 +97,14 @@ def test_nuclear_electron_attraction_mix():
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
-    ref = point_charge_mix(basis, nuclear_coords, nuclear_charges, ["spherical"] * 8)
+    ref = point_charge_integral(
+        basis, nuclear_coords, nuclear_charges, coord_type=["spherical"] * 8
+    )
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_mix(basis, nuclear_coords, nuclear_charges, ["spherical"] * 8),
+        nuclear_electron_attraction_integral(
+            basis, nuclear_coords, nuclear_charges, coord_type=["spherical"] * 8
+        ),
     )
 
 
@@ -114,8 +118,10 @@ def test_nuclear_electron_attraction_lincomb():
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
     transform = np.random.rand(14, 18)
-    ref = point_charge_lincomb(basis, transform, nuclear_coords, nuclear_charges)
+    ref = point_charge_integral(basis, nuclear_coords, nuclear_charges, transform=transform)
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_lincomb(basis, transform, nuclear_coords, nuclear_charges),
+        nuclear_electron_attraction_integral(
+            basis, nuclear_coords, nuclear_charges, transform=transform
+        ),
     )
