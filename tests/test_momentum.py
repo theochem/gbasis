@@ -1,13 +1,7 @@
 """Test gbasis.momentum."""
 from gbasis._diff_operator_int import _compute_differential_operator_integrals
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.momentum import (
-    momentum_integral_cartesian,
-    momentum_integral_lincomb,
-    momentum_integral_mix,
-    momentum_integral_spherical,
-    MomentumIntegral,
-)
+from gbasis.momentum import momentum_integral, MomentumIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -173,7 +167,8 @@ def test_momentum_integral_cartesian():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
-        momentum_integral_obj.construct_array_cartesian(), momentum_integral_cartesian(basis)
+        momentum_integral_obj.construct_array_cartesian(),
+        momentum_integral(basis, coord_type="cartesian"),
     )
 
 
@@ -186,7 +181,8 @@ def test_momentum_integral_spherical():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
-        momentum_integral_obj.construct_array_spherical(), momentum_integral_spherical(basis)
+        momentum_integral_obj.construct_array_spherical(),
+        momentum_integral(basis, coord_type="spherical"),
     )
 
 
@@ -200,7 +196,7 @@ def test_momentum_integral_mix():
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
         momentum_integral_obj.construct_array_mix(["spherical"] * 8),
-        momentum_integral_mix(basis, ["spherical"] * 8),
+        momentum_integral(basis, coord_type=["spherical"] * 8),
     )
 
 
@@ -214,5 +210,5 @@ def test_momentum_integral_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         momentum_integral_obj.construct_array_lincomb(transform, "spherical"),
-        momentum_integral_lincomb(basis, transform),
+        momentum_integral(basis, transform=transform, coord_type="spherical"),
     )
