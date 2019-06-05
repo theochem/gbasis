@@ -522,6 +522,15 @@ To change the ordering, make a child of
 and overwrite these properties with the desired ordering.
 
 \section{Evaluations}
+For the examples, suppose we have the following set of points:
+\begin{verbatim}
+import numpy as np
+
+grid_1d = np.linspace(-2, 2, num=10)
+grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+\end{verbatim}
+
 \subsection{Evaluation of contractions}
 The functions in module \verb|gbasis.eval| return the evaluations of the
 contractions at different coordinates:
@@ -534,7 +543,24 @@ columns corresponds to the coordinate, $\mathbf{r}_n$.
 These functions can be used to find the values of the orbitals at various
 points, such as a grid.
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the atomic orbitals,
+\begin{verbatim}
+from gbasis.eval import evaluate_basis
+
+output = evaluate_basis(basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the molecular orbitals,
+\begin{verbatim}
+from gbasis.eval import evaluate_basis
+
+output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
+
 \subsection{Evaluation of derivatives of contractions}
 In \verb|gbasis|, contractions can be derivatized to arbitrary orders.
 The functions in module \verb|gbasis.eval_deriv| return the evaluations of the
@@ -546,16 +572,59 @@ given derivative of the contractions at different coordinates.
 The returned value is an array whose rows corresponds to the basis function and
 columns corresponds to the coordinate, $\mathbf{r}_n$.
 
-TODO: usage, example
+Usage:
+Suppose the following derivative of the contraction is desired:
+\begin{equation}
+  \frac{\partial^3}{\partial x \partial y^2}
+\end{equation}
+\begin{itemize}
+\item To evaluate the derivatives of the atomic orbitals,
+\begin{verbatim}
+from gbasis.eval_deriv import evaluate_deriv_basis
+
+output = evaluate_deriv_basis(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
+\end{verbatim}
+\item To evaluate the derivatives of the molecular orbitals,
+\begin{verbatim}
+from gbasis.eval import evaluate_basis
+
+output = evaluate_basis(
+    basis, grid_3d, np.array([1, 2, 0]), transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsection{Evaluations of density related properties}
 The functions in module \verb|gbasis.density| return the evaluations of the
 density and its derivatives.
+
+Suppose the \verb|one_dm| is the one-electron density matrix.
 \subsubsection{Density}
 \begin{equation}
   \rho(\mathbf{r}_n) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}_n) \phi_j(\mathbf{r}_n)
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the density using density matrix expressed with respect to
+  atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density
+
+output = evaluate_density(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the density using density matrix expressed with respect to
+  molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density
+
+output = evaluate_density(one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where
+  \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Arbitrary derivatives of density}
 \begin{equation}
   \frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
@@ -572,7 +641,32 @@ TODO: usage, example
   }
 \end{equation}
 
-TODO: usage, example
+Usage:
+Suppose the following derivative of the density is desired:
+\begin{equation}
+  \frac{\partial^3}{\partial x \partial y^2}
+\end{equation}
+\begin{itemize}
+\item To evaluate the derivative of the density using density matrix expressed
+  with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_deriv_density
+
+output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the derivative of the density using density matrix expressed
+  with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_deriv_density
+
+output = evaluate_deriv_density(
+    np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where
+  \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Gradient of density}
 \begin{equation}
   \nabla \rho(\mathbf{r}_n)
@@ -584,7 +678,28 @@ TODO: usage, example
   \end{bmatrix}\\
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the gradient of the density using density matrix expressed
+  with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density_gradient
+
+output = evaluate_density_gradient(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the gradient of the density using density matrix expressed
+  with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density_gradient
+
+output = evaluate_density_gradient(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where
+  \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Laplacian of density}
 \begin{equation}
   \nabla^2 \rho(\mathbf{r}_n)
@@ -594,7 +709,29 @@ TODO: usage, example
   + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the laplacian of the density using density matrix expressed
+  with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density_laplacian
+
+output = evaluate_density_laplacian(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+  where
+\item To evaluate the laplacian of the density using density matrix expressed
+  with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density_laplacian
+
+output = evaluate_density_laplacian(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where
+  \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Hessian of density}
 \begin{equation}
   H[\rho(\mathbf{r}_n)]
@@ -612,7 +749,29 @@ TODO: usage, example
   \end{bmatrix}\\
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the Hessian of the density using density matrix expressed
+  with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density_hessian
+
+output = evaluate_density_hessian(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+  where
+\item To evaluate the Hessian of the density using density matrix expressed
+  with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_density_hessian
+
+output = evaluate_density_hessian(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where
+  \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsection{Evaluations of density matrix related properties}
 Given the density matrix,
 \begin{equation}
@@ -655,9 +814,8 @@ Since $\gamma_{ij}$ is symmetric,
   \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}_n}
 \end{equation}
 
-TODO: usage, example
+Again, suppose \verb|one_dm| is the one-electron density matrix.
 \subsubsection{Stress tensor}
-% FIXME: double check
 \begin{equation}
   \begin{split}
     \boldsymbol{\sigma}_{ij}(\mathbf{r}_n | \alpha, \beta)
@@ -686,7 +844,35 @@ TODO: usage, example
   \end{split}
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the stress tensor ($\alpha=1$ and $\beta=0$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_stress_tensor
+
+output = evaluate_stress_tensor(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the stress tensor ($\alpha=0.5$ and $\beta=1$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_stress_tensor
+
+output = evaluate_stress_tensor(one_dm, basis, grid_3d, alpha=0.5, beta=1, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the stress tensor ($\alpha=1$ and $\beta=0$)
+  using density matrix expressed with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_stress_tensor
+
+output = evaluate_stress_tensor(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where
+  \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Ehrenfest force}
 Ehrenfest force is defined as the divergence of the stress tensor
 \begin{equation}
@@ -739,7 +925,34 @@ Ehrenfest force is defined as the divergence of the stress tensor
 \end{equation}
 
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the Ehrenfest force ($\alpha=1$ and $\beta=0$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_ehrenfest_force
+
+output = evaluate_ehrenfest_force(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the Ehrenfest force ($\alpha=0.5$ and $\beta=1$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_ehrenfest_force
+
+output = evaluate_ehrenfest_force(one_dm, basis, grid_3d, alpha=0.5, beta=1, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the Ehrenfest force ($\alpha=1$ and $\beta=0$)
+  using density matrix expressed with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_ehrenfest_force
+
+output = evaluate_ehrenfest_force(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Ehrenfest Hessian}
 \begin{equation}
   \begin{split}
@@ -770,7 +983,36 @@ TODO: usage, example
   \end{split}
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the Ehrenfest Hessian ($\alpha=1$ and $\beta=0$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_ehrenfest_hessian
+
+output = evaluate_ehrenfest_hessian(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the Ehrenfest Hessian ($\alpha=0.5$ and $\beta=1$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_ehrenfest_hessian
+
+output = evaluate_ehrenfest_hessian(
+    one_dm, basis, grid_3d, alpha=0.5, beta=1, coord_type="spherical"
+)
+\end{verbatim}
+\item To evaluate the Ehrenfest Hessian ($\alpha=1$ and $\beta=0$)
+  using density matrix expressed with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.stress_tensor import evaluate_ehrenfest_hessian
+
+output = evaluate_ehrenfest_hessian(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Positive-definite kinetic energy density}
 \begin{equation}
   \begin{split}
@@ -786,13 +1028,62 @@ TODO: usage, example
   \end{split}
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the positive-definite kinetic energy density using density
+  matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_posdef_kinetic_energy_density
+
+output = evaluate_posdef_kinetic_energy_density(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the positive-definite kinetic energy density using density
+  matrix expressed with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_posdef_kinetic_energy_density
+
+output = evaluate_posdef_kinetic_energy_density(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{General form of kinetic energy density}
 \begin{equation}
   t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To evaluate the general form of the kinetic energy density ($\alpha=1$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_general_kinetic_energy_density
+
+output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d, coord_type="spherical")
+\end{verbatim}
+\item To evaluate the general form of the kinetic energy density ($\alpha=0.5$)
+  using density matrix expressed with respect to atomic orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_general_kinetic_energy_density
+
+output = evaluate_general_kinetic_energy_density(
+    one_dm, basis, grid_3d, alpha=0.5, coord_type="spherical"
+)
+\end{verbatim}
+\item To evaluate the general form of the kinetic energy density ($\alpha=1$)
+  using density matrix expressed with respect to molecular orbitals,
+\begin{verbatim}
+from gbasis.density import evaluate_general_kinetic_energy_density
+
+output = evaluate_general_kinetic_energy_density(
+    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \section{Integrals}
 \subsection{Multipole moment integral}
 Multipole moment integral can be obtained for arbitrary moments.
