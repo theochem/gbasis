@@ -1085,6 +1085,35 @@ output = evaluate_general_kinetic_energy_density(
   to molecular orbitals.
 \end{itemize}
 \section{Integrals}
+
+\subsection{Overlap integral}
+\begin{equation}
+  \label{eq:overlap}
+  \int \phi_a (\mathbf{r}) \phi_b (\mathbf{r}) d\mathbf{r}
+\end{equation}
+
+Usage:
+\begin{itemize}
+\item To compute the overlap of a set of atomic orbitals
+\begin{verbatim}
+from gbasis.overlap import overlap_integral
+
+output = overlap_integral(basis, coord_type="spherical")
+\end{verbatim}
+\item To compute the overlap of a set of molecular orbitals
+\begin{verbatim}
+from gbasis.overlap import overlap_integral
+
+output = overlap_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
+\subsubsection{Overlap integral between two different basis sets}
+Overlap integrals between two different basis sets are supported i.e.
+$\phi_a$ belongs to one basis set and $\phi_b$ belongs to another.
+
+TODO: usage, example
 \subsection{Multipole moment integral}
 Multipole moment integral can be obtained for arbitrary moments.
 \begin{equation}
@@ -1092,20 +1121,40 @@ Multipole moment integral can be obtained for arbitrary moments.
   \int \phi_a (\mathbf{r}) (x - X_C)^{c_x} (y - Y_C)^{c_y} (z - Z_C)^{c_z} \phi_b (\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-TODO: usage, example
-\subsection{Overlap integral}
-Overlap integrals can be thought of as multipole moment integrals with zero moments.
+Usage:
+Suppose the integral of the following moments is desired:
 \begin{equation}
-  \label{eq:overlap}
-  \int \phi_a (\mathbf{r}) \phi_b (\mathbf{r}) d\mathbf{r}
+  (x - 1.5)^2 (y - 2.5)^3 (z - 3.5)
 \end{equation}
+\begin{equation}
+  (x - 1.5) (y - 2.5)^2 (z - 3.5)^3
+\end{equation}
+\begin{itemize}
+\item To compute the moment of a set of atomic orbitals
+\begin{verbatim}
+from gbasis.moment import moment_integral
 
-TODO: usage, example
-\subsubsection{Overlap integral between two different basis sets}
-Overlap integrals between two different basis sets are supported i.e.
-$\phi_a$ belongs to one basis set and $\phi_b$ belongs to another.
+output = moment_integral(
+    basis, np.array([1.5, 2.5, 3.5]), np.array([[2, 3, 1], [1, 2, 3]]),
+coord_type="spherical"
+)
+\end{verbatim}
+\item To compute the overlap of a set of molecular orbitals
+\begin{verbatim}
+from gbasis.moment import moment_integral
 
-TODO: usage, example
+output = moment_integral(
+    basis,
+    np.array([1.5, 2.5, 3.5]),
+    np.array([[2, 3, 1], [1, 2, 3]]),
+    transform=transform_mo_ao,
+    coord_type="spherical",
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
+
 \subsection{Integrals over differential operator}
 Integrals over arbitrary differential operator (for Cartesian coordinates) are
 supported.
@@ -1115,7 +1164,6 @@ supported.
   d\mathbf{r}
 \end{equation}
 
-TODO: usage, example
 \subsubsection{Kinetic energy integral}
 \begin{equation}
   \label{eq:kinetic_energy}
@@ -1131,7 +1179,23 @@ TODO: usage, example
   \end{split}
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To compute the kinetic energy integral of a set of atomic orbitals
+\begin{verbatim}
+from gbasis.kinetic_energy import kinetic_energy_integral
+
+output = kinetic_energy_integral(basis, coord_type="spherical")
+\end{verbatim}
+\item To compute the kinetic energy integral of a set of molecular orbitals
+\begin{verbatim}
+from gbasis.kinetic_energy import kinetic_energy_integral
+
+output = kinetic_energy_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Momentum integral}
 \begin{equation}
   \label{eq:momentum}
@@ -1147,7 +1211,23 @@ TODO: usage, example
   \end{split}
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To compute the momentum integral of a set of atomic orbitals
+\begin{verbatim}
+from gbasis.momentum import momentum_integral
+
+output = momentum_integral(basis, coord_type="spherical")
+\end{verbatim}
+\item To compute the momentum integral of a set of molecular orbitals
+\begin{verbatim}
+from gbasis.momentum import momentum_integral
+
+output = momentum_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Angular momentum integral}
 \begin{equation}
   \label{eq:angular_momentum}
@@ -1166,14 +1246,58 @@ TODO: usage, example
   \end{split}
 \end{equation}
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To compute the angular momentum integral of a set of atomic orbitals
+\begin{verbatim}
+from gbasis.angular_momentum import angular_momentum_integral
+
+output = angular_momentum_integral(basis, coord_type="spherical")
+\end{verbatim}
+\item To compute the angular momentum integral of a set of molecular orbitals
+\begin{verbatim}
+from gbasis.angular_momentum import angular_momentum_integral
+
+output = angular_momentum_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsection{Integral for interaction with point-charge}
 \begin{equation}
   \label{eq:point_charge}
   \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-TODO: usage, example
+Usage:
+Suppose there are two point charges: $-3$ charge at $(0, 1, 2)$ and $5$ charge
+at $(3, 4, 6)$
+\begin{itemize}
+\item To compute the integral for interaction between these point-charges and
+  the set of atomic orbital
+\begin{verbatim}
+from gbasis.point_charge import point_charge_integral
+
+output = point_charge_integral(
+    basis, np.array([[0, 1, 2], [3, 4, 6]]), np.array([-3, 5]), coord_type="spherical"
+)
+\end{verbatim}
+\item To compute the integral for interaction between these point-charges and
+  the set of molecular orbital
+\begin{verbatim}
+from gbasis.point_charge import point_charge_integral
+
+output = point_charge_integral(
+    basis,
+    np.array([[0, 1, 2], [3, 4, 6]]),
+    np.array([-3, 5]),
+    transform=transform_mo_ao,
+    coord_type="spherical",
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Nuclear-electron attraction integral}
 \begin{equation}
   \label{eq:nuclear_electron_attraction}
@@ -1182,7 +1306,34 @@ TODO: usage, example
   -Z_C \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-TODO: usage, example
+Usage:
+Suppose there are two nuclei: He at $(0, 1, 2)$ and Al at $(3, 4, 6)$
+\begin{itemize}
+\item To compute the nuclear-electron attraction integral of the set of atomic
+  orbital
+\begin{verbatim}
+from gbasis.nuclear_electron_attraction import nuclear_electron_attraction_integral
+
+output = nuclear_electron_attraction_integral(
+    basis, np.array([[0, 1, 2], [3, 4, 6]]), np.array([2, 13]), coord_type="spherical"
+)
+\end{verbatim}
+\item To compute the nuclear-electron attraction integral of the set of molecular
+  orbital
+\begin{verbatim}
+from gbasis.nuclear_electron_attraction import nuclear_electron_attraction_integral
+
+output = nuclear_electron_attraction_integral(
+    basis,
+    np.array([[0, 1, 2], [3, 4, 6]]),
+    np.array([2, 13]),
+    transform=transform_mo_ao,
+    coord_type="spherical",
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsubsection{Electrostatic potential}
 \begin{equation}
   \label{eq:nuclear_electron_attraction}
@@ -1195,7 +1346,44 @@ TODO: usage, example
   - \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
-TODO: usage, example
+Usage:
+Suppose there are two nuclei, He at $(0, 1, 2)$ and Al at $(3, 4, 6)$
+$(0, 1, 2)$ and $(3, 4, 6)$, the electrostatic potential is measured at
+points $(0.5, 1.5, 2.5)$ and $(2.5, 3.5, 5.5)$, and the one-electron density
+matrix is given by \verb|one_dm|.
+\begin{itemize}
+\item To compute the electrostatic potential using density matrix expressed with
+  respect to atomic orbitals
+\begin{verbatim}
+from gbasis.electrostatic_potential import electrostatic_potential
+
+output = electrostatic_potential(
+    basis,
+    one_dm,
+    np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
+    np.array([[0, 1, 2], [3, 4, 6]]),
+    np.array([2, 13]),
+    coord_type="spherical",
+)
+\end{verbatim}
+\item To compute the electrostatic potential using density matrix expressed with
+  respect to molecular orbitals
+\begin{verbatim}
+from gbasis.electrostatic_potential import electrostatic_potential
+
+output = electrostatic_potential(
+    basis,
+    one_dm,
+    np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
+    np.array([[0, 1, 2], [3, 4, 6]]),
+    np.array([2, 13]),
+    transform=transform_mo_ao,
+    coord_type="spherical"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 \subsection{Electron-electron repulsion integral}
 In the Chemists' notation,
 \begin{equation}
@@ -1215,7 +1403,36 @@ In the Physicists' notation
 Though both conventions are supported at the higher level, lower level code uses
 the Chemists' notation.
 
-TODO: usage, example
+Usage:
+\begin{itemize}
+\item To compute the electron repulsion integral of a set of atomic orbitals in
+  Physicists' notation
+\begin{verbatim}
+from gbasis.electron_repulsion import electron_repulsion_integral
+
+output = electron_repulsion_integral(basis, coord_type="spherical")
+\end{verbatim}
+\item To compute the electron repulsion integral of a set of molecular orbitals in
+  Physicists' notation
+\begin{verbatim}
+from gbasis.electron_repulsion import electron_repulsion_integral
+
+output = electron_repulsion_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\item To compute the electron repulsion integral of a set of molecular orbitals in
+  Chemists' notation
+\begin{verbatim}
+from gbasis.electron_repulsion import electron_repulsion_integral
+
+output = electron_repulsion_integral(
+    basis, transform=transform_mo_ao, coord_type="spherical", notation="chemist"
+)
+\end{verbatim}
+  where \verb|transform_mo_ao| is the transformation matrix from atomic orbitals
+  to molecular orbitals.
+\end{itemize}
 
 \section{Future Development}
 \begin{itemize}
