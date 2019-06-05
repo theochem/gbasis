@@ -1,13 +1,7 @@
 """Test gbasis.angular_momentum."""
 from gbasis._diff_operator_int import _compute_differential_operator_integrals_intermediate
 from gbasis._moment_int import _compute_multipole_moment_integrals_intermediate
-from gbasis.angular_momentum import (
-    angular_momentum_integral_cartesian,
-    angular_momentum_integral_lincomb,
-    angular_momentum_integral_mix,
-    angular_momentum_integral_spherical,
-    AngularMomentumIntegral,
-)
+from gbasis.angular_momentum import angular_momentum_integral, AngularMomentumIntegral
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
@@ -379,7 +373,7 @@ def test_angular_momentum_integral_cartesian():
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_cartesian(),
-        angular_momentum_integral_cartesian(basis),
+        angular_momentum_integral(basis, coord_type="cartesian"),
     )
 
 
@@ -393,7 +387,7 @@ def test_angular_momentum_integral_spherical():
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_spherical(),
-        angular_momentum_integral_spherical(basis),
+        angular_momentum_integral(basis, coord_type="spherical"),
     )
 
 
@@ -407,7 +401,7 @@ def test_angular_momentum_integral_mix():
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_mix(["spherical"] * 8),
-        angular_momentum_integral_mix(basis, ["spherical"] * 8),
+        angular_momentum_integral(basis, coord_type=["spherical"] * 8),
     )
 
 
@@ -421,5 +415,5 @@ def test_angular_momentum_integral_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_lincomb(transform, "spherical"),
-        angular_momentum_integral_lincomb(basis, transform),
+        angular_momentum_integral(basis, transform, coord_type="spherical"),
     )

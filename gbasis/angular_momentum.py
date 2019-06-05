@@ -155,96 +155,40 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         return -1j * np.transpose(output, (3, 2, 4, 1, 0))
 
 
-def angular_momentum_integral_cartesian(basis):
-    r"""Return the integral over :math:`hat{L}` of the basis set in the Cartesian form.
+def angular_momentum_integral(basis, transform=None, coord_type="spherical"):
+    r"""Return the integral over :math:`hat{L}` of the given basis set.
 
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-
-    Returns
-    -------
-    array : np.ndarray(K_cart, K_cart, 3)
-        Array associated with the given set of contracted Cartesian Gaussians.
-        Dimensions 0 and 1 of the array are associated with the contracted Cartesian Gaussians.
-        `K_cart` is the total number of Cartesian contractions within the instance.
-        Dimension 2 corresponds to the direction of the angular momentum (x, y, z).
-
-    """
-    return AngularMomentumIntegral(basis).construct_array_cartesian()
-
-
-def angular_momentum_integral_spherical(basis):
-    r"""Return the integral over :math:`hat{L}` of the basis set in the spherical form.
-
-    Parameters
-    ----------
-    basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-
-    Returns
-    -------
-    array : np.ndarray(K_sph, K_sph, 3)
-        Array associated with the given set of contracted spherical Gaussians.
-        Dimensions of the array are associated with two contracted spherical Gaussians (atomic
-        orbitals). `K_sph` is the total number of spherical contractions within the instance.
-        Dimension 2 corresponds to the direction of the angular momentum (x, y, z).
-
-    """
-    return AngularMomentumIntegral(basis).construct_array_spherical()
-
-
-def angular_momentum_integral_mix(basis, coord_types):
-    r"""Return the integral over :math:`hat{L}` of the basis set in the given coordinate systems.
-
-    Parameters
-    ----------
-    basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    coord_types : list/tuple of str
-        Types of the coordinate system for each GeneralizedContractionShell.
-        Each entry must be one of "cartesian" or "spherical".
-
-    Returns
-    -------
-    array : np.ndarray(K_cont, K_cont, 3)
-        Array associated with the contractions in the given coordinate systems.
-        Dimensions 0 and 1 of the array are associated with two contractions in the given coordinate
-        system. `K_cont` is the total number of contractions within the given basis set.
-        Dimension 2 corresponds to the direction of the angular momentum (x, y, z).
-
-    """
-    return AngularMomentumIntegral(basis).construct_array_mix(coord_types)
-
-
-def angular_momentum_integral_lincomb(basis, transform, coord_type="spherical"):
-    r"""Return integral over :math:`hat{L}` of the linearly combined basis set.
-
-    Parameters
-    ----------
-    basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    transform : np.ndarray(K_orbs, K_sph)
-        Array associated with the linear combinations of spherical Gaussians (LCAO's).
-        Transformation is applied to the left, i.e. the sum is over the second index of `transform`
-        and first index of the array for contracted spherical Gaussians.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Shells of generalized contractions.
+    transform : np.ndarray(K, K_cont)
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
+    coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each GeneralizedContractionShell instance.
-        Default value is "spherical".
+        Default is "spherical".
 
     Returns
     -------
-    array : np.ndarray(K_orbs, K_orbs, 3)
-        Array whose first and second indices are associated with the linear combinations of the
-        contracted spherical Gaussians.
-        Dimensions 0 and 1 of the array correspond to the linear combination of contracted spherical
-        Gaussians. `K_orbs` is the number of basis functions produced after the linear combinations.
+    array : np.ndarray(K, K, 3)
+        Array associated with the basis functions in the given shells of generalized contractions.
+        Dimensions 0 and 1 of the array are associated with the basis functions in the basis set.
+        `K` is the total number of basis functions in the basis set.
         Dimension 2 corresponds to the direction of the angular momentum (x, y, z).
 
     """
-    return AngularMomentumIntegral(basis).construct_array_lincomb(transform, coord_type)
+    if transform is not None:
+        return AngularMomentumIntegral(basis).construct_array_lincomb(transform, coord_type)
+    if coord_type == "spherical":
+        return AngularMomentumIntegral(basis).construct_array_spherical()
+    if coord_type == "cartesian":
+        return AngularMomentumIntegral(basis).construct_array_cartesian()
+    return AngularMomentumIntegral(basis).construct_array_mix(coord_type)
