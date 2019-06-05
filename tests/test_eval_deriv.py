@@ -3,13 +3,7 @@ import itertools as it
 
 from gbasis._deriv import _eval_deriv_contractions
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.eval_deriv import (
-    EvalDeriv,
-    evaluate_deriv_basis_cartesian,
-    evaluate_deriv_basis_lincomb,
-    evaluate_deriv_basis_mix,
-    evaluate_deriv_basis_spherical,
-)
+from gbasis.eval_deriv import EvalDeriv, evaluate_deriv_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -145,13 +139,17 @@ def test_evaluate_deriv_basis_cartesian():
         eval_obj.construct_array_cartesian(
             coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis_cartesian(basis, np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])),
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), orders=np.array([0, 0, 0]), coord_type="cartesian"
+        ),
     )
     assert np.allclose(
         eval_obj.construct_array_cartesian(
             coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis_cartesian(basis, np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])),
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), orders=np.array([2, 1, 0]), coord_type="cartesian"
+        ),
     )
 
 
@@ -166,13 +164,17 @@ def test_evaluate_deriv_basis_spherical():
         eval_obj.construct_array_spherical(
             coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis_spherical(basis, np.array([[1, 1, 1]]), np.array([0, 0, 0])),
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), coord_type="spherical"
+        ),
     )
     assert np.allclose(
         eval_obj.construct_array_spherical(
             coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis_spherical(basis, np.array([[1, 1, 1]]), np.array([2, 1, 0])),
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), coord_type="spherical"
+        ),
     )
 
 
@@ -187,16 +189,16 @@ def test_evaluate_deriv_basis_mix():
         eval_obj.construct_array_mix(
             ["cartesian"] * 8, coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis_mix(
-            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), ["cartesian"] * 8
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), coord_type=["cartesian"] * 8
         ),
     )
     assert np.allclose(
         eval_obj.construct_array_mix(
             ["spherical"] * 8, coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis_mix(
-            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), ["spherical"] * 8
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), coord_type=["spherical"] * 8
         ),
     )
 
@@ -214,15 +216,19 @@ def test_evaluate_deriv_basis_lincomb():
         eval_obj.construct_array_lincomb(
             cart_transform, "cartesian", coords=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis_lincomb(
-            basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), cart_transform, "cartesian"
+        evaluate_deriv_basis(
+            basis,
+            np.array([[1, 1, 1]]),
+            np.array([0, 0, 0]),
+            cart_transform,
+            coord_type="cartesian",
         ),
     )
     assert np.allclose(
         eval_obj.construct_array_lincomb(
             sph_transform, "spherical", coords=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis_lincomb(
-            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform, "spherical"
+        evaluate_deriv_basis(
+            basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform, coord_type="spherical"
         ),
     )
