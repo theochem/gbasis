@@ -271,6 +271,74 @@ they use the same set of primitives.
 \section{Basis Set}
 In this module, basis set is defined to be a list of shells of generalized
 contractions.
+
+\subsection{Loading basis sets}
+Basis set information is often stored in text format.
+In \verb|gbasis|, the Gaussian94 format (.gbs) and the NWChem format (.nwchem) are
+supported.
+
+\verb|gbasis| also interfaces to the module \verb|iodata|, which handles the
+inputs and outputs for different quantum chemistry formats, such as Gaussian
+formatted checkpoint files (.fchk) and AIM wavefunction files (.wfn and .wfx).
+It also interfaces to \verb|pyscf|, which is an ab initio computational
+chemistry program.
+
+Usage:
+Supposed we have the following system:
+\begin{verbatim}
+atoms = ["H", "H"]
+coords = np.array([[0, 0, 0], [0, 0, 1]])
+\end{verbatim}
+\begin{itemize}
+\item To build a basis set from gbs file for the given atoms and coordinates,
+\begin{verbatim}
+from gbasis.parsers import parse_gbs, make_contractions
+
+with open("from_basissetexchange.gbs", "r")as f:
+    all_basis = f.read()
+all_basis_dict = parse_gbs(all_basis)
+basis = make_contractions(all_basis_dict, atoms, coords)
+\end{verbatim}
+\item To build a basis set from nwchem file for the given atoms and coordinates,
+\begin{verbatim}
+from gbasis.parsers import parse_nwchem, make_contractions
+
+with open("from_basissetexchange.nwchem", "r")as f:
+    all_basis = f.read()
+all_basis_dict = parse_gbs(all_basis)
+basis = make_contractions(all_basis_dict, atoms, coords)
+\end{verbatim}
+\end{itemize}
+
+Using \verb|iodata|, suppose we have the following system:
+\begin{verbatim}
+from iodata import load_one
+
+mol = load_one("molecule.fchk")
+\end{verbatim}
+To build a basis set,
+\begin{verbatim}
+from gbasis.wrappers import from_iodata
+
+basis = from_iodata(mol)
+\end{verbatim}
+
+Using \verb|pyscf|, suppose we have the following system:
+\begin{verbatim}
+from pyscf import gto
+mol = gto.Mole()
+mol.build(
+     atom = "O 0 0 0; H  0 1 0; H 0 0 1",
+     basis = "sto-3g"
+)
+\end{verbatim}
+To build a basis set,
+\begin{verbatim}
+from gbasis.wrappers import from_pyscf
+
+basis = from_pyscf(mol)
+\end{verbatim}
+
 \subsection{Types of coordinate systems used by basis functions}
 In \verb|gbasis|, user can provide the coordinate system used by each shell of
 generalized contractions.
@@ -326,6 +394,7 @@ output = high_level_function(basis, transform=matrix)
 where \verb|matrix| is the transformation matrix.
 
 \subsection{Ordering of basis functions}
+\label{sec:basis_ordering}
 Since a shell of generalized contractions is a set of contractions, they must be
 unpacked.
 When unpacked, the basis functions are first ordered by the shells, then by the
