@@ -271,6 +271,38 @@ they use the same set of primitives.
 \section{Basis Set}
 In this module, basis set is defined to be a list of shells of generalized
 contractions.
+\subsection{Types of coordinate systems used by basis functions}
+In \verb|gbasis|, user can provide the coordinate system used by each shell of
+generalized contractions.
+All of the higher level functions have the keyword argument \verb|coord_type| to
+specify the coordinate systems used by the basis.
+If \verb|coord_type="spherical"|, all of the shells are treated to be spherical.
+If \verb|coord_type="cartesian"|, all of the shells are treated to be
+Cartesian.
+If different shells correspond to different coordinate system, then a list/tuple
+of the same length as the basis set must be provided with each entry being
+\verb|"spherical"| or \verb|"cartesian"| to specify the coordinate system of the
+corresponding shell.
+
+Usage:
+\begin{itemize}
+\item To treat all contractions to be spherical
+\begin{verbatim}
+output = high_level_function(basis, coord_type="spherical")
+\end{verbatim}
+\item To treat all contractions to be Cartesian
+\begin{verbatim}
+output = high_level_function(basis, coord_type="cartesian")
+\end{verbatim}
+\item To treat first shell of generalized contractions to be Cartesian and
+  second shell to be spherical
+\begin{verbatim}
+output = high_level_function(basis, coord_type=["cartesian", "spherical"])
+\end{verbatim}
+  In this case, the basis set must consist of exactly two shells of
+  generalized contractions. Otherwise, an error will raised.
+\end{itemize}
+
 \subsection{Ordering of basis functions}
 Since a shell of generalized contractions is a set of contractions, they must be
 unpacked.
@@ -397,38 +429,6 @@ respectively.
 To change the ordering, make a child of
 \verb|GeneralizedContractionShell|
 and overwrite these properties with the desired ordering.
-
-\subsection{Types of coordinate systems used by basis functions}
-In \verb|gbasis|, user can provide the coordinate system used by each shell of
-generalized contractions.
-All of the higher level functions have the keyword argument \verb|coord_type| to
-specify the coordinate systems used by the basis.
-If \verb|coord_type="spherical"|, all of the shells are treated to be spherical.
-If \verb|coord_type="cartesian"|, all of the shells are treated to be
-Cartesian.
-If different shells correspond to different coordinate system, then a list/tuple
-of the same length as the basis set must be provided with each entry being
-\verb|"spherical"| or \verb|"cartesian"| to specify the coordinate system of the
-corresponding shell.
-
-Usage:
-\begin{itemize}
-\item To treat all contractions to be spherical
-\begin{verbatim}
-output = high_level_function(basis, coord_type="spherical")
-\end{verbatim}
-\item To treat all contractions to be Cartesian
-\begin{verbatim}
-output = high_level_function(basis, coord_type="cartesian")
-\end{verbatim}
-\item To treat first shell of generalized contractions to be Cartesian and
-  second shell to be spherical
-\begin{verbatim}
-output = high_level_function(basis, coord_type=["cartesian", "spherical"])
-\end{verbatim}
-  In this case, the basis set must consist of exactly two shells of
-  generalized contractions. Otherwise, an error will raised.
-\end{itemize}
 
 \section{Evaluations}
 \subsection{Evaluation of contractions}
