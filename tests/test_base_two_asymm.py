@@ -424,3 +424,30 @@ def test_contruct_array_lincomb():
             ).dot(orb_transform_two.T)
         ),
     )
+    assert np.allclose(
+        test.construct_array_lincomb(
+            None, orb_transform_two, "cartesian", ["spherical", "cartesian"]
+        ),
+        np.hstack(
+            [(np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2, np.arange(9).reshape(3, 3) * 2]
+        ).dot(orb_transform_two.T),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(
+            orb_transform_one, None, "cartesian", ["spherical", "cartesian"]
+        ),
+        orb_transform_one.dot(
+            np.hstack(
+                [
+                    (np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2,
+                    np.arange(9).reshape(3, 3) * 2,
+                ]
+            )
+        ),
+    )
+    assert np.allclose(
+        test.construct_array_lincomb(None, None, "cartesian", ["spherical", "cartesian"]),
+        np.hstack(
+            [(np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2, np.arange(9).reshape(3, 3) * 2]
+        ),
+    )

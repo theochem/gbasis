@@ -375,9 +375,11 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         transform_one : np.ndarray
             Array associated with the linear combinations of spherical Gaussians (LCAO's) associated
             with the first index.
+            If None, then transformation is skipped.
         transform_two : np.ndarray
             Array associated with the linear combinations of spherical Gaussians (LCAO's) associated
             with the second index.
+            If None, then transformation is skipped.
         coord_type_one : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
             Types of the coordinate system for the contractions associated with the first index.
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -434,7 +436,9 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                     " strings."
                 )
             array = self.construct_array_mix(coord_type_one, coord_type_two, **kwargs)
-        array = np.tensordot(transform_one, array, (1, 0))
-        array = np.tensordot(transform_two, array, (1, 1))
-        array = np.swapaxes(array, 0, 1)
+        if transform_one is not None:
+            array = np.tensordot(transform_one, array, (1, 0))
+        if transform_two is not None:
+            array = np.tensordot(transform_two, array, (1, 1))
+            array = np.swapaxes(array, 0, 1)
         return array
