@@ -1,13 +1,7 @@
 """Test gbasis.point_charge."""
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.point_charge import (
-    point_charge_cartesian,
-    point_charge_lincomb,
-    point_charge_mix,
-    point_charge_spherical,
-    PointChargeIntegral,
-)
+from gbasis.point_charge import point_charge_integral, PointChargeIntegral
 import numpy as np
 import pytest
 from scipy.special import factorial
@@ -136,7 +130,12 @@ def test_point_charge_cartesian():
         point_charge_obj.construct_array_cartesian(
             coords_points=coords_points, charges_points=charges_points
         ),
-        point_charge_cartesian(basis, coords_points=coords_points, charges_points=charges_points),
+        point_charge_integral(
+            basis,
+            coords_points=coords_points,
+            charges_points=charges_points,
+            coord_type="cartesian",
+        ),
     )
 
 
@@ -154,7 +153,12 @@ def test_point_charge_spherical():
         point_charge_obj.construct_array_spherical(
             coords_points=coords_points, charges_points=charges_points
         ),
-        point_charge_spherical(basis, coords_points=coords_points, charges_points=charges_points),
+        point_charge_integral(
+            basis,
+            coords_points=coords_points,
+            charges_points=charges_points,
+            coord_type="spherical",
+        ),
     )
 
 
@@ -172,7 +176,7 @@ def test_point_charge_mix():
         point_charge_obj.construct_array_mix(
             ["spherical"] * 8, coords_points=coords_points, charges_points=charges_points
         ),
-        point_charge_mix(basis, coords_points, charges_points, ["spherical"] * 8),
+        point_charge_integral(basis, coords_points, charges_points, coord_type=["spherical"] * 8),
     )
 
 
@@ -189,9 +193,9 @@ def test_point_charge_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         point_charge_obj.construct_array_lincomb(
-            transform, ["spherical"] * 8, coords_points=coords_points, charges_points=charges_points
+            transform, "spherical", coords_points=coords_points, charges_points=charges_points
         ),
-        point_charge_lincomb(
-            basis, transform, coords_points=coords_points, charges_points=charges_points
+        point_charge_integral(
+            basis, coords_points=coords_points, charges_points=charges_points, transform=transform
         ),
     )
