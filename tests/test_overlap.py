@@ -1,13 +1,7 @@
 """Test gbasis.overlap."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.overlap import (
-    Overlap,
-    overlap_cartesian,
-    overlap_lincomb,
-    overlap_mix,
-    overlap_spherical,
-)
+from gbasis.overlap import Overlap, overlap_integral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -84,7 +78,9 @@ def test_overlap_cartesian():
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
-    assert np.allclose(overlap_obj.construct_array_cartesian(), overlap_cartesian(basis))
+    assert np.allclose(
+        overlap_obj.construct_array_cartesian(), overlap_integral(basis, coord_type="cartesian")
+    )
 
 
 def test_overlap_spherical():
@@ -95,7 +91,9 @@ def test_overlap_spherical():
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
-    assert np.allclose(overlap_obj.construct_array_spherical(), overlap_spherical(basis))
+    assert np.allclose(
+        overlap_obj.construct_array_spherical(), overlap_integral(basis, coord_type="spherical")
+    )
 
 
 def test_overlap_mix():
@@ -107,7 +105,8 @@ def test_overlap_mix():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
     assert np.allclose(
-        overlap_obj.construct_array_mix(["spherical"] * 8), overlap_mix(basis, ["spherical"] * 8)
+        overlap_obj.construct_array_mix(["spherical"] * 8),
+        overlap_integral(basis, coord_type=["spherical"] * 8),
     )
 
 
@@ -121,7 +120,7 @@ def test_overlap_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         overlap_obj.construct_array_lincomb(transform, "spherical"),
-        overlap_lincomb(basis, transform),
+        overlap_integral(basis, transform=transform, coord_type="spherical"),
     )
 
 
@@ -207,7 +206,7 @@ def test_overlap_horton_anorcc_hhe():
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
-    assert np.allclose(overlap_cartesian(basis), horton_overlap)
+    assert np.allclose(overlap_integral(basis, coord_type="cartesian"), horton_overlap)
 
 
 def test_overlap_horton_anorcc_bec():
@@ -226,4 +225,4 @@ def test_overlap_horton_anorcc_bec():
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
-    assert np.allclose(overlap_cartesian(basis), horton_overlap)
+    assert np.allclose(overlap_integral(basis, coord_type="cartesian"), horton_overlap)
