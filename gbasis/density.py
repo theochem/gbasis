@@ -1,6 +1,6 @@
 """Density Evaluation."""
-from gbasis.eval import evaluate_basis_lincomb
-from gbasis.eval_deriv import evaluate_deriv_basis_lincomb
+from gbasis.eval import evaluate_basis
+from gbasis.eval_deriv import evaluate_deriv_basis
 import numpy as np
 from scipy.special import comb
 
@@ -11,7 +11,7 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given orbitals.
     orb_eval : np.ndarray(K_orb, N)
         Orbitals evaluated at different grid points.
         The set of orbitals must be the same basis set used to build the one-electron density
@@ -61,23 +61,27 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def eval_density(one_density_matrix, basis, coords, transform, coord_type="spherical"):
-    """Return the density of the given transformed basis set at the given coordinates.
+def eval_density(one_density_matrix, basis, coords, transform=None, coord_type="spherical"):
+    """Return the density of the given basis set at the given coordinates.
 
     Parameters
     ----------
-    one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+    one_density_matrix : np.ndarray(K_orbs, K_orbs)
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -89,17 +93,23 @@ def eval_density(one_density_matrix, basis, coords, transform, coord_type="spher
     Returns
     -------
     density : np.ndarray(N,)
-        Density evaluated at different grid points.
+        Density evaluated at the given points.
 
     """
-    orb_eval = evaluate_basis_lincomb(basis, coords, transform, coord_type=coord_type)
+    orb_eval = evaluate_basis(basis, coords, transform=transform, coord_type=coord_type)
     return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
 
 
-def eval_deriv_density_matrix(
-    orders_one, orders_two, one_density_matrix, basis, coords, transform, coord_type="spherical"
+def eval_deriv_reduced_density_matrix(
+    orders_one,
+    orders_two,
+    one_density_matrix,
+    basis,
+    coords,
+    transform=None,
+    coord_type="spherical",
 ):
-    r"""Return the derivative of the density matrix evaluated at the same point.
+    r"""Return the derivative of the first-order reduced density matrix evaluated at the same point.
 
     ..math::
 
@@ -127,18 +137,22 @@ def eval_deriv_density_matrix(
         Orders of the derivative for the first coordinate.
     orders_two : np.ndarray(3,)
         Orders of the derivative for the second coordinate.
-    one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+    one_density_matrix : np.ndarray(K_orbs, K_orbs)
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -149,18 +163,18 @@ def eval_deriv_density_matrix(
 
     Returns
     -------
-    deriv_density_matrix : np.ndarray(N,)
-        Derivative of the density matrix evaluated at the given coordinates.
+    deriv_reduced_density_matrix : np.ndarray(N,)
+        Derivative of the first-order reduced density matrix evaluated at the given points.
 
     """
-    deriv_orb_eval_one = evaluate_deriv_basis_lincomb(
-        basis, coords, orders_one, transform, coord_type=coord_type
+    deriv_orb_eval_one = evaluate_deriv_basis(
+        basis, coords, orders_one, transform=transform, coord_type=coord_type
     )
     if np.array_equal(orders_one, orders_two):
         deriv_orb_eval_two = deriv_orb_eval_one
     else:
-        deriv_orb_eval_two = evaluate_deriv_basis_lincomb(
-            basis, coords, orders_two, transform, coord_type=coord_type
+        deriv_orb_eval_two = evaluate_deriv_basis(
+            basis, coords, orders_two, transform=transform, coord_type=coord_type
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
     density *= deriv_orb_eval_one
@@ -169,7 +183,7 @@ def eval_deriv_density_matrix(
 
 
 def eval_deriv_density(
-    orders, one_density_matrix, basis, coords, transform, coord_type="spherical"
+    orders, one_density_matrix, basis, coords, transform=None, coord_type="spherical"
 ):
     """Return the derivative of density of the given transformed basis set at the given coordinates.
 
@@ -177,18 +191,22 @@ def eval_deriv_density(
     ----------
     orders : np.ndarray(3,)
         Orders of the derivative.
-    one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+    one_density_matrix : np.ndarray(K_orbs, K_orbs)
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -200,7 +218,7 @@ def eval_deriv_density(
     Returns
     -------
     density_deriv : np.ndarray(N,)
-        Derivative of the density evaluated at different grid points.
+        Derivative of the density evaluated at the given points.
 
     """
     # pylint: disable=R0914
@@ -221,36 +239,42 @@ def eval_deriv_density(
                 num_occurence = comb(total_l_x, l_x) * comb(total_l_y, l_y) * comb(total_l_z, l_z)
                 orders_one = np.array([l_x, l_y, l_z])
                 orders_two = orders - orders_one
-                density = eval_deriv_density_matrix(
+                density = eval_deriv_reduced_density_matrix(
                     orders_one,
                     orders_two,
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
                 output += factor * num_occurence * density
     return output
 
 
-def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_type="spherical"):
+def eval_density_gradient(
+    one_density_matrix, basis, coords, transform=None, coord_type="spherical"
+):
     """Return the gradient of the density evaluated at the given coordinates.
 
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -272,7 +296,7 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_ty
                 one_density_matrix,
                 basis,
                 coords,
-                transform,
+                transform=transform,
                 coord_type=coord_type,
             ),
             eval_deriv_density(
@@ -280,7 +304,7 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_ty
                 one_density_matrix,
                 basis,
                 coords,
-                transform,
+                transform=transform,
                 coord_type=coord_type,
             ),
             eval_deriv_density(
@@ -288,30 +312,36 @@ def eval_density_gradient(one_density_matrix, basis, coords, transform, coord_ty
                 one_density_matrix,
                 basis,
                 coords,
-                transform,
+                transform=transform,
                 coord_type=coord_type,
             ),
         ]
     ).T
 
 
-def eval_density_laplacian(one_density_matrix, basis, coords, transform, coord_type="spherical"):
+def eval_density_laplacian(
+    one_density_matrix, basis, coords, transform=None, coord_type="spherical"
+):
     """Return the Laplacian of the density evaluated at the given coordinates.
 
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -327,34 +357,53 @@ def eval_density_laplacian(one_density_matrix, basis, coords, transform, coord_t
 
     """
     output = eval_deriv_density(
-        np.array([2, 0, 0]), one_density_matrix, basis, coords, transform, coord_type=coord_type
+        np.array([2, 0, 0]),
+        one_density_matrix,
+        basis,
+        coords,
+        transform=transform,
+        coord_type=coord_type,
     )
     output += eval_deriv_density(
-        np.array([0, 2, 0]), one_density_matrix, basis, coords, transform, coord_type=coord_type
+        np.array([0, 2, 0]),
+        one_density_matrix,
+        basis,
+        coords,
+        transform=transform,
+        coord_type=coord_type,
     )
     output += eval_deriv_density(
-        np.array([0, 0, 2]), one_density_matrix, basis, coords, transform, coord_type=coord_type
+        np.array([0, 0, 2]),
+        one_density_matrix,
+        basis,
+        coords,
+        transform=transform,
+        coord_type=coord_type,
     )
     return output
 
 
-def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_type="spherical"):
+def eval_density_hessian(one_density_matrix, basis, coords, transform=None, coord_type="spherical"):
     """Return the Hessian of the density evaluated at the given coordinates.
 
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -379,7 +428,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_typ
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
                 for orders_one in np.identity(3, dtype=int)
@@ -390,7 +439,7 @@ def eval_density_hessian(one_density_matrix, basis, coords, transform, coord_typ
 
 
 def eval_posdef_kinetic_energy_density(
-    one_density_matrix, basis, coords, transform, coord_type="spherical"
+    one_density_matrix, basis, coords, transform=None, coord_type="spherical"
 ):
     r"""Return evaluations of positive definite kinetic energy density.
 
@@ -409,17 +458,21 @@ def eval_posdef_kinetic_energy_density(
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -437,15 +490,21 @@ def eval_posdef_kinetic_energy_density(
     """
     output = np.zeros(coords.shape[0])
     for orders in np.identity(3, dtype=int):
-        output += eval_deriv_density_matrix(
-            orders, orders, one_density_matrix, basis, coords, transform, coord_type=coord_type
+        output += eval_deriv_reduced_density_matrix(
+            orders,
+            orders,
+            one_density_matrix,
+            basis,
+            coords,
+            transform=transform,
+            coord_type=coord_type,
         )
     return 0.5 * output
 
 
 # TODO: test against a reference
 def eval_general_kinetic_energy_density(
-    one_density_matrix, basis, coords, transform, alpha, coord_type="spherical"
+    one_density_matrix, basis, coords, alpha, transform=None, coord_type="spherical"
 ):
     r"""Return evaluations of general form of the kinetic energy density.
 
@@ -458,19 +517,23 @@ def eval_general_kinetic_energy_density(
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
-    transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
-        combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     alpha : float
         Parameter of the general form of the kinetic energy density.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -495,10 +558,10 @@ def eval_general_kinetic_energy_density(
         raise TypeError("`alpha` must be an int or float.")
 
     general_kinetic_energy_density = eval_posdef_kinetic_energy_density(
-        one_density_matrix, basis, coords, transform, coord_type=coord_type
+        one_density_matrix, basis, coords, transform=transform, coord_type=coord_type
     )
     if alpha != 0:
         general_kinetic_energy_density += alpha * eval_density_laplacian(
-            one_density_matrix, basis, coords, transform, coord_type=coord_type
+            one_density_matrix, basis, coords, transform=transform, coord_type=coord_type
         )
     return general_kinetic_energy_density
