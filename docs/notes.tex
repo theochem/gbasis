@@ -8,6 +8,26 @@
 \begin{document}
 \tableofcontents
 
+\section{Mandate}
+\begin{itemize}
+\item summary
+\item audience
+  \begin{itemize}
+  \item Developers in quantum chemistry
+  \item Theory people looking for quick implementation of ideas
+  \item ChemTools
+  \end{itemize}
+\item features
+\item software
+  \begin{itemize}
+  \item Pure Python
+  \item Multiplatform (Windows, MacOS, Linux)
+  \item NumPy and SciPy are the only dependencies
+  \item Parallizeable (to the extend that numpy is parallizeable)
+  \item Open-source
+  \end{itemize}
+\end{itemize}
+
 \section{Gaussian Primitive}
 A Cartesian Gaussian primitive is
 \begin{equation}
@@ -390,6 +410,13 @@ of the same length as the basis set must be provided with each entry being
 ``spherical'' or ``cartesian'' to specify the coordinate system of the
 corresponding shell.
 
+Usage:
+\begin{verbatim}
+output = high_level_function(basis, coord_type="spherical")
+\end{verbatim}
+will treat all
+TODO: usage, example
+
 \subsection{Loading basis sets}
 Basis set information is often stored in text format.
 In \verb|gbasis|, the Gaussian94 format (.gbs) and the NWChem format (.nwchem) are
@@ -401,6 +428,7 @@ formatted checkpoint files (.fchk) and AIM wavefunction files (.wfn and .wfx).
 It also interfaces to \verb|pyscf|, which is an ab initio computational
 chemistry program.
 
+TODO: usage, example
 \section{Evaluations}
 \subsection{Evaluation of contractions}
 The functions in module \verb|gbasis.eval| return the evaluations of the
@@ -414,6 +442,7 @@ columns corresponds to the coordinate, $\mathbf{r}_n$.
 These functions can be used to find the values of the orbitals at various
 points, such as a grid.
 
+TODO: usage, example
 \subsection{Evaluation of derivatives of contractions}
 In \verb|gbasis|, contractions can be derivatized to arbitrary orders.
 The functions in module \verb|gbasis.eval_deriv| return the evaluations of the
@@ -425,6 +454,7 @@ given derivative of the contractions at different coordinates.
 The returned value is an array whose rows corresponds to the basis function and
 columns corresponds to the coordinate, $\mathbf{r}_n$.
 
+TODO: usage, example
 \subsection{Evaluations of density related properties}
 The functions in module \verb|gbasis.density| return the evaluations of the
 density and its derivatives.
@@ -433,6 +463,7 @@ density and its derivatives.
   \rho(\mathbf{r}_n) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}_n) \phi_j(\mathbf{r}_n)
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Arbitrary derivatives of density}
 \begin{equation}
   \frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
@@ -449,6 +480,7 @@ density and its derivatives.
   }
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Gradient of density}
 \begin{equation}
   \nabla \rho(\mathbf{r}_n)
@@ -460,6 +492,7 @@ density and its derivatives.
   \end{bmatrix}\\
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Laplacian of density}
 \begin{equation}
   \nabla^2 \rho(\mathbf{r}_n)
@@ -469,6 +502,7 @@ density and its derivatives.
   + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Hessian of density}
 \begin{equation}
   H[\rho(\mathbf{r}_n)]
@@ -486,6 +520,7 @@ density and its derivatives.
   \end{bmatrix}\\
 \end{equation}
 
+TODO: usage, example
 \subsection{Evaluations of density matrix related properties}
 Given the density matrix,
 \begin{equation}
@@ -528,6 +563,7 @@ Since $\gamma_{ij}$ is symmetric,
   \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}_n}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Stress tensor}
 % FIXME: double check
 \begin{equation}
@@ -558,6 +594,7 @@ Since $\gamma_{ij}$ is symmetric,
   \end{split}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Ehrenfest force}
 Ehrenfest force is defined as the divergence of the stress tensor
 \begin{equation}
@@ -610,6 +647,7 @@ Ehrenfest force is defined as the divergence of the stress tensor
 \end{equation}
 
 
+TODO: usage, example
 \subsubsection{Ehrenfest Hessian}
 \begin{equation}
   \begin{split}
@@ -640,6 +678,7 @@ Ehrenfest force is defined as the divergence of the stress tensor
   \end{split}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Positive-definite kinetic energy density}
 \begin{equation}
   \begin{split}
@@ -655,11 +694,13 @@ Ehrenfest force is defined as the divergence of the stress tensor
   \end{split}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{General form of kinetic energy density}
 \begin{equation}
   t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)
 \end{equation}
 
+TODO: usage, example
 \section{Integrals}
 \subsection{Multipole moment integral}
 Multipole moment integral can be obtained for arbitrary moments.
@@ -668,6 +709,7 @@ Multipole moment integral can be obtained for arbitrary moments.
   \int \phi_a (\mathbf{r}) (x - X_C)^{c_x} (y - Y_C)^{c_y} (z - Z_C)^{c_z} \phi_b (\mathbf{r}) d\mathbf{r}
 \end{equation}
 
+TODO: usage, example
 \subsection{Overlap integral}
 Overlap integrals can be thought of as multipole moment integrals with zero moments.
 \begin{equation}
@@ -675,10 +717,12 @@ Overlap integrals can be thought of as multipole moment integrals with zero mome
   \int \phi_a (\mathbf{r}) \phi_b (\mathbf{r}) d\mathbf{r}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Overlap integral between two different basis sets}
 Overlap integrals between two different basis sets are supported i.e.
 $\phi_a$ belongs to one basis set and $\phi_b$ belongs to another.
 
+TODO: usage, example
 \subsection{Integrals over differential operator}
 Integrals over arbitrary differential operator (for Cartesian coordinates) are
 supported.
@@ -688,6 +732,7 @@ supported.
   d\mathbf{r}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Kinetic energy integral}
 \begin{equation}
   \label{eq:kinetic_energy}
@@ -703,6 +748,7 @@ supported.
   \end{split}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Momentum integral}
 \begin{equation}
   \label{eq:momentum}
@@ -718,6 +764,7 @@ supported.
   \end{split}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Angular momentum integral}
 \begin{equation}
   \label{eq:angular_momentum}
@@ -736,12 +783,14 @@ supported.
   \end{split}
 \end{equation}
 
+TODO: usage, example
 \subsection{Integral for interaction with point-charge}
 \begin{equation}
   \label{eq:point_charge}
   \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Nuclear-electron attraction integral}
 \begin{equation}
   \label{eq:nuclear_electron_attraction}
@@ -750,6 +799,7 @@ supported.
   -Z_C \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
+TODO: usage, example
 \subsubsection{Electrostatic potential}
 \begin{equation}
   \label{eq:nuclear_electron_attraction}
@@ -762,6 +812,7 @@ supported.
   - \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 \end{equation}
 
+TODO: usage, example
 \subsection{Electron-electron repulsion integral}
 In the Chemists' notation,
 \begin{equation}
@@ -780,4 +831,19 @@ In the Physicists' notation
 
 Though both conventions are supported at the higher level, lower level code uses
 the Chemists' notation.
+
+TODO: usage, example
+
+\section{Future Development}
+\begin{itemize}
+\item screening (overlap)
+\item screening (two electron integrals)
+\item improve performance in two electron integral
+\item zeroth order regular approximation (zora) for relativistic effects
+\item density fitting
+\item derivative of contractions with respect to the center
+\item derivative of integrals with respect to center
+\item periodic boundary condition
+\item damped two electron integral
+\end{itemize}
 \end{document}
