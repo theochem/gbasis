@@ -1,7 +1,7 @@
 """Test gbasis.moment."""
 from gbasis._moment_int import _compute_multipole_moment_integrals
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.moment import Moment, moment_cartesian, moment_lincomb, moment_mix, moment_spherical
+from gbasis.moment import Moment, moment_integral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -157,7 +157,7 @@ def test_moment_cartesian():
                 ]
             ),
         ),
-        moment_cartesian(
+        moment_integral(
             basis,
             np.zeros(3),
             np.array(
@@ -174,6 +174,7 @@ def test_moment_cartesian():
                     [0, 1, 1],
                 ]
             ),
+            coord_type="cartesian",
         ),
     )
 
@@ -204,7 +205,7 @@ def test_moment_spherical():
                 ]
             ),
         ),
-        moment_spherical(
+        moment_integral(
             basis,
             np.zeros(3),
             np.array(
@@ -221,6 +222,7 @@ def test_moment_spherical():
                     [0, 1, 1],
                 ]
             ),
+            coord_type="spherical",
         ),
     )
 
@@ -252,7 +254,7 @@ def test_moment_mix():
                 ]
             ),
         ),
-        moment_mix(
+        moment_integral(
             basis,
             np.zeros(3),
             np.array(
@@ -269,7 +271,7 @@ def test_moment_mix():
                     [0, 1, 1],
                 ]
             ),
-            ["spherical"] * 8,
+            coord_type=["spherical"] * 8,
         ),
     )
 
@@ -302,9 +304,8 @@ def test_moment_spherical_lincomb():
                 ]
             ),
         ),
-        moment_lincomb(
+        moment_integral(
             basis,
-            transform,
             np.zeros(3),
             np.array(
                 [
@@ -320,5 +321,6 @@ def test_moment_spherical_lincomb():
                     [0, 1, 1],
                 ]
             ),
+            transform=transform,
         ),
     )
