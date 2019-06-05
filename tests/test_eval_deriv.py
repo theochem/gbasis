@@ -1,4 +1,4 @@
-"""Test gbasis.eval_deriv."""
+"""Test gbasis.evaluate_deriv."""
 import itertools as it
 
 from gbasis._deriv import _eval_deriv_contractions
@@ -11,8 +11,8 @@ from scipy.special import factorial2
 from utils import find_datafile
 
 
-def test_eval_deriv_construct_array_contraction():
-    """Test gbasis.eval_deriv.EvalDeriv.construct_array_contraction."""
+def test_evaluate_deriv_construct_array_contraction():
+    """Test gbasis.evaluate_deriv.EvalDeriv.construct_array_contraction."""
     points = np.array([[2, 3, 4]])
     orders = np.array([0, 0, 0])
     contractions = GeneralizedContractionShell(
@@ -134,9 +134,9 @@ def test_evaluate_deriv_basis_cartesian():
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    eval_obj = EvalDeriv(basis)
+    evaluate_obj = EvalDeriv(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(
+        evaluate_obj.construct_array_cartesian(
             points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
@@ -144,7 +144,7 @@ def test_evaluate_deriv_basis_cartesian():
         ),
     )
     assert np.allclose(
-        eval_obj.construct_array_cartesian(
+        evaluate_obj.construct_array_cartesian(
             points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
@@ -159,9 +159,9 @@ def test_evaluate_deriv_basis_spherical():
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    eval_obj = EvalDeriv(basis)
+    evaluate_obj = EvalDeriv(basis)
     assert np.allclose(
-        eval_obj.construct_array_spherical(
+        evaluate_obj.construct_array_spherical(
             points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
@@ -169,7 +169,7 @@ def test_evaluate_deriv_basis_spherical():
         ),
     )
     assert np.allclose(
-        eval_obj.construct_array_spherical(
+        evaluate_obj.construct_array_spherical(
             points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
@@ -184,9 +184,9 @@ def test_evaluate_deriv_basis_mix():
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    eval_obj = EvalDeriv(basis)
+    evaluate_obj = EvalDeriv(basis)
     assert np.allclose(
-        eval_obj.construct_array_mix(
+        evaluate_obj.construct_array_mix(
             ["cartesian"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
@@ -194,7 +194,7 @@ def test_evaluate_deriv_basis_mix():
         ),
     )
     assert np.allclose(
-        eval_obj.construct_array_mix(
+        evaluate_obj.construct_array_mix(
             ["spherical"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
@@ -209,11 +209,11 @@ def test_evaluate_deriv_basis_lincomb():
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    eval_obj = EvalDeriv(basis)
+    evaluate_obj = EvalDeriv(basis)
     cart_transform = np.random.rand(14, 19)
     sph_transform = np.random.rand(14, 18)
     assert np.allclose(
-        eval_obj.construct_array_lincomb(
+        evaluate_obj.construct_array_lincomb(
             cart_transform, "cartesian", points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
         evaluate_deriv_basis(
@@ -225,7 +225,7 @@ def test_evaluate_deriv_basis_lincomb():
         ),
     )
     assert np.allclose(
-        eval_obj.construct_array_lincomb(
+        evaluate_obj.construct_array_lincomb(
             sph_transform, "spherical", points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(

@@ -6,7 +6,7 @@ import numpy as np
 from utils import partial_deriv_finite_diff
 
 
-def eval_deriv_prim(coord, orders, center, angmom_comps, alpha):
+def evaluate_deriv_prim(coord, orders, center, angmom_comps, alpha):
     """Return the evaluation of the derivative of a Gaussian primitive.
 
     Parameters
@@ -31,7 +31,7 @@ def eval_deriv_prim(coord, orders, center, angmom_comps, alpha):
     Note
     ----
     If you want to evaluate the derivative of the contractions of the primitive, then use
-    `gbasis._deriv.eval_deriv_contraction` instead.
+    `gbasis._deriv.evaluate_deriv_contraction` instead.
 
     """
     return _eval_deriv_contractions(
@@ -45,7 +45,7 @@ def eval_deriv_prim(coord, orders, center, angmom_comps, alpha):
     )[0]
 
 
-def eval_prim(coord, center, angmom_comps, alpha):
+def evaluate_prim(coord, center, angmom_comps, alpha):
     """Return the evaluation of a Gaussian primitive.
 
     Parameters
@@ -67,57 +67,58 @@ def eval_prim(coord, center, angmom_comps, alpha):
     Note
     ----
     If you want to evaluate the contractions of the primitive, then use
-    `gbasis._deriv.eval_contraction` instead.
+    `gbasis._deriv.evaluate_contraction` instead.
 
     """
-    return eval_deriv_prim(coord, np.zeros(angmom_comps.shape), center, angmom_comps, alpha)
+    return evaluate_deriv_prim(coord, np.zeros(angmom_comps.shape), center, angmom_comps, alpha)
 
 
-def test_eval_prim():
-    """Test gbasis._deriv.eval_prim.
+def test_evaluate_prim():
+    """Test gbasis._deriv.evaluate_prim.
 
-    Note that this also tests the no derivative case of gbasis._deriv.eval_deriv_prim.
+    Note that this also tests the no derivative case of gbasis._deriv.evaluate_deriv_prim.
     """
     # angular momentum: 0
     assert np.allclose(
-        eval_prim(np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1), 1
+        evaluate_prim(np.array([0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1), 1
     )
     assert np.allclose(
-        eval_prim(np.array([1.0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1), np.exp(-1)
+        evaluate_prim(np.array([1.0, 0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1),
+        np.exp(-1),
     )
     assert np.allclose(
-        eval_prim(np.array([1.0, 2.0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1),
+        evaluate_prim(np.array([1.0, 2.0, 0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1),
         np.exp(-1) * np.exp(-4),
     )
     assert np.allclose(
-        eval_prim(np.array([1.0, 2.0, 3.0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1),
+        evaluate_prim(np.array([1.0, 2.0, 3.0]), np.array([0, 0, 0]), np.array([0, 0, 0]), 1),
         np.exp(-1) * np.exp(-4) * np.exp(-9),
     )
     # angular momentum 1
     assert np.allclose(
-        eval_prim(np.array([2.0, 0, 0]), np.array([0, 0, 0]), np.array([1, 0, 0]), 1),
+        evaluate_prim(np.array([2.0, 0, 0]), np.array([0, 0, 0]), np.array([1, 0, 0]), 1),
         2 * np.exp(-2 ** 2),
     )
     # other angular momentum
     assert np.allclose(
-        eval_prim(np.array([2.0, 0, 0]), np.array([0, 3, 4]), np.array([2, 1, 3]), 1),
+        evaluate_prim(np.array([2.0, 0, 0]), np.array([0, 3, 4]), np.array([2, 1, 3]), 1),
         4 * 3 * 4 ** 3 * np.exp(-(2 ** 2 + 3 ** 2 + 4 ** 2)),
     )
 
 
-def test_eval_deriv_prim():
-    """Test gbasis._deriv.eval_deriv_prim."""
+def test_evaluate_deriv_prim():
+    """Test gbasis._deriv.evaluate_deriv_prim."""
     # first order
     for k in range(3):
         orders = np.zeros(3, dtype=int)
         orders[k] = 1
         for x, y, z in it.product(range(3), range(3), range(3)):
             assert np.allclose(
-                eval_deriv_prim(
+                evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 ),
                 partial_deriv_finite_diff(
-                    lambda xyz: eval_prim(xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1),
+                    lambda xyz: evaluate_prim(xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1),
                     np.array([2, 3, 4]),
                     orders,
                 ),
@@ -129,11 +130,11 @@ def test_eval_deriv_prim():
         orders[l] += 1
         for x, y, z in it.product(range(4), range(4), range(4)):
             assert np.allclose(
-                eval_deriv_prim(
+                evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 ),
                 partial_deriv_finite_diff(
-                    lambda xyz: eval_prim(xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1),
+                    lambda xyz: evaluate_prim(xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1),
                     np.array([2, 3, 4]),
                     orders,
                     epsilon=1e-5,
@@ -142,8 +143,8 @@ def test_eval_deriv_prim():
             )
 
 
-def test_eval_contractions():
-    """Test gbasis._deriv._eval_deriv_contraction without derivatization."""
+def test_evaluate_contractions():
+    """Test gbasis._deriv._evaluate_deriv_contraction without derivatization."""
     # angular momentum: 0
     assert np.allclose(
         _eval_deriv_contractions(
@@ -276,11 +277,11 @@ def test_eval_deriv_contractions():
                     np.array([[1, 1]]),
                 ),
                 3
-                * eval_deriv_prim(
+                * evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 )
                 + 4
-                * eval_deriv_prim(
+                * evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
                 ),
             )
@@ -297,15 +298,15 @@ def test_eval_deriv_contractions():
                 ),
                 [
                     3
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                     )
                     + 4
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
                     ),
                     3
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]),
                         orders,
                         np.array([0.5, 1, 1.5]),
@@ -313,7 +314,7 @@ def test_eval_deriv_contractions():
                         1,
                     )
                     + 4
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]),
                         orders,
                         np.array([0.5, 1, 1.5]),
@@ -338,7 +339,7 @@ def test_eval_deriv_contractions():
                     np.array([1]),
                     np.array([[1]]),
                 ),
-                eval_deriv_prim(
+                evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 ),
             )
@@ -354,11 +355,11 @@ def test_eval_deriv_contractions():
                     np.array([[1, 1]]),
                 ),
                 3
-                * eval_deriv_prim(
+                * evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 )
                 + 4
-                * eval_deriv_prim(
+                * evaluate_deriv_prim(
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
                 ),
             )
@@ -375,15 +376,15 @@ def test_eval_deriv_contractions():
                 ),
                 [
                     3
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                     )
                     + 4
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 2
                     ),
                     3
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]),
                         orders,
                         np.array([0.5, 1, 1.5]),
@@ -391,7 +392,7 @@ def test_eval_deriv_contractions():
                         1,
                     )
                     + 4
-                    * eval_deriv_prim(
+                    * evaluate_deriv_prim(
                         np.array([2, 3, 4]),
                         orders,
                         np.array([0.5, 1, 1.5]),
@@ -402,7 +403,7 @@ def test_eval_deriv_contractions():
             )
 
 
-def test_eval_deriv_generalized_contraction():
+def test_evaluate_deriv_generalized_contraction():
     """Test gbasis._deriv._eval_deriv_contractions for generalized contractions."""
     for k, l in it.product(range(3), range(3)):
         orders = np.zeros(3, dtype=int)
@@ -423,7 +424,7 @@ def test_eval_deriv_generalized_contraction():
                 np.array(
                     [
                         3
-                        * eval_deriv_prim(
+                        * evaluate_deriv_prim(
                             np.array([2, 3, 4]),
                             orders,
                             np.array([0.5, 1, 1.5]),
@@ -431,7 +432,7 @@ def test_eval_deriv_generalized_contraction():
                             1,
                         )
                         + 6
-                        * eval_deriv_prim(
+                        * evaluate_deriv_prim(
                             np.array([2, 3, 4]),
                             orders,
                             np.array([0.5, 1, 1.5]),
@@ -439,7 +440,7 @@ def test_eval_deriv_generalized_contraction():
                             2,
                         ),
                         4
-                        * eval_deriv_prim(
+                        * evaluate_deriv_prim(
                             np.array([2, 3, 4]),
                             orders,
                             np.array([0.5, 1, 1.5]),
@@ -447,7 +448,7 @@ def test_eval_deriv_generalized_contraction():
                             1,
                         )
                         + 7
-                        * eval_deriv_prim(
+                        * evaluate_deriv_prim(
                             np.array([2, 3, 4]),
                             orders,
                             np.array([0.5, 1, 1.5]),
@@ -455,7 +456,7 @@ def test_eval_deriv_generalized_contraction():
                             2,
                         ),
                         5
-                        * eval_deriv_prim(
+                        * evaluate_deriv_prim(
                             np.array([2, 3, 4]),
                             orders,
                             np.array([0.5, 1, 1.5]),
@@ -463,7 +464,7 @@ def test_eval_deriv_generalized_contraction():
                             1,
                         )
                         + 8
-                        * eval_deriv_prim(
+                        * evaluate_deriv_prim(
                             np.array([2, 3, 4]),
                             orders,
                             np.array([0.5, 1, 1.5]),
@@ -488,7 +489,7 @@ def test_eval_deriv_generalized_contraction():
                     [
                         [
                             3
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -496,7 +497,7 @@ def test_eval_deriv_generalized_contraction():
                                 1,
                             )
                             + 6
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -504,7 +505,7 @@ def test_eval_deriv_generalized_contraction():
                                 2,
                             ),
                             3
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -512,7 +513,7 @@ def test_eval_deriv_generalized_contraction():
                                 1,
                             )
                             + 6
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -522,7 +523,7 @@ def test_eval_deriv_generalized_contraction():
                         ],
                         [
                             4
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -530,7 +531,7 @@ def test_eval_deriv_generalized_contraction():
                                 1,
                             )
                             + 7
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -538,7 +539,7 @@ def test_eval_deriv_generalized_contraction():
                                 2,
                             ),
                             4
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -546,7 +547,7 @@ def test_eval_deriv_generalized_contraction():
                                 1,
                             )
                             + 7
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -556,7 +557,7 @@ def test_eval_deriv_generalized_contraction():
                         ],
                         [
                             5
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -564,7 +565,7 @@ def test_eval_deriv_generalized_contraction():
                                 1,
                             )
                             + 8
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -572,7 +573,7 @@ def test_eval_deriv_generalized_contraction():
                                 2,
                             ),
                             5
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
@@ -580,7 +581,7 @@ def test_eval_deriv_generalized_contraction():
                                 1,
                             )
                             + 8
-                            * eval_deriv_prim(
+                            * evaluate_deriv_prim(
                                 np.array([2, 3, 4]),
                                 orders,
                                 np.array([0.5, 1, 1.5]),
