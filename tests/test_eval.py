@@ -1,13 +1,7 @@
 """Test gbasis.eval."""
 from gbasis._deriv import _eval_deriv_contractions
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.eval import (
-    Eval,
-    evaluate_basis_cartesian,
-    evaluate_basis_lincomb,
-    evaluate_basis_mix,
-    evaluate_basis_spherical,
-)
+from gbasis.eval import Eval, evaluate_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -68,7 +62,7 @@ def test_evaluate_basis_cartesian():
     eval_obj = Eval(basis)
     assert np.allclose(
         eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
-        evaluate_basis_cartesian(basis, np.array([[0, 0, 0]])),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="cartesian"),
     )
 
 
@@ -83,21 +77,21 @@ def test_evaluate_basis_spherical():
     eval_obj = Eval(basis)
     assert np.allclose(
         eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
-        evaluate_basis_spherical(basis, np.array([[0, 0, 0]])),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
     # p orbitals are zero at center
     basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)
     assert np.allclose(
         eval_obj.construct_array_cartesian(coords=np.array([[0, 0, 0]])),
-        evaluate_basis_spherical(basis, np.array([[0, 0, 0]])),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     eval_obj = Eval(basis)
     assert np.allclose(
         eval_obj.construct_array_spherical(coords=np.array([[1, 1, 1]])),
-        evaluate_basis_spherical(basis, np.array([[1, 1, 1]])),
+        evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type="spherical"),
     )
 
 
@@ -110,22 +104,22 @@ def test_evaluate_basis_mix():
     # cartesian and spherical are the same for s orbital
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
     assert np.allclose(
-        evaluate_basis_spherical(basis, np.array([[0, 0, 0]])),
-        evaluate_basis_mix(basis, np.array([[0, 0, 0]]), ["spherical"]),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type=["spherical"]),
     )
     assert np.allclose(
-        evaluate_basis_cartesian(basis, np.array([[0, 0, 0]])),
-        evaluate_basis_mix(basis, np.array([[0, 0, 0]]), ["cartesian"]),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="cartesian"),
+        evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type=["cartesian"]),
     )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     assert np.allclose(
-        evaluate_basis_spherical(basis, np.array([[1, 1, 1]])),
-        evaluate_basis_mix(basis, np.array([[1, 1, 1]]), ["spherical"] * 8),
+        evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type="spherical"),
+        evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type=["spherical"] * 8),
     )
     assert np.allclose(
-        evaluate_basis_cartesian(basis, np.array([[1, 1, 1]])),
-        evaluate_basis_mix(basis, np.array([[1, 1, 1]]), ["cartesian"] * 8),
+        evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type="cartesian"),
+        evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type=["cartesian"] * 8),
     )
 
 
@@ -139,5 +133,5 @@ def test_evaluate_basis_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         eval_obj.construct_array_lincomb(transform, "spherical", coords=np.array([[1, 1, 1]])),
-        evaluate_basis_lincomb(basis, np.array([[1, 1, 1]]), transform, "spherical"),
+        evaluate_basis(basis, np.array([[1, 1, 1]]), transform=transform, coord_type="spherical"),
     )
