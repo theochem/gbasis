@@ -5,7 +5,7 @@ import numpy as np
 from scipy.special import comb
 
 
-def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
+def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     """Return the evaluation of the density given the evaluated orbitals.
 
     Parameters
@@ -61,7 +61,7 @@ def eval_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def eval_density(one_density_matrix, basis, points, transform=None, coord_type="spherical"):
+def evaluate_density(one_density_matrix, basis, points, transform=None, coord_type="spherical"):
     """Return the density of the given basis set at the given coordinates.
 
     Parameters
@@ -97,10 +97,10 @@ def eval_density(one_density_matrix, basis, points, transform=None, coord_type="
 
     """
     orb_eval = evaluate_basis(basis, points, transform=transform, coord_type=coord_type)
-    return eval_density_using_evaluated_orbs(one_density_matrix, orb_eval)
+    return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
 
 
-def eval_deriv_reduced_density_matrix(
+def evaluate_deriv_reduced_density_matrix(
     orders_one,
     orders_two,
     one_density_matrix,
@@ -182,7 +182,7 @@ def eval_deriv_reduced_density_matrix(
     return density
 
 
-def eval_deriv_density(
+def evaluate_deriv_density(
     orders, one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     """Return the derivative of density of the given transformed basis set at the given coordinates.
@@ -239,7 +239,7 @@ def eval_deriv_density(
                 num_occurence = comb(total_l_x, l_x) * comb(total_l_y, l_y) * comb(total_l_z, l_z)
                 orders_one = np.array([l_x, l_y, l_z])
                 orders_two = orders - orders_one
-                density = eval_deriv_reduced_density_matrix(
+                density = evaluate_deriv_reduced_density_matrix(
                     orders_one,
                     orders_two,
                     one_density_matrix,
@@ -252,7 +252,7 @@ def eval_deriv_density(
     return output
 
 
-def eval_density_gradient(
+def evaluate_density_gradient(
     one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     """Return the gradient of the density evaluated at the given coordinates.
@@ -291,7 +291,7 @@ def eval_density_gradient(
     """
     return np.array(
         [
-            eval_deriv_density(
+            evaluate_deriv_density(
                 np.array([1, 0, 0]),
                 one_density_matrix,
                 basis,
@@ -299,7 +299,7 @@ def eval_density_gradient(
                 transform=transform,
                 coord_type=coord_type,
             ),
-            eval_deriv_density(
+            evaluate_deriv_density(
                 np.array([0, 1, 0]),
                 one_density_matrix,
                 basis,
@@ -307,7 +307,7 @@ def eval_density_gradient(
                 transform=transform,
                 coord_type=coord_type,
             ),
-            eval_deriv_density(
+            evaluate_deriv_density(
                 np.array([0, 0, 1]),
                 one_density_matrix,
                 basis,
@@ -319,7 +319,7 @@ def eval_density_gradient(
     ).T
 
 
-def eval_density_laplacian(
+def evaluate_density_laplacian(
     one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     """Return the Laplacian of the density evaluated at the given coordinates.
@@ -356,7 +356,7 @@ def eval_density_laplacian(
         Laplacian of the density evaluated at the given coordinates.
 
     """
-    output = eval_deriv_density(
+    output = evaluate_deriv_density(
         np.array([2, 0, 0]),
         one_density_matrix,
         basis,
@@ -364,7 +364,7 @@ def eval_density_laplacian(
         transform=transform,
         coord_type=coord_type,
     )
-    output += eval_deriv_density(
+    output += evaluate_deriv_density(
         np.array([0, 2, 0]),
         one_density_matrix,
         basis,
@@ -372,7 +372,7 @@ def eval_density_laplacian(
         transform=transform,
         coord_type=coord_type,
     )
-    output += eval_deriv_density(
+    output += evaluate_deriv_density(
         np.array([0, 0, 2]),
         one_density_matrix,
         basis,
@@ -383,7 +383,9 @@ def eval_density_laplacian(
     return output
 
 
-def eval_density_hessian(one_density_matrix, basis, points, transform=None, coord_type="spherical"):
+def evaluate_density_hessian(
+    one_density_matrix, basis, points, transform=None, coord_type="spherical"
+):
     """Return the Hessian of the density evaluated at the given coordinates.
 
     Parameters
@@ -423,7 +425,7 @@ def eval_density_hessian(one_density_matrix, basis, points, transform=None, coor
     return np.array(
         [
             [
-                eval_deriv_density(
+                evaluate_deriv_density(
                     orders_one + orders_two,
                     one_density_matrix,
                     basis,
@@ -438,7 +440,7 @@ def eval_density_hessian(one_density_matrix, basis, points, transform=None, coor
     ).T
 
 
-def eval_posdef_kinetic_energy_density(
+def evaluate_posdef_kinetic_energy_density(
     one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     r"""Return evaluations of positive definite kinetic energy density.
@@ -490,7 +492,7 @@ def eval_posdef_kinetic_energy_density(
     """
     output = np.zeros(points.shape[0])
     for orders in np.identity(3, dtype=int):
-        output += eval_deriv_reduced_density_matrix(
+        output += evaluate_deriv_reduced_density_matrix(
             orders,
             orders,
             one_density_matrix,
@@ -503,7 +505,7 @@ def eval_posdef_kinetic_energy_density(
 
 
 # TODO: test against a reference
-def eval_general_kinetic_energy_density(
+def evaluate_general_kinetic_energy_density(
     one_density_matrix, basis, points, alpha, transform=None, coord_type="spherical"
 ):
     r"""Return evaluations of general form of the kinetic energy density.
@@ -557,11 +559,11 @@ def eval_general_kinetic_energy_density(
     if not isinstance(alpha, (int, float)):
         raise TypeError("`alpha` must be an int or float.")
 
-    general_kinetic_energy_density = eval_posdef_kinetic_energy_density(
+    general_kinetic_energy_density = evaluate_posdef_kinetic_energy_density(
         one_density_matrix, basis, points, transform=transform, coord_type=coord_type
     )
     if alpha != 0:
-        general_kinetic_energy_density += alpha * eval_density_laplacian(
+        general_kinetic_energy_density += alpha * evaluate_density_laplacian(
             one_density_matrix, basis, points, transform=transform, coord_type=coord_type
         )
     return general_kinetic_energy_density

@@ -1,14 +1,14 @@
 """Module for computing properties related to stress tensor."""
 from gbasis.density import (
-    eval_density_laplacian,
-    eval_deriv_density,
-    eval_deriv_reduced_density_matrix,
+    evaluate_density_laplacian,
+    evaluate_deriv_density,
+    evaluate_deriv_reduced_density_matrix,
 )
 import numpy as np
 
 
 # TODO: need to be tested against reference
-def eval_stress_tensor(
+def evaluate_stress_tensor(
     one_density_matrix, basis, points, alpha=1, beta=0, transform=None, coord_type="spherical"
 ):
     r"""Return the stress tensor evaluated at the given coordinates.
@@ -98,7 +98,7 @@ def eval_stress_tensor(
         for j, orders_one in enumerate(np.identity(3, dtype=int)[i:]):
             j += i
             if alpha != 0:
-                output[i, j] -= alpha * eval_deriv_reduced_density_matrix(
+                output[i, j] -= alpha * evaluate_deriv_reduced_density_matrix(
                     orders_one,
                     orders_two,
                     one_density_matrix,
@@ -108,7 +108,7 @@ def eval_stress_tensor(
                     coord_type=coord_type,
                 )
             if alpha != 1:
-                output[i, j] += (1 - alpha) * eval_deriv_reduced_density_matrix(
+                output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                     orders_one + orders_two,
                     np.array([0, 0, 0]),
                     one_density_matrix,
@@ -121,7 +121,7 @@ def eval_stress_tensor(
                 output[i, j] -= (
                     0.5
                     * beta
-                    * eval_density_laplacian(
+                    * evaluate_density_laplacian(
                         one_density_matrix,
                         basis,
                         points,
@@ -134,7 +134,7 @@ def eval_stress_tensor(
 
 
 # TODO: need to be tested against reference
-def eval_ehrenfest_force(
+def evaluate_ehrenfest_force(
     one_density_matrix, basis, points, alpha=1, beta=0, transform=None, coord_type="spherical"
 ):
     r"""Return the Ehrenfest force.
@@ -222,7 +222,7 @@ def eval_ehrenfest_force(
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
         for orders_one in np.identity(3, dtype=int):
             if alpha != 0:
-                output[i] -= alpha * eval_deriv_reduced_density_matrix(
+                output[i] -= alpha * evaluate_deriv_reduced_density_matrix(
                     2 * orders_one,
                     orders_two,
                     one_density_matrix,
@@ -232,7 +232,7 @@ def eval_ehrenfest_force(
                     coord_type=coord_type,
                 )
             if alpha != 1:
-                output[i] += (1 - alpha) * eval_deriv_reduced_density_matrix(
+                output[i] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                     2 * orders_one + orders_two,
                     np.array([0, 0, 0]),
                     one_density_matrix,
@@ -242,7 +242,7 @@ def eval_ehrenfest_force(
                     coord_type=coord_type,
                 )
             if alpha != 0.5:
-                output[i] += (1 - 2 * alpha) * eval_deriv_reduced_density_matrix(
+                output[i] += (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                     orders_one + orders_two,
                     orders_one,
                     one_density_matrix,
@@ -255,7 +255,7 @@ def eval_ehrenfest_force(
                 output[i] -= (
                     0.5
                     * beta
-                    * eval_deriv_density(
+                    * evaluate_deriv_density(
                         2 * orders_one + orders_two,
                         one_density_matrix,
                         basis,
@@ -268,7 +268,7 @@ def eval_ehrenfest_force(
 
 
 # TODO: need to be tested against reference
-def eval_ehrenfest_hessian(
+def evaluate_ehrenfest_hessian(
     one_density_matrix,
     basis,
     points,
@@ -379,7 +379,7 @@ def eval_ehrenfest_hessian(
         for j, orders_three in enumerate(np.identity(3, dtype=int)):
             for orders_one in np.identity(3, dtype=int):
                 if alpha != 0:
-                    output[i, j] -= alpha * eval_deriv_reduced_density_matrix(
+                    output[i, j] -= alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_three,
                         orders_two,
                         one_density_matrix,
@@ -388,7 +388,7 @@ def eval_ehrenfest_hessian(
                         transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] -= alpha * eval_deriv_reduced_density_matrix(
+                    output[i, j] -= alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one,
                         orders_two + orders_three,
                         one_density_matrix,
@@ -398,7 +398,7 @@ def eval_ehrenfest_hessian(
                         coord_type=coord_type,
                     )
                 if alpha != 1:
-                    output[i, j] += (1 - alpha) * eval_deriv_reduced_density_matrix(
+                    output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two + orders_three,
                         np.array([0, 0, 0]),
                         one_density_matrix,
@@ -407,7 +407,7 @@ def eval_ehrenfest_hessian(
                         transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] += (1 - alpha) * eval_deriv_reduced_density_matrix(
+                    output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
                         orders_three,
                         one_density_matrix,
@@ -417,7 +417,7 @@ def eval_ehrenfest_hessian(
                         coord_type=coord_type,
                     )
                 if alpha != 0.5:
-                    output[i, j] += (1 - 2 * alpha) * eval_deriv_reduced_density_matrix(
+                    output[i, j] += (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two + orders_three,
                         orders_one,
                         one_density_matrix,
@@ -426,7 +426,7 @@ def eval_ehrenfest_hessian(
                         transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] += (1 - 2 * alpha) * eval_deriv_reduced_density_matrix(
+                    output[i, j] += (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two,
                         orders_one + orders_three,
                         one_density_matrix,
@@ -439,7 +439,7 @@ def eval_ehrenfest_hessian(
                     output[i, j] -= (
                         0.5
                         * beta
-                        * eval_deriv_density(
+                        * evaluate_deriv_density(
                             2 * orders_one + orders_two + orders_three,
                             one_density_matrix,
                             basis,

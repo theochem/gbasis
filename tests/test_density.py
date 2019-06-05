@@ -1,13 +1,13 @@
 """Test gbasis.density."""
 from gbasis.density import (
-    eval_density,
-    eval_density_gradient,
-    eval_density_hessian,
-    eval_density_laplacian,
-    eval_density_using_evaluated_orbs,
-    eval_deriv_density,
-    eval_general_kinetic_energy_density,
-    eval_posdef_kinetic_energy_density,
+    evaluate_density,
+    evaluate_density_gradient,
+    evaluate_density_hessian,
+    evaluate_density_laplacian,
+    evaluate_density_using_evaluated_orbs,
+    evaluate_deriv_density,
+    evaluate_general_kinetic_energy_density,
+    evaluate_posdef_kinetic_energy_density,
 )
 from gbasis.eval import evaluate_basis
 from gbasis.eval_deriv import evaluate_deriv_basis
@@ -17,51 +17,51 @@ import pytest
 from utils import find_datafile, HortonContractions
 
 
-def test_eval_density_using_evaluated_orbs():
-    """Test gbasis.density.eval_density_using_evaluated_orbs."""
+def test_evaluate_density_using_evaluated_orbs():
+    """Test gbasis.density.evaluate_density_using_evaluated_orbs."""
     density_mat = np.array([[1.0, 2.0], [2.0, 3.0]])
     orb_eval = np.array([[1.0], [2.0]])
     assert np.allclose(
-        eval_density_using_evaluated_orbs(density_mat, orb_eval),
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval),
         np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval),
     )
     density_mat = np.array([[1.0, 2.0], [2.0, 3.0]])
     orb_eval = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
     assert np.allclose(
-        eval_density_using_evaluated_orbs(density_mat, orb_eval),
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval),
         np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval),
     )
 
     with pytest.raises(TypeError):
         orb_eval = [[1.0, 2.0], [1.0, 2.0]]
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
     with pytest.raises(TypeError):
         orb_eval = np.array([[1, 2], [1, 2]], dtype=bool)
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
 
     orb_eval = np.array([[1.0, 2.0, 3.0], [1.0, 2.0, 3.0]])
     with pytest.raises(TypeError):
         density_mat = [[1.0, 2.0], [1.0, 2.0]]
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
     with pytest.raises(TypeError):
         density_mat = np.array([[1, 2], [1, 2]], dtype=bool)
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
     with pytest.raises(TypeError):
         density_mat = np.array([1.0, 2.0, 3.0])
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
     with pytest.raises(ValueError):
         density_mat = np.array([[1.0, 2.0, 3.0], [1.0, 2.0, 3.0]])
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
     with pytest.raises(ValueError):
         density_mat = np.array([[1.0, 2.0, 3.0], [2.0, 4.0, 5.0], [3.0, 5.0, 6.0]])
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
     with pytest.raises(ValueError):
         density_mat = np.array([[1.0, 2.0], [3.0, 4.0]])
-        eval_density_using_evaluated_orbs(density_mat, orb_eval)
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
 
 
-def test_eval_density():
-    """Test gbasis.density.eval_density."""
+def test_evaluate_density():
+    """Test gbasis.density.evaluate_density."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -71,15 +71,15 @@ def test_eval_density():
     density += density.T
     points = np.random.rand(10, 3)
 
-    eval_orbs = evaluate_basis(basis, points, transform)
+    evaluate_orbs = evaluate_basis(basis, points, transform)
     assert np.allclose(
-        eval_density(density, basis, points, transform),
-        np.einsum("ij,ik,jk->k", density, eval_orbs, eval_orbs),
+        evaluate_density(density, basis, points, transform),
+        np.einsum("ij,ik,jk->k", density, evaluate_orbs, evaluate_orbs),
     )
 
 
-def test_eval_deriv_density():
-    """Test gbasis.density.eval_deriv_density."""
+def test_evaluate_deriv_density():
+    """Test gbasis.density.evaluate_deriv_density."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -90,7 +90,7 @@ def test_eval_deriv_density():
     points = np.random.rand(10, 3)
 
     assert np.allclose(
-        eval_deriv_density(np.array([1, 0, 0]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([1, 0, 0]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -106,7 +106,7 @@ def test_eval_deriv_density():
     )
 
     assert np.allclose(
-        eval_deriv_density(np.array([0, 1, 0]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([0, 1, 0]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -122,7 +122,7 @@ def test_eval_deriv_density():
     )
 
     assert np.allclose(
-        eval_deriv_density(np.array([0, 0, 1]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([0, 0, 1]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -138,7 +138,7 @@ def test_eval_deriv_density():
     )
 
     assert np.allclose(
-        eval_deriv_density(np.array([2, 3, 0]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([2, 3, 0]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -224,8 +224,8 @@ def test_eval_deriv_density():
     )
 
 
-def test_eval_density_gradient():
-    """Test gbasis.density.eval_density_gradient."""
+def test_evaluate_density_gradient():
+    """Test gbasis.density.evaluate_density_gradient."""
     with open(find_datafile("data_sto6g.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -236,7 +236,7 @@ def test_eval_density_gradient():
     points = np.random.rand(10, 3)
 
     np.allclose(
-        eval_density_gradient(density, basis, points, transform).T,
+        evaluate_density_gradient(density, basis, points, transform).T,
         np.array(
             [
                 np.einsum(
@@ -280,8 +280,8 @@ def test_eval_density_gradient():
     )
 
 
-def test_eval_density_horton():
-    """Test gbasis.density.eval_density against result from HORTON.
+def test_evaluate_density_horton():
+    """Test gbasis.density.evaluate_density against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -301,12 +301,12 @@ def test_eval_density_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_density(np.identity(88), basis, grid_3d, np.identity(88)), horton_density
+        evaluate_density(np.identity(88), basis, grid_3d, np.identity(88)), horton_density
     )
 
 
-def test_eval_density_gradient_horton():
-    """Test gbasis.density.eval_density_gradient against result from HORTON.
+def test_evaluate_density_gradient_horton():
+    """Test gbasis.density.evaluate_density_gradient against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -326,13 +326,13 @@ def test_eval_density_gradient_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_density_gradient(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_gradient(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_gradient,
     )
 
 
-def test_eval_hessian_deriv_horton():
-    """Test gbasis.density.eval_density_hessian against result from HORTON.
+def test_evaluate_hessian_deriv_horton():
+    """Test gbasis.density.evaluate_density_hessian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -358,13 +358,13 @@ def test_eval_hessian_deriv_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_density_hessian(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_hessian(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_hessian,
     )
 
 
-def test_eval_laplacian_deriv_horton():
-    """Test gbasis.density.eval_density_laplacian against result from HORTON.
+def test_evaluate_laplacian_deriv_horton():
+    """Test gbasis.density.evaluate_density_laplacian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -384,13 +384,13 @@ def test_eval_laplacian_deriv_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_density_laplacian(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_laplacian(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_laplacian,
     )
 
 
-def test_eval_posdef_kinetic_energy_density():
-    """Test gbasis.kinetic_energy.eval_posdef_kinetic_energy_density against results from HORTON.
+def test_evaluate_posdef_kinetic_energy_density():
+    """Test gbasis.kinetic_energy.evaluate_posdef_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -412,13 +412,13 @@ def test_eval_posdef_kinetic_energy_density():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_kinetic_density,
     )
 
 
-def test_eval_general_kinetic_energy_density_horton():
-    """Test gbasis.kinetic_energy.eval_general_kinetic_energy_density against results from HORTON.
+def test_evaluate_general_kinetic_energy_density_horton():
+    """Test gbasis.kinetic_energy.evaluate_general_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -442,13 +442,15 @@ def test_eval_general_kinetic_energy_density_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        eval_general_kinetic_energy_density(np.identity(88), basis, grid_3d, 0, np.identity(88)),
+        evaluate_general_kinetic_energy_density(
+            np.identity(88), basis, grid_3d, 0, np.identity(88)
+        ),
         horton_density_kinetic_density,
     )
 
 
-def test_eval_general_kinetic_energy_density():
-    """Test gbasis.kinetic_energy.eval_general_kinetic_energy_density."""
+def test_evaluate_general_kinetic_energy_density():
+    """Test gbasis.kinetic_energy.evaluate_general_kinetic_energy_density."""
     with open(find_datafile("data_anorcc.nwchem"), "r") as f:
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
@@ -457,13 +459,15 @@ def test_eval_general_kinetic_energy_density():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        eval_general_kinetic_energy_density(
+        evaluate_general_kinetic_energy_density(
             np.identity(40), basis, points, np.identity(40), np.array(0)
         )
     with pytest.raises(TypeError):
-        eval_general_kinetic_energy_density(np.identity(40), basis, points, None, np.identity(40))
+        evaluate_general_kinetic_energy_density(
+            np.identity(40), basis, points, None, np.identity(40)
+        )
     assert np.allclose(
-        eval_general_kinetic_energy_density(np.identity(40), basis, points, 1, np.identity(40)),
-        eval_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40))
-        + eval_density_laplacian(np.identity(40), basis, points, np.identity(40)),
+        evaluate_general_kinetic_energy_density(np.identity(40), basis, points, 1, np.identity(40)),
+        evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40))
+        + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40)),
     )

@@ -9,7 +9,7 @@ from scipy.special import factorial2
 from utils import find_datafile
 
 
-def test_eval_construct_array_contraction():
+def test_evaluate_construct_array_contraction():
     """Test gbasis.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
@@ -59,9 +59,9 @@ def test_evaluate_basis_cartesian():
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
-    eval_obj = Eval(basis)
+    evaluate_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
+        evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="cartesian"),
     )
 
@@ -74,23 +74,23 @@ def test_evaluate_basis_spherical():
 
     # cartesian and spherical are the same for s orbital
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
-    eval_obj = Eval(basis)
+    evaluate_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
+        evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
     # p orbitals are zero at center
     basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]))
-    eval_obj = Eval(basis)
+    evaluate_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
+        evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    eval_obj = Eval(basis)
+    evaluate_obj = Eval(basis)
     assert np.allclose(
-        eval_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
+        evaluate_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
         evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type="spherical"),
     )
 
@@ -129,9 +129,9 @@ def test_evaluate_basis_lincomb():
         test_basis = f.read()
     basis_dict = parse_nwchem(test_basis)
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    eval_obj = Eval(basis)
+    evaluate_obj = Eval(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        eval_obj.construct_array_lincomb(transform, "spherical", points=np.array([[1, 1, 1]])),
+        evaluate_obj.construct_array_lincomb(transform, "spherical", points=np.array([[1, 1, 1]])),
         evaluate_basis(basis, np.array([[1, 1, 1]]), transform=transform, coord_type="spherical"),
     )
