@@ -1126,9 +1126,35 @@ output = overlap_integral(basis, transform=transform_mo_ao, coord_type="spherica
 \end{itemize}
 \subsubsection{Overlap integral between two different basis sets}
 Overlap integrals between two different basis sets are supported i.e.
-$\phi_a$ belongs to one basis set and $\phi_b$ belongs to another.
+\begin{equation}
+  \label{eq:overlap}
+  \int \phi_a (\mathbf{r}) \psi_b (\mathbf{r}) d\mathbf{r}
+\end{equation}
 
-TODO: usage, example
+Example:
+\begin{itemize}
+\item To compute the overlap between twos sets of atomic orbitals
+  \begin{lstlisting}[xleftmargin=-25pt]
+from gbasis.overlap_asymm import overlap_integral_asymmetric
+
+output = overlap_integral_asymmetric(
+    basis_one, basis_two, coord_type_one="spherical", coord_type_two="spherical"
+)
+\end{lstlisting}
+\item To compute the overlap between a set of molecular orbitals and a set of
+  atomic orbitals
+\begin{lstlisting}[xleftmargin=-25pt]
+from gbasis.overlap_asymm import overlap_integral_asymmetric
+
+output = overlap_integral_asymmetric(
+    basis_one,
+    basis_two,
+    transform_one=transform_ao_mo,
+    coord_type_one="spherical",
+    coord_type_two="spherical",
+)
+\end{lstlisting}
+\end{itemize}
 \subsection{Multipole moment integral}
 Multipole moment integral can be obtained for arbitrary moments.
 \begin{equation}
