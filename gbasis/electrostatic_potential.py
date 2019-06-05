@@ -1,15 +1,16 @@
 """Module for computing the electrostatic potential integrals."""
-from gbasis.point_charge import point_charge_cartesian, point_charge_mix, point_charge_spherical
+from gbasis.point_charge import point_charge_integral
 import numpy as np
 
 
-def _electrostatic_potential_base(
+def electrostatic_potential(
     basis,
-    density_matrix,
+    one_density_matrix,
     coords_points,
     nuclear_coords,
     nuclear_charges,
-    coord_type,
+    transform=None,
+    coord_type="spherical",
     threshold_dist=0.0,
 ):
     """Return the electrostatic potentials of the basis set in the Cartesian form.
@@ -17,17 +18,26 @@ def _electrostatic_potential_base(
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    density_matrix : np.ndarray(K, K)
-        Density matrix constructed using the given basis set.
+        Shells of generalized contractions.
+    one_density_matrix : np.ndarray(K_orbs, K_orbs)
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     coords_points : np.ndarray(N, 3)
-        Points at which the electrostatic potential is evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
         Rows correspond to the points and columns correspond to the x, y, and z components.
     nuclear_coords : np.ndarray(N_nuc, 3)
         Coordinates of each atom.
         Rows correspond to the atoms and columns correspond to the x, y, and z components.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
@@ -42,36 +52,26 @@ def _electrostatic_potential_base(
 
     Returns
     -------
-    array : np.ndarray(K, N)
-        Array associated with the given basis set.
-        First index of the array is associated with the contraction. `K` is the number of
-        contractions.
-        Second index of the array is associated with the points at whcih the electrostatic potential
-        is evaluated. `N` is the number of points.
+    array : np.ndarray(N)
+        Electrostatic potential evaluated at the given coordinates.
 
     Raises
     ------
     TypeError
-        If `density_matrix_cart` is not a two-dimensional numpy array.
+        If `one_density_matrix` is not a two-dimensional numpy array.
         If `nuclear_coords` is not a two-dimensional numpy array with 3 columns.
         If `nuclear_charges` is not a one-dimensional numpy array.
         If `threshold_dist` is not a int/float.
     ValueError
-        If `density_matrix_cart` must be a symmetric (square) matrix.
+        If `one_density_matrix` must be a symmetric (square) matrix.
         If bumber of rows in `nuclear_coords` is not equal to the number of elements in
         `nuclear_charges`.
         If `threshold_dist` is less than 0.
 
-    Notes
-    -----
-    The density matrix here is expressed with respect to Cartesian contractions. If your density
-    matrix is expressed with respect to spherical contractions, see
-    `gbasis.electrostatic_potential_electrostatic_potential_sphrical`.
-
     """
     # pylint: disable=R0912
-    if not (isinstance(density_matrix, np.ndarray) and density_matrix.ndim == 2):
-        raise TypeError("`density_matrix_cart` must be given as a two-dimensional numpy array.")
+    if not (isinstance(one_density_matrix, np.ndarray) and one_density_matrix.ndim == 2):
+        raise TypeError("`one_density_matrix_cart` must be given as a two-dimensional numpy array.")
     if not (
         isinstance(nuclear_coords, np.ndarray)
         and nuclear_coords.ndim == 2
@@ -82,10 +82,10 @@ def _electrostatic_potential_base(
         raise TypeError("`nuclear_charges` must be a one-dimensional numpy array.")
 
     if not (
-        density_matrix.shape[0] == density_matrix.shape[1]
-        and np.allclose(density_matrix, density_matrix.T)
+        one_density_matrix.shape[0] == one_density_matrix.shape[1]
+        and np.allclose(one_density_matrix, one_density_matrix.T)
     ):
-        raise ValueError("`density_matrix_cart` must be a symmetric (square) matrix.")
+        raise ValueError("`one_density_matrix_cart` must be a symmetric (square) matrix.")
     if nuclear_coords.shape[0] != nuclear_charges.size:
         raise ValueError(
             "Number of rows in `nuclear_coords` must be equal to the number of elements in "
@@ -97,23 +97,17 @@ def _electrostatic_potential_base(
         raise ValueError("`threshold_dist` must be greater than or equal to zero.")
 
     if coord_type == "cartesian":
-        if sum(cont.num_cart * cont.num_seg_cont for cont in basis) != density_matrix.shape[0]:
+        if sum(cont.num_cart * cont.num_seg_cont for cont in basis) != one_density_matrix.shape[0]:
             raise ValueError(
-                "`density_matrix` does not have number of rows/columns that is equal to the total "
-                "number of Cartesian contractions (atomic orbitals)."
+                "`one_density_matrix` does not have number of rows/columns that is equal to the "
+                "total number of Cartesian contractions (atomic orbitals)."
             )
-        hartree_potential = point_charge_cartesian(
-            basis, coords_points, -np.ones(coords_points.shape[0])
-        )
     elif coord_type == "spherical":
-        if sum(cont.num_sph * cont.num_seg_cont for cont in basis) != density_matrix.shape[0]:
+        if sum(cont.num_sph * cont.num_seg_cont for cont in basis) != one_density_matrix.shape[0]:
             raise ValueError(
-                "`density_matrix` does not have number of rows/columns that is equal to the total "
-                "number of spherical contractions (atomic orbitals)."
+                "`one_density_matrix` does not have number of rows/columns that is equal to the "
+                "total number of spherical contractions (atomic orbitals)."
             )
-        hartree_potential = point_charge_spherical(
-            basis, coords_points, -np.ones(coords_points.shape[0])
-        )
     elif isinstance(coord_type, (list, tuple)):
         if (
             sum(
@@ -122,20 +116,24 @@ def _electrostatic_potential_base(
                 else cont.num_cart * cont.num_seg_cont
                 for cont, j in zip(basis, coord_type)
             )
-            != density_matrix.shape[0]
+            != one_density_matrix.shape[0]
         ):
             raise ValueError(
-                "`density_matrix` does not have number of rows/columns that is equal to the total "
-                "number of contractions in the given coordinate systems (atomic orbitals)."
+                "`one_density_matrix` does not have number of rows/columns that is equal to the "
+                "total number of contractions in the given coordinate systems (atomic orbitals)."
             )
-        hartree_potential = point_charge_mix(
-            basis, coords_points, -np.ones(coords_points.shape[0]), coord_types=coord_type
-        )
     else:
         raise TypeError(
             "`coord_type` must be 'spherical', 'cartesian', or a list/tuple of these strings."
         )
-    hartree_potential *= density_matrix[:, :, None]
+    hartree_potential = point_charge_integral(
+        basis,
+        coords_points,
+        -np.ones(coords_points.shape[0]),
+        transform=transform,
+        coord_type=coord_type,
+    )
+    hartree_potential *= one_density_matrix[:, :, None]
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))
 
     # silence warning for dividing by zero
@@ -152,205 +150,3 @@ def _electrostatic_potential_base(
     external_potential = -np.sum(external_potential, axis=1)
 
     return -(external_potential + hartree_potential)
-
-
-def electrostatic_potential_cartesian(
-    basis, density_matrix_cart, coords_points, nuclear_coords, nuclear_charges, threshold_dist=0.0
-):
-    """Return the electrostatic potentials of the basis set in the Cartesian form.
-
-    Parameters
-    ----------
-    basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    density_matrix_cart : np.ndarray(K_cart, K_cart)
-        Density matrix constructed using the Cartesian forms of the given basis set.
-    coords_points : np.ndarray(N, 3)
-        Points at which the electrostatic potential is evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
-    nuclear_coords : np.ndarray(N_nuc, 3)
-        Coordinates of each atom.
-        Rows correspond to the atoms and columns correspond to the x, y, and z components.
-    nuclear_charges : np.ndarray(N_nuc)
-        Charges of each atom.
-    threshold_dist : {float, 0.0}
-        Threshold for rejecting nuclei whose distances to the points are less than the provided
-        value. i.e. nuclei that are closer to the point than the threshold are discarded when
-        computing the electrostatic potential of the point.
-        Default value is 0.0, i.e. no nuclei are discarded.
-
-    Returns
-    -------
-    array : np.ndarray(K_cart, N)
-        Array associated with the given set of Cartesian contractions.
-        First index of the array is associated with the contraction. `K_cart` is the number of
-        Cartesian contractions.
-        Second index of the array is associated with the points at whcih the electrostatic potential
-        is evaluated. `N` is the number of points.
-
-    Raises
-    ------
-    TypeError
-        If `density_matrix_cart` is not a two-dimensional numpy array.
-        If `nuclear_coords` is not a two-dimensional numpy array with 3 columns.
-        If `nuclear_charges` is not a one-dimensional numpy array.
-    ValueError
-        If `density_matrix_cart` must be a symmetric (square) matrix.
-        If bumber of rows in `nuclear_coords` is not equal to the number of elements in
-        `nuclear_charges`.
-
-    Notes
-    -----
-    The density matrix here is expressed with respect to Cartesian contractions. If your density
-    matrix is expressed with respect to spherical contractions, see
-    `gbasis.electrostatic_potential_electrostatic_potential_spherical`. Otherwise, see
-    `gbasis.electrostatic_potential_electrostatic_potential_mix`.
-
-    """
-    return _electrostatic_potential_base(
-        basis,
-        density_matrix_cart,
-        coords_points,
-        nuclear_coords,
-        nuclear_charges,
-        "cartesian",
-        threshold_dist=threshold_dist,
-    )
-
-
-def electrostatic_potential_spherical(
-    basis, density_matrix_sph, coords_points, nuclear_coords, nuclear_charges, threshold_dist=0.0
-):
-    """Return the electrostatic potentials of the basis set in the spherical form.
-
-    Parameters
-    ----------
-    basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    density_matrix_sph : np.ndarray(K_sph, K_sph)
-        Density matrix constructed using the Cartesian forms of the given basis set.
-    coords_points : np.ndarray(N, 3)
-        Points at which the electrostatic potential is evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
-    nuclear_coords : np.ndarray(N_nuc, 3)
-        Coordinates of each atom.
-        Rows correspond to the atoms and columns correspond to the x, y, and z components.
-    nuclear_charges : np.ndarray(N_nuc)
-        Charges of each atom.
-    threshold_dist : {float, 0.0}
-        Threshold for rejecting nuclei whose distances to the points are less than the provided
-        value. i.e. nuclei that are closer to the point than the threshold are discarded when
-        computing the electrostatic potential of the point.
-        Default value is 0.0, i.e. no nuclei are discarded.
-
-    Returns
-    -------
-    array : np.ndarray(K_sph, N)
-        Array associated with the given set of spherical contractions.
-        First index of the array is associated with the spherical contraction. `K_cont` is the
-        number of spherical contractions.
-        Second index of the array is associated with the points at whcih the electrostatic potential
-        is evaluated. `N` is the number of points.
-
-    Raises
-    ------
-    TypeError
-        If `density_matrix_cart` is not a two-dimensional numpy array.
-        If `nuclear_coords` is not a two-dimensional numpy array with 3 columns.
-        If `nuclear_charges` is not a one-dimensional numpy array.
-    ValueError
-        If `density_matrix_cart` must be a symmetric (square) matrix.
-        If bumber of rows in `nuclear_coords` is not equal to the number of elements in
-        `nuclear_charges`.
-
-    Notes
-    -----
-    The density matrix here is expressed with respect to spherical contractions. If your density
-    matrix is expressed with respect to Cartesian contractions, see
-    `gbasis.electrostatic_potential_electrostatic_potential_cartesian`. Otherwise, see
-    `gbasis.electrostatic_potential_electrostatic_potential_mix`.
-
-    """
-    return _electrostatic_potential_base(
-        basis,
-        density_matrix_sph,
-        coords_points,
-        nuclear_coords,
-        nuclear_charges,
-        "spherical",
-        threshold_dist=threshold_dist,
-    )
-
-
-def electrostatic_potential_mix(
-    basis,
-    density_matrix_mix,
-    coords_points,
-    nuclear_coords,
-    nuclear_charges,
-    coord_types,
-    threshold_dist=0.0,
-):
-    """Return the electrostatic potentials of the basis set in the given coordinate systems.
-
-    Parameters
-    ----------
-    basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
-    density_matrix_mix : np.ndarray(K_cont, K_cont)
-        Density matrix constructed using the Cartesian forms of the given basis set.
-    coords_points : np.ndarray(N, 3)
-        Points at which the electrostatic potential is evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
-    nuclear_coords : np.ndarray(N_nuc, 3)
-        Coordinates of each atom.
-        Rows correspond to the atoms and columns correspond to the x, y, and z components.
-    nuclear_charges : np.ndarray(N_nuc)
-        Charges of each atom.
-    coord_types : list/tuple of str
-        Types of the coordinate system for each GeneralizedContractionShell.
-        Each entry must be one of "cartesian" or "spherical".
-    threshold_dist : {float, 0.0}
-        Threshold for rejecting nuclei whose distances to the points are less than the provided
-        value. i.e. nuclei that are closer to the point than the threshold are discarded when
-        computing the electrostatic potential of the point.
-        Default value is 0.0, i.e. no nuclei are discarded.
-
-    Returns
-    -------
-    array : np.ndarray(K_cont, N)
-        Array associated with the given set of contractions in the given coordinate systems.
-        First index of the array is associated with the contraction. `K_cont` is the number of
-        contractions.
-        Second index of the array is associated with the points at whcih the electrostatic potential
-        is evaluated. `N` is the number of points.
-
-    Raises
-    ------
-    TypeError
-        If `density_matrix_cart` is not a two-dimensional numpy array.
-        If `nuclear_coords` is not a two-dimensional numpy array with 3 columns.
-        If `nuclear_charges` is not a one-dimensional numpy array.
-    ValueError
-        If `density_matrix_cart` must be a symmetric (square) matrix.
-        If bumber of rows in `nuclear_coords` is not equal to the number of elements in
-        `nuclear_charges`.
-
-    Notes
-    -----
-    The density matrix here is expressed with respect to contractions of the given coordinate
-    systems. If your density matrix is expressed with respect to Cartesian contractions, see
-    `gbasis.electrostatic_potential_electrostatic_potential_cartesian`. If your density
-    matrix is expressed with respect to spherical contractions, see
-    `gbasis.electrostatic_potential_electrostatic_potential_spherical`.
-
-    """
-    return _electrostatic_potential_base(
-        basis,
-        density_matrix_mix,
-        coords_points,
-        nuclear_coords,
-        nuclear_charges,
-        coord_types,
-        threshold_dist=threshold_dist,
-    )
