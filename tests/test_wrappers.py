@@ -51,8 +51,13 @@ def test_from_iodata():
         basis[4].coeffs, np.array([0.1543289673, 0.5353281423, 0.4446345422]).reshape(-1, 1)
     )
 
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(ValueError):
         basis[2].angmom_components_sph  # pylint: disable=W0104
+    # artificially change angular momentum
+    basis[2].angmom = 2
+    assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2)
+    basis[2].angmom = 3
+    assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2, 3, -3)
 
     with pytest.raises(ValueError):
         mol.obasis = mol.obasis._replace(primitive_normalization="L1")

@@ -36,7 +36,7 @@ def from_iodata(mol):
         and hasattr(mol.obasis, "conventions")
         and hasattr(mol.obasis, "primitive_normalization")
         and hasattr(mol.obasis, "shells")
-    ):
+    ):  # pragma: no cover
         raise ValueError("`mol` must be an IOData instance.")
 
     molbasis = mol.obasis
@@ -45,7 +45,7 @@ def from_iodata(mol):
     sph_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "p"}
 
     # NOTE: hard-coded angular momentum from iodata.basis.ANGMOM_CHARS
-    iodata_angmom = 'spdfghiklmnoqrtuvwxyzabce'
+    iodata_angmom = "spdfghiklmnoqrtuvwxyzabce"
 
     class IODataShell(GeneralizedContractionShell):
         """Shell object that is compatible with gbasis' shell object.
@@ -84,16 +84,53 @@ def from_iodata(mol):
                 ordering after transforming the contractions from the Cartesian to spherical
                 coordinate system.
 
-            """
-            if self.angmom == 0:
-                return (0,)
-            raise NotImplementedError(
-                "Iodata seems to be using 'Wikipedia-ordered real solid spherical harmonics', "
-                "which isn't really documented anywhere. Until it's documented, spherical "
-                "contractions will not be supported. Reference: {}".format(sph_conventions)
-            )
+            Raises
+            ------
+            NotImplementedError
+                If convention requires multiplication by a negative sign for some of the harmonics.
+                If convention does not have angular momentum character that matches up with the
+                angular momentum.
+            ValueError
+                If convention does not support given angular momentum.
+                If convention for the sign of the magnetic quantum number is not cosine (+1) or sine
+                (-1).
 
-    if molbasis.primitive_normalization != "L2":
+
+            """
+            output = []
+            if self.angmom not in sph_conventions:
+                raise ValueError(
+                    "Given convention does not support spherical contractions for the angular "
+                    "momentum {0}".format(self.angmom)
+                )
+
+            for j in sph_conventions[self.angmom]:
+                if j[0] == "-":  # pragma: no cover
+                    raise NotImplementedError(
+                        "Only the real solid harmonics as defined in Helgaker Section 6.4.2. is "
+                        "supported."
+                    )
+                if j[0] != iodata_angmom[self.angmom]:  # pragma: no cover
+                    raise NotImplementedError(
+                        "The angular momentum character, {0}, does not match up with the given "
+                        "angular momentum, {1}".format(j[0], self.angmom)
+                    )
+
+                if j[1] == "c":
+                    factor = 1
+                elif j[1] == "s":
+                    factor = -1
+                else:  # pragma: no cover
+                    raise ValueError(
+                        "Convention for the sign of the magnetic quantum number must be either 'c' "
+                        "or 's'."
+                    )
+
+                output.append(factor * int(j[2:]))
+
+            return tuple(output)
+
+    if molbasis.primitive_normalization != "L2":  # pragma: no cover
         raise ValueError(
             "Only L2 normalization scheme is supported in gbasis. Given IOData instance uses "
             "primitive normalization scheme, {}".format(molbasis.primitive_normalization)
