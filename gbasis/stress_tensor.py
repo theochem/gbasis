@@ -1,11 +1,15 @@
 """Module for computing properties related to stress tensor."""
-from gbasis.density import eval_density_laplacian, eval_deriv_density, eval_deriv_density_matrix
+from gbasis.density import (
+    eval_density_laplacian,
+    eval_deriv_density,
+    eval_deriv_reduced_density_matrix,
+)
 import numpy as np
 
 
 # TODO: need to be tested against reference
 def eval_stress_tensor(
-    one_density_matrix, basis, coords, transform, alpha=1, beta=0, coord_type="spherical"
+    one_density_matrix, basis, coords, alpha=1, beta=0, transform=None, coord_type="spherical"
 ):
     r"""Return the stress tensor evaluated at the given coordinates.
 
@@ -44,17 +48,21 @@ def eval_stress_tensor(
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     alpha : {int, float}
         First parameter of the stress tensor.
         Default value is 1.
@@ -72,7 +80,7 @@ def eval_stress_tensor(
     Returns
     -------
     stress_tensor : np.ndarray(N, 3, 3)
-        Stress tensor of the given density matrix at the given coordinates.
+        Stress tensor of the given density matrix evaluated at the given coordinates.
 
     Raises
     ------
@@ -90,23 +98,23 @@ def eval_stress_tensor(
         for j, orders_one in enumerate(np.identity(3, dtype=int)[i:]):
             j += i
             if alpha != 0:
-                output[i, j] -= alpha * eval_deriv_density_matrix(
+                output[i, j] -= alpha * eval_deriv_reduced_density_matrix(
                     orders_one,
                     orders_two,
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
             if alpha != 1:
-                output[i, j] += (1 - alpha) * eval_deriv_density_matrix(
+                output[i, j] += (1 - alpha) * eval_deriv_reduced_density_matrix(
                     orders_one + orders_two,
                     np.array([0, 0, 0]),
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
             if i == j and beta != 0:
@@ -114,7 +122,11 @@ def eval_stress_tensor(
                     0.5
                     * beta
                     * eval_density_laplacian(
-                        one_density_matrix, basis, coords, transform, coord_type=coord_type
+                        one_density_matrix,
+                        basis,
+                        coords,
+                        transform=transform,
+                        coord_type=coord_type,
                     )
                 )
             output[j, i] = output[i, j]
@@ -123,7 +135,7 @@ def eval_stress_tensor(
 
 # TODO: need to be tested against reference
 def eval_ehrenfest_force(
-    one_density_matrix, basis, coords, transform, alpha=1, beta=0, coord_type="spherical"
+    one_density_matrix, basis, coords, alpha=1, beta=0, transform=None, coord_type="spherical"
 ):
     r"""Return the Ehrenfest force.
 
@@ -161,17 +173,21 @@ def eval_ehrenfest_force(
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     alpha : {int, float}
         First parameter of the stress tensor.
         Default value is 1.
@@ -189,7 +205,7 @@ def eval_ehrenfest_force(
     Returns
     -------
     ehrenfest_force : np.ndarray(N, 3)
-        Ehrenfest force of the given density matrix at the given coordinates.
+        Ehrenfest force of the given density matrix evaluated at the given coordinates.
 
     Raises
     ------
@@ -206,33 +222,33 @@ def eval_ehrenfest_force(
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
         for orders_one in np.identity(3, dtype=int):
             if alpha != 0:
-                output[i] -= alpha * eval_deriv_density_matrix(
+                output[i] -= alpha * eval_deriv_reduced_density_matrix(
                     2 * orders_one,
                     orders_two,
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
             if alpha != 1:
-                output[i] += (1 - alpha) * eval_deriv_density_matrix(
+                output[i] += (1 - alpha) * eval_deriv_reduced_density_matrix(
                     2 * orders_one + orders_two,
                     np.array([0, 0, 0]),
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
             if alpha != 0.5:
-                output[i] += (1 - 2 * alpha) * eval_deriv_density_matrix(
+                output[i] += (1 - 2 * alpha) * eval_deriv_reduced_density_matrix(
                     orders_one + orders_two,
                     orders_one,
                     one_density_matrix,
                     basis,
                     coords,
-                    transform,
+                    transform=transform,
                     coord_type=coord_type,
                 )
             if beta != 0:
@@ -244,7 +260,7 @@ def eval_ehrenfest_force(
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
                 )
@@ -256,9 +272,9 @@ def eval_ehrenfest_hessian(
     one_density_matrix,
     basis,
     coords,
-    transform,
     alpha=1,
     beta=0,
+    transform=None,
     coord_type="spherical",
     symmetric=False,
 ):
@@ -308,17 +324,21 @@ def eval_ehrenfest_hessian(
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
-        One-electron density matrix.
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.
+        Shells of generalized contractions.
     coords : np.ndarray(N, 3)
-        Points in space where the contractions are evaluated.
+        Coordinates of the points in space (in atomic units) where the basis functions are
+        evaluated.
+        Rows correspond to the points and columns correspond to the x, y, and z components.
     transform : np.ndarray(K_orbs, K_cont)
-        Transformation matrix from contractions in the given coordinate system (e.g. AO) to linear
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
-        Transformation is applied to the left.
-        Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
-        contractions (i.e. AO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     alpha : {int, float}
         First parameter of the stress tensor.
         Default value is 1.
@@ -340,7 +360,7 @@ def eval_ehrenfest_hessian(
     Returns
     -------
     ehrenfest_hessian : np.ndarray(N, 3, 3)
-        Ehrenfest Hessian of the given density matrix at the given coordinates.
+        Ehrenfest Hessian of the given density matrix evaluated at the given coordinates.
         Hessian is symmeterized if `symmetric` is True.
 
     Raises
@@ -359,60 +379,60 @@ def eval_ehrenfest_hessian(
         for j, orders_three in enumerate(np.identity(3, dtype=int)):
             for orders_one in np.identity(3, dtype=int):
                 if alpha != 0:
-                    output[i, j] -= alpha * eval_deriv_density_matrix(
+                    output[i, j] -= alpha * eval_deriv_reduced_density_matrix(
                         2 * orders_one + orders_three,
                         orders_two,
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] -= alpha * eval_deriv_density_matrix(
+                    output[i, j] -= alpha * eval_deriv_reduced_density_matrix(
                         2 * orders_one,
                         orders_two + orders_three,
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
                 if alpha != 1:
-                    output[i, j] += (1 - alpha) * eval_deriv_density_matrix(
+                    output[i, j] += (1 - alpha) * eval_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two + orders_three,
                         np.array([0, 0, 0]),
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] += (1 - alpha) * eval_deriv_density_matrix(
+                    output[i, j] += (1 - alpha) * eval_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
                         orders_three,
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
                 if alpha != 0.5:
-                    output[i, j] += (1 - 2 * alpha) * eval_deriv_density_matrix(
+                    output[i, j] += (1 - 2 * alpha) * eval_deriv_reduced_density_matrix(
                         orders_one + orders_two + orders_three,
                         orders_one,
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] += (1 - 2 * alpha) * eval_deriv_density_matrix(
+                    output[i, j] += (1 - 2 * alpha) * eval_deriv_reduced_density_matrix(
                         orders_one + orders_two,
                         orders_one + orders_three,
                         one_density_matrix,
                         basis,
                         coords,
-                        transform,
+                        transform=transform,
                         coord_type=coord_type,
                     )
                 if beta != 0:
@@ -424,7 +444,7 @@ def eval_ehrenfest_hessian(
                             one_density_matrix,
                             basis,
                             coords,
-                            transform,
+                            transform=transform,
                             coord_type=coord_type,
                         )
                     )

@@ -1,5 +1,9 @@
 """Test gbasis.stress_tensor."""
-from gbasis.density import eval_density_laplacian, eval_deriv_density, eval_deriv_density_matrix
+from gbasis.density import (
+    eval_density_laplacian,
+    eval_deriv_density,
+    eval_deriv_reduced_density_matrix,
+)
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.stress_tensor import eval_ehrenfest_force, eval_ehrenfest_hessian, eval_stress_tensor
 import numpy as np
@@ -17,16 +21,16 @@ def test_eval_stress_tensor():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        eval_stress_tensor(np.identity(40), basis, points, np.identity(40), np.array(0), 0)
+        eval_stress_tensor(np.identity(40), basis, points, np.array(0), 0, np.identity(40))
     with pytest.raises(TypeError):
-        eval_stress_tensor(np.identity(40), basis, points, np.identity(40), 1, None)
+        eval_stress_tensor(np.identity(40), basis, points, 1, None, np.identity(40))
     with pytest.raises(TypeError):
-        eval_stress_tensor(np.identity(40), basis, points, np.identity(40), 1, 0j)
+        eval_stress_tensor(np.identity(40), basis, points, 1, 0j, np.identity(40))
 
-    test_a = eval_stress_tensor(np.identity(40), basis, points, np.identity(40), 0, 0)
-    test_b = eval_stress_tensor(np.identity(40), basis, points, np.identity(40), 1, 0)
-    test_c = eval_stress_tensor(np.identity(40), basis, points, np.identity(40), 1, 2)
-    test_d = eval_stress_tensor(np.identity(40), basis, points, np.identity(40), 0.5, 2)
+    test_a = eval_stress_tensor(np.identity(40), basis, points, 0, 0, np.identity(40))
+    test_b = eval_stress_tensor(np.identity(40), basis, points, 1, 0, np.identity(40))
+    test_c = eval_stress_tensor(np.identity(40), basis, points, 1, 2, np.identity(40))
+    test_d = eval_stress_tensor(np.identity(40), basis, points, 0.5, 2, np.identity(40))
     for i in range(3):
         for j in range(3):
             orders_i = np.array([0, 0, 0])
@@ -34,13 +38,13 @@ def test_eval_stress_tensor():
             orders_j = np.array([0, 0, 0])
             orders_j[j] += 1
 
-            temp1 = eval_deriv_density_matrix(
+            temp1 = eval_deriv_reduced_density_matrix(
                 orders_i, orders_j, np.identity(40), basis, points, np.identity(40)
             )
-            temp2 = eval_deriv_density_matrix(
+            temp2 = eval_deriv_reduced_density_matrix(
                 orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
             )
-            temp3 = eval_deriv_density_matrix(
+            temp3 = eval_deriv_reduced_density_matrix(
                 orders_i + orders_j,
                 np.array([0, 0, 0]),
                 np.identity(40),
@@ -48,7 +52,7 @@ def test_eval_stress_tensor():
                 points,
                 np.identity(40),
             )
-            temp4 = eval_deriv_density_matrix(
+            temp4 = eval_deriv_reduced_density_matrix(
                 orders_i + orders_j,
                 np.array([0, 0, 0]),
                 np.identity(40),
@@ -78,16 +82,16 @@ def test_eval_ehrenfest_force():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), np.array(0), 0)
+        eval_ehrenfest_force(np.identity(40), basis, points, np.array(0), 0, np.identity(40))
     with pytest.raises(TypeError):
-        eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), 1, None)
+        eval_ehrenfest_force(np.identity(40), basis, points, 1, None, np.identity(40))
     with pytest.raises(TypeError):
-        eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), 1, 0j)
+        eval_ehrenfest_force(np.identity(40), basis, points, 1, 0j, np.identity(40))
 
-    test_a = eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), 0, 0)
-    test_b = eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), 1, 0)
-    test_c = eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), 0.5, 0)
-    test_d = eval_ehrenfest_force(np.identity(40), basis, points, np.identity(40), 0, 2)
+    test_a = eval_ehrenfest_force(np.identity(40), basis, points, 0, 0, np.identity(40))
+    test_b = eval_ehrenfest_force(np.identity(40), basis, points, 1, 0, np.identity(40))
+    test_c = eval_ehrenfest_force(np.identity(40), basis, points, 0.5, 0, np.identity(40))
+    test_d = eval_ehrenfest_force(np.identity(40), basis, points, 0, 2, np.identity(40))
     for j in range(3):
         ref_a = np.zeros(points.shape[0])
         ref_b = np.zeros(points.shape[0])
@@ -100,13 +104,13 @@ def test_eval_ehrenfest_force():
             orders_i = np.array([0, 0, 0])
             orders_i[i] += 1
 
-            temp1 = eval_deriv_density_matrix(
+            temp1 = eval_deriv_reduced_density_matrix(
                 2 * orders_i, orders_j, np.identity(40), basis, points, np.identity(40)
             )
-            temp2 = eval_deriv_density_matrix(
+            temp2 = eval_deriv_reduced_density_matrix(
                 orders_i, orders_i + orders_j, np.identity(40), basis, points, np.identity(40)
             )
-            temp3 = eval_deriv_density_matrix(
+            temp3 = eval_deriv_reduced_density_matrix(
                 2 * orders_i + orders_j,
                 np.array([0, 0, 0]),
                 np.identity(40),
@@ -114,7 +118,7 @@ def test_eval_ehrenfest_force():
                 points,
                 np.identity(40),
             )
-            temp4 = eval_deriv_density_matrix(
+            temp4 = eval_deriv_reduced_density_matrix(
                 orders_i + orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
             )
             temp5 = eval_deriv_density(
@@ -143,16 +147,16 @@ def test_eval_ehrenfest_hessian():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), np.array(0), 0)
+        eval_ehrenfest_hessian(np.identity(40), basis, points, np.array(0), 0, np.identity(40))
     with pytest.raises(TypeError):
-        eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 1, None)
+        eval_ehrenfest_hessian(np.identity(40), basis, points, 1, None, np.identity(40))
     with pytest.raises(TypeError):
-        eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 1, 0j)
+        eval_ehrenfest_hessian(np.identity(40), basis, points, 1, 0j, np.identity(40))
 
-    test_a = eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 0, 0)
-    test_b = eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 1, 0)
-    test_c = eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 0.5, 0)
-    test_d = eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 0, 2)
+    test_a = eval_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40))
+    test_b = eval_ehrenfest_hessian(np.identity(40), basis, points, 1, 0, np.identity(40))
+    test_c = eval_ehrenfest_hessian(np.identity(40), basis, points, 0.5, 0, np.identity(40))
+    test_d = eval_ehrenfest_hessian(np.identity(40), basis, points, 0, 2, np.identity(40))
     for j in range(3):
         for k in range(3):
             ref_a = np.zeros(points.shape[0])
@@ -168,7 +172,7 @@ def test_eval_ehrenfest_hessian():
                 orders_i = np.array([0, 0, 0])
                 orders_i[i] += 1
 
-                temp1 = eval_deriv_density_matrix(
+                temp1 = eval_deriv_reduced_density_matrix(
                     2 * orders_i + orders_k,
                     orders_j,
                     np.identity(40),
@@ -176,7 +180,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp2 = eval_deriv_density_matrix(
+                temp2 = eval_deriv_reduced_density_matrix(
                     2 * orders_i,
                     orders_j + orders_k,
                     np.identity(40),
@@ -184,7 +188,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp3 = eval_deriv_density_matrix(
+                temp3 = eval_deriv_reduced_density_matrix(
                     orders_i + orders_k,
                     orders_i + orders_j,
                     np.identity(40),
@@ -192,7 +196,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp4 = eval_deriv_density_matrix(
+                temp4 = eval_deriv_reduced_density_matrix(
                     orders_i,
                     orders_i + orders_j + orders_k,
                     np.identity(40),
@@ -200,7 +204,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp5 = eval_deriv_density_matrix(
+                temp5 = eval_deriv_reduced_density_matrix(
                     2 * orders_i + orders_j + orders_k,
                     np.array([0, 0, 0]),
                     np.identity(40),
@@ -208,7 +212,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp6 = eval_deriv_density_matrix(
+                temp6 = eval_deriv_reduced_density_matrix(
                     2 * orders_i + orders_j,
                     orders_k,
                     np.identity(40),
@@ -216,7 +220,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp7 = eval_deriv_density_matrix(
+                temp7 = eval_deriv_reduced_density_matrix(
                     orders_i + orders_j + orders_k,
                     orders_i,
                     np.identity(40),
@@ -224,7 +228,7 @@ def test_eval_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp8 = eval_deriv_density_matrix(
+                temp8 = eval_deriv_reduced_density_matrix(
                     orders_i + orders_j,
                     orders_i + orders_k,
                     np.identity(40),
@@ -259,12 +263,12 @@ def test_eval_ehrenfest_hessian():
             assert np.allclose(test_d[:, j, k], ref_d)
     assert np.allclose(
         eval_ehrenfest_hessian(
-            np.identity(40), basis, points, np.identity(40), 0, 0, symmetric=True
+            np.identity(40), basis, points, 0, 0, np.identity(40), symmetric=True
         ),
         (
-            eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 0, 0)
+            eval_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40))
             + np.swapaxes(
-                eval_ehrenfest_hessian(np.identity(40), basis, points, np.identity(40), 0, 0), 1, 2
+                eval_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40)), 1, 2
             )
         )
         / 2,
