@@ -303,6 +303,28 @@ output = high_level_function(basis, coord_type=["cartesian", "spherical"])
   generalized contractions. Otherwise, an error will raised.
 \end{itemize}
 
+\subsection{Linear transformations of basis functions}
+In \verb|gbasis|, user can linearly transform the basis functions before
+computing the desired properties.
+All of the higher level functions have the keyword argument \verb|transform| to
+specify the matrix that transforms the basis set.
+The transformation is applied to the left, i.e.
+\begin{equation}
+ \psi_i = \sum_j T_{ij} \phi_j
+\end{equation}
+where $\phi_j$ is a basis function before transformation and $\psi_i$ is a
+basis function after transformation.
+The number of basis functions depends on the coordinate systems specified for
+each shell.
+Note that the transformation matrix assumes that the basis functions are ordered
+according to Section~\ref{sec:basis_ordering}.
+
+Usage:
+\begin{verbatim}
+output = high_level_function(basis, transform=matrix)
+\end{verbatim}
+where \verb|matrix| is the transformation matrix.
+
 \subsection{Ordering of basis functions}
 Since a shell of generalized contractions is a set of contractions, they must be
 unpacked.
