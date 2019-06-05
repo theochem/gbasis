@@ -4,13 +4,7 @@ from gbasis._two_elec_int import (
     _compute_two_elec_integrals_angmom_zero,
 )
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.electron_repulsion import (
-    electron_repulsion_cartesian,
-    electron_repulsion_lincomb,
-    electron_repulsion_mix,
-    electron_repulsion_spherical,
-    ElectronRepulsionIntegral,
-)
+from gbasis.electron_repulsion import electron_repulsion_integral, ElectronRepulsionIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -108,7 +102,9 @@ def test_electron_repulsion_cartesian_horton_sto6g_bec():
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
     horton_elec_repulsion = np.load(find_datafile("data_horton_bec_cart_elec_repulsion.npy"))
-    assert np.allclose(horton_elec_repulsion, electron_repulsion_cartesian(basis))
+    assert np.allclose(
+        horton_elec_repulsion, electron_repulsion_integral(basis, coord_type="cartesian")
+    )
 
 
 def test_electron_repulsion_cartesian_horton_custom_hhe():
@@ -137,7 +133,9 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
     basis.pop(2)
 
     horton_elec_repulsion = np.load(find_datafile("data_horton_hhe_cart_elec_repulsion.npy"))
-    assert np.allclose(horton_elec_repulsion, electron_repulsion_cartesian(basis))
+    assert np.allclose(
+        horton_elec_repulsion, electron_repulsion_integral(basis, coord_type="cartesian")
+    )
 
 
 def test_electron_repulsion_cartesian():
@@ -150,14 +148,14 @@ def test_electron_repulsion_cartesian():
     erep_obj = ElectronRepulsionIntegral(basis)
     assert np.allclose(
         erep_obj.construct_array_cartesian(),
-        electron_repulsion_cartesian(basis, notation="chemist"),
+        electron_repulsion_integral(basis, notation="chemist", coord_type="cartesian"),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_cartesian()),
-        electron_repulsion_cartesian(basis, notation="physicist"),
+        electron_repulsion_integral(basis, notation="physicist", coord_type="cartesian"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_cartesian(basis, notation="bad")
+        electron_repulsion_integral(basis, notation="bad", coord_type="cartesian")
 
 
 def test_electron_repulsion_spherical():
@@ -170,14 +168,14 @@ def test_electron_repulsion_spherical():
     erep_obj = ElectronRepulsionIntegral(basis)
     assert np.allclose(
         erep_obj.construct_array_spherical(),
-        electron_repulsion_spherical(basis, notation="chemist"),
+        electron_repulsion_integral(basis, notation="chemist", coord_type="spherical"),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_spherical()),
-        electron_repulsion_spherical(basis, notation="physicist"),
+        electron_repulsion_integral(basis, notation="physicist", coord_type="spherical"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_spherical(basis, notation="bad")
+        electron_repulsion_integral(basis, notation="bad", coord_type="spherical")
 
 
 def test_electron_repulsion_mix():
@@ -190,14 +188,14 @@ def test_electron_repulsion_mix():
     erep_obj = ElectronRepulsionIntegral(basis)
     assert np.allclose(
         erep_obj.construct_array_mix(["spherical"] * 3),
-        electron_repulsion_mix(basis, ["spherical"] * 3, notation="chemist"),
+        electron_repulsion_integral(basis, notation="chemist", coord_type=["spherical"] * 3),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_mix(["spherical"] * 3)),
-        electron_repulsion_mix(basis, ["spherical"] * 3, notation="physicist"),
+        electron_repulsion_integral(basis, notation="physicist", coord_type=["spherical"] * 3),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_mix(basis, ["spherical"] * 3, notation="bad")
+        electron_repulsion_integral(basis, notation="bad", coord_type=["spherical"] * 3)
 
 
 def test_electron_repulsion_lincomb():
@@ -211,11 +209,11 @@ def test_electron_repulsion_lincomb():
     transform = np.random.rand(3, 5)
     assert np.allclose(
         erep_obj.construct_array_lincomb(transform, "spherical"),
-        electron_repulsion_lincomb(basis, transform, notation="chemist"),
+        electron_repulsion_integral(basis, transform, notation="chemist", coord_type="spherical"),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_lincomb(transform, "spherical")),
-        electron_repulsion_lincomb(basis, transform, notation="physicist"),
+        electron_repulsion_integral(basis, transform, notation="physicist", coord_type="spherical"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_lincomb(basis, transform, notation="bad")
+        electron_repulsion_integral(basis, transform, notation="bad", coord_type="spherical")
