@@ -10,5 +10,10 @@ matrix:
       sudo: required
       dist: xenial
       env: TOXENV=py37
+    - python: 3.6
+      env: TOXENV=optional
+  allow_failures:
+    - python: 3.6
+      env: TOXENV=optional
 install: pip install tox
 script: tox
