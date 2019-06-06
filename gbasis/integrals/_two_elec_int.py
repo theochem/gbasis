@@ -32,18 +32,19 @@ def _compute_two_elec_integrals_angmom_zero(
     Parameters
     ----------
     boys_func : function(orders, weighted_dist)
-        Boys function used to evaluate the one-electron integral.
+        Boys function used to evaluate the two-electron integral.
         `orders` is the orders of the Boys integral that will be evaluated. It should be a
-        three-dimensional numpy array of integers with shape `(M, 1, 1, 1)` where `M` is the number
-        of orders that will be evaluated.
+        three-dimensional `numpy` array of integers with `shape` :math:`(M, 1, 1, 1)` where :
+        math:`M` is the number of orders that will be evaluated.
         `weighted_dist` is the weighted interatomic distance, i.e.
         :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
-        the exponent of the ith primitive on the left side and the :math:`\beta_j` is the exponent
-        of the jth primitive on the right side. It should be a four-dimensional numpy array of
-        floats with shape `(1, N, K_b, K_a)` where `N` is the number of point charges, `K_a` and
-        `K_b` are the number of primitives on the left and right side, respectively.
-        Output is the Boys function evaluated for each order and the weighted interactomic distance.
-        It will be a three-dimensional numpy array of shape `(M, N, K_b, K_a)`.
+        the exponent of the i-th primitive on the left side and the :math:`\beta_j` is the exponent
+        of the j-th primitive on the right side. It should be a four-dimensional `numpy` array of
+        floats with `shape` :math:`(1, N, K_b, K_a)` where :math:`N` is the number of point charges
+        and :math:`K_a` and :math:`K_b` are the number of primitives on the left and right side,
+        respectively.
+        Output is the Boys function evaluated for each order and the weighted interatomic distance.
+        It will be a three-dimensional `numpy` array with `shape` :math:`(M, N, K_b, K_a)`.
     coord_a : np.ndarray(3,)
         Center of the contraction a.
     exps_a : np.ndarray(K_a,)
@@ -51,7 +52,7 @@ def _compute_two_elec_integrals_angmom_zero(
     coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives in contraction a.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_b : np.ndarray(3,)
         Center of the contraction b.
@@ -60,7 +61,7 @@ def _compute_two_elec_integrals_angmom_zero(
     coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives in contraction b.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_c : np.ndarray(3,)
         Center of the contraction c.
@@ -69,7 +70,7 @@ def _compute_two_elec_integrals_angmom_zero(
     coeffs_c : np.ndarray(K_c, M_c)
         Contraction coefficients of the primitives in contraction c.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_d : np.ndarray(3,)
         Center of the contraction d.
@@ -78,7 +79,7 @@ def _compute_two_elec_integrals_angmom_zero(
     coeffs_d : np.ndarray(K_d, M_d)
         Contraction coefficients of the primitives in contraction d.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
 
     Returns
@@ -86,14 +87,14 @@ def _compute_two_elec_integrals_angmom_zero(
     integrals : np.ndarray(1, 1, 1, 1, M_a, M_b, M_c, M_d)
         Two-electron integrals **in Chemists' notation** of the four generalized contraction shells
         (a, b, c, d).
-        First index correspond to angular momentum components of contraction a.
-        Second index correspond to angular momentum components of contraction b.
-        Third index correspond to angular momentum components of contraction c.
-        Fourth index correspond to angular momentum components of contraction d.
-        Fifth index corresponds to the segmented contractions of contraction a.
-        Sixth index corresponds to the segmented contractions of contraction b.
-        Seventh index corresponds to the segmented contractions of contraction c.
-        Eighth index corresponds to the segmented contractions of contraction d.
+        Dimension 0 correspond to angular momentum components of contraction a.
+        Dimension 1 correspond to angular momentum components of contraction b.
+        Dimension 2 correspond to angular momentum components of contraction c.
+        Dimension 3 correspond to angular momentum components of contraction d.
+        Dimension 4 corresponds to the segmented contractions of contraction a.
+        Dimension 5 corresponds to the segmented contractions of contraction b.
+        Dimension 6 corresponds to the segmented contractions of contraction c.
+        Dimension 7 corresponds to the segmented contractions of contraction d.
         Note that the integrals are in Chemists' notation.
 
     Notes
@@ -178,18 +179,19 @@ def _compute_two_elec_integrals(
     Parameters
     ----------
     boys_func : function(orders, weighted_dist)
-        Boys function used to evaluate the one-electron integral.
+        Boys function used to evaluate the two-electron integral.
         `orders` is the orders of the Boys integral that will be evaluated. It should be a
-        three-dimensional numpy array of integers with shape `(M, 1, 1, 1)` where `M` is the number
-        of orders that will be evaluated.
+        three-dimensional `numpy` array of integers with `shape` :math:`(M, 1, 1, 1)` where :
+        math:`M` is the number of orders that will be evaluated.
         `weighted_dist` is the weighted interatomic distance, i.e.
         :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
-        the exponent of the ith primitive on the left side and the :math:`\beta_j` is the exponent
-        of the jth primitive on the right side. It should be a four-dimensional numpy array of
-        floats with shape `(1, N, K_b, K_a)` where `N` is the number of point charges, `K_a` and
-        `K_b` are the number of primitives on the left and right side, respectively.
-        Output is the Boys function evaluated for each order and the weighted interactomic distance.
-        It will be a three-dimensional numpy array of shape `(M, N, K_b, K_a)`.
+        the exponent of the i-th primitive on the left side and the :math:`\beta_j` is the exponent
+        of the j-th primitive on the right side. It should be a four-dimensional `numpy` array of
+        floats with `shape` :math:`(1, N, K_b, K_a)` where :math:`N` is the number of point charges
+        and :math:`K_a` and :math:`K_b` are the number of primitives on the left and right side,
+        respectively.
+        Output is the Boys function evaluated for each order and the weighted interatomic distance.
+        It will be a three-dimensional `numpy` array with `shape` :math:`(M, N, K_b, K_a)`.
     coord_a : np.ndarray(3,)
         Center of the contraction a.
     angmom_a : int
@@ -203,7 +205,7 @@ def _compute_two_elec_integrals(
     coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives in contraction a.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_b : np.ndarray(3,)
         Center of the contraction b.
@@ -218,7 +220,7 @@ def _compute_two_elec_integrals(
     coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives in contraction b.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_c : np.ndarray(3,)
         Center of the contraction c.
@@ -233,7 +235,7 @@ def _compute_two_elec_integrals(
     coeffs_c : np.ndarray(K_c, M_c)
         Contraction coefficients of the primitives in contraction c.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_d : np.ndarray(3,)
         Center of the contraction d.
@@ -248,7 +250,7 @@ def _compute_two_elec_integrals(
     coeffs_d : np.ndarray(K_d, M_d)
         Contraction coefficients of the primitives in contraction d.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
 
     Returns
@@ -256,14 +258,15 @@ def _compute_two_elec_integrals(
     integrals : np.ndarray(L_a, L_b, L_c, L_d, M_a, M_b, M_c, M_d)
         Two-electron integrals **in Chemists' notation** of the four generalized contraction shells
         (a, b, c, d).
-        First index correspond to angular momentum components of contraction a.
-        Second index correspond to angular momentum components of contraction b.
-        Third index correspond to angular momentum components of contraction c.
-        Fourth index correspond to angular momentum components of contraction d.
-        Fifth index corresponds to the segmented contractions of contraction a.
-        Sixth index corresponds to the segmented contractions of contraction b.
-        Seventh index corresponds to the segmented contractions of contraction c.
-        Eighth index corresponds to the segmented contractions of contraction d.
+        Dimension 0 correspond to angular momentum components of contraction a.
+        Dimension 1 correspond to angular momentum components of contraction b.
+        Dimension 2 correspond to angular momentum components of contraction c.
+        Dimension 3 correspond to angular momentum components of contraction d.
+        Dimension 4 corresponds to the segmented contractions of contraction a.
+        Dimension 5 corresponds to the segmented contractions of contraction b.
+        Dimension 6 corresponds to the segmented contractions of contraction c.
+        Dimension 7 corresponds to the segmented contractions of contraction d.
+        Note that the integrals are in Chemists' notation.
 
     Raises
     ------
@@ -396,7 +399,7 @@ def _compute_two_elec_integrals(
         )
 
     # FIXME: memory heavy here
-    # NOTE: Ordering convention for electorn transfer recursion
+    # NOTE: Ordering convention for electron transfer recursion
     # axis 0 : c_x (size: m_max_c)
     # axis 1 : c_y (size: m_max_c)
     # axis 2 : c_z (size: m_max_c)
@@ -430,7 +433,7 @@ def _compute_two_elec_integrals(
     # different shapes (e.g. shape(0, 1) and shape(1, 0))into one another. The slices 1:2 on the 0th
     # and the 3rd axis causes problems when they both have dimension zero. There doesn't seem to be
     # an easy enough way around it, so the breaking case (all contractions have angular momentum of
-    # 0) is not is upported. Use `_compute_two_elec_integrals_angmom_zero` for this case.
+    # 0) is not supported. Use `_compute_two_elec_integrals_angmom_zero` for this case.
     # FIXME: i couldn't get the base case (all angmom of zero) to work.
     integrals_etransf[1:2, 0, 0, 0:1, :, :, :, :, :, :] = (
         (rel_coord_c[0] + exps_sum_one / exps_sum_two * rel_coord_a[0])
@@ -787,7 +790,7 @@ def _compute_two_elec_integrals(
     # rearrange to more sensible order
     integrals = np.transpose(integrals_horiz_b2, (1, 0, 3, 2, 4, 6, 5, 7))
 
-    # Get normalzation constants that correspond to the angular momentum components
+    # Get normalization constants that correspond to the angular momentum components
     norm_a = 1 / np.sqrt(np.prod(factorial2(2 * angmom_components_a - 1), axis=1)).reshape(
         -1, 1, 1, 1, 1, 1, 1, 1
     )

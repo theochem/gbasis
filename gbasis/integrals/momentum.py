@@ -13,11 +13,9 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
+        Property of `MomentumIntegral`.
 
     Methods
     -------
@@ -27,29 +25,29 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, 3)
         Return the integral over the momentum operator associated with a
         `GeneralizedContractionShell` instance.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart, 3)
         Return the integral over the momentum operator associated with Cartesian Gaussians.
-        `K_cart` is the total number of Cartesian contractions within the instance.
+        :math:`K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph, 3)
         Return the integral over the momentum operator associated with spherical Gaussians (atomic
         orbitals).
-        `K_sph` is the total number of spherical contractions within the instance.
+        :math:`K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types) : np.ndarray(K_cont, K_cont, 3)
         Return the integral over the momentum operator associated with the contraction in the given
         coordinate system.
-        `K_cont` is the total number of contractions within the given basis set.
+        :math:`K_cont` is the total number of contractions within the given basis set.
     construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs, 3)
         Return the integral over the momentum operator associated with linear combinations of
         spherical Gaussians (linear combinations of atomic orbitals).
-        `K_orbs` is the number of basis functions produced after the linear combinations.
+        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -70,32 +68,32 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, 3)
             Integral over than momentum operator associated with the given instances of
-            GeneralizedContractionShell.
-            Dimension 0 corresponds to the segmented contraction within `contractions_one`. `M_1` is
+            `GeneralizedContractionShell`.
+            Dimension 0 corresponds to the segmented contraction within `cont_one`. :math:`M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
-            Dimension 1 corresponds to the angular momentum vector of the `contractions_one`.
-            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
+            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
-            Dimension 2 corresponds to the segmented contraction within `contractions_two`. `M_2` is
-            the number of segmented contractions with the same exponents (and angular momentum)
+            Dimension 2 corresponds to the segmented contraction within `cont_two`.
+            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the second index.
+            Dimension 3 corresponds to the angular momentum vector of the `cont_two`.
+            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
-            Dimension 3 corresponds to the angular momentum vector of the `contractions_two`.
-            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
-            associated with the second index.
-            Dimension 4 corresponds to the dimension of the momentum (x, y, z).
+            Dimension 4 corresponds to the dimension of the momentum :math:`(x, y, z)`.
 
         Raises
         ------
         TypeError
-            If contractions_one is not a GeneralizedContractionShell instance.
-            If contractions_two is not a GeneralizedContractionShell instance.
+            If contractions_one is not a `GeneralizedContractionShell` instance.
+            If contractions_two is not a `GeneralizedContractionShell` instance.
 
         """
         if not isinstance(contractions_one, GeneralizedContractionShell):
-            raise TypeError("`contractions_one` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions_one` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(contractions_two, GeneralizedContractionShell):
-            raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
         output = _compute_differential_operator_integrals(
             np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
@@ -114,7 +112,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
 
 
 def momentum_integral(basis, transform=None, coord_type="spherical"):
-    """Return integral over momentum operator of the given basi set.
+    """Return integral over momentum operator of the given basis set.
 
     Parameters
     ----------
@@ -131,15 +129,15 @@ def momentum_integral(basis, transform=None, coord_type="spherical"):
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
     -------
     array : np.ndarray(K_orbs, K_orbs)
         Momentum integral of the given basis set.
-        Dimensions 0 and 1 of the array correspond to the basis functions. `K_orbs` is the number of
-        basis functions in the basis set.
+        Dimensions 0 and 1 of the array correspond to the basis functions. :math:`K_orbs` is the
+        number of basis functions in the basis set.
 
     """
 

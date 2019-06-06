@@ -11,18 +11,16 @@ import numpy as np
 class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
     """Base class for constructing arrays associated with four contracted Gaussian.
 
-    The first four axes of the returned array is associated with the given set of contracted
+    The first four axes of the returned array are associated with the given set of contracted
     Gaussian (or a linear combination of a set of Gaussians).
 
     Attributes
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
-        Contractions that are associated with the first and second indices of the array.
+        Contractions that are associated with the first four indices of the array.
+        Property of `BaseFourIndexSymmetric`.
 
     Methods
     -------
@@ -31,38 +29,38 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
     construct_array_contraction(self, cont1, cont2, cont3, cont4, **kwargs) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4, ...)
         Return the array associated with a `GeneralizedContractionShell` instances.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
-        `M_3` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_3` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the third index.
+        :math:`L_cart_3` is the number of Cartesian contractions for the given angular momentum
         associated with the third index.
-        `L_cart_3` is the number of Cartesian contractions for the given angular momentum associated
-        with the third index.
-        `M_4` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_4` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the fourth index.
+        :math:`L_cart_4` is the number of Cartesian contractions for the given angular momentum
         associated with the fourth index.
-        `L_cart_4` is the number of Cartesian contractions for the given angular momentum associated
-        with the fourth index.
     construct_array_cartesian(self, **kwargs) : np.ndarray(K_cart, K_cart, K_cart, K_cart, ...)
         Return the array associated with Cartesian Gaussians.
-        `K_cart` is the total number of Cartesian contractions within the instance.
+        :math:`K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self, **kwargs) : np.ndarray(K_sph, K_sph, K_sph, K_sph, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
-        `K_sph` is the total number of spherical contractions within the instance.
+        :math:`K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types, **kwargs) :
     np.ndarray(K_cont, K_cont, K_cont, K_cont, ...)
         Return the array associated with all of the contraction in the given coordinate
         system.
-        `K_cont` is the total number of contractions within the given basis set.
+        :math:`K_cont` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform, coord_type) :
     np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, ...)
         Return the array associated with linear combinations of contractions in the given coordinate
         system.
-        `K_orbs` is the number of basis functions produced after the linear combinations.
+        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -72,19 +70,20 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         Parameters
         ----------
         contractions : list/tuple of GeneralizedContractionShell
-            Contractions that are associated with the first and second indices of the array.
+            Contractions that are associated with the first four indices of the array.
 
         """
         super().__init__(contractions)
 
     @property
     def contractions(self):
-        """Contractions that are associated with the first index of the array.
+        """Contractions that are associated with the first four indices of the array.
 
         Returns
         -------
         contractions : tuple of GeneralizedContractionShell
-            Generalized contraction shell that is associated with the all indices of the array.
+            Generalized contraction shell that is associated with the first four indices of the
+            array.
 
         """
         return self._axes_contractions[0]
@@ -110,30 +109,30 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         -------
         array_cont : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4, ...)
             Return the array associated with a `GeneralizedContractionShell` instances.
-            First axis corresponds to the segmented contraction within `cont1`. `M_1` is the number
-            of segmented contractions with the same exponents (and angular momentum) associated with
-            the first index.
-            Second axis corresponds to the angular momentum vector of the `cont1`.`L_cart_1` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            first index.
-            Third axis corresponds to the segmented contraction within `cont2`. `M_2` is the number
-            of segmented contractions with the same exponents (and angular momentum) associated with
-            the second index.
-            Fourth axis corresponds to the angular momentum vector of the `cont2`.`L_cart_2` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            second index.
-            Fifth axis corresponds to the segmented contraction within `cont3`. `M_3` is the number
-            of segmented contractions with the same exponents (and angular momentum) associated with
-            the third index.
-            Sixth axis corresponds to the angular momentum vector of the `cont3`.`L_cart_3` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            third index.
-            Seventh axis corresponds to the segmented contraction within `cont4`. `M_4` is the
-            number of segmented contractions with the same exponents (and angular momentum)
+            Dimension 0 corresponds to the segmented contraction within `cont_one`. :math:`M_1` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the first index.
+            Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
+            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            associated with the first index.
+            Dimension 2 corresponds to the segmented contraction within `cont_two`.
+            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the second index.
+            Dimension 3 corresponds to the angular momentum vector of the `cont_two`.
+            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            associated with the second index.
+            Dimension 4 corresponds to the segmented contraction within `cont_three`.
+            :math:`M_3` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the third index.
+            Dimension 5 corresponds to the angular momentum vector of the `cont_three`.
+            :math:`L_cart_3` is the number of Cartesian contractions for the given angular momentum
+            associated with the third index.
+            Dimension 6 corresponds to the segmented contraction within `cont_four`.
+            :math:`M_4` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the fourth index.
+            Dimension 7 corresponds to the angular momentum vector of the `cont_four`.
+            :math:`L_cart_4` is the number of Cartesian contractions for the given angular momentum
             associated with the fourth index.
-            Eighth axis corresponds to the angular momentum vector of the `cont4`.`L_cart_4` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            fourth index.
 
         Notes
         -----
@@ -143,14 +142,15 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         than the arbitrary number of keywords (as is done here).
 
         The methods `construct_array_cartesian`, `construct_array_spherical`, and
-        `construct_array_lincomb` depend on this function to produce an array whose first
-        and second indices correspond to the contraction (within a generalized contraction) and
-        the angular momentum vector of `contractions_one`, and third and fourth indices correspond
-        to the contraction (within a generalized contraction) and the angular momentum vector of
-        `contractions_two`,. These other methods **will** fail with little warning if the shape of
-        the output is different. Even if all of `cont1`, `cont2`, `cont3`, and `cont4` are
-        segmented contractions, the first, third, fifth, and seventh indices must correspond to the
-        contraction. In other words, the shape must still be (1, L_1, 1, L_2, 1, L_3, 1, L_4).
+        `construct_array_lincomb` depend on this function to produce an array with dimensions 0, 1
+        corresponding to the contraction (within a generalized contraction) and angular momentum
+        vector of `cont_one`, dimensions 2, 3 corresponding to the contraction
+        (within a generalized contraction) and angular momentum vector of `cont_two`, and so
+        on for `cont_three` and `cont_four`. These other methods **will** fail with little warning
+        if the shape of the output is different.
+        Even if all of `cont1`, `cont2`, `cont3`, and `cont4` are segmented contractions,
+        dimensions 0, 2, 4, and 6 must correspond to the contraction. In other words, the shape must
+        still be :math:`(1, L_1, 1, L_2, 1, L_3, 1, L_4)`.
 
         """
 
@@ -168,15 +168,16 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         -------
         array : np.ndarray(K_cart, K_cart, K_cart, K_cart, ...)
             Array associated with the given set of contracted Cartesian Gaussians.
-            First and second indices of the array are associated with the contracted Cartesian
-            Gaussians. `K_cart` is the total number of Cartesian contractions within the instance.
+            Dimensions 0, 1, 2, and 3 of the array are associated with the contracted Cartesian
+            Gaussians. :math:`K_cart` is the total number of Cartesian contractions within the
+            instance.
 
         Notes
         -----
         The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
         set of contractions, are transposed in the process of constructing the whole array.
         It is assumed that the array returned from `construct_array_contraction` is symmetric with
-        respect to the swapping of the first and second axes.
+        respect to the swapping of the axes 0 and 1.
 
         """
         # pylint: disable=C0103,R0914
@@ -240,7 +241,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         )
 
     def construct_array_spherical(self, **kwargs):
-        """Return the array associated with two contracted spherical Gaussians (atomic orbitals).
+        """Return the array associated with four contracted spherical Gaussians (atomic orbitals).
 
         Parameters
         ----------
@@ -251,11 +252,11 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray(K_sph, K_sph, ...)
+        array : np.ndarray(K_sph, K_sph, K_sph, K_sph, ...)
             Array associated with the atomic orbitals associated with the given set(s) of contracted
             Cartesian Gaussians.
-            First and second indices of the array are associated with two contracted spherical
-            Gaussians (atomic orbitals). `K_sph` is the total number of spherical contractions
+            Dimensions 0, 1, 2 and 3 of the array are associated with four contracted spherical
+            Gaussians (atomic orbitals). :math:`K_sph` is the total number of spherical contractions
             within the instance.
 
         Notes
@@ -263,7 +264,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
         set of contractions, are transposed in the process of constructing the whole array.
         It is assumed that the array returned from `construct_array_contraction` is symmetric with
-        respect to the swapping of the first and second axes.
+        respect to the swapping of the axes 0 and 1.
 
         """
         # pylint: disable=C0103,R0914
@@ -385,23 +386,24 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         )
 
     def construct_array_mix(self, coord_types, **kwargs):
-        """Return the array associated with set of Gaussians of the given coordinate systems.
+        """Return the array associated with a set of Gaussians of the given coordinate systems.
 
         Parameters
         ----------
         coord_types : list/tuple of str
-            Types of the coordinate system for each GeneralizedContractionShell.
+            Types of the coordinate system for each `GeneralizedContractionShell`.
             Each entry must be one of "cartesian" or "spherical".
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
 
         Returns
         -------
-        array : np.ndarray(K_cont, K_cont, ...)
+        array : np.ndarray(K_cont, K_cont, K_cont, K_cont, ...)
             Array associated with the atomic orbitals associated with the given set of contracted
             Cartesian Gaussians.
-            First and second indices of the array are associated with two contractions in the given
-            coordinate system. `K_cont` is the total number of contractions within the instance.
+            Dimensions 0, 1, 2 and 3 of the array are associated with two contractions in the given
+            coordinate system. :math:`K_cont` is the total number of contractions within the
+            instance.
 
         Raises
         ------
@@ -410,7 +412,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         ValueError
             If `coord_types` has an entry that is not "cartesian" or "spherical".
             If `coord_types` has different number of entries as the number of
-            GeneralizedContractionShell (`contractions`) in instance.
+            `GeneralizedContractionShell` (`contractions`) in instance.
 
         """
         # pylint: disable=C0103,R0914
@@ -423,7 +425,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         if len(coord_types) != len(self.contractions):
             raise ValueError(
                 "`coord_types` must have the same number of entries as the number of "
-                "GeneralizedContractionShell in the instance."
+                "`GeneralizedContractionShell` in the instance."
             )
 
         all_blocks = np.zeros((len(self.contractions),) * 4, dtype=object)
@@ -563,14 +565,14 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
             Transformation matrix from contractions in the given coordinate system (e.g. AO) to
             linear combinations of contractions (e.g. MO).
             Transformation is applied to the left.
-            Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+            Rows correspond to the linear combinations (i.e. MO) and the columns correspond to the
             contractions (i.e. AO).
         coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
             Types of the coordinate system for the contractions.
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each GeneralizedContractionShell instance.
+            coordinate type of each `GeneralizedContractionShell` instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
@@ -579,12 +581,12 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
 
         Returns
         -------
-        array : np.ndarray(K_orbs, K_orbs, ...)
-            Array whose first and second indices are associated with the linear combinations of the
+        array : np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, ...)
+            Array whose first four indices are associated with the linear combinations of the
             contractions.
-            First and second indices of the array correspond to the linear combination of contracted
-            spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
-            combinations.
+            Dimensions 0, 1, 2 and 3 of the array correspond to the linear combination of contracted
+            spherical Gaussians. :math:`K_orbs` is the number of basis functions produced after the
+            linear combinations.
 
         Raises
         ------

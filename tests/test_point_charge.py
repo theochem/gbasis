@@ -123,16 +123,13 @@ def test_point_charge_cartesian():
     point_charge_obj = PointChargeIntegral(basis)
 
     points_coords = np.random.rand(5, 3)
-    points_charges = np.random.rand(5)
+    points_charge = np.random.rand(5)
     assert np.allclose(
         point_charge_obj.construct_array_cartesian(
-            points_coords=points_coords, points_charges=points_charges
+            points_coords=points_coords, points_charge=points_charge
         ),
         point_charge_integral(
-            basis,
-            points_coords=points_coords,
-            points_charges=points_charges,
-            coord_type="cartesian",
+            basis, points_coords=points_coords, points_charge=points_charge, coord_type="cartesian"
         ),
     )
 
@@ -144,16 +141,13 @@ def test_point_charge_spherical():
     point_charge_obj = PointChargeIntegral(basis)
 
     points_coords = np.random.rand(5, 3)
-    points_charges = np.random.rand(5)
+    points_charge = np.random.rand(5)
     assert np.allclose(
         point_charge_obj.construct_array_spherical(
-            points_coords=points_coords, points_charges=points_charges
+            points_coords=points_coords, points_charge=points_charge
         ),
         point_charge_integral(
-            basis,
-            points_coords=points_coords,
-            points_charges=points_charges,
-            coord_type="spherical",
+            basis, points_coords=points_coords, points_charge=points_charge, coord_type="spherical"
         ),
     )
 
@@ -165,12 +159,12 @@ def test_point_charge_mix():
     point_charge_obj = PointChargeIntegral(basis)
 
     points_coords = np.random.rand(5, 3)
-    points_charges = np.random.rand(5)
+    points_charge = np.random.rand(5)
     assert np.allclose(
         point_charge_obj.construct_array_mix(
-            ["spherical"] * 8, points_coords=points_coords, points_charges=points_charges
+            ["spherical"] * 8, points_coords=points_coords, points_charge=points_charge
         ),
-        point_charge_integral(basis, points_coords, points_charges, coord_type=["spherical"] * 8),
+        point_charge_integral(basis, points_coords, points_charge, coord_type=["spherical"] * 8),
     )
 
 
@@ -181,13 +175,13 @@ def test_point_charge_lincomb():
     point_charge_obj = PointChargeIntegral(basis)
 
     points_coords = np.random.rand(5, 3)
-    points_charges = np.random.rand(5)
+    points_charge = np.random.rand(5)
     transform = np.random.rand(14, 18)
     assert np.allclose(
         point_charge_obj.construct_array_lincomb(
-            transform, "spherical", points_coords=points_coords, points_charges=points_charges
+            transform, "spherical", points_coords=points_coords, points_charge=points_charge
         ),
         point_charge_integral(
-            basis, points_coords=points_coords, points_charges=points_charges, transform=transform
+            basis, points_coords=points_coords, points_charge=points_charge, transform=transform
         ),
     )

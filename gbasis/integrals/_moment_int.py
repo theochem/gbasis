@@ -6,7 +6,7 @@ import numpy as np
 def _compute_multipole_moment_integrals_intermediate(
     coord_moment, order_moment_max, coord_a, angmom_a_max, exps_a, coord_b, angmom_b_max, exps_b
 ):
-    """Return the intermediate multipole moment integrals of two contractions.
+    r"""Return the intermediate multipole moment integrals of two contractions.
 
     # TODO: equation
 
@@ -35,23 +35,6 @@ def _compute_multipole_moment_integrals_intermediate(
 
     Returns
     -------
-    integrals : np.ndarray(D, M_a, L_a, M_b, L_b)
-        Multipole moment integrals associated with the given orders of moments and angular momentum
-        vectors (contractions).
-        First index corresponds to the order of the moment. `D` is the number of moments given.
-        Second index corresponds to segmented contractions within the given generalized contraction
-        `a`, (same exponents and angular momentum but different coefficients). `M_a` is the number
-        of segmented contractions.
-        Third index corresponds to the angular momentum vector a segmented contraction of
-        generalized contraction `a`. `L_a` is the number of angular momentum vectors.
-        Fourth index corresponds to segmented contractions within the given generalized contraction
-        `b`, (same exponents and angular momentum but different coefficients). `M_b` is the number
-        of segmented contractions.
-        Fifth index corresponds to the angular momentum vector a segmented contraction of
-        generalized contraction `b`. `L_b` is the number of angular momentum vectors.
-
-    Returns
-    -------
     integrals : np.ndarray(max_d + 1, max_b + 1, max_a + 1, 3, K_b, K_a)
         Intermediate integrals for each moment order, angular momentum component, and coordinate.
         Dimension 0 corresponds to the order of the moments along the corresponding coordinate.
@@ -62,7 +45,7 @@ def _compute_multipole_moment_integrals_intermediate(
         Dimension 2 corresponds to the angular momentum component of contraction a in the
         corresponding coordinate. `max_a` is the maximum angular momentum component for the left
         side, i.e. `angmom_a_max`.
-        Dimension 3 corresponds to the coordinate dimension, i.e. x, y, and z.
+        Dimension 3 corresponds to the coordinate dimension, i.e. :math:`x, y, \text{and} z`.
         Dimension 4 corresponds to the index for the primitive in contraction b.
         Dimension 5 corresponds to the index for the primitive in contraction a.
 
@@ -160,7 +143,7 @@ def _compute_multipole_moment_integrals_intermediate(
 def _cleanup_intermediate_integrals(
     intermediate_integrals, orders, angmoms_a, coeffs_a, norm_a, angmoms_b, coeffs_b, norm_b
 ):
-    """Return the intermediate integrals after selecting the appropriate components and normalizing.
+    r"""Return the intermediate integrals after selecting appropriate components and normalizing.
 
     Parameters
     ----------
@@ -174,31 +157,33 @@ def _cleanup_intermediate_integrals(
         Dimension 2 corresponds to the angular momentum component of contraction a in the
         corresponding coordinate. `max_a` is the maximum angular momentum component for the left
         side, i.e. `angmom_a_max`.
-        Dimension 3 corresponds to the coordinate dimension, i.e. x, y, and z.
+        Dimension 3 corresponds to the coordinate dimension, i.e. `x`, `y`, and `z`.
         Dimension 4 corresponds to the index for the primitive in contraction b.
         Dimension 5 corresponds to the index for the primitive in contraction a.
     orders : np.ndarray(D, 3)
-        Orders for each dimension (x, y, z).
+        Orders for each dimension :math:`(x, y, z)`.
         Note that a two dimensional array must be given, even if there is only one set of orders.
     angmoms_a : np.ndarray(L_a, 3)
-        Angular momentum vectors (lx, ly, lz) for the contractions on the left side.
+        Angular momentum vectors :math:`(\ell_x, \ell_y, \ell_z)` for the contractions on the left
+        side.
         Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives on the left side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     norm_a : np.ndarray(L_a, K_a)
         Normalization constants for the primitives in each contraction on the left side.
     angmoms_b : np.ndarray(L_b, 3)
-        Angular momentum vectors (lx, ly, lz) for the contractions on the right side.
+        Angular momentum vectors :math:`(\ell_x, \ell_y, \ell_z)` for the contractions on the right
+        side.
         Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives on the right side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     norm_b : np.ndarray(L_b, K_b)
         Normalization constants for the primitives in each contraction on the right side.
@@ -229,7 +214,7 @@ def _cleanup_intermediate_integrals(
         np.arange(3)[np.newaxis, np.newaxis, np.newaxis, :],
     ]
 
-    # multiply the x, y, and z components together
+    # multiply the `x`, `y`, and `z` components together
     integrals = np.prod(integrals, axis=3)
     # NOTE: axis 3 for dimension (x, y, z) of the coordinate has been removed
 
@@ -269,20 +254,21 @@ def _compute_multipole_moment_integrals(
     coeffs_b,
     norm_b,
 ):
-    """Return the multipole moment integrals of two contractions.
+    r"""Return the multipole moment integrals of two contractions.
 
     Parameters
     ----------
     coord_moment : np.ndarray(3,)
         Center of the moment.
     orders_moment : np.ndarray(D, 3)
-        Orders of the moment for each dimension (x, y, z).
+        Orders of the moment for each dimension :math:`(x, y, z)`.
         Note that a two dimensional array must be given, even if there is only one set of orders of
         the moment.
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmoms_a : np.ndarray(L_a, 3)
-        Angular momentum vectors (lx, ly, lz) for the contractions on the left side.
+        Angular momentum vectors :math:`(\ell_x, \ell_y, \ell_z)` for the contractions on the left
+        side.
         Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     exps_a : np.ndarray(K_a,)
@@ -297,7 +283,8 @@ def _compute_multipole_moment_integrals(
     coord_b : np.ndarray(3,)
         Center of the contraction on the right side.
     angmoms_b : np.ndarray(L_b, 3)
-        Angular momentum vectors (lx, ly, lz) for the contractions on the right side.
+        Angular momentum vectors :math:`(\ell_x, \ell_y, \ell_z)` for the contractions on the right
+        side.
         Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     exps_b : np.ndarray(K_b,)
@@ -305,7 +292,7 @@ def _compute_multipole_moment_integrals(
     coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives on the right side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     norm_b : np.ndarray(L_b, K_b)
         Normalization constants for the primitives in each contraction on the right side.

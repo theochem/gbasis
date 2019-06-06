@@ -1,4 +1,4 @@
-"""Integral over differential operator involving Contracted Cartesian Gaussians."""
+"""Integrals over differential operator involving contracted Cartesian Gaussians."""
 from gbasis.integrals._moment_int import (
     _cleanup_intermediate_integrals,
     _compute_multipole_moment_integrals_intermediate,
@@ -10,15 +10,15 @@ import numpy as np
 def _compute_differential_operator_integrals_intermediate(
     order_diff_max, coord_a, angmom_a_max, exps_a, coord_b, angmom_b_max, exps_b
 ):
-    """Return the intermediate integrals over differential operators of two contractions.
+    r"""Return the intermediate integrals over differential operators of two contractions.
 
     # TODO: equation
 
     Parameters
     ----------
     order_diff_max : int
-        Maximum order of differentation at which the recursion will stop.
-        From a set of orders of differentations, it should be the maximum order of differentiation
+        Maximum order of differentiation at which the recursion will stop.
+        From a set of orders of differentiations, it should be the maximum order of differentiation
         along all dimensions.
         Zeroth order differentiation (i.e. overlap) is not supported.
     coord_a : np.ndarray(3,)
@@ -31,7 +31,7 @@ def _compute_differential_operator_integrals_intermediate(
     coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives on the left side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     norm_a : np.ndarray(L_a, K_a)
         Normalization constants for the primitives in each contraction on the left side.
@@ -45,7 +45,7 @@ def _compute_differential_operator_integrals_intermediate(
     coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives on the right side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     norm_b : np.ndarray(L_b, K_b)
         Normalization constants for the primitives in each contraction on the right side.
@@ -63,14 +63,14 @@ def _compute_differential_operator_integrals_intermediate(
         Dimension 2 corresponds to the angular momentum component of contraction a in the
         corresponding coordinate. `max_a` is the maximum angular momentum component for the left
         side, i.e. `angmom_a_max`.
-        Dimension 3 corresponds to the coordinate dimension, i.e. x, y, and z.
+        Dimension 3 corresponds to the coordinate dimension, i.e. :math:`x, y, \text{and} z`.
         Dimension 4 corresponds to the index for the primitive in contraction b.
         Dimension 5 corresponds to the index for the primitive in contraction a.
 
     Raises
     ------
     IndexError
-        If the `orders_diff` is all zeros, i.e. `(0, 0, 0)`.
+        If the `orders_diff` is all zeros, i.e. :math:`(0, 0, 0)`.
 
     """
     # pylint: disable=R0914
@@ -139,7 +139,7 @@ def _compute_differential_operator_integrals(
     coeffs_b,
     norm_b,
 ):
-    """Return the integrals over differential operators of two contractions.
+    r"""Return the integrals over differential operators of two contractions.
 
     Parameters
     ----------
@@ -151,7 +151,8 @@ def _compute_differential_operator_integrals(
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmoms_a : np.ndarray(L_a, 3)
-        Angular momentum vectors (lx, ly, lz) for the contractions on the left side.
+        Angular momentum vectors :math:`(\ell_x, \ell_y, \ell_z)` for the contractions on the left
+        side.
         Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     exps_a : np.ndarray(K_a,)
@@ -159,14 +160,15 @@ def _compute_differential_operator_integrals(
     coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives on the left side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     norm_a : np.ndarray(L_a, K_a)
         Normalization constants for the primitives in each contraction on the left side.
     coord_b : np.ndarray(3,)
         Center of the contraction on the right side.
     angmoms_b : np.ndarray(L_b, 3)
-        Angular momentum vectors (lx, ly, lz) for the contractions on the right side.
+        Angular momentum vectors :math:`(\ell_x, \ell_y, \ell_z)` for the contractions on the right
+        side.
         Note that a two dimensional array must be given, even if there is only one angular momentum
         vector.
     exps_b : np.ndarray(K_b,)
@@ -200,7 +202,7 @@ def _compute_differential_operator_integrals(
     Raises
     ------
     IndexError
-        If the `orders_diff` is all zeros, i.e. `(0, 0, 0)`.
+        If the `orders_diff` is all zeros, i.e. :math:`(0, 0, 0)`.
 
     """
     integrals = _compute_differential_operator_integrals_intermediate(

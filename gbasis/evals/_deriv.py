@@ -15,16 +15,16 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     ----------
     coords : np.ndarray(N, 3)
         Point in space where the derivative of the Gaussian primitive is evaluated.
-        Coordinates must be given as a two dimensional array, even if one coordinate is given.
+        Coordinates must be given as a two dimensional array, even if only one point is given.
     orders : np.ndarray(3,)
         Orders of the derivative.
         Negative orders are treated as zero orders.
     center : np.ndarray(3,)
         Center of the Gaussian primitive.
     angmom_comps : np.ndarray(L, 3)
-        Component of the angular momentum that corresponds to this dimension.
+        Components of the angular momentum, :math:`(a_x, a_y, a_z)`.
         Angular momentum components must be given as a two dimensional array, even if only one
-        is given.
+        set of components is given.
     alphas : np.ndarray(K,)
         Values of the (square root of the) precisions of the primitives.
     prim_coeffs : np.ndarray(K, M)
@@ -39,14 +39,15 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     -------
     derivative : np.ndarray(M, L, N)
         Evaluation of the derivative at each given coordinate.
-        Array is three dimensional, where the first index corresponds to the contraction, second
-        index corresponds to the angular momentum vector, and the third index corresponds to the
-        coordinate for the evaluation.
+        Dimension 0 corresponds to the contraction, with `M` as the number of given contractions.
+        Dimension 1 corresponds to the angular momentum vector, ordered as in `angmom_comps`.
+        Dimension 2 corresponds to the point at which the derivative is evaluated, ordered as in
+        `coords`.
 
     Notes
     -----
     The input is not checked. This means that you must provide the parameters as they are specified
-    in the docstring. They must all be numpy arrays with the **correct shape**.
+    in the docstring. They must all be `numpy` arrays with the **correct shape**.
 
     Pople style basis sets are not supported. If multiple angular momentum vectors (with different
     angular momentum) and multiple contraction coefficients are provided, it is **not assumed** that

@@ -4,30 +4,30 @@ import numpy as np
 
 
 def from_iodata(mol):
-    """Return basis set stored within the IOData instance in iodata.
+    """Return basis set stored within the `IOData` instance in `iodata`.
 
     Parameters
     ----------
     mol : iodata.iodata.IOData
-        IOData instance from iodata module.
+        `IOData` instance from `iodata` module.
 
     Returns
     -------
     basis : tuple of gbasis.contraciton.GeneralizedContractionShell
-        Basis set object used within the gbasis module.
-        GeneralizedContractionShell corresponds to the Shell object within iodata.basis.
+        Basis set object used within the `gbasis` module.
+        `GeneralizedContractionShell` corresponds to the `Shell` object within `iodata.basis`.
 
     Raises
     ------
     NotImplementedError
-        If any contractions in the given IOData instance is spherical.
+        If any contractions in the given `IOData` instance is spherical.
     ValueError
-        If `mol` is not an iodata.iodata.IOData instance.
-        If the primitive normalization scheme of the shells in IOData instance is not "L2".
+        If `mol` is not an `iodata.iodata.IOData` instance.
+        If the primitive normalization scheme of the shells in `IOData` instance is not "L2".
 
     Notes
     -----
-    The version of the module iodata must be greater than 0.1.7.
+    The version of the module `iodata` must be greater than 0.1.7.
 
     """
     if not (
@@ -48,7 +48,7 @@ def from_iodata(mol):
     iodata_angmom = "spdfghiklmnoqrtuvwxyzabce"
 
     class IODataShell(GeneralizedContractionShell):
-        """Shell object that is compatible with gbasis' shell object.
+        """Shell object that is compatible with `gbasis`' shell object.
 
         See `gbasis.contractions.GeneralizedContractionShell` for the documentation.
 
@@ -56,7 +56,7 @@ def from_iodata(mol):
 
         @property
         def angmom_components_cart(self):
-            r"""Return the angular momentum components as ordered within the MolecularBasis.
+            r"""Return the angular momentum components as ordered within the `MolecularBasis`.
 
             Returns
             -------
@@ -75,7 +75,7 @@ def from_iodata(mol):
 
         @property
         def angmom_components_sph(self):
-            """Return the ordering of the magnetic quantum numbers for the given angmom.
+            """Return the ordering of the magnetic quantum numbers for the given angular momentum.
 
             Returns
             -------
@@ -132,7 +132,7 @@ def from_iodata(mol):
 
     if molbasis.primitive_normalization != "L2":  # pragma: no cover
         raise ValueError(
-            "Only L2 normalization scheme is supported in gbasis. Given IOData instance uses "
+            "Only L2 normalization scheme is supported in `gbasis`. Given `IOData` instance uses "
             "primitive normalization scheme, {}".format(molbasis.primitive_normalization)
         )
 
@@ -176,34 +176,34 @@ def from_iodata(mol):
 
 
 def from_pyscf(mol):
-    """Return basis set stored within the Mole instance in pyscf.
+    """Return basis set stored within the `Mole` instance in `pyscf`.
 
     Parameters
     ----------
     mol : pyscf.gto.mole.Mole
-        Mole object in pyscf.
+        `Mole` object in `pyscf`.
 
     Returns
     -------
     basis : tuple of gbasis.contraciton.GeneralizedContractionShell
         Contractions for each atom.
-        Contractions are ordered by the atom first, then the contractions as ordered in pyscf.
+        Contractions are ordered by the atom first, then the contractions as ordered in `pyscf`.
 
     Raises
     ------
     ValueError
-        If `mol` is not a pyscf.gto.mole.Mole instance.
+        If `mol` is not a `pyscf.gto.mole.Mole` instance.
 
     Notes
     -----
-    This function touches the internal components of pyscf, which may or may not be documented. This
-    function will break as soon as the internal components change. If so, please raise an issue at
-    https://github.com/theochem/gbasis. It is supported for, at least, pyscf version 1.6.1.
+    This function touches the internal components of `pyscf`, which may or may not be documented.
+    This function will break as soon as the internal components change. If so, please raise an issue
+    at https://github.com/theochem/gbasis. It is supported for, at least, `pyscf` version 1.6.1.
 
     """
     # pylint: disable=W0212
     if not (mol.__class__.__name__ == "Mole" and hasattr(mol, "_basis")):
-        raise ValueError("`mol` must be a pyscf.gto.mole.Mole instance.")
+        raise ValueError("`mol` must be a `pyscf.gto.mole.Mole` instance.")
 
     basis = []
     for atom, coord in mol._atom:

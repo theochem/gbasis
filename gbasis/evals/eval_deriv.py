@@ -6,21 +6,20 @@ import numpy as np
 
 
 class EvalDeriv(BaseOneIndex):
-    """Class for evaluating the Gaussian contractions and their linear combinations.
+    """Class for evaluating Gaussian contractions and their linear combinations.
 
-    The first dimension (axis 0) of the returned array is associated with a contracted Gaussian (or
+    Dimension 0 of the returned array is associated with a contracted Gaussian (or
     a linear combination of a set of Gaussians).
 
     Attributes
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Contractions that are associated with each index of the array.
-        Each tuple of GeneralizedContractionShell corresponds to an index of the array.
-
-    Properties
-    ----------
+        Each tuple of `GeneralizedContractionShell` corresponds to an index of the array.
     contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first index of the array.
+        Property of `EvalDeriv`.
+
 
     Methods
     -------
@@ -28,34 +27,35 @@ class EvalDeriv(BaseOneIndex):
         Initialize.
     construct_array_contraction(contraction, points, orders) : np.ndarray(M, L_cart, N)
         Return the evaluations of the given Cartesian contractions at the given coordinates.
-        `M` is the number of segmented contractions with the same exponents (and angular momentum).
-        `L_cart` is the number of Cartesian contractions for the given angular momentum.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        :math:`M` is the number of segmented contractions with the same exponents (and angular
+        momentum).
+        :math:`L_cart` is the number of Cartesian contractions for the given angular momentum.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
     construct_array_cartesian(self, points, orders) : np.ndarray(K_cart, N)
         Return the evaluations of the derivatives of the Cartesian contractions of the instance at
         the given coordinates.
-        `K_cart` is the total number of Cartesian contractions within the instance.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        :math:`K_cart` is the total number of Cartesian contractions within the instance.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
     construct_array_spherical(self, points, orders) : np.ndarray(K_sph, N)
         Return the evaluations of the derivatives of the spherical contractions of the instance at
         the given coordinates.
-        `K_sph` is the total number of spherical contractions within the instance.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        :math:`K_sph` is the total number of spherical contractions within the instance.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
     construct_array_mix(self, coord_types, points, orders) : np.ndarray(K_cont, N)
         Return the array associated with all of the contraction in the given coordinate system.
-        `K_cont` is the total number of contractions within the given basis set.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        :math:`K_cont` is the total number of contractions within the given basis set.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
     construct_array_lincomb(self, transform, coord_type, points, orders) : np.ndarray(K_orbs, N)
-        Return the evaluatiosn of derivatives of the  linear combinations of contractions in the
+        Return the evaluation of derivatives of the  linear combinations of contractions in the
         given coordinate system.
-        `K_orbs` is the number of basis functions produced after the linear combinations.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
 
     """
 
     @staticmethod
     def construct_array_contraction(contractions, points, orders):
-        """Return the array associated with a set of contracted Cartesian Gaussians.
+        r"""Return the array associated with a set of contracted Cartesian Gaussians.
 
         Parameters
         ----------
@@ -63,9 +63,10 @@ class EvalDeriv(BaseOneIndex):
             Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
             array.
         points : np.ndarray(N, 3)
-            Coordinates of the points in space (in atomic units) where the basis functions are
-            evaluated.
-            Rows correspond to the points and columns correspond to the x, y, and z components.
+            Cartesian coordinates of the points in space (in atomic units) where the basis
+            functions are evaluated.
+            Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+            components.
         orders : np.ndarray(3,)
             Orders of the derivative.
 
@@ -73,23 +74,23 @@ class EvalDeriv(BaseOneIndex):
         -------
         array_contraction : np.ndarray(M, L_cart, N)
             Array associated with the given instance(s) of GeneralizedContractionShell.
-            First index corresponds to segmented contractions within the given generalized
+            Dimension 0 corresponds to segmented contractions within the given generalized
             contraction (same exponents and angular momentum, but different coefficients). `M` is
             the number of segmented contractions with the same exponents (and angular momentum).
-            Second index corresponds to angular momentum vector. `L_cart` is the number of Cartesian
+            Dimension 1 corresponds to angular momentum vector. `L_cart` is the number of Cartesian
             contractions for the given angular momentum.
-            Third index corresponds to coordinates at which the contractions are evaluated. `N` is
+            Dimension 2 corresponds to coordinates at which the contractions are evaluated. `N` is
             the number of coordinates at which the contractions are evaluated.
 
         Raises
         ------
         TypeError
-            If contractions is not a GeneralizedContractionShell instance.
-            If points is not a two-dimensional numpy array with 3 columns.
-            If orders is not a one-dimensional numpy array with 3 elements.
+            If contractions is not a `GeneralizedContractionShell` instance.
+            If points is not a two-dimensional `numpy` array with 3 columns.
+            If orders is not a one-dimensional `numpy` array with 3 elements.
         ValueError
             If orders has any negative numbers.
-            If orders does not have dtype int.
+            If orders does not have `dtype` int.
 
         Note
         ----
@@ -100,14 +101,14 @@ class EvalDeriv(BaseOneIndex):
 
         """
         if not isinstance(contractions, GeneralizedContractionShell):
-            raise TypeError("`contractions` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions` must be a `GeneralizedContractionShell` instance.")
         if not (isinstance(points, np.ndarray) and points.ndim == 2 and points.shape[1] == 3):
             raise TypeError(
-                "`points` must be given as a two-dimensional numpy array with 3 columnms."
+                "`points` must be given as a two-dimensional `numpy` array with 3 columns."
             )
         if not (isinstance(orders, np.ndarray) and orders.shape == (3,)):
             raise TypeError(
-                "Orders of the derivatives must be a one-dimensional numpy array with 3 elements."
+                "Orders of the derivatives must be a one-dimensional `numpy` array with 3 elements."
             )
         if np.any(orders < 0):
             raise ValueError("Negative order of derivative is not supported.")
@@ -126,16 +127,17 @@ class EvalDeriv(BaseOneIndex):
 
 
 def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="spherical"):
-    """Evaluate the derivative of basis set in the given coordinate system at the given coordinates.
+    r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
     points : np.ndarray(N, 3)
-        Coordinates of the points in space (in atomic units) where the basis functions are
-        evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
     orders : np.ndarray(3,)
         Orders of the derivative.
         First element corresponds to the order of the derivative with respect to x.
@@ -158,11 +160,11 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
     Returns
     -------
     eval_array : np.ndarray(K, N)
-        Evaluations of the derivative of the basis functions at the given coordinates.
+        Evaluations of the derivative of the basis functions at the given points.
         If keyword argument `transform` is provided, then the transformed basis functions will be
-        evaluted at the given points.
-        `K` is the total number of basis functions within the given basis set.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        evaluated at the given points.
+        :math:`K` is the total number of basis functions within the given basis set.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
 
     """
     if transform is not None:

@@ -24,11 +24,9 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
+        Property of `PointChargeIntegral`.
 
     Methods
     -------
@@ -36,33 +34,33 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         Initialize.
     boys_func : np.ndarray(np.ndarray(M, K_b, K_a))
         Boys function used to evaluate the one-electron integral.
-        `M` is the number of orders that will be evaluated. `K_a` and `K_b` are the number of
-        primitives on the left and right side, respectively.
+        `M` is the number of orders that will be evaluated.
+        `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
     construct_array_contraction(self, contractions_one, contractions_two, points_coords,
-                                points_charges)
+                                points_charge)
         Return the point charge integrals for the given `GeneralizedContractionShell` instances.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart)
         Return the one-electron integrals associated with Cartesian Gaussians.
-        `K_cart` is the total number of Cartesian contractions within the instance.
+        :math:`K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph)
         Return the one-electron integrals associated with spherical Gaussians (atomic orbitals).
-        `K_sph` is the total number of spherical contractions within the instance.
+        :math:`K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, K_cont)
         Return the one-electron integrals associated with the contraction in the given coordinate
         system.
-        `K_cont` is the total number of contractions within the given basis set.
+        :math:`K_cont` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
         Return the one-electron integrals associated with the linear combinations of contractions in
         the given coordinate system.
-        `K_orbs` is the number of basis functions produced after the linear combinations.
+        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -87,14 +85,16 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
             where :math:`\alpha_i` is the exponent of the ith primitive on the left side and the
             :math:`\beta_j` is the exponent of the jth primitive on the right side.
-            `N` is the number of point charges. `K_a` and `K_b` are the number of primitives on the
-            left and right side, respectively. Note that the index 2 corresponds to the primitive on
-            the right side and the index 3 corresponds to the primitive on the left side.
+            :math:`N` is the number of point charges.
+            :math:`K_a` and :math:`K_b` are the number of primitives on the left and right side,
+            respectively.
+            Note that the index 2 corresponds to the primitive on the right side and the index 3
+            corresponds to the primitive on the left side.
 
         Returns
         -------
         boys_eval : np.ndarray(M, N, K_b, K_a)
-            Output is the Boys function evaluated for each order and the weighted interactomic
+            Output is the Boys function evaluated for each order and the weighted interatomic
             distance.
 
         Notes
@@ -107,8 +107,8 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
         To use another `boys_func`, simply overwrite this function (via monkeypatching or
         inheritance) with the desired boys function. Make sure to follow the same API, i.e. *have
-        the same inputs including their shapes and types*. Note that the index `1` corresponds to
-        the primitive on the right side and the index `2` correspond to the primitive on the left
+        the same inputs including their shapes and types*. Note that the index `2` corresponds to
+        the primitive on the right side and the index `3` corresponds to the primitive on the left
         side.
 
         """
@@ -116,9 +116,9 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     @classmethod
     def construct_array_contraction(
-        cls, contractions_one, contractions_two, points_coords, points_charges
+        cls, contractions_one, contractions_two, points_coords, points_charge
     ):
-        """Return point charge interaction integral for the given contractions and point charges.
+        r"""Return point charge interaction integral for the given contractions and point charges.
 
         Parameters
         ----------
@@ -129,50 +129,50 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the array.
         points_coords : np.ndarray(N, 3)
-            Coordinates of the point charges.
-            Rows correspond to the different point charges and columns correspond to the x, y, and z
-            components.
-        points_charges : np.ndarray(N)
-            Charge of the point charges.
+            Cartesian coordinates of each point charge.
+            Rows correspond to the different point charges and columns correspond to the
+            :math:`x, y, \text{and} z` components.
+        points_charge : np.ndarray(N)
+            Charge of each point charge.
 
         Returns
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, N)
             Point charge integral associated with the given instances of
-            GeneralizedContractionShell.
-            First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
+            `GeneralizedContractionShell`.
+            Dimension 0 corresponds to the segmented contraction within `cont_one`. :math:`M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
-            Second axis corresponds to the angular momentum vector of the `contractions_one`.
-            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
+            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
-            Third axis corresponds to the segmented contraction within `contractions_two`. `M_2` is
-            the number of segmented contractions with the same exponents (and angular momentum)
+            Dimension 2 corresponds to the segmented contraction within `cont_two`.
+            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the second index.
+            Dimension 3 corresponds to the angular momentum vector of the `cont_two`.
+            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
-            Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
-            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
-            associated with the second index.
-            Fifth axis cooresponds to the point charge. `N` is the number of points charges.
+            Dimension 4 corresponds to the point charge. `N` is the number of point charges.
 
         Raises
         ------
         TypeError
-            If `contractions_one` is not a GeneralizedContractionShell instance.
-            If `contractions_two` is not a GeneralizedContractionShell instance.
-            If `points_coords` is not a two-dimensional numpy array of dtype int/float with 3
+            If `contractions_one` is not a `GeneralizedContractionShell` instance.
+            If `contractions_two` is not a `GeneralizedContractionShell` instance.
+            If `points_coords` is not a two-dimensional `numpy` array of `dtype` int/float with 3
             columns.
-            If `points_charges` is not a one-dimensional numpy array of int/float.
+            If `points_charge` is not a one-dimensional `numpy` array of int/float.
         ValueError
             If `points_coords` does not have the same number of rows as the size of
-            `points_charges`.
+            `points_charge`.
 
         """
         # pylint: disable=R0914
 
         if not isinstance(contractions_one, GeneralizedContractionShell):
-            raise TypeError("`contractions_one` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions_one` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(contractions_two, GeneralizedContractionShell):
-            raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
         if not (
             isinstance(points_coords, np.ndarray)
             and points_coords.ndim == 2
@@ -180,21 +180,21 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             and points_coords.dtype in [int, float]
         ):
             raise TypeError(
-                "`points_coords` must be a two-dimensional numpy array of dtype int/float with "
+                "`points_coords` must be a two-dimensional `numpy` array of `dtype` int/float with "
                 "three columns."
             )
         if not (
-            isinstance(points_charges, np.ndarray)
-            and points_charges.ndim == 1
-            and points_charges.dtype in [int, float]
+            isinstance(points_charge, np.ndarray)
+            and points_charge.ndim == 1
+            and points_charge.dtype in [int, float]
         ):
             raise TypeError(
-                "`points_charges` must be a one-dimensional numpy array of integers or floats."
+                "`points_charge` must be a one-dimensional `numpy` array of integers or floats."
             )
-        if points_coords.shape[0] != points_charges.size:
+        if points_coords.shape[0] != points_charge.size:
             raise ValueError(
                 "`points_coords` must have the same number of rows as there are elements in "
-                "`points_charges`."
+                "`points_charge`."
             )
 
         # TODO: Overlap screening
@@ -245,7 +245,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
         # axis 4 : point charge
         output = (
-            -points_charges
+            -points_charge
             * integrals[
                 np.arange(coeffs_a.shape[1])[:, None, None, None, None],
                 angmoms_a_x[None, :, None, None, None],
@@ -266,21 +266,19 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
 
 def point_charge_integral(
-    basis, points_coords, points_charges, transform=None, coord_type="spherical"
+    basis, points_coords, points_charge, transform=None, coord_type="spherical"
 ):
-    """Return the point-charge interaction integrals of basis set in the given coordinate systems.
+    r"""Return the point-charge interaction integrals of basis set in the given coordinate systems.
 
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    points : np.ndarray(N, 3)
-        Rows correspond to the points and columns correspond to the x, y, and z components.
     points_coords : np.ndarray(N, 3)
         Coordinates of the point charges (in atomic units).
-        Rows correspond to the different point charges and columns correspond to the x, y, and z
-        components.
-    points_charges : np.ndarray(N)
+        Rows correspond to the different point charges and columns correspond to the
+        :math:`x, y, \text{and} z` components.
+    points_charge : np.ndarray(N)
         Charge at each given point.
     transform : np.ndarray(K, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
@@ -293,7 +291,7 @@ def point_charge_integral(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
@@ -302,22 +300,22 @@ def point_charge_integral(
         Evaluations of the basis functions at the given coordinates.
         If keyword argument `transform` is provided, then the transformed basis functions will be
         evaluted at the given points.
-        `K` is the total number of basis functions within the given basis set.
-        `N` is the number of coordinates at which the contractions are evaluated.
+        :math:`K` is the total number of basis functions within the given basis set.
+        :math:`N` is the number of coordinates at which the contractions are evaluated.
 
     """
     if transform is not None:
         return PointChargeIntegral(basis).construct_array_lincomb(
-            transform, coord_type, points_coords=points_coords, points_charges=points_charges
+            transform, coord_type, points_coords=points_coords, points_charge=points_charge
         )
     if coord_type == "cartesian":
         return PointChargeIntegral(basis).construct_array_cartesian(
-            points_coords=points_coords, points_charges=points_charges
+            points_coords=points_coords, points_charge=points_charge
         )
     if coord_type == "spherical":
         return PointChargeIntegral(basis).construct_array_spherical(
-            points_coords=points_coords, points_charges=points_charges
+            points_coords=points_coords, points_charge=points_charge
         )
     return PointChargeIntegral(basis).construct_array_mix(
-        coord_type, points_coords=points_coords, points_charges=points_charges
+        coord_type, points_coords=points_coords, points_charge=points_charge
     )

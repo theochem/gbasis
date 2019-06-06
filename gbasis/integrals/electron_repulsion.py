@@ -19,11 +19,9 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
-        Contractions that are associated with the first and second indices of the array.
+        Contractions that are associated with the four indices of the array.
+        Property of `ElectronRepulsionIntegral`.
 
     Methods
     -------
@@ -33,42 +31,42 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4)
         Return the electron-electron repulsion integrals associated with a
         `GeneralizedContractionShell` instances.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
-        `M_3` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_3` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the third index.
+        :math:`L_cart_3` is the number of Cartesian contractions for the given angular momentum
         associated with the third index.
-        `L_cart_3` is the number of Cartesian contractions for the given angular momentum associated
-        with the third index.
-        `M_4` is the number of segmented contractions with the same exponents (and angular momentum)
+        :math:`M_4` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the fourth index.
+        :math:`L_cart_4` is the number of Cartesian contractions for the given angular momentum
         associated with the fourth index.
-        `L_cart_4` is the number of Cartesian contractions for the given angular momentum associated
-        with the fourth index.
         Note that the integrals are in Chemists' notation.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart, K_cart, K_cart)
         Return the electron-electron repulsion integrals associated with Cartesian Gaussians.
-        `K_cart` is the total number of Cartesian contractions within the instance.
+        :math:`K_cart` is the total number of Cartesian contractions within the instance.
         Note that the integrals are in Chemists' notation.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph, K_sph, K_sph)
         Return the electron-electron repulsion integrals associated with spherical Gaussians (atomic
         orbitals).
-        `K_sph` is the total number of spherical contractions within the instance.
+        :math:`K_sph` is the total number of spherical contractions within the instance.
         Note that the integrals are in Chemists' notation.
     construct_array_mix(self, coord_types) : np.ndarray(K_cont, K_cont, K_cont, K_cont)
         Return the electron-electron repulsion integrals associated with all of the contraction in
         the given coordinate system.
-        `K_cont` is the total number of contractions within the given basis set.
+        :math:`K_cont` is the total number of contractions within the given basis set.
         Note that the integrals are in Chemists' notation.
     construct_array_lincomb(self, transform, coord_type) :
     np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs)
         Return the electron-electron repulsion integrals associated with linear combinations of
         contractions in the given coordinate system.
-        `K_orbs` is the number of basis functions produced after the linear combinations.
+        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
         Note that the integrals are in Chemists' notation.
 
     """
@@ -98,31 +96,31 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         -------
         array_cont : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4)
             Electron-electron repulsion integral associated with the given instances of
-            GeneralizedContractionShell.
-            First axis corresponds to the segmented contraction within `cont1`. `M_1` is the number
-            of segmented contractions with the same exponents (and angular momentum) associated with
-            the first index.
-            Second axis corresponds to the angular momentum vector of the `cont1`.`L_cart_1` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            first index.
-            Third axis corresponds to the segmented contraction within `cont2`. `M_2` is the number
-            of segmented contractions with the same exponents (and angular momentum) associated with
-            the second index.
-            Fourth axis corresponds to the angular momentum vector of the `cont2`.`L_cart_2` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            second index.
-            Fifth axis corresponds to the segmented contraction within `cont3`. `M_3` is the number
-            of segmented contractions with the same exponents (and angular momentum) associated with
-            the third index.
-            Sixth axis corresponds to the angular momentum vector of the `cont3`.`L_cart_3` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            third index.
-            Seventh axis corresponds to the segmented contraction within `cont4`. `M_4` is the
-            number of segmented contractions with the same exponents (and angular momentum)
+            `GeneralizedContractionShell`.
+            Dimension 0 corresponds to the segmented contraction within `cont_one`. :math:`M_1` is
+            the number of segmented contractions with the same exponents (and angular momentum)
+            associated with the first index.
+            Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
+            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            associated with the first index.
+            Dimension 2 corresponds to the segmented contraction within `cont_two`.
+            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the second index.
+            Dimension 3 corresponds to the angular momentum vector of the `cont_two`.
+            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            associated with the second index.
+            Dimension 4 corresponds to the segmented contraction within `cont_three`.
+            :math:`M_3` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the third index.
+            Dimension 5 corresponds to the angular momentum vector of the `cont_three`.
+            :math:`L_cart_3` is the number of Cartesian contractions for the given angular momentum
+            associated with the third index.
+            Dimension 6 corresponds to the segmented contraction within `cont_four`.
+            :math:`M_4` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the fourth index.
+            Dimension 7 corresponds to the angular momentum vector of the `cont_four`.
+            :math:`L_cart_4` is the number of Cartesian contractions for the given angular momentum
             associated with the fourth index.
-            Eighth axis corresponds to the angular momentum vector of the `cont4`.`L_cart_4` is the
-            number of Cartesian contractions for the given angular momentum associated with the
-            fourth index.
             Integrals are in Chemists' notation, i.e. `cont1` and `cont2` are associated with the
             coordinate :math:`\mathbf{r}_1` and `cont3` and `cont4` are associated with coordinate
             :math:`\mathbf{r}_2`.
@@ -130,10 +128,10 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         Raises
         ------
         TypeError
-            If `contractions_one` is not a GeneralizedContractionShell instance.
-            If `contractions_two` is not a GeneralizedContractionShell instance.
-            If `contractions_three` is not a GeneralizedContractionShell instance.
-            If `contractions_four` is not a GeneralizedContractionShell instance.
+            If `cont_one` is not a `GeneralizedContractionShell` instance.
+            If `cont_two` is not a `GeneralizedContractionShell` instance.
+            If `cont_three` is not a `GeneralizedContractionShell` instance.
+            If `cont_four` is not a `GeneralizedContractionShell` instance.
 
         Notes
         -----
@@ -147,13 +145,13 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         # pylint: disable=R0914
 
         if not isinstance(cont_one, GeneralizedContractionShell):
-            raise TypeError("`cont_one` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`cont_one` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(cont_two, GeneralizedContractionShell):
-            raise TypeError("`cont_two` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`cont_two` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(cont_three, GeneralizedContractionShell):
-            raise TypeError("`cont_three` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`cont_three` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(cont_four, GeneralizedContractionShell):
-            raise TypeError("`cont_four` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`cont_four` must be a `GeneralizedContractionShell` instance.")
 
         # TODO: we can probably swap the contractions to get the optimal time or memory usage
         if cont_one.angmom == cont_two.angmom == cont_three.angmom == cont_four.angmom == 0:
@@ -223,7 +221,7 @@ def electron_repulsion_integral(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
     notation : {"physicist", "chemist"}
         Convention with which the integrals are ordered.
@@ -236,8 +234,7 @@ def electron_repulsion_integral(
         If keyword argument `transform` is provided, then the integrals will be transformed
         accordingly.
         Dimensions 0, 1, 2, and 3 of the array are associated with the basis functions in the basis
-        set.
-        `K` is the total number of basis functions in the basis set.
+        set, where :math:`K` is the total number of basis functions in the basis set.
 
     Raises
     ------
