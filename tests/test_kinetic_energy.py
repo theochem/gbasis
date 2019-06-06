@@ -1,7 +1,7 @@
-"""Test gbasis.kinetic_energy."""
-from gbasis._diff_operator_int import _compute_differential_operator_integrals
+"""Test gbasis.integrals.kinetic_energy."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
+from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.integrals.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -10,7 +10,7 @@ from utils import find_datafile, HortonContractions
 
 
 def test_kinetic_energy_construct_array_contraction():
-    """Test gbasis.kinetic_energy.KineticEnergyIntegral.construct_array_contraction."""
+    """Test gbasis.integrals.kinetic_energy.KineticEnergyIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
@@ -158,7 +158,7 @@ def test_kinetic_energy_construct_array_contraction():
 
 
 def test_kinetic_energy_integral_cartesian():
-    """Test gbasis.kinetic_energy.kinetic_energy_integral_cartesian."""
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
@@ -169,7 +169,7 @@ def test_kinetic_energy_integral_cartesian():
 
 
 def test_kinetic_energy_integral_spherical():
-    """Test gbasis.kinetic_energy.kinetic_energy_integral_spherical."""
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -181,7 +181,7 @@ def test_kinetic_energy_integral_spherical():
 
 
 def test_kinetic_energy_integral_mix():
-    """Test gbasis.kinetic_energy.kinetic_energy_integral_mix."""
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -193,7 +193,7 @@ def test_kinetic_energy_integral_mix():
 
 
 def test_kinetic_energy_integral_lincomb():
-    """Test gbasis.kinetic_energy.kinetic_energy_integral_lincomb."""
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
@@ -205,7 +205,7 @@ def test_kinetic_energy_integral_lincomb():
 
 
 def test_kinetic_energy_integral_horton_anorcc_hhe():
-    """Test gbasis.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -226,7 +226,7 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
 
 
 def test_kinetic_energy_integral_horton_anorcc_bec():
-    """Test gbasis.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
 
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 

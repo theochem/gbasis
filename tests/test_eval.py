@@ -1,7 +1,7 @@
-"""Test gbasis.eval."""
-from gbasis._deriv import _eval_deriv_contractions
+"""Test gbasis.evals.eval."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.eval import Eval, evaluate_basis
+from gbasis.evals._deriv import _eval_deriv_contractions
+from gbasis.evals.eval import Eval, evaluate_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -10,7 +10,7 @@ from utils import find_datafile
 
 
 def test_evaluate_construct_array_contraction():
-    """Test gbasis.eval.Eval.construct_array_contraction."""
+    """Test gbasis.evals.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
@@ -54,7 +54,7 @@ def test_evaluate_construct_array_contraction():
 
 
 def test_evaluate_basis_cartesian():
-    """Test gbasis.eval.evaluate_basis_cartesian."""
+    """Test gbasis.evals.eval.evaluate_basis_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
     evaluate_obj = Eval(basis)
@@ -65,7 +65,7 @@ def test_evaluate_basis_cartesian():
 
 
 def test_evaluate_basis_spherical():
-    """Test gbasis.eval.evaluate_basis_spherical."""
+    """Test gbasis.evals.eval.evaluate_basis_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     # cartesian and spherical are the same for s orbital
@@ -92,7 +92,7 @@ def test_evaluate_basis_spherical():
 
 
 def test_evaluate_basis_mix():
-    """Test gbasis.eval.evaluate_basis_mix."""
+    """Test gbasis.evals.eval.evaluate_basis_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     # cartesian and spherical are the same for s orbital
@@ -118,7 +118,7 @@ def test_evaluate_basis_mix():
 
 
 def test_evaluate_basis_lincomb():
-    """Test gbasis.eval.evaluate_basis_lincomb."""
+    """Test gbasis.evals.eval.evaluate_basis_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     evaluate_obj = Eval(basis)

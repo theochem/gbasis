@@ -1,7 +1,7 @@
-"""Test gbasis._moment_int."""
+"""Test gbasis.integrals._moment_int."""
 import itertools as it
 
-from gbasis._moment_int import _compute_multipole_moment_integrals
+from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 import numpy as np
 from scipy.special import factorial2
 

@@ -1,6 +1,6 @@
 """Functions for computing overlap between two basis sets."""
 from gbasis.base_two_asymm import BaseTwoIndexAsymmetric
-from gbasis.overlap import Overlap
+from gbasis.integrals.overlap import Overlap
 
 
 class OverlapAsymmetric(BaseTwoIndexAsymmetric):

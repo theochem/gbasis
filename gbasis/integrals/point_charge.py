@@ -1,7 +1,7 @@
 """Module for computing point charge integrals."""
-from gbasis._one_elec_int import _compute_one_elec_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
 import numpy as np
 from scipy.special import hyp1f1  # pylint: disable=E0611
 

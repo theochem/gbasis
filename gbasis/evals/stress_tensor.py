@@ -1,5 +1,5 @@
 """Module for computing properties related to stress tensor."""
-from gbasis.density import (
+from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
     evaluate_deriv_reduced_density_matrix,

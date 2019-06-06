@@ -1,7 +1,7 @@
-"""Test gbasis.overlap."""
-from gbasis._moment_int import _compute_multipole_moment_integrals
+"""Test gbasis.integrals.overlap."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.overlap import Overlap, overlap_integral
+from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
+from gbasis.integrals.overlap import Overlap, overlap_integral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -10,7 +10,7 @@ from utils import find_datafile, HortonContractions
 
 
 def test_overlap_construct_array_contraction():
-    """Test gbasis.overlap.Overlap.construct_array_contraction."""
+    """Test gbasis.integrals.overlap.Overlap.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
@@ -72,7 +72,7 @@ def test_overlap_construct_array_contraction():
 
 
 def test_overlap_cartesian():
-    """Test gbasis.eval.overlap_cartesian."""
+    """Test gbasis.integrals.overlap.overlap_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -82,7 +82,7 @@ def test_overlap_cartesian():
 
 
 def test_overlap_spherical():
-    """Test gbasis.eval.overlap_spherical."""
+    """Test gbasis.integrals.overlap.overlap_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -93,7 +93,7 @@ def test_overlap_spherical():
 
 
 def test_overlap_mix():
-    """Test gbasis.eval.overlap_mix."""
+    """Test gbasis.integrals.overlap.overlap_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -105,7 +105,7 @@ def test_overlap_mix():
 
 
 def test_overlap_lincomb():
-    """Test gbasis.eval.overlap_lincomb."""
+    """Test gbasis.integrals.overlap.overlap_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -117,7 +117,7 @@ def test_overlap_lincomb():
 
 
 def test_overlap_cartesian_norm_anorcc():
-    """Test the norm of gbasis.eval.overlap_cartesian on the ANO-RCC basis set.
+    """Test the norm of gbasis.integrals.overlap_cartesian on the ANO-RCC basis set.
 
     The contraction coefficients in ANO-RCC is such that the cartesian contractions are normalized.
 
@@ -130,7 +130,7 @@ def test_overlap_cartesian_norm_anorcc():
 
 
 def test_overlap_spherical_norm_sto6g():
-    """Test the norm of gbasis.eval.overlap_spherical on the STO-6G basis set.
+    """Test the norm of gbasis.integrals.overlap_spherical on the STO-6G basis set.
 
     The contraction coefficients in STO-6G is such that the spherical contractions are not
     normalized to past 3rd decimal places.
@@ -144,7 +144,7 @@ def test_overlap_spherical_norm_sto6g():
 
 
 def test_overlap_spherical_norm_anorcc():
-    """Test the norm of gbasis.eval.overlap_spherical on the ANO-RCC basis set.
+    """Test the norm of gbasis.integrals.overlap_spherical on the ANO-RCC basis set.
 
     The contraction coefficients in ANO-RCC is such that the Cartesian contractions are normalized.
 
@@ -161,7 +161,7 @@ def test_overlap_spherical_norm_anorcc():
 
 
 def test_overlap_cartesian_norm_sto6g():
-    """Test the norm of gbasis.eval.overlap_cartesian on the STO-6G basis set.
+    """Test the norm of gbasis.integrals.overlap_cartesian on the STO-6G basis set.
 
     The contraction coefficients in STO-6G is such that the Cartesian contractions are not
     normalized to past 3rd decimal places.
@@ -175,7 +175,7 @@ def test_overlap_cartesian_norm_sto6g():
 
 
 def test_overlap_horton_anorcc_hhe():
-    """Test gbasis.eval.overlap_basis_cartesian against HORTON's overlap matrix.
+    """Test gbasis.integrals.overlap.overlap_basis_cartesian against HORTON's overlap matrix.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -192,7 +192,7 @@ def test_overlap_horton_anorcc_hhe():
 
 
 def test_overlap_horton_anorcc_bec():
-    """Test gbasis.eval.overlap_cartesian against HORTON's overlap matrix.
+    """Test gbasis.integrals.overlap.overlap_cartesian against HORTON's overlap matrix.
 
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 

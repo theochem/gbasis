@@ -1,7 +1,7 @@
-"""Test gbasis.point_charge."""
+"""Test gbasis.integrals.point_charge."""
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals.point_charge import point_charge_integral, PointChargeIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.point_charge import point_charge_integral, PointChargeIntegral
 import numpy as np
 import pytest
 from scipy.special import factorial
@@ -21,7 +21,7 @@ def boys_helgaker(n, x):
 
 
 def test_boys_func():
-    """Test gbasis.point_charge.PointChargeIntegral.boys_func."""
+    """Test gbasis.integrals.point_charge.PointChargeIntegral.boys_func."""
     orders = np.arange(10)
     distances = np.random.rand(20, 30)
     test = PointChargeIntegral.boys_func(orders[:, None, None], distances[None, :, :])
@@ -31,7 +31,7 @@ def test_boys_func():
 
 
 def test_construct_array_contraction():
-    """Test gbasis.point_charge.PointChargeIntegral.construct_array_contraction."""
+    """Test gbasis.integrals.point_charge.PointChargeIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
     test_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]))
     coord_two = np.array([1.5, 2, 3])
@@ -117,7 +117,7 @@ def test_construct_array_contraction():
 
 
 def test_point_charge_cartesian():
-    """Test gbasis.point_charge.point_charge_cartesian."""
+    """Test gbasis.integrals.point_charge.point_charge_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
@@ -138,7 +138,7 @@ def test_point_charge_cartesian():
 
 
 def test_point_charge_spherical():
-    """Test gbasis.point_charge.point_charge_spherical."""
+    """Test gbasis.integrals.point_charge.point_charge_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
@@ -159,7 +159,7 @@ def test_point_charge_spherical():
 
 
 def test_point_charge_mix():
-    """Test gbasis.point_charge.point_charge_mix."""
+    """Test gbasis.integrals.point_charge.point_charge_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
@@ -175,7 +175,7 @@ def test_point_charge_mix():
 
 
 def test_point_charge_lincomb():
-    """Test gbasis.point_charge.point_charge_lincomb."""
+    """Test gbasis.integrals.point_charge.point_charge_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)

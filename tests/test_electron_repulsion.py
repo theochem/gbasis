@@ -1,10 +1,13 @@
-"""Test gbasis.electron_repulsion."""
-from gbasis._two_elec_int import (
+"""Test gbasis.integrals.electron_repulsion."""
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
 )
-from gbasis.contractions import GeneralizedContractionShell
-from gbasis.electron_repulsion import electron_repulsion_integral, ElectronRepulsionIntegral
+from gbasis.integrals.electron_repulsion import (
+    electron_repulsion_integral,
+    ElectronRepulsionIntegral,
+)
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -12,7 +15,7 @@ from utils import find_datafile, HortonContractions
 
 
 def test_construct_array_contraction():
-    """Test gbasis.electron_repulsion.ElectronRepulsionIntegral.construct_array_contraction."""
+    """Test integrals.electron_repulsion.ElectronRepulsionIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
     cont_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]))
     coord_two = np.array([1.5, 2, 3])
@@ -135,7 +138,7 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
 
 
 def test_electron_repulsion_cartesian():
-    """Test gbasis.electron_repulsion.electron_repulsion_cartesian."""
+    """Test gbasis.integrals.electron_repulsion.electron_repulsion_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
@@ -153,7 +156,7 @@ def test_electron_repulsion_cartesian():
 
 
 def test_electron_repulsion_spherical():
-    """Test gbasis.electron_repulsion.electron_repulsion_spherical."""
+    """Test gbasis.integrals.electron_repulsion.electron_repulsion_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
@@ -171,7 +174,7 @@ def test_electron_repulsion_spherical():
 
 
 def test_electron_repulsion_mix():
-    """Test gbasis.electron_repulsion.electron_repulsion_mix."""
+    """Test gbasis.integrals.electron_repulsion.electron_repulsion_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
@@ -189,7 +192,7 @@ def test_electron_repulsion_mix():
 
 
 def test_electron_repulsion_lincomb():
-    """Test gbasis.electron_repulsion.electron_repulsion_lincomb."""
+    """Test gbasis.integrals.electron_repulsion.electron_repulsion_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 

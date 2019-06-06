@@ -74,10 +74,7 @@ def test_from_pyscf():
     mol.build(atom="""Kr 1.0 2.0 3.0""", basis="ano-rcc", unit="Bohr")
     test = from_pyscf(mol)
 
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        basis_dict = f.read()
-
-    basis_dict = parse_nwchem(basis_dict)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[1, 2, 3]]))
 
     with pytest.raises(ValueError):

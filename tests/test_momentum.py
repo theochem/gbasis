@@ -1,7 +1,7 @@
-"""Test gbasis.momentum."""
-from gbasis._diff_operator_int import _compute_differential_operator_integrals
+"""Test gbasis.integrals.momentum."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.momentum import momentum_integral, MomentumIntegral
+from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.integrals.momentum import momentum_integral, MomentumIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -10,7 +10,7 @@ from utils import find_datafile
 
 
 def test_momentum_construct_array_contraction():
-    """Test gbasis.momentum.MomentumIntegral.construct_array_contraction."""
+    """Test gbasis.integrals.momentum.MomentumIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
@@ -160,7 +160,7 @@ def test_momentum_construct_array_contraction():
 
 
 def test_momentum_integral_cartesian():
-    """Test gbasis.momentum.momentum_integral_cartesian."""
+    """Test gbasis.integrals.momentum.momentum_integral_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
@@ -171,7 +171,7 @@ def test_momentum_integral_cartesian():
 
 
 def test_momentum_integral_spherical():
-    """Test gbasis.momentum.momentum_integral_spherical."""
+    """Test gbasis.integrals.momentum.momentum_integral_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -183,7 +183,7 @@ def test_momentum_integral_spherical():
 
 
 def test_momentum_integral_mix():
-    """Test gbasis.momentum.momentum_integral_mix."""
+    """Test gbasis.integrals.momentum.momentum_integral_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -195,7 +195,7 @@ def test_momentum_integral_mix():
 
 
 def test_momentum_integral_lincomb():
-    """Test gbasis.momentum.momentum_integral_lincomb."""
+    """Test gbasis.integrals.momentum.momentum_integral_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)

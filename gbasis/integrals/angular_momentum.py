@@ -1,8 +1,10 @@
 """Module for evaluating the integral over the angular momentum operator."""
-from gbasis._diff_operator_int import _compute_differential_operator_integrals_intermediate
-from gbasis._moment_int import _compute_multipole_moment_integrals_intermediate
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._diff_operator_int import (
+    _compute_differential_operator_integrals_intermediate,
+)
+from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
 import numpy as np
 
 

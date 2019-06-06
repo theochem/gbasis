@@ -437,7 +437,7 @@ class GeneralizedContractionShell:
         the overlap module must be imported within this method.
 
         """
-        from gbasis.overlap import Overlap  # pylint: disable=R0401
+        from gbasis.integrals.overlap import Overlap  # pylint: disable=R0401
 
         self.norm_cont = np.einsum("ijij->ij", Overlap.construct_array_contraction(self, self))
         self.norm_cont **= -0.5

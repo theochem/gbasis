@@ -1,5 +1,5 @@
-"""Test gbasis.density."""
-from gbasis.density import (
+"""Test gbasis.evals.density."""
+from gbasis.evals.density import (
     evaluate_density,
     evaluate_density_gradient,
     evaluate_density_hessian,
@@ -9,8 +9,8 @@ from gbasis.density import (
     evaluate_general_kinetic_energy_density,
     evaluate_posdef_kinetic_energy_density,
 )
-from gbasis.eval import evaluate_basis
-from gbasis.eval_deriv import evaluate_deriv_basis
+from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.eval_deriv import evaluate_deriv_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -18,7 +18,7 @@ from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_density_using_evaluated_orbs():
-    """Test gbasis.density.evaluate_density_using_evaluated_orbs."""
+    """Test gbasis.evals.density.evaluate_density_using_evaluated_orbs."""
     density_mat = np.array([[1.0, 2.0], [2.0, 3.0]])
     orb_eval = np.array([[1.0], [2.0]])
     assert np.allclose(
@@ -61,7 +61,7 @@ def test_evaluate_density_using_evaluated_orbs():
 
 
 def test_evaluate_density():
-    """Test gbasis.density.evaluate_density."""
+    """Test gbasis.evals.density.evaluate_density."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
@@ -77,7 +77,7 @@ def test_evaluate_density():
 
 
 def test_evaluate_deriv_density():
-    """Test gbasis.density.evaluate_deriv_density."""
+    """Test gbasis.evals.density.evaluate_deriv_density."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
@@ -221,7 +221,7 @@ def test_evaluate_deriv_density():
 
 
 def test_evaluate_density_gradient():
-    """Test gbasis.density.evaluate_density_gradient."""
+    """Test gbasis.evals.density.evaluate_density_gradient."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
@@ -275,7 +275,7 @@ def test_evaluate_density_gradient():
 
 
 def test_evaluate_density_horton():
-    """Test gbasis.density.evaluate_density against result from HORTON.
+    """Test gbasis.evals.density.evaluate_density against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -298,7 +298,7 @@ def test_evaluate_density_horton():
 
 
 def test_evaluate_density_gradient_horton():
-    """Test gbasis.density.evaluate_density_gradient against result from HORTON.
+    """Test gbasis.evals.density.evaluate_density_gradient against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -322,7 +322,7 @@ def test_evaluate_density_gradient_horton():
 
 
 def test_evaluate_hessian_deriv_horton():
-    """Test gbasis.density.evaluate_density_hessian against result from HORTON.
+    """Test gbasis.evals.density.evaluate_density_hessian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -352,7 +352,7 @@ def test_evaluate_hessian_deriv_horton():
 
 
 def test_evaluate_laplacian_deriv_horton():
-    """Test gbasis.density.evaluate_density_laplacian against result from HORTON.
+    """Test gbasis.evals.density.evaluate_density_laplacian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -376,7 +376,7 @@ def test_evaluate_laplacian_deriv_horton():
 
 
 def test_evaluate_posdef_kinetic_energy_density():
-    """Test gbasis.kinetic_energy.evaluate_posdef_kinetic_energy_density against results from HORTON.
+    """Test evaluate_posdef_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -402,7 +402,7 @@ def test_evaluate_posdef_kinetic_energy_density():
 
 
 def test_evaluate_general_kinetic_energy_density_horton():
-    """Test gbasis.kinetic_energy.evaluate_general_kinetic_energy_density against results from HORTON.
+    """Test evaluate_general_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -432,7 +432,7 @@ def test_evaluate_general_kinetic_energy_density_horton():
 
 
 def test_evaluate_general_kinetic_energy_density():
-    """Test gbasis.kinetic_energy.evaluate_general_kinetic_energy_density."""
+    """Test density.evaluate_general_kinetic_energy_density."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], points)
