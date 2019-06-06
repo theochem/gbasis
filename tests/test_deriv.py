@@ -1,7 +1,7 @@
-"""Test gbasis._deriv."""
+"""Test gbasis.evals._deriv."""
 import itertools as it
 
-from gbasis._deriv import _eval_deriv_contractions
+from gbasis.evals._deriv import _eval_deriv_contractions
 import numpy as np
 from utils import partial_deriv_finite_diff
 
@@ -31,7 +31,7 @@ def evaluate_deriv_prim(coord, orders, center, angmom_comps, alpha):
     Note
     ----
     If you want to evaluate the derivative of the contractions of the primitive, then use
-    `gbasis._deriv.evaluate_deriv_contraction` instead.
+    `gbasis.evals._deriv.evaluate_deriv_contraction` instead.
 
     """
     return _eval_deriv_contractions(
@@ -67,16 +67,16 @@ def evaluate_prim(coord, center, angmom_comps, alpha):
     Note
     ----
     If you want to evaluate the contractions of the primitive, then use
-    `gbasis._deriv.evaluate_contraction` instead.
+    `gbasis.evals._deriv.evaluate_contraction` instead.
 
     """
     return evaluate_deriv_prim(coord, np.zeros(angmom_comps.shape), center, angmom_comps, alpha)
 
 
 def test_evaluate_prim():
-    """Test gbasis._deriv.evaluate_prim.
+    """Test gbasis.evals._deriv.evaluate_prim.
 
-    Note that this also tests the no derivative case of gbasis._deriv.evaluate_deriv_prim.
+    Note that this also tests the no derivative case of gbasis.evals._deriv.evaluate_deriv_prim.
     """
     # angular momentum: 0
     assert np.allclose(
@@ -107,7 +107,7 @@ def test_evaluate_prim():
 
 
 def test_evaluate_deriv_prim():
-    """Test gbasis._deriv.evaluate_deriv_prim."""
+    """Test gbasis.evals._deriv.evaluate_deriv_prim."""
     # first order
     for k in range(3):
         orders = np.zeros(3, dtype=int)
@@ -144,7 +144,7 @@ def test_evaluate_deriv_prim():
 
 
 def test_evaluate_contractions():
-    """Test gbasis._deriv._evaluate_deriv_contraction without derivatization."""
+    """Test gbasis.evals._deriv._evaluate_deriv_contraction without derivatization."""
     # angular momentum: 0
     assert np.allclose(
         _eval_deriv_contractions(
@@ -259,7 +259,7 @@ def test_evaluate_contractions():
 
 
 def test_eval_deriv_contractions():
-    """Test gbasis._deriv._eval_deriv_contractions."""
+    """Test gbasis.evals._deriv._eval_deriv_contractions."""
     # first order
     for k in range(3):
         orders = np.zeros(3, dtype=int)
@@ -404,7 +404,7 @@ def test_eval_deriv_contractions():
 
 
 def test_evaluate_deriv_generalized_contraction():
-    """Test gbasis._deriv._eval_deriv_contractions for generalized contractions."""
+    """Test gbasis.evals._deriv._eval_deriv_contractions for generalized contractions."""
     for k, l in it.product(range(3), range(3)):
         orders = np.zeros(3, dtype=int)
         orders[k] += 1

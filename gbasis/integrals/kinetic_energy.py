@@ -1,7 +1,7 @@
 """Module for evaluating the kinetic energy integral."""
-from gbasis._diff_operator_int import _compute_differential_operator_integrals
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
 import numpy as np
 
 

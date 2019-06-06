@@ -1,7 +1,7 @@
-"""Test gbasis.nuclear_electron_attraction."""
-from gbasis.nuclear_electron_attraction import nuclear_electron_attraction_integral
+"""Test gbasis.integrals.nuclear_electron_attraction."""
+from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attraction_integral
+from gbasis.integrals.point_charge import point_charge_integral
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.point_charge import point_charge_integral
 import numpy as np
 from utils import find_datafile, HortonContractions
 
@@ -49,7 +49,7 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
 
 
 def test_nuclear_electron_attraction_cartesian():
-    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_cartesian."""
+    """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
@@ -65,7 +65,7 @@ def test_nuclear_electron_attraction_cartesian():
 
 
 def test_nuclear_electron_attraction_spherical():
-    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_spherical."""
+    """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
@@ -81,7 +81,7 @@ def test_nuclear_electron_attraction_spherical():
 
 
 def test_nuclear_electron_attraction_mix():
-    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_mix."""
+    """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
@@ -99,7 +99,7 @@ def test_nuclear_electron_attraction_mix():
 
 
 def test_nuclear_electron_attraction_lincomb():
-    """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_lincomb."""
+    """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 

@@ -273,7 +273,7 @@ def _compute_two_elec_integrals(
     Notes
     -----
     The case where all four of the contractions have angular momentum of zero is not supported. Use
-    `gbasis._two_elec_int._compute_two_elec_integrals` instead.
+    `gbasis.integrals._two_elec_int._compute_two_elec_integrals` instead.
 
     """
 

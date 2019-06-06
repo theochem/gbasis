@@ -1,5 +1,5 @@
 """Module for computing the nuclear electron attraction."""
-from gbasis.point_charge import point_charge_integral
+from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
 
 

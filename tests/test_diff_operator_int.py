@@ -1,7 +1,7 @@
-"""Test gbasis._diff_operator_int."""
+"""Test gbasis.integrals._diff_operator_int."""
 import itertools as it
 
-from gbasis._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
 import numpy as np
 from scipy.special import factorial2
 from test_moment_int import answer_prim as answer_prim_overlap

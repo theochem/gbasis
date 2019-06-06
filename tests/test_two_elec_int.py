@@ -1,5 +1,5 @@
-"""Test gbasis._two_elec_int."""
-from gbasis._two_elec_int import (
+"""Test gbasis.integrals._two_elec_int."""
+from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
 )
@@ -1365,7 +1365,7 @@ def test_two_int_brute():
 
 
 def test_compute_two_elec_integrals_angmom_zero_prim():
-    """Test gbasis._two_elec_int._compute_two_elec_integrals_angmom_zero on primitives."""
+    """Test gbasis.integrals._two_elec_int._compute_two_elec_integrals_angmom_zero on primitives."""
     assert np.allclose(
         _compute_two_elec_integrals_angmom_zero(
             boys_func,
@@ -1463,7 +1463,7 @@ def test_compute_two_elec_integrals_angmom_zero_prim():
 
 
 def test_compute_two_elec_integrals_prim():
-    """Test gbasis._two_elec_int._compute_two_elec_integrals on primitives."""
+    """Test gbasis.integrals._two_elec_int._compute_two_elec_integrals on primitives."""
     with pytest.raises(ValueError):
         _compute_two_elec_integrals(
             boys_func,
@@ -1673,7 +1673,7 @@ def test_compute_two_elec_integrals_prim():
 
 
 def test_compute_two_elec_integrals_segmented_contractions():
-    """Test gbasis._two_elec_int._compute_two_elec_integrals on segmented contractions."""
+    """Test gbasis.integrals._two_elec_int._compute_two_elec_integrals on segmented contractions."""
     assert np.allclose(
         _compute_two_elec_integrals(
             boys_func,
@@ -1785,7 +1785,7 @@ def test_compute_two_elec_integrals_segmented_contractions():
 
 
 def test_compute_two_elec_integrals_generalized_contractions():
-    """Test gbasis._two_elec_int._compute_two_elec_integrals on generalized contractions."""
+    """Test integrals._two_elec_int._compute_two_elec_integrals on generalized contractions."""
     assert np.allclose(
         _compute_two_elec_integrals(
             boys_func,

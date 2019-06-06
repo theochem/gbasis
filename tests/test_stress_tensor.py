@@ -1,22 +1,22 @@
-"""Test gbasis.stress_tensor."""
-from gbasis.density import (
+"""Test gbasis.evals.stress_tensor."""
+from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
     evaluate_deriv_reduced_density_matrix,
 )
-from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.stress_tensor import (
+from gbasis.evals.stress_tensor import (
     evaluate_ehrenfest_force,
     evaluate_ehrenfest_hessian,
     evaluate_stress_tensor,
 )
+from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_stress_tensor():
-    """Test gbasis.stress_tensor.evaluate_stress_tensor."""
+    """Test gbasis.evals.stress_tensor.evaluate_stress_tensor."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], coords)
@@ -75,7 +75,7 @@ def test_evaluate_stress_tensor():
 
 
 def test_evaluate_ehrenfest_force():
-    """Test gbasis.stress_tensor.evaluate_ehrenfest_force."""
+    """Test gbasis.evals.stress_tensor.evaluate_ehrenfest_force."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], coords)
@@ -136,7 +136,7 @@ def test_evaluate_ehrenfest_force():
 
 
 def test_evaluate_ehrenfest_hessian():
-    """Test gbasis.stress_tensor.evaluate_ehrenfest_hessian."""
+    """Test gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], coords)

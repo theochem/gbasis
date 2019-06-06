@@ -1,13 +1,13 @@
-"""Test gbasis.overlap_asymm."""
-from gbasis.overlap import overlap_integral
-from gbasis.overlap_asymm import overlap_integral_asymmetric
+"""Test gbasis.integrals.overlap_asymm."""
+from gbasis.integrals.overlap import overlap_integral
+from gbasis.integrals.overlap_asymm import overlap_integral_asymmetric
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 from utils import find_datafile, HortonContractions
 
 
 def test_overlap_integral_asymmetric_horton_anorcc_hhe():
-    """Test gbasis.eval.overlap_integral_asymmetric against HORTON's overlap matrix.
+    """Test gbasis.integrals.overlap_asymm.overlap_integral_asymmetric against HORTON's overlap matrix.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -29,7 +29,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_hhe():
 
 
 def test_overlap_integral_asymmetric_horton_anorcc_bec():
-    """Test gbasis.eval.overlap_integral_asymmetric against HORTON's overlap matrix.
+    """Test integrals.overlap_asymm.overlap_integral_asymmetric against HORTON's overlap matrix.
 
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 
@@ -51,7 +51,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_bec():
 
 
 def test_overlap_integral_asymmetric_compare():
-    """Test gbasis.eval.overlap against gbasis.overlap.overlap_integral."""
+    """Test overlap_asymm.overlap_integral_asymmetric against overlap.overlap_integral."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr", "Kr"], np.array([[0, 0, 0], [1.0, 0, 0]]))

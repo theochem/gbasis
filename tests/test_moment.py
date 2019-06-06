@@ -1,7 +1,7 @@
-"""Test gbasis.moment."""
-from gbasis._moment_int import _compute_multipole_moment_integrals
+"""Test gbasis.integrals.moment."""
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.moment import Moment, moment_integral
+from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
+from gbasis.integrals.moment import Moment, moment_integral
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -10,7 +10,7 @@ from utils import find_datafile
 
 
 def test_moment_construct_array_contraction():
-    """Test gbasis.moment.Moment.construct_array_contraction."""
+    """Test gbasis.integrals.moment.Moment.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
@@ -132,7 +132,7 @@ def test_moment_construct_array_contraction():
 
 
 def test_moment_cartesian():
-    """Test gbasis.moment.moment_cartesian."""
+    """Test gbasis.integrals.moment.moment_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)
@@ -178,7 +178,7 @@ def test_moment_cartesian():
 
 
 def test_moment_spherical():
-    """Test gbasis.moment.moment_spherical."""
+    """Test gbasis.integrals.moment.moment_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -224,7 +224,7 @@ def test_moment_spherical():
 
 
 def test_moment_mix():
-    """Test gbasis.moment.moment_mix."""
+    """Test gbasis.integrals.moment.moment_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
@@ -271,7 +271,7 @@ def test_moment_mix():
 
 
 def test_moment_spherical_lincomb():
-    """Test gbasis.moment.moment_spherical_lincomb."""
+    """Test gbasis.integrals.moment.moment_spherical_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)

@@ -1,5 +1,5 @@
-"""Tests for gbasis.electrostatic_potential."""
-from gbasis.electrostatic_potential import electrostatic_potential
+"""Tests for gbasis.evals.electrostatic_potential."""
+from gbasis.evals.electrostatic_potential import electrostatic_potential
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -7,7 +7,7 @@ from utils import find_datafile, HortonContractions
 
 
 def test_electrostatic_potential():
-    """Test gbasis.electrostatic_potential.electorstatic_potential.
+    """Test gbasis.evals.electrostatic_potential.electorstatic_potential.
 
     Tested by using point_charge.point_charge_cartesian.
 
@@ -156,7 +156,7 @@ def test_electrostatic_potential():
 
 
 def test_electrostatic_potential_cartesian():
-    """Test gbasis.electrostatic_potential.electorstatic_potential_cartesian.
+    """Test gbasis.evals.electrostatic_potential.electorstatic_potential_cartesian.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
     Density matrix is an identity matrix.
@@ -182,7 +182,7 @@ def test_electrostatic_potential_cartesian():
 
 
 def test_electrostatic_potential_spherical():
-    """Test gbasis.electrostatic_potential.electorstatic_potential_spherical.
+    """Test gbasis.evals.electrostatic_potential.electorstatic_potential_spherical.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
     Density matrix is an identity matrix.
@@ -208,7 +208,7 @@ def test_electrostatic_potential_spherical():
 
 
 def test_electrostatic_potential_mix():
-    """Test gbasis.electrostatic_potential.electorstatic_potential_mix.
+    """Test gbasis.evals.electrostatic_potential.electorstatic_potential_mix.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
     Density matrix is an identity matrix.
