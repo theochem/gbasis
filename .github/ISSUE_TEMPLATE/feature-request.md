@@ -1,7 +1,7 @@
 ---
 name: Feature Request
 about: Describe the feature you'd like implemented
-title: ''
+title: "[REQUEST]"
 labels: enhancement
 assignees: ''
 

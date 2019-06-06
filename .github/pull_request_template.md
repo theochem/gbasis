@@ -11,7 +11,7 @@ https://github.com/theochem/gbasis/blob/master/CONTRIBUTING.md
 
 ## Steps
 
-- [ ] Write a good description on what the PR does.
+- [ ] Write a good description of what the PR does.
 - [ ] Add tests for each unit of code added (e.g. function, class)
 - [ ] Update documentation
 - [ ] Squash commits that can be grouped together
