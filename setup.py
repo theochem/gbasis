@@ -60,20 +60,10 @@ setup(
     python_requires=">=3.5",
     install_requires=["numpy>=1.10", "scipy>=1.0"],
     extras_require={
-        "dev": [
-            "tox",
-            "flake8",
-            "flake8-pydocstyle",
-            "flake8-import-order",
-            "pep8-naming",
-            "pylint",
-            "bandit",
-            "pytest",
-            "pytest-cov",
-        ],
+        "dev": ["tox"],
         "test": ["tox", "pytest", "pytest-cov"],
-        "iodata": ["tox", "iodata>0.1.7"],
-        "pyscf": ["tox", "pyscf>=1.6.1"],
+        "iodata": ["iodata>0.1.7"],
+        "pyscf": ["pyscf>=1.6.1"],
     },
     # If there are data files included in your packages that need to be
     # installed, specify them here.
