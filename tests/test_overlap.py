@@ -73,9 +73,7 @@ def test_overlap_construct_array_contraction():
 
 def test_overlap_cartesian():
     """Test gbasis.eval.overlap_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
     assert np.allclose(
@@ -85,9 +83,7 @@ def test_overlap_cartesian():
 
 def test_overlap_spherical():
     """Test gbasis.eval.overlap_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -98,9 +94,7 @@ def test_overlap_spherical():
 
 def test_overlap_mix():
     """Test gbasis.eval.overlap_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -112,9 +106,7 @@ def test_overlap_mix():
 
 def test_overlap_lincomb():
     """Test gbasis.eval.overlap_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
     transform = np.random.rand(14, 18)
@@ -130,9 +122,7 @@ def test_overlap_cartesian_norm_anorcc():
     The contraction coefficients in ANO-RCC is such that the cartesian contractions are normalized.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -146,9 +136,7 @@ def test_overlap_spherical_norm_sto6g():
     normalized to past 3rd decimal places.
 
     """
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -161,9 +149,7 @@ def test_overlap_spherical_norm_anorcc():
     The contraction coefficients in ANO-RCC is such that the Cartesian contractions are normalized.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -181,9 +167,7 @@ def test_overlap_cartesian_norm_sto6g():
     normalized to past 3rd decimal places.
 
     """
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     overlap_obj = Overlap(basis)
@@ -196,9 +180,7 @@ def test_overlap_horton_anorcc_hhe():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
         basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
@@ -215,9 +197,7 @@ def test_overlap_horton_anorcc_bec():
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
         basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])

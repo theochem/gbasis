@@ -161,9 +161,7 @@ def test_momentum_construct_array_contraction():
 
 def test_momentum_integral_cartesian():
     """Test gbasis.momentum.momentum_integral_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
@@ -174,9 +172,7 @@ def test_momentum_integral_cartesian():
 
 def test_momentum_integral_spherical():
     """Test gbasis.momentum.momentum_integral_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
@@ -188,9 +184,7 @@ def test_momentum_integral_spherical():
 
 def test_momentum_integral_mix():
     """Test gbasis.momentum.momentum_integral_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
@@ -202,9 +196,7 @@ def test_momentum_integral_mix():
 
 def test_momentum_integral_lincomb():
     """Test gbasis.momentum.momentum_integral_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     momentum_integral_obj = MomentumIntegral(basis)
     transform = np.random.rand(14, 18)

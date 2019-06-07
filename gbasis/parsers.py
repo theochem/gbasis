@@ -5,13 +5,13 @@ from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
 
-def parse_nwchem(nwchem_basis):
+def parse_nwchem(nwchem_basis_file):
     """Parse nwchem basis set file.
 
     Parameters
     ----------
-    nwchem_basis : str
-        Contents of the nwchem basis set file.
+    nwchem_basis_file : str
+        Path to the nwchem basis set file.
 
     Returns
     -------
@@ -26,6 +26,9 @@ def parse_nwchem(nwchem_basis):
 
     """
     # pylint: disable=R0914
+    with open(nwchem_basis_file, "r") as basis_fh:
+        nwchem_basis = basis_fh.read()
+
     data = re.split(r"\n\s*(\w[\w]?)[ ]+(\w+)\s*\n", nwchem_basis)
     dict_angmom = {"s": 0, "p": 1, "d": 2, "f": 3, "g": 4, "h": 5, "i": 6, "k": 7}
     # remove first part
@@ -68,13 +71,13 @@ def parse_nwchem(nwchem_basis):
     return output
 
 
-def parse_gbs(gbs_basis):
+def parse_gbs(gbs_basis_file):
     """Parse Gaussian94 basis set file.
 
     Parameters
     ----------
-    gbs_basis : str
-        Contents of the Gaussian94 basis set file.
+    gbs_basis_file : str
+        Path to the Gaussian94 basis set file.
 
     Returns
     -------
@@ -94,6 +97,9 @@ def parse_gbs(gbs_basis):
 
     """
     # pylint: disable=R0914
+    with open(gbs_basis_file, "r") as basis_fh:
+        gbs_basis = basis_fh.read()
+
     data = re.split(r"\n\s*(\w[\w]?)\s+\w+\s*\n", gbs_basis)
     dict_angmom = {"s": 0, "p": 1, "d": 2, "f": 3, "g": 4, "h": 5, "i": 6, "k": 7}
     # remove first part

@@ -12,9 +12,7 @@ def test_electrostatic_potential():
     Tested by using point_charge.point_charge_cartesian.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
@@ -164,9 +162,7 @@ def test_electrostatic_potential_cartesian():
     Density matrix is an identity matrix.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
@@ -192,9 +188,7 @@ def test_electrostatic_potential_spherical():
     Density matrix is an identity matrix.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
@@ -220,9 +214,7 @@ def test_electrostatic_potential_mix():
     Density matrix is an identity matrix.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)

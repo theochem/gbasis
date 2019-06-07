@@ -334,18 +334,14 @@ Supposed we have the following system:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.parsers import parse_gbs, make_contractions
 
-with open("from_basissetexchange.gbs", "r")as f:
-all_basis = f.read()
-all_basis_dict = parse_gbs(all_basis)
+all_basis_dict = parse_gbs("./path/to/from_basissetexchange.gbs")
 basis = make_contractions(all_basis_dict, atoms, coords)
 \end{lstlisting}
 \item To build a basis set from nwchem file for the given atoms and coordinates,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.parsers import parse_nwchem, make_contractions
 
-with open("from_basissetexchange.nwchem", "r")as f:
-all_basis = f.read()
-all_basis_dict = parse_gbs(all_basis)
+all_basis_dict = parse_nwchem("./path/to/from_basissetexchange.nwchem")
 basis = make_contractions(all_basis_dict, atoms, coords)
 \end{lstlisting}
 \end{itemize}

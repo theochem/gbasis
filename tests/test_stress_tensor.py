@@ -17,9 +17,7 @@ from utils import find_datafile, HortonContractions
 
 def test_evaluate_stress_tensor():
     """Test gbasis.stress_tensor.evaluate_stress_tensor."""
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], coords)
     points = np.random.rand(10, 3)
@@ -78,9 +76,7 @@ def test_evaluate_stress_tensor():
 
 def test_evaluate_ehrenfest_force():
     """Test gbasis.stress_tensor.evaluate_ehrenfest_force."""
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], coords)
     points = np.random.rand(10, 3)
@@ -141,9 +137,7 @@ def test_evaluate_ehrenfest_force():
 
 def test_evaluate_ehrenfest_hessian():
     """Test gbasis.stress_tensor.evaluate_ehrenfest_hessian."""
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], coords)
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]

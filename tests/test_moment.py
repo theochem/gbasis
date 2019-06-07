@@ -133,9 +133,7 @@ def test_moment_construct_array_contraction():
 
 def test_moment_cartesian():
     """Test gbasis.moment.moment_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)
 
@@ -181,9 +179,7 @@ def test_moment_cartesian():
 
 def test_moment_spherical():
     """Test gbasis.moment.moment_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)
@@ -229,9 +225,7 @@ def test_moment_spherical():
 
 def test_moment_mix():
     """Test gbasis.moment.moment_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)
@@ -278,9 +272,7 @@ def test_moment_mix():
 
 def test_moment_spherical_lincomb():
     """Test gbasis.moment.moment_spherical_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     moment_obj = Moment(basis)
     transform = np.random.rand(14, 18)
