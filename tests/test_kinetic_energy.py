@@ -159,9 +159,7 @@ def test_kinetic_energy_construct_array_contraction():
 
 def test_kinetic_energy_integral_cartesian():
     """Test gbasis.kinetic_energy.kinetic_energy_integral_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
@@ -172,9 +170,7 @@ def test_kinetic_energy_integral_cartesian():
 
 def test_kinetic_energy_integral_spherical():
     """Test gbasis.kinetic_energy.kinetic_energy_integral_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
@@ -186,9 +182,7 @@ def test_kinetic_energy_integral_spherical():
 
 def test_kinetic_energy_integral_mix():
     """Test gbasis.kinetic_energy.kinetic_energy_integral_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
@@ -200,9 +194,7 @@ def test_kinetic_energy_integral_mix():
 
 def test_kinetic_energy_integral_lincomb():
     """Test gbasis.kinetic_energy.kinetic_energy_integral_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     transform = np.random.rand(14, 18)
@@ -218,9 +210,7 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
         basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
@@ -241,9 +231,7 @@ def test_kinetic_energy_integral_horton_anorcc_bec():
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
         basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])

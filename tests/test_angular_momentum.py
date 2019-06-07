@@ -366,9 +366,7 @@ def test_angular_momentum_construct_array_contraction():
 
 def test_angular_momentum_integral_cartesian():
     """Test gbasis.angular_momentum.angular_momentum_integral_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
@@ -379,9 +377,7 @@ def test_angular_momentum_integral_cartesian():
 
 def test_angular_momentum_integral_spherical():
     """Test gbasis.angular_momentum.angular_momentum_integral_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
@@ -393,9 +389,7 @@ def test_angular_momentum_integral_spherical():
 
 def test_angular_momentum_integral_mix():
     """Test gbasis.angular_momentum.angular_momentum_integral_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
@@ -407,9 +401,7 @@ def test_angular_momentum_integral_mix():
 
 def test_angular_momentum_integral_lincomb():
     """Test gbasis.angular_momentum.angular_momentum_integral_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     transform = np.random.rand(14, 18)

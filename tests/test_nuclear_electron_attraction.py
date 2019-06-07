@@ -12,9 +12,7 @@ def test_nuclear_electron_attraction_horton_anorcc_hhe():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
@@ -35,9 +33,7 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
     The test case is diatomic with B and C separated by 1.0 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["Be", "C"], coords)
@@ -54,9 +50,7 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
 
 def test_nuclear_electron_attraction_cartesian():
     """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
     nuclear_coords = np.random.rand(5, 3)
@@ -72,9 +66,7 @@ def test_nuclear_electron_attraction_cartesian():
 
 def test_nuclear_electron_attraction_spherical():
     """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
     nuclear_coords = np.random.rand(5, 3)
@@ -90,9 +82,7 @@ def test_nuclear_electron_attraction_spherical():
 
 def test_nuclear_electron_attraction_mix():
     """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
     nuclear_coords = np.random.rand(5, 3)
@@ -110,9 +100,7 @@ def test_nuclear_electron_attraction_mix():
 
 def test_nuclear_electron_attraction_lincomb():
     """Test gbasis.nuclear_electron_attraction.nuclear_electron_attraction_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
 
     nuclear_coords = np.random.rand(5, 3)

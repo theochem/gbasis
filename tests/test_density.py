@@ -62,9 +62,7 @@ def test_evaluate_density_using_evaluated_orbs():
 
 def test_evaluate_density():
     """Test gbasis.density.evaluate_density."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
     density = np.random.rand(14, 14)
@@ -80,9 +78,7 @@ def test_evaluate_density():
 
 def test_evaluate_deriv_density():
     """Test gbasis.density.evaluate_deriv_density."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
     density = np.random.rand(14, 14)
@@ -226,9 +222,7 @@ def test_evaluate_deriv_density():
 
 def test_evaluate_density_gradient():
     """Test gbasis.density.evaluate_density_gradient."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
     density = np.random.rand(14, 14)
@@ -286,9 +280,7 @@ def test_evaluate_density_horton():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], points)
@@ -311,9 +303,7 @@ def test_evaluate_density_gradient_horton():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], points)
@@ -337,9 +327,7 @@ def test_evaluate_hessian_deriv_horton():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], points)
@@ -369,9 +357,7 @@ def test_evaluate_laplacian_deriv_horton():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], points)
@@ -395,9 +381,7 @@ def test_evaluate_posdef_kinetic_energy_density():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], points)
@@ -425,9 +409,7 @@ def test_evaluate_general_kinetic_energy_density_horton():
     It's actually just testing posdef part.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], points)
@@ -451,9 +433,7 @@ def test_evaluate_general_kinetic_energy_density_horton():
 
 def test_evaluate_general_kinetic_energy_density():
     """Test gbasis.kinetic_energy.evaluate_general_kinetic_energy_density."""
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0]])
     basis = make_contractions(basis_dict, ["H"], points)
     points = np.random.rand(10, 3)

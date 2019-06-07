@@ -55,9 +55,7 @@ def test_evaluate_construct_array_contraction():
 
 def test_evaluate_basis_cartesian():
     """Test gbasis.eval.evaluate_basis_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
     evaluate_obj = Eval(basis)
     assert np.allclose(
@@ -68,9 +66,7 @@ def test_evaluate_basis_cartesian():
 
 def test_evaluate_basis_spherical():
     """Test gbasis.eval.evaluate_basis_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     # cartesian and spherical are the same for s orbital
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
@@ -97,9 +93,7 @@ def test_evaluate_basis_spherical():
 
 def test_evaluate_basis_mix():
     """Test gbasis.eval.evaluate_basis_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     # cartesian and spherical are the same for s orbital
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
@@ -125,9 +119,7 @@ def test_evaluate_basis_mix():
 
 def test_evaluate_basis_lincomb():
     """Test gbasis.eval.evaluate_basis_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     evaluate_obj = Eval(basis)
     transform = np.random.rand(14, 18)

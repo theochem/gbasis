@@ -118,9 +118,7 @@ def test_construct_array_contraction():
 
 def test_point_charge_cartesian():
     """Test gbasis.point_charge.point_charge_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
 
@@ -141,9 +139,7 @@ def test_point_charge_cartesian():
 
 def test_point_charge_spherical():
     """Test gbasis.point_charge.point_charge_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
 
@@ -164,9 +160,7 @@ def test_point_charge_spherical():
 
 def test_point_charge_mix():
     """Test gbasis.point_charge.point_charge_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
 
@@ -182,9 +176,7 @@ def test_point_charge_mix():
 
 def test_point_charge_lincomb():
     """Test gbasis.point_charge.point_charge_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     point_charge_obj = PointChargeIntegral(basis)
 

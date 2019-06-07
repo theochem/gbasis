@@ -7,9 +7,7 @@ from utils import find_datafile
 
 def test_parse_nwchem_sto6g():
     """Test gbasis.parsers.parse_nwchem for sto6g."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    test = parse_nwchem(test_basis)
+    test = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     # test specific cases
     assert len(test["H"]) == 1
     assert test["H"][0][0] == 0
@@ -199,9 +197,7 @@ def test_parse_nwchem_sto6g():
 
 def test_parse_nwchem_anorcc():
     """Test gbasis.parsers.parse_nwchem for anorcc."""
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    test = parse_nwchem(test_basis)
+    test = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # test specific cases
     assert len(test["H"]) == 4
     assert test["H"][0][0] == 0
@@ -272,9 +268,7 @@ def test_parse_nwchem_anorcc():
 
 def test_parse_gbs_sto6g():
     """Test gbasis.parsers.parse_gbs for sto6g."""
-    with open(find_datafile("data_sto6g.gbs"), "r") as f:
-        test_basis = f.read()
-    test = parse_gbs(test_basis)
+    test = parse_gbs(find_datafile("data_sto6g.gbs"))
     # test specific cases
     assert len(test["H"]) == 1
     assert test["H"][0][0] == 0
@@ -464,9 +458,7 @@ def test_parse_gbs_sto6g():
 
 def test_parse_gbs_anorcc():
     """Test gbasis.parsers.parse_gbs for anorcc."""
-    with open(find_datafile("data_anorcc.gbs"), "r") as f:
-        test_basis = f.read()
-    test = parse_gbs(test_basis)
+    test = parse_gbs(find_datafile("data_anorcc.gbs"))
     # test specific cases
     assert len(test["H"]) == 4
     assert test["H"][0][0] == 0
@@ -537,9 +529,7 @@ def test_parse_gbs_anorcc():
 
 def test_make_contractions():
     """Test gbasis.contractions.make_contractions."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     with pytest.raises(TypeError):
         make_contractions(basis_dict, {"H", "H"}, np.array([[0, 0, 0], [1, 1, 1]]))
     with pytest.raises(TypeError):

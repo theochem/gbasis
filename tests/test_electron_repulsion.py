@@ -94,9 +94,7 @@ def test_electron_repulsion_cartesian_horton_sto6g_bec():
     that ano-rcc was not used because it results in overflow in the _compute_two_electron_integrals.
 
     """
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     coords = np.array([[0, 0, 0], [1.0, 0, 0]])
     basis = make_contractions(basis_dict, ["Be", "C"], coords)
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
@@ -117,9 +115,7 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
     This test is also slow.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0], [0.8, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs[:, 0], i.exps) for i in basis[:8]]
@@ -140,9 +136,7 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
 
 def test_electron_repulsion_cartesian():
     """Test gbasis.electron_repulsion.electron_repulsion_cartesian."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
     erep_obj = ElectronRepulsionIntegral(basis)
@@ -160,9 +154,7 @@ def test_electron_repulsion_cartesian():
 
 def test_electron_repulsion_spherical():
     """Test gbasis.electron_repulsion.electron_repulsion_spherical."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
     erep_obj = ElectronRepulsionIntegral(basis)
@@ -180,9 +172,7 @@ def test_electron_repulsion_spherical():
 
 def test_electron_repulsion_mix():
     """Test gbasis.electron_repulsion.electron_repulsion_mix."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
     erep_obj = ElectronRepulsionIntegral(basis)
@@ -200,9 +190,7 @@ def test_electron_repulsion_mix():
 
 def test_electron_repulsion_lincomb():
     """Test gbasis.electron_repulsion.electron_repulsion_lincomb."""
-    with open(find_datafile("data_sto6g.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
 
     erep_obj = ElectronRepulsionIntegral(basis)

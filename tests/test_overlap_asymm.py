@@ -12,9 +12,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_hhe():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
         basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
@@ -36,9 +34,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_bec():
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 
     """
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
         basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
@@ -56,9 +52,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_bec():
 
 def test_overlap_integral_asymmetric_compare():
     """Test gbasis.eval.overlap against gbasis.overlap.overlap_integral."""
-    with open(find_datafile("data_anorcc.nwchem"), "r") as f:
-        test_basis = f.read()
-    basis_dict = parse_nwchem(test_basis)
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr", "Kr"], np.array([[0, 0, 0], [1.0, 0, 0]]))
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
