@@ -62,7 +62,7 @@ def test_from_iodata():
 
     with pytest.raises(ValueError):
         mol.obasis = mol.obasis._replace(primitive_normalization="L1")
-        mol.gbasis_basis()
+        basis = from_iodata(mol)
 
 
 def test_from_pyscf():
