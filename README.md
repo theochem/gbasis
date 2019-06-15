@@ -38,17 +38,28 @@ git clone https://github.com/theochem/gbasis.git
 cd gbasis
 pip install --user -e .[dev,pyscf]
 ```
-To install `iodata`,
+To install `gbasis` with `iodata`,
 ```bash
-git clone https://github.com/theochem/iodata.git
-cd iodata
-pip install --user -e .
+pip install --user cython
+pip install --user git+https://github.com/theochem/iodata.git@master
+git clone https://github.com/theochem/gbasis.git
+cd gbasis
+pip install --user -e .[dev,iodata]
 ```
-`iodata` must be installed separately.
+Note that `iodata` must be installed separately. `cython` is a dependency of `iodata`.
 
 To test the installation,
 ```bash
 tox -e qa
+```
+Note that the interfaces to `pyscf` and `iodata` are not tested in this environment. To test the
+interface to `pyscf`, run
+```bash
+tox -e pyscf
+```
+and to test the interface to `iodata`, run
+```bash
+tox -e iodata
 ```
 
 ## Features
