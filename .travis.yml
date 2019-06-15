@@ -5,15 +5,20 @@ matrix:
     - python: 3.5
       env: TOXENV=py35
     - python: 3.6
-      env: TOXENV=qa
+      env: TOXENV=py36
     - python: 3.7
       sudo: required
       dist: xenial
       env: TOXENV=py37
     - python: 3.6
-      env: TOXENV=optional
+      env: TOXENV=linters
+  fast_finish: true
   allow_failures:
     - python: 3.6
-      env: TOXENV=optional
+      env: TOXENV=pyscf
+    - python: 3.6
+      env: TOXENV=iodata
+    - python: 3.6
+      env: TOXENV=coverage-report
 install: pip install tox
 script: tox
