@@ -113,3 +113,6 @@ venv.bak/
 *.out
 *.synctex.gz
 *.toc
+
+# PyCharm
+.idea/
