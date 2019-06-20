@@ -4,9 +4,12 @@ from scipy.special import comb, factorial, factorial2
 
 
 def shift_factor(mag):
-    """Calculate the shift factor for solid harmonics.
+    r"""Calculate the shift factor for solid harmonics.
 
-    `shift_factor` = 0 if `mag` >= 0 and `shift_factor` = 1/2 if `mag` < 0.
+    .. math::
+       \mathrm{shift\_factor} = \begin{cases}
+       0 & \mathrm{mag} \geq 0\\
+       \frac{1}{2} & \mathrm{mag} < 0 \end{cases}
 
     Parameters
     ----------
