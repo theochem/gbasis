@@ -92,15 +92,15 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     # axis 2 for coordinate
 
     deriv_part = 1
-    nonzero_coords = coords[:, :, ~indices_noderiv]
     nonzero_orders = orders[~indices_noderiv]
-    nonzero_angmom_comps = angmom_comps[:, :, ~indices_noderiv]
-    nonzero_gauss = gauss[:, :, ~indices_noderiv]
-
     nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
 
     # derivatization part
     if nonzero_orders.size != 0:
+        # get nonzero arrays
+        nonzero_coords = coords[:, :, ~indices_noderiv]
+        nonzero_angmom_comps = angmom_comps[:, :, ~indices_noderiv]
+        nonzero_gauss = gauss[:, :, ~indices_noderiv]
         # General approach: compute the whole coefficients, zero out the irrelevant parts
         # NOTE: The following step assumes that there is only one set (nx, ny, nz) of derivatization
         # orders i.e. we assume that only one axis (axis 2) of `nonzero_orders` has a dimension
