@@ -426,14 +426,12 @@ class GeneralizedContractionShell:
         r"""Store the normalization constants of the contractions.
 
         .. math::
-
             \int \phi_i(\mathbf{r}) \phi_i(\mathbf{r}) d\mathbf{r} &= N\\
             \frac{1}{N} \int \phi_i(\mathbf{r}) \phi_i(\mathbf{r}) d\mathbf{r} &= 1\\
-            \int (\frac{1}{\sqrt{N}} \phi_i(\mathbf{r}))
-            (\frac{1}{\sqrt{N}} \phi_i(\mathbf{r})) d\mathbf{r} &= 1\\
+            \int \left(\frac{1}{\sqrt{N}} \phi_i(\mathbf{r})\right)
+            \left(\frac{1}{\sqrt{N}} \phi_i(\mathbf{r})\right) d\mathbf{r} &= 1\\
 
-        where :math:`\phi_i` is a contraction and :math:`N` is the norm of the contraction (without
-        normalization).
+        where :math:`N` is the norm of contraction :math:`\phi_i`.
 
         Notes
         -----
