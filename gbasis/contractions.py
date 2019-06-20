@@ -86,7 +86,7 @@ class GeneralizedContractionShell:
     charge : float
         Charge at the center of the Gaussian primitives.
     exps : np.ndarray(K,)
-        Exponents of the primitives, :math:`\{\alpha_i\}`.
+        Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
     coeffs : np.ndarray(K, M)
         Contraction coefficients, :math:`\{d_{ij}\}`, of the primitives.
         First axis corresponds to the primitive and the second axis corresponds to the segmented
@@ -134,7 +134,7 @@ class GeneralizedContractionShell:
             If a one-dimensional array is given, a `newaxis` will be inserted in the second
             dimension.
         exps : np.ndarray(K,)
-            Exponents of the primitives, :math:`\{\alpha_i\}`.
+            Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
 
         """
         self.angmom = angmom
@@ -227,7 +227,7 @@ class GeneralizedContractionShell:
         Returns
         -------
         exps : np.ndarray(K,)
-            Exponents of the primitives, :math:`\{\alpha_i\}`.
+            Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
 
         """
         return self._exps
@@ -239,7 +239,7 @@ class GeneralizedContractionShell:
         Parameters
         ----------
         exps : np.ndarray(K,)
-            Exponents of the primitives, :math:`\{\alpha_i\}`.
+            Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
 
         Raises
         ------
