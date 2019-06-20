@@ -81,22 +81,21 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
 
     # zeroth order (i.e. no derivatization)
     indices_noderiv = orders <= 0
-    zero_rel_coords, zero_angmom_comps, zero_gauss = (
-        rel_coords[:, :, indices_noderiv],
-        angmom_comps[:, :, indices_noderiv],
-        gauss[:, :, indices_noderiv],
-    )
+
+    zero_rel_coords = rel_coords[:, :, indices_noderiv]
+    zero_angmom_comps = angmom_comps[:, :, indices_noderiv]
+    zero_gauss = gauss[:, :, indices_noderiv]
+
     zeroth_part = np.prod(zero_rel_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
     # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for angular momentum vector, and
     # axis 2 for coordinate
 
     deriv_part = 1
-    nonzero_rel_coords, nonzero_orders, nonzero_angmom_comps, nonzero_gauss = (
-        rel_coords[:, :, ~indices_noderiv],
-        orders[~indices_noderiv],
-        angmom_comps[:, :, ~indices_noderiv],
-        gauss[:, :, ~indices_noderiv],
-    )
+    nonzero_rel_coords = rel_coords[:, :, ~indices_noderiv]
+    nonzero_orders = orders[~indices_noderiv]
+    nonzero_angmom_comps = angmom_comps[:, :, ~indices_noderiv]
+    nonzero_gauss = gauss[:, :, ~indices_noderiv]
+
     nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
 
     # derivatization part
