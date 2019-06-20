@@ -357,11 +357,12 @@ class GeneralizedContractionShell:
     def norm_prim_cart(self):
         r"""Return the normalization constants of the Cartesian Gaussian primitives.
 
-            .. math::
+        For a Cartesian primitive with exponent :math:`\alpha_i`, the normalization constant is:
 
-                N(\vec{a}, \alpha) = (2 * \alpha / \pi)^{3/4} *
-                (4 * \alpha)^{(a_x + a_y + a_z)/2} /
-                ((2 * a_x - 1)!! * (2 * a_y - 1)!! * (2 * a_z - 1)!!)^{1/2}
+        .. math::
+           N(\alpha_i, \vec{a}) = \sqrt {
+           \left(\frac{2\alpha_i}{\pi}\right)^\frac{3}{2}
+           \frac{(4\alpha_i)^{a_x + a_y + a_z}}{(2a_x - 1)!! (2a_y - 1)!! (2a_z - 1)!!}}
 
         Returns
         -------
