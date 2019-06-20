@@ -101,7 +101,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
 
     # derivatization part
     if nonzero_orders.size != 0:
-        # General approach: compute the whole coefficents, zero out the irrelevant parts
+        # General approach: compute the whole coefficients, zero out the irrelevant parts
         # NOTE: The following step assumes that there is only one set (nx, ny, nz) of derivatization
         # orders i.e. we assume that only one axis (axis 2) of `nonzero_orders` has a dimension
         # greater than 1

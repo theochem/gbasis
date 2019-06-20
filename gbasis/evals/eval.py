@@ -97,7 +97,7 @@ class Eval(BaseOneIndex):
             raise TypeError("`contractions` must be a `GeneralizedContractionShell` instance.")
         if not (isinstance(points, np.ndarray) and points.ndim == 2 and points.shape[1] == 3):
             raise TypeError(
-                "`points` must be given as a two-dimensional `numpy` array with 3 columnms."
+                "`points` must be given as a two-dimensional `numpy` array with 3 columns."
             )
 
         alphas = contractions.exps
