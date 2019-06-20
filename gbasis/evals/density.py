@@ -497,6 +497,7 @@ def evaluate_posdef_kinetic_energy_density(
     posdef_kindetic_energy_density : np.ndarray(N,)
         Positive definite kinetic energy density of the given transformed basis set evaluated at
         :math:`N` grid points.
+
     """
     output = np.zeros(points.shape[0])
     for orders in np.identity(3, dtype=int):
