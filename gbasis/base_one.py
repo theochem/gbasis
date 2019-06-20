@@ -248,7 +248,6 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
             \sum_{j} T_{i j} M_{jklm...} = M^{trans}_{iklm...}
 
-
         Parameters
         ----------
         transform : np.ndarray(K_orbs, K_cont)
