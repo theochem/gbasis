@@ -89,29 +89,21 @@ class Overlap(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
-        coord_a = contractions_one.coord
-        angmoms_a = contractions_one.angmom_components_cart
-        alphas_a = contractions_one.exps
-        coeffs_a = contractions_one.coeffs
-        norm_a_prim = contractions_one.norm_prim_cart
-        coord_b = contractions_two.coord
-        angmoms_b = contractions_two.angmom_components_cart
-        alphas_b = contractions_two.exps
-        coeffs_b = contractions_two.coeffs
-        norm_b_prim = contractions_two.norm_prim_cart
         return _compute_multipole_moment_integrals(
             np.zeros(3),
             np.zeros((1, 3), dtype=int),
-            coord_a,
-            angmoms_a,
-            alphas_a,
-            coeffs_a,
-            norm_a_prim,
-            coord_b,
-            angmoms_b,
-            alphas_b,
-            coeffs_b,
-            norm_b_prim,
+            # contraction on the left hand side
+            contractions_one.coord,
+            contractions_one.angmom_components_cart,
+            contractions_one.exps,
+            contractions_one.coeffs,
+            contractions_one.norm_prim_cart,
+            # contraction on the right hand side
+            contractions_two.coord,
+            contractions_two.angmom_components_cart,
+            contractions_two.exps,
+            contractions_two.coeffs,
+            contractions_two.norm_prim_cart,
         )[0]
 
 
