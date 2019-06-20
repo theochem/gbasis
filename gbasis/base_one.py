@@ -131,7 +131,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         for contraction in self.contractions:
             array = self.construct_array_contraction(contraction, **kwargs)
             # normalize contractions
-            array *= contraction.norm_cont.reshape(*array.shape[:2], *[1 for i in array.shape[2:]])
+            array *= contraction.norm_cont.reshape(*array.shape[:2], *[1 for _ in array.shape[2:]])
             # ASSUME array always has shape (M, L, ...)
             matrices.append(np.concatenate(array, axis=0))
         return np.concatenate(matrices, axis=0)
@@ -165,7 +165,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # normalize contractions
             matrix_contraction *= cont.norm_cont.reshape(
-                *matrix_contraction.shape[:2], *[1 for i in matrix_contraction.shape[2:]]
+                *matrix_contraction.shape[:2], *[1 for _ in matrix_contraction.shape[2:]]
             )
             # transform
             # ASSUME array always has shape (M, L, ...)
@@ -228,7 +228,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # normalize contractions
             matrix_contraction *= cont.norm_cont.reshape(
-                *matrix_contraction.shape[:2], *[1 for i in matrix_contraction.shape[2:]]
+                *matrix_contraction.shape[:2], *[1 for _ in matrix_contraction.shape[2:]]
             )
             # transform
             # ASSUME array always has shape (M, L, ...)

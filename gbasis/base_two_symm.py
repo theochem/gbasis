@@ -154,9 +154,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             for cont_two in self.contractions[i:]:
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for _ in block.shape[2:]])
                 block *= cont_two.norm_cont.reshape(
-                    1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
+                    1, 1, *block.shape[2:4], *[1 for _ in block.shape[4:]]
                 )
                 # assume array always has shape (M_1, L_1, M_2, L_2, ...)
                 block = np.concatenate(block, axis=0)
@@ -225,10 +225,10 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 block_sph = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
                 block_sph *= cont_one.norm_cont.reshape(
-                    *block_sph.shape[:2], *[1 for i in block_sph.shape[2:]]
+                    *block_sph.shape[:2], *[1 for _ in block_sph.shape[2:]]
                 )
                 block_sph *= cont_two.norm_cont.reshape(
-                    1, 1, *block_sph.shape[2:4], *[1 for i in block_sph.shape[4:]]
+                    1, 1, *block_sph.shape[2:4], *[1 for _ in block_sph.shape[4:]]
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 # transform
@@ -314,9 +314,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for _ in block.shape[2:]])
                 block *= cont_two.norm_cont.reshape(
-                    1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
+                    1, 1, *block.shape[2:4], *[1 for _ in block.shape[4:]]
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 if type_one == "spherical":
