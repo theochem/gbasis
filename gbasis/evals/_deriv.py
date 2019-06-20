@@ -75,23 +75,24 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     alphas = alphas[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis]
     # NOTE: `prim_coeffs` will be used as a 1D array
 
+    # shift coordinates
+    coords = coords - center
     # useful variables
-    rel_coords = coords - center
-    gauss = np.exp(-alphas * rel_coords ** 2)
+    gauss = np.exp(-alphas * coords ** 2)
 
     # zeroth order (i.e. no derivatization)
     indices_noderiv = orders <= 0
 
-    zero_rel_coords = rel_coords[:, :, indices_noderiv]
+    zero_coords = coords[:, :, indices_noderiv]
     zero_angmom_comps = angmom_comps[:, :, indices_noderiv]
     zero_gauss = gauss[:, :, indices_noderiv]
 
-    zeroth_part = np.prod(zero_rel_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
+    zeroth_part = np.prod(zero_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
     # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for angular momentum vector, and
     # axis 2 for coordinate
 
     deriv_part = 1
-    nonzero_rel_coords = rel_coords[:, :, ~indices_noderiv]
+    nonzero_coords = coords[:, :, ~indices_noderiv]
     nonzero_orders = orders[~indices_noderiv]
     nonzero_angmom_comps = angmom_comps[:, :, ~indices_noderiv]
     nonzero_gauss = gauss[:, :, ~indices_noderiv]
@@ -116,7 +117,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
             comb(nonzero_orders, indices_herm)
             * perm(nonzero_angmom_comps, nonzero_orders - indices_herm)
             * (-alphas ** 0.5) ** indices_herm
-            * nonzero_rel_coords ** indices_angmom
+            * nonzero_coords ** indices_angmom
         )
         # zero out the appropriate terms
         indices_zero = np.where(indices_herm < np.maximum(0, nonzero_orders - nonzero_angmom_comps))
@@ -129,7 +130,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         # evaluating the hermite polynomial at different orders (in sequence) may be nice in the
         # future.
         hermite = np.sum(
-            coeffs * eval_hermite(indices_herm, alphas ** 0.5 * nonzero_rel_coords), axis=0
+            coeffs * eval_hermite(indices_herm, alphas ** 0.5 * nonzero_coords), axis=0
         )
         hermite = np.prod(hermite, axis=1)
 
