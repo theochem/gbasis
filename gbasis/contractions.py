@@ -383,7 +383,9 @@ class GeneralizedContractionShell:
 
     @property
     def num_cart(self):
-        """Return the number of Cartesian contractions of the given angular momentum.
+        r"""Return the number of Cartesian contractions of the given angular momentum.
+
+        .. math:: \frac{(\ell + 1)(\ell + 2)}{2}
 
         Returns
         -------
@@ -395,7 +397,9 @@ class GeneralizedContractionShell:
 
     @property
     def num_sph(self):
-        """Return the number of spherical contractions of the given angular momentum.
+        r"""Return the number of spherical contractions of the given angular momentum.
+
+        .. math:: 1 + 2\ell
 
         Returns
         -------
