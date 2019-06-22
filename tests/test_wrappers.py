@@ -52,13 +52,27 @@ def test_from_iodata():
         basis[4].coeffs, np.array([0.1543289673, 0.5353281423, 0.4446345422]).reshape(-1, 1)
     )
 
-    with pytest.raises(ValueError):
-        basis[2].angmom_components_sph  # pylint: disable=W0104
     # artificially change angular momentum
+    basis[2].angmom = 0
+    assert basis[2].angmom_components_sph == (0,)
+    basis[2].angmom = 1
+    assert basis[2].angmom_components_sph == (1, -1, 0)
     basis[2].angmom = 2
     assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2)
     basis[2].angmom = 3
     assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2, 3, -3)
+
+    # NOTE: you shouldn't actually change the magnetic quantum number that is not compatible with
+    # the angular momentum, but we do so here to check that user input is accepted
+    mol.obasis.conventions[(0, "p")] = ["sc1"]
+    basis = from_iodata(mol)
+    basis[2].angmom = 0
+    assert basis[2].angmom_components_sph == (1,)
+
+    mol.obasis.conventions[(1, "p")] = ["pc1", "pc0", "ps1"]
+    basis = from_iodata(mol)
+    basis[2].angmom = 1
+    assert basis[2].angmom_components_sph == (1, 0, -1)
 
     with pytest.raises(ValueError):
         mol.obasis = mol.obasis._replace(primitive_normalization="L1")

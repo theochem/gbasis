@@ -43,6 +43,13 @@ def from_iodata(mol):
 
     cart_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "c"}
     sph_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "p"}
+    if 0 not in sph_conventions:
+        sph_conventions[0] = ["sc0"]
+    if 1 not in sph_conventions:
+        # hard code conversion from cartesian form to spherical
+        p_orb_conversion = {"x": "pc1", "z": "pc0", "y": "ps1"}
+        # convert given cartesian ordering to spherical
+        sph_conventions[1] = [p_orb_conversion[i] for i in cart_conventions[1]]
 
     # NOTE: hard-coded angular momentum from iodata.basis.ANGMOM_CHARS
     iodata_angmom = "spdfghiklmnoqrtuvwxyzabce"
