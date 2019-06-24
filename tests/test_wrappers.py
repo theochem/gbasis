@@ -75,6 +75,10 @@ def test_from_iodata():
     assert basis[2].angmom_components_sph == (1, 0, -1)
 
     with pytest.raises(ValueError):
+        basis[2].angmom = -1
+        basis[2].angmom_components_sph
+
+    with pytest.raises(ValueError):
         mol.obasis = mol.obasis._replace(primitive_normalization="L1")
         basis = from_iodata(mol)
 
