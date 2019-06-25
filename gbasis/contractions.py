@@ -77,7 +77,7 @@ class GeneralizedContractionShell:
         The x, y, and z components of the angular momentum vectors
         (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
         `L` is the number of Cartesian contracted Gaussian functions for the given angular
-        momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`.
+        momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`.
         Property of `GeneralizedContractionShell`.
     angmom_components_sph : tuple of int
         Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
@@ -97,13 +97,13 @@ class GeneralizedContractionShell:
     norm_prim_cart : np.ndarray(L, K)
         The normalization constants of the Cartesian Gaussian primitives.
         `L` is the number of contracted Cartesian Gaussian functions for the given angular
-        momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`.
+        momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`.
         Property of `GeneralizedContractionShell`.
     num_cart : int
-        Number of Cartesian contractions of angular momentum, `angmom`.
+        Number of Cartesian contractions of angular momentum, :math:`\ell`.
         Property of `GeneralizedContractionShell`.
     num_sph : int
-        Number of spherical contractions of angular momentum, `angmom`.
+        Number of spherical contractions of angular momentum, :math:`\ell`.
         Property of `GeneralizedContractionShell`.
 
     Methods
@@ -329,7 +329,7 @@ class GeneralizedContractionShell:
             The x, y, and z components of the angular momentum vectors
             (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
             `L` is the number of Cartesian contracted Gaussian functions for the given
-            angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
+            angular momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`
 
         """
         return np.array(
@@ -369,7 +369,7 @@ class GeneralizedContractionShell:
         norm_prim_cart : np.ndarray(L, K)
             The normalization constants of the Cartesian Gaussian primitives.
             `L` is the number of contracted Cartesian Gaussian functions for the given angular
-            momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
+            momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`
             `K` is the number of exponents (i.e. primitives).
 
         """

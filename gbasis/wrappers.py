@@ -64,7 +64,7 @@ def from_iodata(mol):
                 The x, y, and z components of the angular momentum vectors
                 (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
                 `L` is the number of Cartesian contracted Gaussian functions for the given
-                angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
+                angular momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`
 
             """
             if self.angmom == 0:

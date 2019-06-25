@@ -234,7 +234,7 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         The angular momentum :math:`\ell` of the basis function(s).
     cartesian_order : np.ndarray((angmom + 1) * (angmom + 2) / 2, 3)
         The x, y, and z components of the angular momentum for each primitive,
-        (:math:`\vec{a} = (a_x, a_y, a_z)`, where :math:`a_x + a_y + a_z = l`).
+        (:math:`\vec{a} = (a_x, a_y, a_z)`, where :math:`a_x + a_y + a_z = \ell`).
         The order in which the contractions are given defines the order in which
         they will appear in the transformation matrix.
     spherical_order : (2 * angmom + 1)-tuple/list of int
