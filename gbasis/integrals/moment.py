@@ -22,28 +22,28 @@ class Moment(BaseTwoIndexSymmetric):
         Initialize.
     construct_array_contraction(self, contraction) : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
         Return the moment associated with a `GeneralizedContractionShell` instance.
-        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
-        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        `M_2` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the second index.
-        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart)
         Return the moment integrals associated with Cartesian Gaussians.
-        :math:`K_cart` is the total number of Cartesian contractions within the instance.
+        `K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph)
         Return the moment integrals associated with spherical Gaussians (atomic orbitals).
-        :math:`K_sph` is the total number of spherical contractions within the instance.
+        `K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, K_cont)
         Return the moment integrals associated with all of the contraction in the given coordinate
         system.
-        :math:`K_cont` is the total number of contractions within the given basis set.
+        `K_cont` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
         Return the moment integrals associated with the linear combinations of contractions in the
         given coordinate system.
-        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -64,7 +64,7 @@ class Moment(BaseTwoIndexSymmetric):
         moment_coord : np.ndarray(3,)
             Center of the moment.
         moment_orders : np.ndarray(D, 3)
-            Orders of the moment for each dimension :math:`(x, y, z)`.
+            Orders of the moment for each dimension (x, y, z).
             Note that a two dimensional array must be given, even if there is only one set of orders
             of the moment.
 
@@ -73,16 +73,16 @@ class Moment(BaseTwoIndexSymmetric):
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, D)
             Moment associated with the given instances of `GeneralizedContractionShell`.
             Dimension 0 corresponds to the segmented contraction within `contractions_one`.
-            :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+            `M_1` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the first index.
             Dimension 1 corresponds to the angular momentum vector of the `contractions_one`.
-            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
             Dimension 2 corresponds to the segmented contraction within `contractions_two`.
-            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            `M_2` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the second index.
             Dimension 3 corresponds to the angular momentum vector of the `contractions_two`.
-            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
             Dimension 4 corresponds to the orders of the moments. `D` is the number of orders for
             which the moment is computed.
@@ -167,7 +167,7 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None, coord_ty
     moment_coord : np.ndarray(3,)
         Center of the moment.
     moment_orders : np.ndarray(D, 3)
-        Orders of the moment for each dimension :math:`(x, y, z)`.
+        Orders of the moment for each dimension (x, y, z).
         Note that a two dimensional array must be given, even if there is only one set of orders
         of the moment.
     transform : np.ndarray(K_orbs, K_cont)
@@ -188,10 +188,10 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None, coord_ty
     -------
     array : np.ndarray(K_orbs, K_orbs, D)
         Moment integral of the given basis set.
-        Dimensions 0 and 1 of the array correspond to the basis functions. :math:`K_orbs` is the
+        Dimensions 0 and 1 of the array correspond to the basis functions. `K_orbs` is the
         number of basis functions in the basis set.
         Dimension 2 of the array corresponds to the moment.
-        :math:`D` is the number of different moments.
+        `D` is the number of different moments.
 
     Notes
     -----

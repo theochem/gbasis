@@ -27,29 +27,29 @@ class EvalDeriv(BaseOneIndex):
         Initialize.
     construct_array_contraction(contraction, points, orders) : np.ndarray(M, L_cart, N)
         Return the evaluations of the given Cartesian contractions at the given coordinates.
-        :math:`M` is the number of segmented contractions with the same exponents (and angular
+        `M` is the number of segmented contractions with the same exponents (and angular
         momentum).
-        :math:`L_cart` is the number of Cartesian contractions for the given angular momentum.
-        :math:`N` is the number of coordinates at which the contractions are evaluated.
+        `L_cart` is the number of Cartesian contractions for the given angular momentum.
+        `N` is the number of coordinates at which the contractions are evaluated.
     construct_array_cartesian(self, points, orders) : np.ndarray(K_cart, N)
         Return the evaluations of the derivatives of the Cartesian contractions of the instance at
         the given coordinates.
-        :math:`K_cart` is the total number of Cartesian contractions within the instance.
-        :math:`N` is the number of coordinates at which the contractions are evaluated.
+        `K_cart` is the total number of Cartesian contractions within the instance.
+        `N` is the number of coordinates at which the contractions are evaluated.
     construct_array_spherical(self, points, orders) : np.ndarray(K_sph, N)
         Return the evaluations of the derivatives of the spherical contractions of the instance at
         the given coordinates.
-        :math:`K_sph` is the total number of spherical contractions within the instance.
-        :math:`N` is the number of coordinates at which the contractions are evaluated.
+        `K_sph` is the total number of spherical contractions within the instance.
+        `N` is the number of coordinates at which the contractions are evaluated.
     construct_array_mix(self, coord_types, points, orders) : np.ndarray(K_cont, N)
         Return the array associated with all of the contraction in the given coordinate system.
-        :math:`K_cont` is the total number of contractions within the given basis set.
-        :math:`N` is the number of coordinates at which the contractions are evaluated.
+        `K_cont` is the total number of contractions within the given basis set.
+        `N` is the number of coordinates at which the contractions are evaluated.
     construct_array_lincomb(self, transform, coord_type, points, orders) : np.ndarray(K_orbs, N)
         Return the evaluation of derivatives of the  linear combinations of contractions in the
         given coordinate system.
-        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
-        :math:`N` is the number of coordinates at which the contractions are evaluated.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
+        `N` is the number of coordinates at which the contractions are evaluated.
 
     """
 
@@ -163,8 +163,8 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
         Evaluations of the derivative of the basis functions at the given points.
         If keyword argument `transform` is provided, then the transformed basis functions will be
         evaluated at the given points.
-        :math:`K` is the total number of basis functions within the given basis set.
-        :math:`N` is the number of coordinates at which the contractions are evaluated.
+        `K` is the total number of basis functions within the given basis set.
+        `N` is the number of coordinates at which the contractions are evaluated.
 
     """
     if transform is not None:

@@ -63,7 +63,7 @@ def from_iodata(mol):
             angmom_components_cart : np.ndarray(L, 3)
                 The x, y, and z components of the angular momentum vectors
                 (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
-                :math:`L` is the number of Cartesian contracted Gaussian functions for the given
+                `L` is the number of Cartesian contracted Gaussian functions for the given
                 angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
 
             """

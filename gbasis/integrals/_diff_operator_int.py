@@ -70,7 +70,7 @@ def _compute_differential_operator_integrals_intermediate(
     Raises
     ------
     IndexError
-        If the `orders_diff` is all zeros, i.e. :math:`(0, 0, 0)`.
+        If the `orders_diff` is all zeros, i.e. `(0, 0, 0)`.
 
     """
     # pylint: disable=R0914
@@ -202,7 +202,7 @@ def _compute_differential_operator_integrals(
     Raises
     ------
     IndexError
-        If the `orders_diff` is all zeros, i.e. :math:`(0, 0, 0)`.
+        If the `orders_diff` is all zeros, i.e. `(0, 0, 0)`.
 
     """
     integrals = _compute_differential_operator_integrals_intermediate(

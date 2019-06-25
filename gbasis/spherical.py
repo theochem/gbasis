@@ -1,4 +1,4 @@
-"""Convert from Cartesian Gaussians to Spherical Gaussians."""
+"""Convert from Cartesian Gaussians to spherical Gaussians."""
 import numpy as np
 from scipy.special import comb, factorial, factorial2
 

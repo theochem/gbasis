@@ -25,29 +25,29 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, 3)
         Return the integral over the momentum operator associated with a
         `GeneralizedContractionShell` instance.
-        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
-        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        `M_2` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the second index.
-        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart, 3)
         Return the integral over the momentum operator associated with Cartesian Gaussians.
-        :math:`K_cart` is the total number of Cartesian contractions within the instance.
+        `K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, K_sph, 3)
         Return the integral over the momentum operator associated with spherical Gaussians (atomic
         orbitals).
-        :math:`K_sph` is the total number of spherical contractions within the instance.
+        `K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types) : np.ndarray(K_cont, K_cont, 3)
         Return the integral over the momentum operator associated with the contraction in the given
         coordinate system.
-        :math:`K_cont` is the total number of contractions within the given basis set.
+        `K_cont` is the total number of contractions within the given basis set.
     construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs, 3)
         Return the integral over the momentum operator associated with linear combinations of
         spherical Gaussians (linear combinations of atomic orbitals).
-        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -69,19 +69,19 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, 3)
             Integral over than momentum operator associated with the given instances of
             `GeneralizedContractionShell`.
-            Dimension 0 corresponds to the segmented contraction within `cont_one`. :math:`M_1` is
+            Dimension 0 corresponds to the segmented contraction within `cont_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
             Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
-            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
             Dimension 2 corresponds to the segmented contraction within `cont_two`.
-            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            `M_2` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the second index.
             Dimension 3 corresponds to the angular momentum vector of the `cont_two`.
-            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
-            Dimension 4 corresponds to the dimension of the momentum :math:`(x, y, z)`.
+            Dimension 4 corresponds to the dimension of the momentum (x, y, z).
 
         Raises
         ------
@@ -136,7 +136,7 @@ def momentum_integral(basis, transform=None, coord_type="spherical"):
     -------
     array : np.ndarray(K_orbs, K_orbs)
         Momentum integral of the given basis set.
-        Dimensions 0 and 1 of the array correspond to the basis functions. :math:`K_orbs` is the
+        Dimensions 0 and 1 of the array correspond to the basis functions. `K_orbs` is the
         number of basis functions in the basis set.
 
     """

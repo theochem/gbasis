@@ -76,7 +76,7 @@ class GeneralizedContractionShell:
     angmom_components_cart : np.ndarray(L, 3)
         The x, y, and z components of the angular momentum vectors
         (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
-        :math:`L` is the number of Cartesian contracted Gaussian functions for the given angular
+        `L` is the number of Cartesian contracted Gaussian functions for the given angular
         momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`.
         Property of `GeneralizedContractionShell`.
     angmom_components_sph : tuple of int
@@ -96,7 +96,7 @@ class GeneralizedContractionShell:
         components and segmented contraction shells.
     norm_prim_cart : np.ndarray(L, K)
         The normalization constants of the Cartesian Gaussian primitives.
-        :math:`L` is the number of contracted Cartesian Gaussian functions for the given angular
+        `L` is the number of contracted Cartesian Gaussian functions for the given angular
         momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`.
         Property of `GeneralizedContractionShell`.
     num_cart : int
@@ -328,7 +328,7 @@ class GeneralizedContractionShell:
         angmom_components_cart : np.ndarray(L, 3)
             The x, y, and z components of the angular momentum vectors
             (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
-            :math:`L` is the number of Cartesian contracted Gaussian functions for the given
+            `L` is the number of Cartesian contracted Gaussian functions for the given
             angular momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
 
         """
@@ -368,9 +368,9 @@ class GeneralizedContractionShell:
         -------
         norm_prim_cart : np.ndarray(L, K)
             The normalization constants of the Cartesian Gaussian primitives.
-            :math:`L` is the number of contracted Cartesian Gaussian functions for the given angular
+            `L` is the number of contracted Cartesian Gaussian functions for the given angular
             momentum, i.e. :math:`(angmom + 1) * (angmom + 2) / 2`
-            :math:`K` is the number of exponents (i.e. primitives).
+            `K` is the number of exponents (i.e. primitives).
 
         """
         exponents = self.exps[np.newaxis, :]

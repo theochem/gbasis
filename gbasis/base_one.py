@@ -28,22 +28,22 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         Initialize.
     construct_array_contraction(self, contraction) : np.ndarray(M, L_cart, ...)
         Return the array associated with a `GeneralizedContractionShell` instance.
-        :math:`M` is the number of segmented contractions with the same exponents (and angular
+        `M` is the number of segmented contractions with the same exponents (and angular
         momentum).
-        :math:`L_cart` is the number of Cartesian contractions for the given angular momentum.
+        `L_cart` is the number of Cartesian contractions for the given angular momentum.
     construct_array_cartesian(self) : np.ndarray(K_cart, ...)
         Return the array associated with Cartesian Gaussians.
-        :math:`K_cart` is the total number of Cartesian contractions within the instance.
+        `K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self) : np.ndarray(K_sph, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
-        :math:`K_sph` is the total number of spherical contractions within the instance.
+        `K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, ...)
         Return the array associated with all of the contraction in the given coordinate system.
-        :math:`K_cont` is the total number of contractions within the given basis set.
+        `K_cont` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform, coord_type) : np.ndarray(K_orbs, ...)
         Return the array associated with linear combinations of contractions in the given coordinate
         system.
-        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -105,7 +105,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         corresponding to the angular momentum vector. These other methods **will** fail with little
         warning if the shape of the output is different. Even if there is only one contraction (i.e.
         segmented contraction), the first index must correspond to the contraction. In other words,
-        the shape must still be :math:`(1, L, N)`.
+        the shape must still be (1, L, N).
 
         """
 
@@ -123,7 +123,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         -------
         array : np.ndarray(K_cart, ...)
             Array associated with the given set of contracted Cartesian Gaussians.
-            Dimension 0 is associated with the contracted Cartesian Gaussian. :math:`K_cart` is the
+            Dimension 0 is associated with the contracted Cartesian Gaussian. `K_cart` is the
             total number of Cartesian contractions within the instance.
 
         """
@@ -151,7 +151,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         array : np.ndarray(K_sph, ...)
             Array associated with the atomic orbitals associated with the given set of contracted
             Cartesian Gaussians.
-            Dimension 0 is associated with the contracted spherical Gaussian. :math:`K_sph` is the
+            Dimension 0 is associated with the contracted spherical Gaussian. `K_sph` is the
             total number of Cartesian contractions within the instance.
 
         """
@@ -194,7 +194,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         array : np.ndarray(K_cont, ...)
             Array associated with the spherical contrations of the basis set.
             Dimension 0 is associated with each spherical contraction in the basis set.
-            :math:`K_cont` is the total number of contractions within the given basis set.
+            `K_cont` is the total number of contractions within the given basis set.
 
         Raises
         ------
@@ -272,7 +272,7 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         -------
         array : np.ndarray(K_orbs, ...)
             Array whose first index is associated with the linear combinations of the contractions.
-            :math:`K_orbs` is the number of basis functions produced after the linear combinations.
+            `K_orbs` is the number of basis functions produced after the linear combinations.
 
         Raises
         ------

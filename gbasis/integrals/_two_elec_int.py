@@ -34,17 +34,17 @@ def _compute_two_elec_integrals_angmom_zero(
     boys_func : function(orders, weighted_dist)
         Boys function used to evaluate the two-electron integral.
         `orders` is the orders of the Boys integral that will be evaluated. It should be a
-        three-dimensional `numpy` array of integers with `shape` :math:`(M, 1, 1, 1)` where :
+        three-dimensional `numpy` array of integers with `shape` (M, 1, 1, 1) where :
         math:`M` is the number of orders that will be evaluated.
         `weighted_dist` is the weighted interatomic distance, i.e.
         :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
         the exponent of the i-th primitive on the left side and the :math:`\beta_j` is the exponent
         of the j-th primitive on the right side. It should be a four-dimensional `numpy` array of
-        floats with `shape` :math:`(1, N, K_b, K_a)` where :math:`N` is the number of point charges
-        and :math:`K_a` and :math:`K_b` are the number of primitives on the left and right side,
+        floats with `shape` (1, N, K_b, K_a) where `N` is the number of point charges
+        and `K_a` and `K_b` are the number of primitives on the left and right side,
         respectively.
         Output is the Boys function evaluated for each order and the weighted interatomic distance.
-        It will be a three-dimensional `numpy` array with `shape` :math:`(M, N, K_b, K_a)`.
+        It will be a three-dimensional `numpy` array with `shape` (M, N, K_b, K_a).
     coord_a : np.ndarray(3,)
         Center of the contraction a.
     exps_a : np.ndarray(K_a,)
@@ -181,17 +181,17 @@ def _compute_two_elec_integrals(
     boys_func : function(orders, weighted_dist)
         Boys function used to evaluate the two-electron integral.
         `orders` is the orders of the Boys integral that will be evaluated. It should be a
-        three-dimensional `numpy` array of integers with `shape` :math:`(M, 1, 1, 1)` where :
-        math:`M` is the number of orders that will be evaluated.
+        three-dimensional `numpy` array of integers with `shape` (M, 1, 1, 1) where
+        `M` is the number of orders that will be evaluated.
         `weighted_dist` is the weighted interatomic distance, i.e.
         :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
         the exponent of the i-th primitive on the left side and the :math:`\beta_j` is the exponent
         of the j-th primitive on the right side. It should be a four-dimensional `numpy` array of
-        floats with `shape` :math:`(1, N, K_b, K_a)` where :math:`N` is the number of point charges
-        and :math:`K_a` and :math:`K_b` are the number of primitives on the left and right side,
+        floats with `shape` (1, N, K_b, K_a) where `N` is the number of point charges
+        and `K_a` and `K_b` are the number of primitives on the left and right side,
         respectively.
         Output is the Boys function evaluated for each order and the weighted interatomic distance.
-        It will be a three-dimensional `numpy` array with `shape` :math:`(M, N, K_b, K_a)`.
+        It will be a three-dimensional `numpy` array with `shape` (M, N, K_b, K_a).
     coord_a : np.ndarray(3,)
         Center of the contraction a.
     angmom_a : int

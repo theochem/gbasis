@@ -29,38 +29,38 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
     construct_array_contraction(self, cont1, cont2, cont3, cont4, **kwargs) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4, ...)
         Return the array associated with a `GeneralizedContractionShell` instances.
-        :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+        `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
-        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        `M_2` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the second index.
-        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        :math:`M_3` is the number of segmented contractions with the same exponents (and angular
+        `M_3` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the third index.
-        :math:`L_cart_3` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_3` is the number of Cartesian contractions for the given angular momentum
         associated with the third index.
-        :math:`M_4` is the number of segmented contractions with the same exponents (and angular
+        `M_4` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the fourth index.
-        :math:`L_cart_4` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_4` is the number of Cartesian contractions for the given angular momentum
         associated with the fourth index.
     construct_array_cartesian(self, **kwargs) : np.ndarray(K_cart, K_cart, K_cart, K_cart, ...)
         Return the array associated with Cartesian Gaussians.
-        :math:`K_cart` is the total number of Cartesian contractions within the instance.
+        `K_cart` is the total number of Cartesian contractions within the instance.
     construct_array_spherical(self, **kwargs) : np.ndarray(K_sph, K_sph, K_sph, K_sph, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
-        :math:`K_sph` is the total number of spherical contractions within the instance.
+        `K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types, **kwargs) :
     np.ndarray(K_cont, K_cont, K_cont, K_cont, ...)
         Return the array associated with all of the contraction in the given coordinate
         system.
-        :math:`K_cont` is the total number of contractions within the given basis set.
+        `K_cont` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform, coord_type) :
     np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, ...)
         Return the array associated with linear combinations of contractions in the given coordinate
         system.
-        :math:`K_orbs` is the number of basis functions produced after the linear combinations.
+        `K_orbs` is the number of basis functions produced after the linear combinations.
 
     """
 
@@ -109,29 +109,29 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         -------
         array_cont : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4, ...)
             Return the array associated with a `GeneralizedContractionShell` instances.
-            Dimension 0 corresponds to the segmented contraction within `cont_one`. :math:`M_1` is
+            Dimension 0 corresponds to the segmented contraction within `cont_one`. `M_1` is
             the number of segmented contractions with the same exponents (and angular momentum)
             associated with the first index.
             Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
-            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
             Dimension 2 corresponds to the segmented contraction within `cont_two`.
-            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            `M_2` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the second index.
             Dimension 3 corresponds to the angular momentum vector of the `cont_two`.
-            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
             Dimension 4 corresponds to the segmented contraction within `cont_three`.
-            :math:`M_3` is the number of segmented contractions with the same exponents (and angular
+            `M_3` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the third index.
             Dimension 5 corresponds to the angular momentum vector of the `cont_three`.
-            :math:`L_cart_3` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_3` is the number of Cartesian contractions for the given angular momentum
             associated with the third index.
             Dimension 6 corresponds to the segmented contraction within `cont_four`.
-            :math:`M_4` is the number of segmented contractions with the same exponents (and angular
+            `M_4` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the fourth index.
             Dimension 7 corresponds to the angular momentum vector of the `cont_four`.
-            :math:`L_cart_4` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_4` is the number of Cartesian contractions for the given angular momentum
             associated with the fourth index.
 
         Notes
@@ -150,7 +150,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         if the shape of the output is different.
         Even if all of `cont1`, `cont2`, `cont3`, and `cont4` are segmented contractions,
         dimensions 0, 2, 4, and 6 must correspond to the contraction. In other words, the shape must
-        still be :math:`(1, L_1, 1, L_2, 1, L_3, 1, L_4)`.
+        still be (1, L_1, 1, L_2, 1, L_3, 1, L_4).
 
         """
 
@@ -169,7 +169,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         array : np.ndarray(K_cart, K_cart, K_cart, K_cart, ...)
             Array associated with the given set of contracted Cartesian Gaussians.
             Dimensions 0, 1, 2, and 3 of the array are associated with the contracted Cartesian
-            Gaussians. :math:`K_cart` is the total number of Cartesian contractions within the
+            Gaussians. `K_cart` is the total number of Cartesian contractions within the
             instance.
 
         Notes
@@ -256,7 +256,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
             Array associated with the atomic orbitals associated with the given set(s) of contracted
             Cartesian Gaussians.
             Dimensions 0, 1, 2 and 3 of the array are associated with four contracted spherical
-            Gaussians (atomic orbitals). :math:`K_sph` is the total number of spherical contractions
+            Gaussians (atomic orbitals). `K_sph` is the total number of spherical contractions
             within the instance.
 
         Notes
@@ -402,7 +402,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
             Array associated with the atomic orbitals associated with the given set of contracted
             Cartesian Gaussians.
             Dimensions 0, 1, 2 and 3 of the array are associated with two contractions in the given
-            coordinate system. :math:`K_cont` is the total number of contractions within the
+            coordinate system. `K_cont` is the total number of contractions within the
             instance.
 
         Raises
@@ -585,7 +585,7 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
             Array whose first four indices are associated with the linear combinations of the
             contractions.
             Dimensions 0, 1, 2 and 3 of the array correspond to the linear combination of contracted
-            spherical Gaussians. :math:`K_orbs` is the number of basis functions produced after the
+            spherical Gaussians. `K_orbs` is the number of basis functions produced after the
             linear combinations.
 
         Raises

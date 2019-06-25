@@ -32,29 +32,29 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
     construct_array_contraction(self, contractions_one, contractions_two, **kwargs) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
         Return the array associated with a `GeneralizedContractionShell` instance.
-       :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+       `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
-        :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+        `M_2` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the second index.
-        :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
     construct_array_cartesian(self, **kwargs) : np.ndarray(K_cart_1, K_cart_2, ...)
         Return the array associated with Cartesian Gaussians.
-        :math:`K_cart_1` is the total number of Cartesian contractions within `contractions_one`.
-        :math:`K_cart_2` is the total number of Cartesian contractions within `contractions_two`.
+        `K_cart_1` is the total number of Cartesian contractions within `contractions_one`.
+        `K_cart_2` is the total number of Cartesian contractions within `contractions_two`.
     construct_array_spherical(self, **kwargs) : np.ndarray(K_sph_1, K_sph_2, ...)
         Return the array associated with spherical Gaussians (atomic orbitals).
-        :math:`K_sph_1` is the total number of spherical contractions within `contractions_one`.
-        :math:`K_sph_2` is the total number of spherical contractions within `contractions_two`.
+        `K_sph_1` is the total number of spherical contractions within `contractions_one`.
+        `K_sph_2` is the total number of spherical contractions within `contractions_two`.
     construct_array_lincomb(self, transform_one, transform_two, coord_type, **kwargs) :
     np.ndarray(K_orbs_1, K_orbs_2, ...)
         Return the array associated with linear combinations of contractions in the given coordinate
         system.
-        :math:`K_orbs_1` is the number of basis functions produced by linear combinations of the
+        `K_orbs_1` is the number of basis functions produced by linear combinations of the
         spherical contractions associated with `contractions_one`.
-        :math:`K_orbs_2` is the number of basis functions produced by linear combinations of the
+        `K_orbs_2` is the number of basis functions produced by linear combinations of the
         spherical contractions associated with `contractions_two`.
 
     """
@@ -116,16 +116,16 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
             Array associated with the given instance(s) of GeneralizedContractionShell.
             Dimension 0 corresponds to the segmented contraction within `contractions_one`.
-            :math:`M_1` is the number of segmented contractions with the same exponents (and angular
+            `M_1` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the first index.
             Dimension 1 corresponds to the angular momentum vector of the `contractions_one`.
-            :math:`L_cart_1` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
             Dimension 2 corresponds to the segmented contraction within `contractions_two`.
-            :math:`M_2` is the number of segmented contractions with the same exponents (and angular
+            `M_2` is the number of segmented contractions with the same exponents (and angular
             momentum) associated with the second index.
             Dimension 3 corresponds to the angular momentum vector of the `contractions_two`.
-            :math:`L_cart_2` is the number of Cartesian contractions for the given angular momentum
+            `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
 
         Notes
@@ -143,7 +143,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         These other methods **will** fail with little warning if the shape of the output is
         different. Even if both `contractions_one` and `contractions_two` are segmented
         contractions, the first and third indices must correspond to the contraction. In other
-        words, the shape must still be :math:`(1, L_1, 1, L_2)`.
+        words, the shape must still be (1, L_1, 1, L_2).
 
         """
 
@@ -162,10 +162,10 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         array :  np.ndarray(K_cart_1, K_cart_2, ...)
             Array associated with the given set of contracted Cartesian Gaussians.
             Dimension 0 corresponds to the Cartesian contraction within `contractions_one`.
-            :math:`K_cart_1` is the total number of Cartesian contractions within
+            `K_cart_1` is the total number of Cartesian contractions within
             `contractions_one`.
             Dimension 1 corresponds to the Cartesian contraction within `contractions_two`.
-            :math:`K_cart_2` is the total number of Cartesian contractions within
+            `K_cart_2` is the total number of Cartesian contractions within
             `contractions_two`.
 
         """
@@ -206,9 +206,9 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             Array associated with the atomic orbitals associated with the given set(s) of contracted
             Cartesian Gaussians.
             Dimension 0 corresponds to the Cartesian contraction within `contractions_one`.
-            :math:`K_sph_1` is the total number of Cartesian contractions within `contractions_one`.
+            `K_sph_1` is the total number of Cartesian contractions within `contractions_one`.
             Dimension 1 corresponds to the Cartesian contraction within `contractions_two`.
-            :math:`K_sph_2` is the total number of Cartesian contractions within `contractions_two`.
+            `K_sph_2` is the total number of Cartesian contractions within `contractions_two`.
 
         """
         matrices_spherical = []
@@ -276,7 +276,7 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             Array associated with the atomic orbitals associated with the given set of contracted
             Cartesian Gaussians.
             First two indices of the array are associated with two contractions in the given
-            coordinate system. :math:`K_cont` is the total number of contractions within the
+            coordinate system. `K_cont` is the total number of contractions within the
             instance.
 
         Raises
@@ -405,11 +405,11 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         array : np.ndarray(K_orbs_1, K_orbs_2, ...)
             Array associated with the linear combinations of given two sets of contractions.
             Dimension 0 corresponds to the linear combination of contractions with the first set of
-            contractions, `contractions_one`. :math:`K_orbs_1` is the number of basis functions
+            contractions, `contractions_one`. `K_orbs_1` is the number of basis functions
             produced by linear combination of the spherical contractions associated with
             `contractions_one`.
             Dimension 1 corresponds to the linear combination of contractions associated with the
-            second set of contractions, `contractions_two`. :math:`K_orbs_2` is the number of basis
+            second set of contractions, `contractions_two`. `K_orbs_2` is the number of basis
             functions produced by linear combinations of the spherical contractions associated with
             `contractions_two`.
 

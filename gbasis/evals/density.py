@@ -20,7 +20,7 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     Returns
     -------
     density : np.ndarray(N,)
-        Density evaluated at :math:`N` grid points.
+        Density evaluated at `N` grid points.
 
     Raises
     ------
@@ -95,7 +95,7 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, coord_ty
     Returns
     -------
     density : np.ndarray(N,)
-        Density evaluated at :math:`N` grid points.
+        Density evaluated at `N` grid points.
 
     """
     orb_eval = evaluate_basis(basis, points, transform=transform, coord_type=coord_type)
@@ -167,7 +167,7 @@ def evaluate_deriv_reduced_density_matrix(
     Returns
     -------
     deriv_reduced_density_matrix : np.ndarray(N,)
-        Derivative of the first-order reduced density matrix evaluated at :math:`N` grid points.
+        Derivative of the first-order reduced density matrix evaluated at `N` grid points.
 
     """
     deriv_orb_eval_one = evaluate_deriv_basis(
@@ -222,7 +222,7 @@ def evaluate_deriv_density(
     Returns
     -------
     density_deriv : np.ndarray(N,)
-        Derivative of the density evaluated at :math:`N` grid points.
+        Derivative of the density evaluated at `N` grid points.
 
     """
     # pylint: disable=R0914
@@ -291,7 +291,7 @@ def evaluate_density_gradient(
     Returns
     -------
     density_gradient : np.ndarray(N, 3)
-        Gradient of the density evaluated at :math:`N` grid points.
+        Gradient of the density evaluated at `N` grid points.
 
     """
     return np.array(
@@ -359,7 +359,7 @@ def evaluate_density_laplacian(
     Returns
     -------
     density_laplacian : np.ndarray(N)
-        Laplacian of the density evaluated at :math:`N` grid points.
+        Laplacian of the density evaluated at `N` grid points.
 
     """
     output = evaluate_deriv_density(
@@ -424,7 +424,7 @@ def evaluate_density_hessian(
     Returns
     -------
     density_hessian : np.ndarray(N, 3, 3)
-        Hessian of the density evaluated at :math:`N` grid points.
+        Hessian of the density evaluated at `N` grid points.
         Dimension 0 corresponds to the point, ordered as in `points`.
         Dimensions 1, 2 correspond to the dimensions `(x, y, z)` in which the derivative of density
         was calculated.
@@ -496,7 +496,7 @@ def evaluate_posdef_kinetic_energy_density(
     -------
     posdef_kindetic_energy_density : np.ndarray(N,)
         Positive definite kinetic energy density of the given transformed basis set evaluated at
-        :math:`N` grid points.
+        `N` grid points.
 
     """
     output = np.zeros(points.shape[0])
@@ -557,7 +557,7 @@ def evaluate_general_kinetic_energy_density(
     Returns
     -------
     general_kinetic_energy_density : np.ndarray(N,)
-        General kinetic energy density of the given transformed basis set evaluated at :math:`N`
+        General kinetic energy density of the given transformed basis set evaluated at `N`
         grid points.
 
     Raises
