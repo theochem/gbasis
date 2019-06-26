@@ -297,6 +297,38 @@ def test_evaluate_density_horton():
     )
 
 
+def test_evaluate_density_horton_nonidentity_dm():
+    """Test gbasis.evals.density.evaluate_density against result from HORTON.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+    Density matrix here is not an identity matrix and is instead a random symmetric matrix.
+
+    """
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    points = np.array([[0, 0, 0], [0.8, 0, 0]])
+    basis = make_contractions(basis_dict, ["H", "He"], points)
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+    grid_3d = np.ascontiguousarray(grid_3d)
+
+    horton_density = np.load(find_datafile("data_horton_hhe_cart_density_rand.npy"))
+    density_matrix = np.load(find_datafile("data_horton_hhe_cart_dm_rand.npy"))
+
+    assert np.allclose(
+        evaluate_density(density_matrix, basis, grid_3d, coord_type="cartesian"), horton_density
+    )
+
+    horton_density = np.load(find_datafile("data_horton_hhe_sph_density_rand.npy"))
+    density_matrix = np.load(find_datafile("data_horton_hhe_sph_dm_rand.npy"))
+
+    assert np.allclose(
+        evaluate_density(density_matrix, basis, grid_3d, coord_type="spherical"), horton_density
+    )
+
+
 def test_evaluate_density_gradient_horton():
     """Test gbasis.evals.density.evaluate_density_gradient against result from HORTON.
 
