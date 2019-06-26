@@ -212,6 +212,20 @@ def from_pyscf(mol):
     if not (mol.__class__.__name__ == "Mole" and hasattr(mol, "_basis")):
         raise ValueError("`mol` must be a `pyscf.gto.mole.Mole` instance.")
 
+    class PyscfShell(GeneralizedContractionShell):
+        """Shell object that is compatible with gbasis' shell object.
+
+        See `gbasis.contractions.GeneralizedContractionShell` for the documentation.
+
+        """
+
+        @property
+        def angmom_components_sph(self):
+            """Return the ordering of the magnetic quantum numbers for the given angmom in pyscf."""
+            if self.angmom == 1:
+                return (1, -1, 0)
+            return super().angmom_components_sph
+
     basis = []
     for atom, coord in mol._atom:
         basis_info = mol._basis[atom]
@@ -224,10 +238,6 @@ def from_pyscf(mol):
 
             coeffs = exps_coeffs[:, 1:]
 
-            basis.append(
-                GeneralizedContractionShell(
-                    angmom, np.array(coord), np.array(coeffs), np.array(exps)
-                )
-            )
+            basis.append(PyscfShell(angmom, np.array(coord), np.array(coeffs), np.array(exps)))
 
     return tuple(basis)
