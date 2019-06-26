@@ -183,3 +183,11 @@ class HortonContractions(GeneralizedContractionShell):
                 for i in it.combinations_with_replacement(range(3), self.angmom)
             ]
         )
+
+    @property
+    def angmom_components_sph(self):
+        """Ordering of the magnetic quantum number for HORTON's convention."""
+        if self.angmom == 1:
+            return [1, -1, 0]
+        output = [(i, -i) for i in range(self.angmom + 1)]
+        return [j for i in output for j in i][1:]
