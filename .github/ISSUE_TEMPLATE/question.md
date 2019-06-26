@@ -2,8 +2,8 @@
 name: Question
 about: Ask us a question
 title: "[QUESTION]"
-labels:
-assignees: '**
+labels: question
+assignees: ''
 
 ---
 
