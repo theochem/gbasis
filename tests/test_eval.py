@@ -6,7 +6,7 @@ from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2
-from utils import find_datafile
+from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_construct_array_contraction():
@@ -127,3 +127,21 @@ def test_evaluate_basis_lincomb():
         evaluate_obj.construct_array_lincomb(transform, "spherical", points=np.array([[1, 1, 1]])),
         evaluate_basis(basis, np.array([[1, 1, 1]]), transform=transform, coord_type="spherical"),
     )
+
+
+def test_evaluate_basis_horton():
+    """Test gbasis.evals.eval.evaluate_basis against horton results."""
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    points = np.array([[0, 0, 0], [0.8, 0, 0]])
+    basis = make_contractions(basis_dict, ["H", "He"], points)
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+
+    horton_eval_cart = np.load(find_datafile("data_horton_hhe_cart_eval.npy"))
+    horton_eval_sph = np.load(find_datafile("data_horton_hhe_sph_eval.npy"))
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    assert np.allclose(evaluate_basis(basis, grid_3d, coord_type="cartesian"), horton_eval_cart.T)
+    assert np.allclose(evaluate_basis(basis, grid_3d, coord_type="spherical"), horton_eval_sph.T)
