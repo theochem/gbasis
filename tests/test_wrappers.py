@@ -75,7 +75,7 @@ def test_from_iodata():
     assert basis[2].angmom_components_sph == (1, 0, -1)
 
     with pytest.raises(ValueError):
-        basis[2].angmom = -1
+        basis[2].angmom = 10
         basis[2].angmom_components_sph
 
     with pytest.raises(ValueError):
@@ -109,3 +109,7 @@ def test_from_pyscf():
         assert np.allclose(i.exps, j.exps)
         assert np.allclose(i.coeffs, j.coeffs)
         assert np.allclose(i.norm_cont, j.norm_cont)
+
+    assert test[0].angmom_components_sph == (0,)
+    assert test[1].angmom_components_sph == (1, -1, 0)
+    assert test[2].angmom_components_sph == (-2, -1, 0, 1, 2)
