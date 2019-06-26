@@ -145,3 +145,102 @@ def test_evaluate_basis_horton():
 
     assert np.allclose(evaluate_basis(basis, grid_3d, coord_type="cartesian"), horton_eval_cart.T)
     assert np.allclose(evaluate_basis(basis, grid_3d, coord_type="spherical"), horton_eval_sph.T)
+
+
+def test_evaluate_basis_pyscf():
+    """Test gbasis.evals.eval.evaluate_basis against pyscf results."""
+    pytest.importorskip("pyscf")
+
+    from pyscf import gto
+    from gbasis.wrappers import from_pyscf
+
+    mol = gto.Mole()
+    mol.build(atom="H 0 0 0; He 0.8 0 0", basis="ano-rcc", spin=1)
+    basis = from_pyscf(mol)
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    pyscf_eval_sph = gto.eval_gto(mol, "GTOval_sph", grid_3d)
+    pyscf_eval_cart = gto.eval_gto(mol, "GTOval_cart", grid_3d)
+
+    # s orbitals
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[:6], pyscf_eval_cart.T[:6]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[46:53], pyscf_eval_cart.T[46:53]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[:6], pyscf_eval_sph.T[:6]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[40:47], pyscf_eval_sph.T[40:47]
+    )
+    # p orbitals
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[6:18], pyscf_eval_cart.T[6:18]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[53:65], pyscf_eval_cart.T[53:65]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[6:18], pyscf_eval_sph.T[6:18]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[47:59], pyscf_eval_sph.T[47:59]
+    )
+    # d orbitals are off by some constant for the cartesian case
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[18:33], pyscf_eval_sph.T[18:33]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[59:74], pyscf_eval_sph.T[59:74]
+    )
+    # f orbitals are off by some constant for the cartesian case
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[33:40], pyscf_eval_sph.T[33:40]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="spherical")[74:88], pyscf_eval_sph.T[74:88]
+    )
+
+
+@pytest.mark.xfail
+def test_evaluate_basis_pyscf_cart_norm():
+    """Test gbasis.evals.eval.evaluate_basis against pyscf results.
+
+    These cases fail because pyscf seems to have a different normalization constant for the d and f
+    orbitals.
+
+    """
+    pytest.importorskip("pyscf")
+
+    from pyscf import gto
+    from gbasis.wrappers import from_pyscf
+
+    mol = gto.Mole()
+    mol.build(atom="H 0 0 0; He 0.8 0 0", basis="ano-rcc", spin=1)
+    basis = from_pyscf(mol)
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    pyscf_eval_cart = gto.eval_gto(mol, "GTOval_cart", grid_3d)
+
+    # d orbitals are all off by some scalar factor
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[18:36], pyscf_eval_cart.T[18:36]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[65:83], pyscf_eval_cart.T[65:83]
+    )
+    # f orbitals are all off by some scalar factor
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[36:46], pyscf_eval_cart.T[36:46]
+    )
+    assert np.allclose(
+        evaluate_basis(basis, grid_3d, coord_type="cartesian")[83:103], pyscf_eval_cart.T[83:103]
+    )
