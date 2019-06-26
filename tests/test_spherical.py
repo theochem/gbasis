@@ -181,6 +181,15 @@ def test_generate_transformation_horton():
 
     Answer obtained from https://theochem.github.io/horton/2.0.1/tech_ref_gaussian_basis.html.
     """
+    answer = np.array([[1]])
+    assert np.allclose(generate_transformation(0, np.array([[0, 0, 0]]), (0,), "left"), answer)
+
+    answer = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
+    assert np.allclose(
+        generate_transformation(1, np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), (0, 1, -1), "left"),
+        answer,
+    )
+
     answer = np.array(
         [
             [-0.5, 0, 0, -0.5, 0, 1],
@@ -190,13 +199,11 @@ def test_generate_transformation_horton():
             [0, 1, 0, 0, 0, 0],
         ]
     )
-    # shuffle to have correct order
-    answer = answer[[4, 2, 0, 1, 3], :]
     assert np.allclose(
         generate_transformation(
             2,
             np.array([[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1], [0, 0, 2]]),
-            (-2, -1, 0, 1, 2),
+            (0, 1, -1, 2, -2),
             "left",
         ),
         answer,
@@ -214,7 +221,6 @@ def test_generate_transformation_horton():
         ]
     )
     # shuffle to have correct order
-    answer = answer[[6, 4, 2, 0, 1, 3, 5], :]
     assert np.allclose(
         generate_transformation(
             3,
@@ -232,7 +238,7 @@ def test_generate_transformation_horton():
                     [0, 0, 3],
                 ]
             ),
-            (-3, -2, -1, 0, 1, 2, 3),
+            (0, 1, -1, 2, -2, 3, -3),
             "left",
         ),
         answer,

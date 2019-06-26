@@ -299,10 +299,10 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
     }
     transform = np.zeros(((angmom + 1) * (angmom + 2) // 2, 2 * angmom + 1))
 
-    for mag in spherical_order:
+    for i, mag in enumerate(spherical_order):
         harmonic = real_solid_harmonic(angmom, mag)
         for components, coeff in harmonic.items():
-            transform[order[components], mag + angmom] = coeff
+            transform[order[components], i] = coeff
 
     # normalize
     transform *= np.sqrt(np.prod(factorial2(2 * cartesian_order - 1), axis=1))[:, np.newaxis]
