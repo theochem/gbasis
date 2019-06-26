@@ -1,4 +1,4 @@
-"""Module for computing properties related to stress tensor."""
+"""Module for computing properties related to the stress tensor."""
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
@@ -15,6 +15,7 @@ def evaluate_stress_tensor(
 
     Stress tensor is defined here as:
     .. math::
+
         \boldsymbol{\sigma}_{ij}(\mathbf{r}_n | \alpha, \beta)
         =&
         -\frac{1}{2} \alpha
@@ -54,9 +55,10 @@ def evaluate_stress_tensor(
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
     points : np.ndarray(N, 3)
-        Coordinates of the points in space (in atomic units) where the basis functions are
-        evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
+        Cartesian coordinates of the points in space (in atomic units) where the basis
+        functions are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
     transform : np.ndarray(K_orbs, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
@@ -74,13 +76,13 @@ def evaluate_stress_tensor(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
     -------
     stress_tensor : np.ndarray(N, 3, 3)
-        Stress tensor of the given density matrix evaluated at the given coordinates.
+        Stress tensor of the given density matrix evaluated at the given points.
 
     Raises
     ------
@@ -179,9 +181,10 @@ def evaluate_ehrenfest_force(
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
     points : np.ndarray(N, 3)
-        Coordinates of the points in space (in atomic units) where the basis functions are
-        evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
+        Cartesian coordinates of the points in space (in atomic units) where the basis
+        functions are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
     transform : np.ndarray(K_orbs, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
@@ -199,7 +202,7 @@ def evaluate_ehrenfest_force(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
@@ -330,9 +333,10 @@ def evaluate_ehrenfest_hessian(
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
     points : np.ndarray(N, 3)
-        Coordinates of the points in space (in atomic units) where the basis functions are
-        evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
+        Cartesian coordinates of the points in space (in atomic units) where the basis
+        functions are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
     transform : np.ndarray(K_orbs, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
@@ -350,18 +354,18 @@ def evaluate_ehrenfest_hessian(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
     symmetric : {True, False}
-        Flag for symmeterizing the Hessian.
-        If True, then the Hessian is symmeterized by averaging it with its transpose.
+        Flag for symmetrizing the Hessian.
+        If True, then the Hessian is symmetrized by averaging it with its transpose.
         Default value is False.
 
     Returns
     -------
     ehrenfest_hessian : np.ndarray(N, 3, 3)
         Ehrenfest Hessian of the given density matrix evaluated at the given coordinates.
-        Hessian is symmeterized if `symmetric` is True.
+        Hessian is symmetrized if `symmetric` is True.
 
     Raises
     ------

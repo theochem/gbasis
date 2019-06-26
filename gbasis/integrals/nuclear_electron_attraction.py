@@ -16,19 +16,25 @@ def nuclear_electron_attraction_integral(
         Coordinates of each atom.
     nuclear_charges : np.ndarray(N_nuc)
         Charges of each atom.
+    transform : np.ndarray(K, K_cont)
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
     coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
     -------
     array : np.ndarray(K_cart, K_cart)
         Array associated with the given set of contracted Cartesian Gaussians.
-        First and second indices of the array are associated with the contracted Cartesian
+        Dimensions 0 and 1 are associated with the contracted Cartesian
         Gaussians. `K_cart` is the total number of Cartesian contractions within the instance.
 
     """

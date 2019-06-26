@@ -19,14 +19,14 @@ def test_init():
 
 
 def test_contractions():
-    """Test BaseFourIndexSymmetric.constractions."""
+    """Test BaseFourIndexSymmetric.contractions."""
     Test = disable_abstract(BaseFourIndexSymmetric)  # noqa: N806
     cont = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     test = Test([cont])
     assert test.contractions[0] == cont
 
 
-def test_contruct_array_contraction():
+def test_construct_array_contraction():
     """Test BaseFourIndexSymmetric.construct_array_contraction."""
     # enable only the abstract method construct_array_contraction
     Test = disable_abstract(  # noqa: N806
@@ -40,7 +40,7 @@ def test_contruct_array_contraction():
         Test([contractions])
 
 
-def test_contruct_array_cartesian():
+def test_construct_array_cartesian():
     """Test BaseFourIndexSymmetric.construct_array_cartesian."""
     cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones((1, 1)), np.ones(1))
     cont_two = GeneralizedContractionShell(2, np.array([2, 3, 4]), np.ones((1, 1)), 2 * np.ones(1))
@@ -89,7 +89,7 @@ def test_contruct_array_cartesian():
     assert np.allclose(test.construct_array_cartesian(), answer)
 
 
-def test_contruct_array_spherical():
+def test_construct_array_spherical():
     """Test BaseFourIndexSymmetric.construct_array_spherical."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     transform = generate_transformation(
@@ -165,7 +165,7 @@ def test_contruct_array_spherical():
     cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
     # NOTE: since the test subarray (output of construct_array_contraction) does not satisfy the
-    # symmeteries of the two electron integral, only the last permutation is used. If this output
+    # symmetries of the two electron integral, only the last permutation is used. If this output
     # satisfies the symmetries of two electron integrals, then all these permutations should result
     # in the same array.
     # FIXME: not a good test
@@ -398,7 +398,7 @@ def test_contruct_array_spherical():
     )
 
 
-def test_contruct_array_mix():
+def test_construct_array_mix():
     """Test BaseFourIndex.construct_array_mix."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
 
@@ -509,7 +509,7 @@ def test_contruct_array_mix():
         test.construct_array_mix(["cartesian"] * 3, a=3),
 
 
-def test_contruct_array_lincomb():
+def test_construct_array_lincomb():
     """Test BaseFourIndexSymmetric.construct_array_lincomb."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
     sph_transform = generate_transformation(
@@ -601,7 +601,7 @@ def test_contruct_array_lincomb():
     )
     orb_transform = np.random.rand(8, 8)
     # NOTE: since the test subarray (output of construct_array_contraction) does not satisfy the
-    # symmeteries of the two electron integral, only the last permutation is used. If this output
+    # symmetries of the two electron integral, only the last permutation is used. If this output
     # satisfies the symmetries of two electron integrals, then all these permutations should result
     # in the same array.
     # FIXME: not a good test

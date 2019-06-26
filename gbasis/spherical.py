@@ -1,12 +1,15 @@
-"""Convert from Cartesian Gaussians to Spherical Gaussians."""
+"""Convert from Cartesian Gaussians to spherical Gaussians."""
 import numpy as np
 from scipy.special import comb, factorial, factorial2
 
 
 def shift_factor(mag):
-    """Calculate the shift factor for solid harmonics.
+    r"""Calculate the shift factor for solid harmonics.
 
-    shift_factor = 0 if mag >= 0 and shift_factor = 1/2 if mag < 0.
+    .. math::
+       \mathrm{shift\_factor} = \begin{cases}
+       0 & \mathrm{mag} \geq 0\\
+       \frac{1}{2} & \mathrm{mag} < 0 \end{cases}
 
     Parameters
     ----------
@@ -21,7 +24,7 @@ def shift_factor(mag):
     Raises
     ------
     TypeError
-        If mag is not an integer.
+        If `mag` is not an integer.
 
     """
     if not isinstance(mag, int):
@@ -59,14 +62,15 @@ def expansion_coeff(angmom, mag, i, j, k):
     Raises
     ------
     TypeError
-        If angmom is not an integer.
-        If mag is not an integer.
-        If i or j is not an integer.
-        If k is not a float.
+        If `angmom` is not an integer.
+        If `mag` is not an integer.
+        If `i` is not an integer.
+        If `j` is not an integer.
+        If `k` is not a float.
     ValueError
-        If angmom is negative.
-        If mag has a greater magnitude than angmom.
-        If k is not either an integer (mag >= 0) or a half integer (mag < 0).
+        If `angmom` is negative.
+        If `mag` has a greater magnitude than angmom.
+        If `k is not either an integer (mag >= 0) or a half integer (mag < 0).
 
     """
     if not isinstance(angmom, int):
@@ -76,19 +80,19 @@ def expansion_coeff(angmom, mag, i, j, k):
     if not isinstance(mag, int):
         raise TypeError("The magnetic quantum number must be an integer.")
     if np.abs(mag) > angmom:
-        raise ValueError("The magnetic quantum number must be between -(angmom) and angmom.")
+        raise ValueError("The magnetic quantum number must be between -(`angmom`) and `angmom`.")
     if not isinstance(i, int):
-        raise TypeError("Index i must be an integer")
+        raise TypeError("Index `i` must be an integer")
     if not isinstance(j, int):
-        raise TypeError("Index j must be an integer")
+        raise TypeError("Index `j` must be an integer")
     if isinstance(k, int):
         k = float(k)
     if not isinstance(k, float):
-        raise TypeError("Index k must be a float.")
+        raise TypeError("Index `k` must be a float.")
     if k != int(k) and mag >= 0:
-        raise ValueError("Index k must be an integer for non-negative magnetic quantum numbers.")
+        raise ValueError("Index `k` must be an integer for non-negative magnetic quantum numbers.")
     if k != int(k) + 0.5 and mag < 0:
-        raise ValueError("Index k must be a half integer for negative magnetic quantum numbers.")
+        raise ValueError("Index `k` must be a half integer for negative magnetic quantum numbers.")
 
     if mag < 0:
         return np.real(
@@ -133,11 +137,11 @@ def harmonic_norm(angmom, mag):
     Raises
     ------
     TypeError
-        If angmom is not an integer.
-        If mag is not an integer.
+        If `angmom` is not an integer.
+        If `mag` is not an integer.
     ValueError
-        If angmom is negative.
-        If mag has a greater magnitude than angmom.
+        If `angmom` is negative.
+        If `mag` has a greater magnitude than `angmom`.
 
     """
     if not isinstance(angmom, int):
@@ -147,7 +151,7 @@ def harmonic_norm(angmom, mag):
     if not isinstance(mag, int):
         raise TypeError("The magnetic quantum number must be an integer.")
     if np.abs(mag) > angmom:
-        raise ValueError("The magnetic quantum number must be between -(angmom) and angmom.")
+        raise ValueError("The magnetic quantum number must be between -(`angmom`) and `angmom`.")
 
     return (1 / (2 ** np.abs(mag) * factorial(angmom))) * np.sqrt(
         (2 * factorial(angmom + np.abs(mag)) * factorial(angmom - np.abs(mag)))
@@ -181,11 +185,11 @@ def real_solid_harmonic(angmom, mag):
     Raises
     ------
     TypeError
-        If angmom is not an integer.
-        If mag is not an integer.
+        If `angmom` is not an integer.
+        If `mag` is not an integer.
     ValueError
-        If angmom is negative.
-        If mag has a greater magnitude than angmom.
+        If `angmom` is negative.
+        If `mag` has a greater magnitude than `angmom`.
 
     """
     if not isinstance(angmom, int):
@@ -195,7 +199,7 @@ def real_solid_harmonic(angmom, mag):
     if not isinstance(mag, int):
         raise TypeError("The magnetic quantum number must be an integer.")
     if np.abs(mag) > angmom:
-        raise ValueError("The magnetic quantum number must be between -(angmom) and angmom.")
+        raise ValueError("The magnetic quantum number must be between -(`angmom`) and `angmom`.")
 
     harmonic = {}
     norm = harmonic_norm(angmom, mag)
@@ -227,10 +231,10 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
     Parameters
     ----------
     angmom : int
-        The angular momentum of the basis function(s).
+        The angular momentum :math:`\ell` of the basis function(s).
     cartesian_order : np.ndarray((angmom + 1) * (angmom + 2) / 2, 3)
         The x, y, and z components of the angular momentum for each primitive,
-        (:math:`\vec{a} = (a_x, a_y, a_z)`, where :math:`a_x + a_y + a_z = l`).
+        (:math:`\vec{a} = (a_x, a_y, a_z)`, where :math:`a_x + a_y + a_z = \ell`).
         The order in which the contractions are given defines the order in which
         they will appear in the transformation matrix.
     spherical_order : (2 * angmom + 1)-tuple/list of int
@@ -246,17 +250,17 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
     Raises
     ------
     TypeError
-        If angmom is not an integer.
-        If cartesian_order is not an array.
-        If each member of cartesian_order is not a tuple.
+        If `angmom` is not an integer.
+        If `cartesian_order` is not an array.
+        If each member of `cartesian_order` is not a tuple.
         If `spherical_order` is not a list/tuple of integers
     ValueError
-        If angmom is negative.
-        If cartesian_order does not have shape (angmom, 3).
-        If the Cartesian components of any contracitons do not sum to angmom.
+        If `angmom` is negative.
+        If `cartesian_order` does not have `shape` :math:`(\ell, 3)`.
+        If the Cartesian components of any contractions do not sum to `angmom`.
         If `apply_from` is not one of "left" or "right".
-        If `spherical_order` does not contain exactly 2 * angmom + 1 integers that ranges from
-        -angmom to angmom.
+        If `spherical_order` does not contain exactly :math:`2 * \ell + 1` integers that range from
+        -`angmom` to `angmom`.
 
     """
     if not isinstance(angmom, int):
@@ -290,8 +294,8 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         and set(spherical_order) == set(range(-angmom, angmom + 1))
     ):
         raise ValueError(
-            "`spherical_order` must contain exactly 2 * angmom + 1 integers that ranges from "
-            " -angmom to angmom."
+            "`spherical_order` must contain exactly 2 * `angmom` + 1 integers that range from "
+            " -`angmom` to `angmom`."
         )
 
     order = {

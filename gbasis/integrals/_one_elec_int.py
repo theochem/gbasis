@@ -26,16 +26,17 @@ def _compute_one_elec_integrals(
     boys_func : function(orders, weighted_dist)
         Boys function used to evaluate the one-electron integral.
         `orders` is the orders of the Boys integral that will be evaluated. It should be a
-        three-dimensional numpy array of integers with shape `(M, 1, 1, 1)` where `M` is the number
-        of orders that will be evaluated.
+        three-dimensional `numpy` array of integers with `shape` (M, 1, 1, 1) where
+        `M` is the number of orders that will be evaluated.
         `weighted_dist` is the weighted interatomic distance, i.e.
-        :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i` is
-        the exponent of the ith primitive on the left side and the :math:`\beta_j` is the exponent
-        of the jth primitive on the right side. It should be a four-dimensional numpy array of
-        floats with shape `(1, N, K_b, K_a)` where `N` is the number of point charges, `K_a` and
-        `K_b` are the number of primitives on the left and right side, respectively.
-        Output is the Boys function evaluated for each order and the weighted interactomic distance.
-        It will be a three-dimensional numpy array of shape `(M, N, K_b, K_a)`.
+        :math:`\frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2` where :math:`\alpha_i`
+        is the exponent of the i-th primitive on the left side and the :math:`\beta_j` is the
+        exponent of the j-th primitive on the right side. It should be a four-dimensional `numpy`
+        array of floats with `shape` (1, N, K_b, K_a), where `N` is the number of
+        point charges and `K_a` and `K_b` are the number of primitives on the left and
+        right side, respectively.
+        Output is the Boys function evaluated for each order and the weighted interatomic distance.
+        It will be a three-dimensional `numpy` array with `shape` (M, N, K_b, K_a).
     coord_a : np.ndarray(3,)
         Center of the contraction on the left side.
     angmom_a : int
@@ -46,7 +47,7 @@ def _compute_one_elec_integrals(
     coeffs_a : np.ndarray(K_a, M_a)
         Contraction coefficients of the primitives on the left side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
     coord_b : np.ndarray(3,)
         Center of the contraction on the right side.
@@ -58,19 +59,19 @@ def _compute_one_elec_integrals(
     coeffs_b : np.ndarray(K_b, M_b)
         Contraction coefficients of the primitives on the right side.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
-        where the first index corresponds to the primitive and the second index corresponds to the
+        where dimension 0 corresponds to the primitive and dimension 1 corresponds to the
         contraction (with the same exponents and angular momentum).
 
     Returns
     -------
     integrals : np.ndarray(L_a + 1, L_a + 1, L_a + 1, L_b + 1, L_b + 1, L_b + 1, M_a, M_b)
         One electron integrals for the given `GeneralizedContractionShell` instances.
-        First, second, and third index correspond to the `x`, `y`, and `z` components of the
+        Dimensions 0, 1, and 2 correspond to the :math:`x, y, \text{and} z` components of the
         angular momentum for contraction a.
-        Fourth, fifth, and sixth index correspond to the `x`, `y`, and `z` components of the
+        Dimensions 3, 4, and 5 correspond to the :math:`x, y, \text{and} z` components of the
         angular momentum for contraction b.
-        Seventh index corresponds to the segmented contractions of contraction a.
-        Eighth index corresponds to the segmented contractions of contraction b.
+        Dimension 6 corresponds to the segmented contractions of contraction a.
+        Dimension 7 corresponds to the segmented contractions of contraction b.
 
     """
 

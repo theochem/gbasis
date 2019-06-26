@@ -11,7 +11,7 @@ class BaseGaussianRelatedArray(abc.ABC):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Contractions that are associated with each index of the array.
-        Each tuple of GeneralizedContractionShell corresponds to an index of the array.
+        Each tuple of `GeneralizedContractionShell` corresponds to an index of the array.
 
     Methods
     -------
@@ -41,7 +41,7 @@ class BaseGaussianRelatedArray(abc.ABC):
         Raises
         ------
         TypeError
-            If `axes_contractions` is not given as a list or tuple of GeneralizedContractionShell.
+            If `axes_contractions` is not given as a list or tuple of `GeneralizedContractionShell`.
         ValueError
             If `axes_contractions` is an empty list or tuple.
 
@@ -49,15 +49,15 @@ class BaseGaussianRelatedArray(abc.ABC):
         for each_contractions in contractions:
             if not isinstance(each_contractions, (list, tuple)):
                 raise TypeError(
-                    "Contractions must be given as a list or tuple of GeneralizedContractionShell "
-                    "instance"
+                    "Contractions must be given as a list or tuple of `GeneralizedContractionShell`"
+                    " instance"
                 )
             if not each_contractions:
                 raise ValueError("At least one `GeneralizedContractionShell` must be given.")
             for contraction in each_contractions:
                 if not isinstance(contraction, GeneralizedContractionShell):
                     raise TypeError(
-                        "Given contractions must be instances of the GeneralizedContractionShell "
+                        "Given contractions must be instances of the `GeneralizedContractionShell` "
                         "class."
                     )
         self._axes_contractions = tuple(
@@ -80,12 +80,12 @@ class BaseGaussianRelatedArray(abc.ABC):
         Returns
         -------
         array_contraction : np.ndarray
-            Array associated with the given instance(s) of GeneralizedContractionShell.
+            Array associated with the given instance(s) of `GeneralizedContractionShell`.
 
         Notes
         -----
         The next level of classes will be divided by number of indices associated with
-        GeneralizedContractionShell. Then this method's parameters will likely be different from
+        `GeneralizedContractionShell`. Then this method's parameters will likely be different from
         it's children. This means that using this method's API blindly (by simply copying and
         pasting) will not be suitable for all its children. Here, we allow arbitrary number of
         `contractions` to indicate that its children may have different number of `contractions` in
@@ -129,12 +129,12 @@ class BaseGaussianRelatedArray(abc.ABC):
 
     @abc.abstractmethod
     def construct_array_mix(self, coord_types, **kwargs):
-        """Return the array associated with set of Gaussians of the given coordinate systems.
+        """Return the array associated with a set of Gaussians of the given coordinate systems.
 
         Parameters
         ----------
         coord_types : list/tuple of str
-            Types of the coordinate system for each GeneralizedContractionShell.
+            Types of the coordinate system for each `GeneralizedContractionShell`.
             Each entry must be one of "cartesian" or "spherical".
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
@@ -162,7 +162,7 @@ class BaseGaussianRelatedArray(abc.ABC):
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each GeneralizedContractionShell instance.
+            coordinate type of each `GeneralizedContractionShell` instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
 
@@ -175,7 +175,7 @@ class BaseGaussianRelatedArray(abc.ABC):
         Notes
         -----
         The next level of classes will be divided by number of indices associated with
-        GeneralizedContractionShell. Then this method's parameters will likely be different from
+        `GeneralizedContractionShell`. Then this method's parameters will likely be different from
         it's children. This means that using this method's API blindly (by simply copying and
         pasting) will not be suitable for all its children. Here, we allow arbitrary number of
         `transform` to indicate that its children may have different number of `transform` in

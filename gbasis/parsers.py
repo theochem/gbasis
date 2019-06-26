@@ -22,7 +22,7 @@ def parse_nwchem(nwchem_basis_file):
     Notes
     -----
     Angular momentum symbol is hard-coded into this function. This means that if the selected basis
-    set has an angular momentum greater tha "k", an error will be raised.
+    set has an angular momentum greater than "k", an error will be raised.
 
     """
     # pylint: disable=R0914
@@ -88,7 +88,7 @@ def parse_gbs(gbs_basis_file):
     Notes
     -----
     Angular momentum symbol is hard-coded into this function. This means that if the selected basis
-    set has an angular momentum greater tha "k", an error will be raised.
+    set has an angular momentum greater than "k", an error will be raised.
 
     Since Gaussian94 basis format does not explicitly state which contractions are generalized, we
     infer that subsequent contractions belong to the same generalized shell if they have the same
@@ -183,17 +183,17 @@ def make_contractions(basis_dict, atoms, coords):
     Raises
     ------
     TypeError
-        If atoms is not a list or tuple of strings.
-        If coords is not a two-dimensional numpy array with 3 columns.
+        If `atoms` is not a list or tuple of strings.
+        If `coords` is not a two-dimensional `numpy` array with 3 columns.
     ValueError
-        If the length of atoms is not equal to the number of rows of coords.
+        If the length of atoms is not equal to the number of rows of `coords`.
 
     """
     if not (isinstance(atoms, (list, tuple)) and all(isinstance(i, str) for i in atoms)):
         raise TypeError("Atoms must be provided as a list or tuple.")
     if not (isinstance(coords, np.ndarray) and coords.ndim == 2 and coords.shape[1] == 3):
         raise TypeError(
-            "Coordinates must be provided as a two-dimensional numpy array with three columns."
+            "Coordinates must be provided as a two-dimensional `numpy` array with three columns."
         )
     if len(atoms) != coords.shape[0]:
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")

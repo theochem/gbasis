@@ -12,11 +12,9 @@ class Moment(BaseTwoIndexSymmetric):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the moment.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
+        Property of `Moment`.
 
     Methods
     -------
@@ -24,14 +22,14 @@ class Moment(BaseTwoIndexSymmetric):
         Initialize.
     construct_array_contraction(self, contraction) : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
         Return the moment associated with a `GeneralizedContractionShell` instance.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        `M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        `M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart, K_cart)
         Return the moment integrals associated with Cartesian Gaussians.
         `K_cart` is the total number of Cartesian contractions within the instance.
@@ -73,52 +71,54 @@ class Moment(BaseTwoIndexSymmetric):
         Returns
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, D)
-            Moment associated with the given instances of GeneralizedContractionShell.
-            First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
-            the number of segmented contractions with the same exponents (and angular momentum)
-            associated with the first index.
-            Second axis corresponds to the angular momentum vector of the `contractions_one`.
+            Moment associated with the given instances of `GeneralizedContractionShell`.
+            Dimension 0 corresponds to the segmented contraction within `contractions_one`.
+            `M_1` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the first index.
+            Dimension 1 corresponds to the angular momentum vector of the `contractions_one`.
             `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
-            Third axis corresponds to the segmented contraction within `contractions_two`. `M_2` is
-            the number of segmented contractions with the same exponents (and angular momentum)
-            associated with the second index.
-            Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
+            Dimension 2 corresponds to the segmented contraction within `contractions_two`.
+            `M_2` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the second index.
+            Dimension 3 corresponds to the angular momentum vector of the `contractions_two`.
             `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
-            Fifth axis corresponds to the orders of the moments. `D` is the number of orders for
+            Dimension 4 corresponds to the orders of the moments. `D` is the number of orders for
             which the moment is computed.
 
         Raises
         ------
         TypeError
-            If contractions_one is not a GeneralizedContractionShell instance.
-            If contractions_two is not a GeneralizedContractionShell instance.
-            If moment_coord is not a one-dimensional numpy array with 3 elements.
-            If moment_orders is not a two-dimensional numpy array with 3 columns and dtype int.
+            If contractions_one is not a `GeneralizedContractionShell` instance.
+            If contractions_two is not a `GeneralizedContractionShell` instance.
+            If moment_coord is not a one-dimensional `numpy` array with 3 elements.
+            If moment_orders is not a two-dimensional `numpy` array with 3 columns and `dtype` int.
 
         Notes
         -----
         Even though it will be faster to access the different orders of moments if it was associated
-        with the first axis, the API will be consistent with the rest of the BaseTwoSymmetric class
-        if the first four indices correspond to the segmented contraction and the angular momentum
-        vector. If many orders of moments are calculated (the exact number depends on the size of
-        the basis set), then it may be faster to access the moments if the fifth axis is moved back
-        to the front prior to the access. Use `np.transpose(array, (4, 0, 1, 2, 3))` to change the
-        order.
+        with the first axis, the API will be consistent with the rest of the `BaseTwoSymmetric`
+        class if the first four indices correspond to the segmented contraction and the angular
+        momentum vector. If many orders of moments are calculated (the exact number depends on the
+        size of the basis set), then it may be faster to access the moments if the fifth axis is
+        moved back to the front prior to the access. Use `np.transpose(array, (4, 0, 1, 2, 3))`
+        to change the order.
 
         """
         # pylint: disable=R0914
         if not isinstance(contractions_one, GeneralizedContractionShell):
-            raise TypeError("`contractions_one` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions_one` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(contractions_two, GeneralizedContractionShell):
-            raise TypeError("`contractions_two` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
         if not (
             isinstance(moment_coord, np.ndarray)
             and moment_coord.ndim == 1
             and moment_coord.size == 3
         ):
-            raise TypeError("`moment_coord` must be a one-dimensional numpy array with 3 elements.")
+            raise TypeError(
+                "`moment_coord` must be a one-dimensional `numpy` array with 3 elements."
+            )
         if not (
             isinstance(moment_orders, np.ndarray)
             and moment_orders.ndim == 2
@@ -126,7 +126,8 @@ class Moment(BaseTwoIndexSymmetric):
             and moment_orders.dtype == int
         ):
             raise TypeError(
-                "`moment_orders` must be a two-dimensional numpy array with 3 columns and dtype int"
+                "`moment_orders` must be a two-dimensional `numpy` array with 3 columns and `dtype`"
+                " int"
             )
 
         coord_a = contractions_one.coord
@@ -180,16 +181,17 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None, coord_ty
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
     -------
     array : np.ndarray(K_orbs, K_orbs, D)
         Moment integral of the given basis set.
-        Dimensions 0 and 1 of the array correspond to the basis functions. `K_orbs` is the number of
-        basis functions in the basis set.
-        Dimension 2 of the array coresponds to the moment. `D` is the number of different moments.
+        Dimensions 0 and 1 of the array correspond to the basis functions. `K_orbs` is the
+        number of basis functions in the basis set.
+        Dimension 2 of the array corresponds to the moment.
+        `D` is the number of different moments.
 
     Notes
     -----

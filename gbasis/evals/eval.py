@@ -6,9 +6,9 @@ import numpy as np
 
 
 class Eval(BaseOneIndex):
-    """Class for evaluating the Gaussian contractions and their linear combinations.
+    """Class for evaluating Gaussian contractions and their linear combinations.
 
-    The first dimension (axis 0) of the returned array is associated with a contracted Gaussian (or
+    Dimension 0 of the returned array is associated with a contracted Gaussian (or
     a linear combination of a set of Gaussians).
 
     Attributes
@@ -16,11 +16,9 @@ class Eval(BaseOneIndex):
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Contractions that are associated with each index of the array.
         Each tuple of GeneralizedContractionShell corresponds to an index of the array.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first index of the array.
+        Property of `Eval`.
 
     Methods
     -------
@@ -28,7 +26,8 @@ class Eval(BaseOneIndex):
         Initialize.
     construct_array_contraction(contraction, points) : np.ndarray(M, L_cart, N)
         Return the evaluations of the given Cartesian contractions at the given coordinates.
-        `M` is the number of segmented contractions with the same exponents (and angular momentum).
+        `M` is the number of segmented contractions with the same exponents (and angular
+        momentum).
         `L_cart` is the number of Cartesian contractions for the given angular momentum.
         `N` is the number of coordinates at which the contractions are evaluated.
     construct_array_cartesian(self, points) : np.ndarray(K_cart, N)
@@ -55,7 +54,7 @@ class Eval(BaseOneIndex):
 
     @staticmethod
     def construct_array_contraction(contractions, points):
-        """Return the evaluations of the given contractions at the given coordinates.
+        r"""Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
         ----------
@@ -63,27 +62,28 @@ class Eval(BaseOneIndex):
             Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
             array.
         points : np.ndarray(N, 3)
-            Coordinates of the points in space (in atomic units) where the basis functions are
-            evaluated.
-            Rows correspond to the points and columns correspond to the x, y, and z components.
+            Cartesian coordinates of the points in space (in atomic units) where the basis
+            functions are evaluated.
+            Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+            components.
 
         Returns
         -------
         array_contraction : np.ndarray(M, L_cart, N)
-            Evaluations of the given Cartesian contractions at the given coordinates.
-            First index corresponds to segmented contractions within the given generalized
+            Evaluations of the given Cartesian contractions at the given points.
+            Dimension 0 corresponds to segmented contractions within the given generalized
             contraction (same exponents and angular momentum, but different coefficients). `M` is
             the number of segmented contractions with the same exponents (and angular momentum).
-            Second index corresponds to angular momentum vector. `L_cart` is the number of Cartesian
+            Dimension 1 corresponds to angular momentum vector. `L_cart` is the number of Cartesian
             contractions for the given angular momentum.
-            Third index corresponds to coordinates at which the contractions are evaluated. `N` is
+            Dimension 2 corresponds to coordinates at which the contractions are evaluated. `N` is
             the number of coordinates at which the contractions are evaluated.
 
         Raises
         ------
         TypeError
-            If contractions is not a GeneralizedContractionShell instance.
-            If points is not a two-dimensional numpy array with 3 columns.
+            If contractions is not a `GeneralizedContractionShell` instance.
+            If points is not a two-dimensional `numpy` array with 3 columns.
 
         Note
         ----
@@ -94,10 +94,10 @@ class Eval(BaseOneIndex):
 
         """
         if not isinstance(contractions, GeneralizedContractionShell):
-            raise TypeError("`contractions` must be a GeneralizedContractionShell instance.")
+            raise TypeError("`contractions` must be a `GeneralizedContractionShell` instance.")
         if not (isinstance(points, np.ndarray) and points.ndim == 2 and points.shape[1] == 3):
             raise TypeError(
-                "`points` must be given as a two-dimensional numpy array with 3 columnms."
+                "`points` must be given as a two-dimensional `numpy` array with 3 columns."
             )
 
         alphas = contractions.exps
@@ -112,16 +112,17 @@ class Eval(BaseOneIndex):
 
 
 def evaluate_basis(basis, points, transform=None, coord_type="spherical"):
-    """Evaluate the basis set in the given coordinate system at the given coordinates.
+    r"""Evaluate the basis set in the given coordinate system at the given points.
 
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
     points : np.ndarray(N, 3)
-        Coordinates of the points in space (in atomic units) where the basis functions are
-        evaluated.
-        Rows correspond to the points and columns correspond to the x, y, and z components.
+        Cartesian coordinates of the points in space (in atomic units) where the basis
+        functions are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
     transform : np.ndarray(K, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
@@ -133,15 +134,15 @@ def evaluate_basis(basis, points, transform=None, coord_type="spherical"):
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
     -------
     eval_array : np.ndarray(K, N)
-        Evaluations of the basis functions at the given coordinates.
+        Evaluations of the basis functions at the given points.
         If keyword argument `transform` is provided, then the transformed basis functions will be
-        evaluted at the given points.
+        evaluated at the given points.
         `K` is the total number of basis functions within the given basis set.
         `N` is the number of coordinates at which the contractions are evaluated.
 

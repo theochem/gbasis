@@ -15,16 +15,16 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     ----------
     coords : np.ndarray(N, 3)
         Point in space where the derivative of the Gaussian primitive is evaluated.
-        Coordinates must be given as a two dimensional array, even if one coordinate is given.
+        Coordinates must be given as a two dimensional array, even if only one point is given.
     orders : np.ndarray(3,)
         Orders of the derivative.
         Negative orders are treated as zero orders.
     center : np.ndarray(3,)
         Center of the Gaussian primitive.
     angmom_comps : np.ndarray(L, 3)
-        Component of the angular momentum that corresponds to this dimension.
+        Components of the angular momentum, :math:`(a_x, a_y, a_z)`.
         Angular momentum components must be given as a two dimensional array, even if only one
-        is given.
+        set of components is given.
     alphas : np.ndarray(K,)
         Values of the (square root of the) precisions of the primitives.
     prim_coeffs : np.ndarray(K, M)
@@ -39,14 +39,15 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     -------
     derivative : np.ndarray(M, L, N)
         Evaluation of the derivative at each given coordinate.
-        Array is three dimensional, where the first index corresponds to the contraction, second
-        index corresponds to the angular momentum vector, and the third index corresponds to the
-        coordinate for the evaluation.
+        Dimension 0 corresponds to the contraction, with `M` as the number of given contractions.
+        Dimension 1 corresponds to the angular momentum vector, ordered as in `angmom_comps`.
+        Dimension 2 corresponds to the point at which the derivative is evaluated, ordered as in
+        `coords`.
 
     Notes
     -----
     The input is not checked. This means that you must provide the parameters as they are specified
-    in the docstring. They must all be numpy arrays with the **correct shape**.
+    in the docstring. They must all be `numpy` arrays with the **correct shape**.
 
     Pople style basis sets are not supported. If multiple angular momentum vectors (with different
     angular momentum) and multiple contraction coefficients are provided, it is **not assumed** that
@@ -74,33 +75,33 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     alphas = alphas[np.newaxis, :, np.newaxis, np.newaxis, np.newaxis]
     # NOTE: `prim_coeffs` will be used as a 1D array
 
+    # shift coordinates
+    coords = coords - center
     # useful variables
-    rel_coords = coords - center
-    gauss = np.exp(-alphas * rel_coords ** 2)
+    gauss = np.exp(-alphas * coords ** 2)
 
     # zeroth order (i.e. no derivatization)
     indices_noderiv = orders <= 0
-    zero_rel_coords, zero_angmom_comps, zero_gauss = (
-        rel_coords[:, :, indices_noderiv],
-        angmom_comps[:, :, indices_noderiv],
-        gauss[:, :, indices_noderiv],
-    )
-    zeroth_part = np.prod(zero_rel_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
+
+    zero_coords = coords[:, :, indices_noderiv]
+    zero_angmom_comps = angmom_comps[:, :, indices_noderiv]
+    zero_gauss = gauss[:, :, indices_noderiv]
+
+    zeroth_part = np.prod(zero_coords ** zero_angmom_comps * zero_gauss, axis=(0, 2))
     # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for angular momentum vector, and
     # axis 2 for coordinate
 
     deriv_part = 1
-    nonzero_rel_coords, nonzero_orders, nonzero_angmom_comps, nonzero_gauss = (
-        rel_coords[:, :, ~indices_noderiv],
-        orders[~indices_noderiv],
-        angmom_comps[:, :, ~indices_noderiv],
-        gauss[:, :, ~indices_noderiv],
-    )
+    nonzero_orders = orders[~indices_noderiv]
     nonzero_orders = nonzero_orders[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
 
     # derivatization part
     if nonzero_orders.size != 0:
-        # General approach: compute the whole coefficents, zero out the irrelevant parts
+        # get nonzero arrays
+        nonzero_coords = coords[:, :, ~indices_noderiv]
+        nonzero_angmom_comps = angmom_comps[:, :, ~indices_noderiv]
+        nonzero_gauss = gauss[:, :, ~indices_noderiv]
+        # General approach: compute the whole coefficients, zero out the irrelevant parts
         # NOTE: The following step assumes that there is only one set (nx, ny, nz) of derivatization
         # orders i.e. we assume that only one axis (axis 2) of `nonzero_orders` has a dimension
         # greater than 1
@@ -116,7 +117,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
             comb(nonzero_orders, indices_herm)
             * perm(nonzero_angmom_comps, nonzero_orders - indices_herm)
             * (-alphas ** 0.5) ** indices_herm
-            * nonzero_rel_coords ** indices_angmom
+            * nonzero_coords ** indices_angmom
         )
         # zero out the appropriate terms
         indices_zero = np.where(indices_herm < np.maximum(0, nonzero_orders - nonzero_angmom_comps))
@@ -129,7 +130,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         # evaluating the hermite polynomial at different orders (in sequence) may be nice in the
         # future.
         hermite = np.sum(
-            coeffs * eval_hermite(indices_herm, alphas ** 0.5 * nonzero_rel_coords), axis=0
+            coeffs * eval_hermite(indices_herm, alphas ** 0.5 * nonzero_coords), axis=0
         )
         hermite = np.prod(hermite, axis=1)
 

@@ -10,13 +10,12 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
-
-    Properties
-    ----------
     contractions_one : tuple of GeneralizedContractionShell
         Contractions that are associated with the first index of the array.
+        Property of `OverlapAsymmetric`.
     contractions_two : tuple of GeneralizedContractionShell
         Contractions that are associated with the second index of the array.
+        Property of `OverlapAsymmetric`.
 
     Methods
     -------
@@ -25,23 +24,23 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
     construct_array_contraction(contractions_one, contractions_two) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
         Return the overlap associated with the two `GeneralizedContractionShell` instances.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        `M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        `M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
     construct_array_cartesian(self) : np.ndarray(K_cart_1, K_cart_2)
         Return the overlap integrals between Cartesian Gaussians of the two basis sets.
-        `K_cart_1` is the total number of Cartesian contractions within the `contractions_one`.
-        `K_cart_2` is the total number of Cartesian contractions within the `contractions_two`.
+        `K_cart_1` is the total number of Cartesian contractions within `contractions_one`.
+        `K_cart_2` is the total number of Cartesian contractions within `contractions_two`.
     construct_array_spherical(self) : np.ndarray(K_sph_1, K_sph_2)
         Return the overlap integrals associated with spherical Gaussians (atomic orbitals) of the
         two basis sets.
-        `K_sph_1` is the total number of spherical contractions within the `contractions_one`.
-        `K_sph_2` is the total number of spherical contractions within the `contractions_two`.
+        `K_sph_1` is the total number of spherical contractions within `contractions_one`.
+        `K_sph_2` is the total number of spherical contractions within `contractions_two`.
     construct_array_mix(self, coord_types_one, coord_types_two) :
     np.ndarray(K_cont_1, K_cont_2)
         Return the overlap integrals associated with the contractions in the given coordinate
@@ -52,10 +51,10 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
     np.ndarray(K_orbs_1, K_orbs_2)
         Return the overlap integrals associated with the linear combinations of contractions of the
         two basis sets.
-        `K_orbs_1` is the number of basis functions produced after the linear combinations of the
-        spherical contractions associated with `contractions_one`.
-        `K_orbs_2` is the number of basis functions produced after the linear combinations of the
-        spherical contractions associated with `contractions_two`.
+        `K_orbs_1` is the number of basis functions produced after the linear combinations of
+        the spherical contractions associated with `contractions_one`.
+        `K_orbs_2` is the number of basis functions produced after the linear combinations of
+        the spherical contractions associated with `contractions_two`.
 
     """
 
@@ -95,24 +94,24 @@ def overlap_integral_asymmetric(
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
     coord_type_two : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
         Types of the coordinate system for the contractions in `basis_two`.
         If "cartesian", then all of the contractions are treated as Cartesian contractions.
         If "spherical", then all of the contractions are treated as spherical contractions.
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
+        coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
     -------
     array : np.ndarray(K_orbs_1, K_orbs_2)
         Overlap integral of the given basis set.
-        Dimensions 0 of the array correspond to the basis functions in `basis_one`. `K_orbs_1` is
-        the number of basis functions in the `basis_one`.
-        Dimensions 1 of the array correspond to the basis functions in `basis_two`. `K_orbs_2` is
-        the number of basis functions in the `basis_two`.
+        Dimensions 0 of the array correspond to the basis functions in `basis_one`.
+        `K_orbs_1` is the number of basis functions in the `basis_one`.
+        Dimensions 1 of the array correspond to the basis functions in `basis_two`.
+        `K_orbs_2` is the number of basis functions in the `basis_two`.
 
     """
     return OverlapAsymmetric(basis_one, basis_two).construct_array_lincomb(

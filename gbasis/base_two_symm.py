@@ -17,11 +17,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
     ----------
     _axes_contractions : tuple of tuple of GeneralizedContractionShell
         Sets of contractions associated with each axis of the array.
-
-    Properties
-    ----------
     contractions : tuple of GeneralizedContractionShell
         Contractions that are associated with the first and second indices of the array.
+        Property of `BaseTwoIndexSymmetric`.
 
     Methods
     -------
@@ -30,14 +28,14 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
     construct_array_contraction(self, contraction, **kwargs) :
     np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
         Return the array associated with a `GeneralizedContractionShell` instance.
-        `M_1` is the number of segmented contractions with the same exponents (and angular momentum)
+        `M_1` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the first index.
+        `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
-        `L_cart_1` is the number of Cartesian contractions for the given angular momentum associated
-        with the first index.
-        `M_2` is the number of segmented contractions with the same exponents (and angular momentum)
+        `M_2` is the number of segmented contractions with the same exponents (and angular
+        momentum) associated with the second index.
+        `L_cart_2` is the number of Cartesian contractions for the given angular momentum
         associated with the second index.
-        `L_cart_2` is the number of Cartesian contractions for the given angular momentum associated
-        with the second index.
     construct_array_cartesian(self, **kwargs) : np.ndarray(K_cart, K_cart, ...)
         Return the array associated with Cartesian Gaussians.
         `K_cart` is the total number of Cartesian contractions within the instance.
@@ -64,12 +62,12 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
     @property
     def contractions(self):
-        """Contractions that are associated with the first index of the array.
+        """Contractions that are associated with the first two indices of the array.
 
         Returns
         -------
         contractions : tuple of GeneralizedContractionShell
-            Contractions that are associated with the first index of the array.
+            Contractions that are associated with the first two indices of the array.
 
         """
         return self._axes_contractions[0]
@@ -94,16 +92,16 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
             Array associated with the given instances of GeneralizedContractionShell.
-            First axis corresponds to the segmented contraction within `contractions_one`. `M_1` is
-            the number of segmented contractions with the same exponents (and angular momentum)
-            associated with the first index.
-            Second axis corresponds to the angular momentum vector of the `contractions_one`.
+            Dimension 0 corresponds to the segmented contraction within `contractions_one`.
+            `M_1` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the first index.
+            Dimension 1 corresponds to the angular momentum vector of the `contractions_one`.
             `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
-            Third axis corresponds to the segmented contraction within `contractions_two`. `M_2` is
-            the number of segmented contractions with the same exponents (and angular momentum)
-            associated with the second index.
-            Fourth axis corresponds to the angular momentum vector of the `contractions_two`.
+            Dimension 2 corresponds to the segmented contraction within `contractions_two`.
+            `M_2` is the number of segmented contractions with the same exponents (and angular
+            momentum) associated with the second index.
+            Dimension 3 corresponds to the angular momentum vector of the `contractions_two`.
             `L_cart_2` is the number of Cartesian contractions for the given angular momentum
             associated with the second index.
 
@@ -115,13 +113,13 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         than the arbitrary number of keywords (as is done here).
 
         The methods `construct_array_cartesian`, `construct_array_spherical`, and
-        `construct_array_lincomb` depend on this function to produce an array whose first
-        and second indices correspond to the contraction (within a generalized contraction) and
-        the angular momentum vector of `contractions_one`, and third and fourth indices correspond
-        to the contraction (within a generalized contraction) and the angular momentum vector of
-        `contractions_two`,. These other methods **will** fail with little warning if the shape of
+        `construct_array_lincomb` depend on this function to produce an array with dimensions 0, 1
+        corresponding to the contraction (within a generalized contraction) and the angular momentum
+        vector of `contractions_one`, and dimensions 2, 3 corresponding to the contraction (within a
+        generalized contraction) and the angular momentum vector of `contractions_two`,.
+        These other methods **will** fail with little warning if the shape of
         the output is different. Even if both `contractions_one` and `contractions_two` are
-        segmented contractions, the first and third indices must correspond to the contraction.
+        segmented contractions, the dimensions 0 and 2 must correspond to the contraction.
         In other words, the shape must still be (1, L_1, 1, L_2).
 
         """
@@ -140,15 +138,15 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         -------
         array : np.ndarray(K_cart, K_cart, ...)
             Array associated with the given set of contracted Cartesian Gaussians.
-            First and second indices of the array are associated with the contracted Cartesian
-            Gaussians. `K_cart` is the total number of Cartesian contractions within the instance.
+            Dimensions 0 and 1 of the array are associated with the contracted Cartesian Gaussians.
+            `K_cart` is the total number of Cartesian contractions within the instance.
 
         Notes
         -----
         The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
         set of contractions, are transposed in the process of constructing the whole array.
         It is assumed that the array returned from `construct_array_contraction` is symmetric with
-        respect to the swapping of the first and second axes.
+        respect to the swapping of the first two axes.
 
         """
         triu_blocks = []
@@ -156,9 +154,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             for cont_two in self.contractions[i:]:
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for _ in block.shape[2:]])
                 block *= cont_two.norm_cont.reshape(
-                    1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
+                    1, 1, *block.shape[2:4], *[1 for _ in block.shape[4:]]
                 )
                 # assume array always has shape (M_1, L_1, M_2, L_2, ...)
                 block = np.concatenate(block, axis=0)
@@ -195,16 +193,16 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         array : np.ndarray(K_sph, K_sph, ...)
             Array associated with the atomic orbitals associated with the given set(s) of contracted
             Cartesian Gaussians.
-            First and second indices of the array are associated with two contracted spherical
-            Gaussians (atomic orbitals). `K_sph` is the total number of spherical contractions
-            within the instance.
+            Dimensions 0 and 1 are associated with two contracted spherical Gaussians (atomic
+            orbitals). `K_sph` is the total number of spherical contractions within the
+            instance.
 
         Notes
         -----
         The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
         set of contractions, are transposed in the process of constructing the whole array.
         It is assumed that the array returned from `construct_array_contraction` is symmetric with
-        respect to the swapping of the first and second axes.
+        respect to the swapping of the first two axes.
 
         """
         triu_blocks = []
@@ -227,10 +225,10 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 block_sph = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
                 block_sph *= cont_one.norm_cont.reshape(
-                    *block_sph.shape[:2], *[1 for i in block_sph.shape[2:]]
+                    *block_sph.shape[:2], *[1 for _ in block_sph.shape[2:]]
                 )
                 block_sph *= cont_two.norm_cont.reshape(
-                    1, 1, *block_sph.shape[2:4], *[1 for i in block_sph.shape[4:]]
+                    1, 1, *block_sph.shape[2:4], *[1 for _ in block_sph.shape[4:]]
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 # transform
@@ -257,12 +255,12 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         )
 
     def construct_array_mix(self, coord_types, **kwargs):
-        """Return the array associated with set of Gaussians of the given coordinate systems.
+        """Return the array associated with a set of Gaussians of the given coordinate systems.
 
         Parameters
         ----------
         coord_types : list/tuple of str
-            Types of the coordinate system for each GeneralizedContractionShell.
+            Types of the coordinate system for each `GeneralizedContractionShell`.
             Each entry must be one of "cartesian" or "spherical".
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
@@ -272,8 +270,8 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         array : np.ndarray(K_cont, K_cont, ...)
             Array associated with the atomic orbitals associated with the given set of contracted
             Cartesian Gaussians.
-            First and second indices of the array are associated with two contractions in the given
-            coordinate system. `K_cont` is the total number of contractions within the instance.
+            Dimensions 0 and 1 are associated with two contractions in the given coordinate system.
+            `K_cont` is the total number of contractions within the instance.
 
         Raises
         ------
@@ -282,7 +280,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         ValueError
             If `coord_types` has an entry that is not "cartesian" or "spherical".
             If `coord_types` has different number of entries as the number of
-            GeneralizedContractionShell (`contractions`) in instance.
+            `GeneralizedContractionShell` (`contractions`) in instance.
 
         """
         if not isinstance(coord_types, (list, tuple)):
@@ -294,7 +292,7 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         if len(coord_types) != len(self.contractions):
             raise ValueError(
                 "`coord_types` must have the same number of entries as the number of "
-                "GeneralizedContractionShell in the instance."
+                "`GeneralizedContractionShell` in the instance."
             )
 
         triu_blocks = []
@@ -316,9 +314,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
-                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for i in block.shape[2:]])
+                block *= cont_one.norm_cont.reshape(*block.shape[:2], *[1 for _ in block.shape[2:]])
                 block *= cont_two.norm_cont.reshape(
-                    1, 1, *block.shape[2:4], *[1 for i in block.shape[4:]]
+                    1, 1, *block.shape[2:4], *[1 for _ in block.shape[4:]]
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 if type_one == "spherical":
@@ -362,14 +360,14 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             Transformation matrix from contractions in the given coordinate system (e.g. AO) to
             linear combinations of contractions (e.g. MO).
             Transformation is applied to the left.
-            Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+            Rows correspond to the linear combinations (i.e. MO) and the columns correspond to the
             contractions (i.e. AO).
         coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
             Types of the coordinate system for the contractions.
             If "cartesian", then all of the contractions are treated as Cartesian contractions.
             If "spherical", then all of the contractions are treated as spherical contractions.
             If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each GeneralizedContractionShell instance.
+            coordinate type of each `GeneralizedContractionShell` instance.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
@@ -379,10 +377,10 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
         Returns
         -------
         array : np.ndarray(K_orbs, K_orbs, ...)
-            Array whose first and second indices are associated with the linear combinations of the
+            Array whose first two indices are associated with the linear combinations of the
             contractions.
-            First and second indices of the array correspond to the linear combination of contracted
-            spherical Gaussians. `K_orbs` is the number of basis functions produced after the linear
+            Dimensions 0 and 1 correspond to the linear combination of contracted spherical
+            Gaussians. `K_orbs` is the number of basis functions produced after the linear
             combinations.
 
         Raises
