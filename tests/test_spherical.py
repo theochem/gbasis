@@ -246,8 +246,6 @@ def test_generate_transformation_horton():
     )
 
 
-# FIXME: cannot reproduce horton results for the angular momentum 4 and 5.
-@pytest.mark.xfail
 def test_generate_transformation_horton_high_angmom():
     """Test spherical.generate_transformation using horton reference for high angular momentum.
 

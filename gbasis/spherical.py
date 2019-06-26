@@ -1,4 +1,7 @@
 """Convert from Cartesian Gaussians to spherical Gaussians."""
+
+from collections import defaultdict
+
 import numpy as np
 from scipy.special import comb, factorial, factorial2
 
@@ -201,7 +204,7 @@ def real_solid_harmonic(angmom, mag):
     if np.abs(mag) > angmom:
         raise ValueError("The magnetic quantum number must be between -(`angmom`) and `angmom`.")
 
-    harmonic = {}
+    harmonic = defaultdict(float)
     norm = harmonic_norm(angmom, mag)
 
     for i, j, k in [
@@ -217,9 +220,9 @@ def real_solid_harmonic(angmom, mag):
         a_y = int(2 * (j + k))
         a_z = int(angmom - 2 * i - np.abs(mag))
         if coeff != 0:
-            harmonic[(a_x, a_y, a_z)] = coeff
+            harmonic[(a_x, a_y, a_z)] += coeff
 
-    return harmonic
+    return dict(harmonic)
 
 
 def generate_transformation(angmom, cartesian_order, spherical_order, apply_from):
