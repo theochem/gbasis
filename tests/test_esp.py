@@ -1,17 +1,13 @@
-"""Tests for gbasis.evals.electrostatic_potential."""
-from gbasis.evals.electrostatic_potential import electrostatic_potential
+"""Tests for gbasis.evals.esp."""
+from gbasis.evals.esp import electrostatic_potential
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from utils import find_datafile, HortonContractions
 
 
-def test_electrostatic_potential():
-    """Test gbasis.evals.electrostatic_potential.electorstatic_potential.
-
-    Tested by using point_charge.point_charge_cartesian.
-
-    """
+def test_electrostatic_potential_raises():
+    """Test gbasis.evals.esp.electorstatic_potential type errors."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
     basis = make_contractions(basis_dict, ["H", "He"], coords)
@@ -156,7 +152,7 @@ def test_electrostatic_potential():
 
 
 def test_electrostatic_potential_cartesian():
-    """Test gbasis.evals.electrostatic_potential.electorstatic_potential_cartesian.
+    """Test gbasis.evals.esp.electorstatic_potential for cartesian coordinate type.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
     Density matrix is an identity matrix.
@@ -182,7 +178,7 @@ def test_electrostatic_potential_cartesian():
 
 
 def test_electrostatic_potential_spherical():
-    """Test gbasis.evals.electrostatic_potential.electorstatic_potential_spherical.
+    """Test gbasis.evals.esp.electorstatic_potential for spherical coordinate type.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
     Density matrix is an identity matrix.
@@ -208,7 +204,7 @@ def test_electrostatic_potential_spherical():
 
 
 def test_electrostatic_potential_mix():
-    """Test gbasis.evals.electrostatic_potential.electorstatic_potential_mix.
+    """Test gbasis.evals.esp.electorstatic_potential for mix coordinate type.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
     Density matrix is an identity matrix.
