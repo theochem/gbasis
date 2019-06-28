@@ -1,7 +1,7 @@
 """Test gbasis.evals.basis_eval."""
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
-from gbasis.evals.basis_eval import Eval, evaluate_basis
+from gbasis.evals.basis_eval import BasisEval, evaluate_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -10,7 +10,7 @@ from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_construct_array_contraction():
-    """Test gbasis.evals.basis_eval.Eval.construct_array_contraction."""
+    """Test gbasis.evals.basis_eval.BasisEval.construct_array_contraction."""
     test = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
     )
@@ -40,24 +40,25 @@ def test_evaluate_construct_array_contraction():
         ]
     ).reshape(3, 1)
     assert np.allclose(
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=test), answer
+        BasisEval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=test),
+        answer,
     )
 
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=None)
+        BasisEval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=None)
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions={1: 2})
+        BasisEval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions={1: 2})
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([2, 3, 4]), contractions=test)
+        BasisEval.construct_array_contraction(points=np.array([2, 3, 4]), contractions=test)
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[3, 4]]), contractions=test)
+        BasisEval.construct_array_contraction(points=np.array([[3, 4]]), contractions=test)
 
 
 def test_evaluate_basis_cartesian():
     """Test gbasis.evals.basis_eval.evaluate_basis with cartesian coordinate type."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
-    evaluate_obj = Eval(basis)
+    evaluate_obj = BasisEval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="cartesian"),
@@ -70,21 +71,21 @@ def test_evaluate_basis_spherical():
 
     # cartesian and spherical are the same for s orbital
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]))
-    evaluate_obj = Eval(basis)
+    evaluate_obj = BasisEval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
     # p orbitals are zero at center
     basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]))
-    evaluate_obj = Eval(basis)
+    evaluate_obj = BasisEval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]]), coord_type="spherical"),
     )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    evaluate_obj = Eval(basis)
+    evaluate_obj = BasisEval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
         evaluate_basis(basis, np.array([[1, 1, 1]]), coord_type="spherical"),
@@ -121,7 +122,7 @@ def test_evaluate_basis_lincomb():
     """Test gbasis.evals.basis_eval.evaluate_basis with lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
-    evaluate_obj = Eval(basis)
+    evaluate_obj = BasisEval(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
         evaluate_obj.construct_array_lincomb(transform, "spherical", points=np.array([[1, 1, 1]])),
