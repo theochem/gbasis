@@ -575,7 +575,7 @@ grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 \end{lstlisting}
 
 \subsection{Evaluation of contractions}
-The functions in module \verb|gbasis.evals.eval| return the evaluations of the
+The functions in module \verb|gbasis.evals.basis_eval| return the evaluations of the
 contractions at different coordinates:
 \begin{equation}
   \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha})
@@ -590,13 +590,13 @@ Example:
 \begin{itemize}
 \item To evaluate the atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.basis_eval import evaluate_basis
 
 output = evaluate_basis(basis, grid_3d, coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.basis_eval import evaluate_basis
 
 output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao, coord_type="spherical")
 \end{lstlisting}

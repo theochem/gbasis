@@ -9,7 +9,7 @@ from gbasis.evals.density import (
     evaluate_general_kinetic_energy_density,
     evaluate_posdef_kinetic_energy_density,
 )
-from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.basis_eval import evaluate_basis
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np

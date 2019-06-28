@@ -129,7 +129,7 @@ def test_evaluate_deriv_construct_array_contraction():
 
 
 def test_evaluate_deriv_basis_cartesian():
-    """Test gbasis.evals.eval.evaluate_deriv_basis_cartesian."""
+    """Test gbasis.evals.basis_eval.evaluate_deriv_basis_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     evaluate_obj = EvalDeriv(basis)
@@ -152,7 +152,7 @@ def test_evaluate_deriv_basis_cartesian():
 
 
 def test_evaluate_deriv_basis_spherical():
-    """Test gbasis.evals.eval.evaluate_deriv_basis_spherical."""
+    """Test gbasis.evals.basis_eval.evaluate_deriv_basis_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     evaluate_obj = EvalDeriv(basis)
@@ -175,7 +175,7 @@ def test_evaluate_deriv_basis_spherical():
 
 
 def test_evaluate_deriv_basis_mix():
-    """Test gbasis.evals.eval.evaluate_deriv_basis_mix."""
+    """Test gbasis.evals.basis_eval.evaluate_deriv_basis_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     evaluate_obj = EvalDeriv(basis)
@@ -198,7 +198,7 @@ def test_evaluate_deriv_basis_mix():
 
 
 def test_evaluate_deriv_basis_lincomb():
-    """Test gbasis.evals.eval.evaluate_deriv_basis_lincomb."""
+    """Test gbasis.evals.basis_eval.evaluate_deriv_basis_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     evaluate_obj = EvalDeriv(basis)
