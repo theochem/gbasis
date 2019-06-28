@@ -5,7 +5,7 @@ from gbasis.evals._deriv import _eval_deriv_contractions
 import numpy as np
 
 
-class EvalDeriv(BaseOneIndex):
+class BasisDeriv(BaseOneIndex):
     """Class for evaluating Gaussian contractions and their linear combinations.
 
     Dimension 0 of the returned array is associated with a contracted Gaussian (or
@@ -168,11 +168,11 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
 
     """
     if transform is not None:
-        return EvalDeriv(basis).construct_array_lincomb(
+        return BasisDeriv(basis).construct_array_lincomb(
             transform, coord_type, points=points, orders=orders
         )
     if coord_type == "cartesian":
-        return EvalDeriv(basis).construct_array_cartesian(points=points, orders=orders)
+        return BasisDeriv(basis).construct_array_cartesian(points=points, orders=orders)
     if coord_type == "spherical":
-        return EvalDeriv(basis).construct_array_spherical(points=points, orders=orders)
-    return EvalDeriv(basis).construct_array_mix(coord_type, points=points, orders=orders)
+        return BasisDeriv(basis).construct_array_spherical(points=points, orders=orders)
+    return BasisDeriv(basis).construct_array_mix(coord_type, points=points, orders=orders)
