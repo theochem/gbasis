@@ -5,7 +5,7 @@ from gbasis.evals.density import (
     evaluate_density_hessian,
     evaluate_density_laplacian,
     evaluate_density_using_evaluated_orbs,
-    evaluate_deriv_density,
+    evaluate_density_deriv,
     evaluate_general_kinetic_energy_density,
     evaluate_posdef_kinetic_energy_density,
 )
@@ -77,7 +77,7 @@ def test_evaluate_density():
 
 
 def test_evaluate_deriv_density():
-    """Test gbasis.evals.density.evaluate_deriv_density."""
+    """Test gbasis.evals.density.evaluate_density_deriv."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
     transform = np.random.rand(14, 18)
@@ -86,7 +86,7 @@ def test_evaluate_deriv_density():
     points = np.random.rand(10, 3)
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([1, 0, 0]), density, basis, points, transform),
+        evaluate_density_deriv(np.array([1, 0, 0]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -102,7 +102,7 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([0, 1, 0]), density, basis, points, transform),
+        evaluate_density_deriv(np.array([0, 1, 0]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -118,7 +118,7 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([0, 0, 1]), density, basis, points, transform),
+        evaluate_density_deriv(np.array([0, 0, 1]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -134,7 +134,7 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([2, 3, 0]), density, basis, points, transform),
+        evaluate_density_deriv(np.array([2, 3, 0]), density, basis, points, transform),
         np.einsum(
             "ij,ik,jk->k",
             density,

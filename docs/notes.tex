@@ -686,16 +686,16 @@ Suppose the following derivative of the density is desired:
 \item To evaluate the derivative of the density using density matrix expressed
   with respect to atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.density import evaluate_deriv_density
+from gbasis.evals.density import evaluate_density_deriv
 
-output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_density_deriv(np.array([1, 2, 0]), one_dm, basis, grid_3d, coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the derivative of the density using density matrix expressed
   with respect to molecular orbitals,
 \begin{lstlisting}
-from gbasis.evals.density import evaluate_deriv_density
+from gbasis.evals.density import evaluate_density_deriv
 
-output = evaluate_deriv_density(
+output = evaluate_density_deriv(
     np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
 )
 \end{lstlisting}

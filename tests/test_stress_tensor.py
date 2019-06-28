@@ -1,7 +1,7 @@
 """Test gbasis.evals.stress_tensor."""
 from gbasis.evals.density import (
     evaluate_density_laplacian,
-    evaluate_deriv_density,
+    evaluate_density_deriv,
     evaluate_deriv_reduced_density_matrix,
 )
 from gbasis.evals.stress_tensor import (
@@ -121,7 +121,7 @@ def test_evaluate_ehrenfest_force():
             temp4 = evaluate_deriv_reduced_density_matrix(
                 orders_i + orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
             )
-            temp5 = evaluate_deriv_density(
+            temp5 = evaluate_density_deriv(
                 2 * orders_i + orders_j, np.identity(40), basis, points, np.identity(40)
             )
 
@@ -234,7 +234,7 @@ def test_evaluate_ehrenfest_hessian():
                     points,
                     np.identity(40),
                 )
-                temp9 = evaluate_deriv_density(
+                temp9 = evaluate_density_deriv(
                     2 * orders_i + orders_j + orders_k,
                     np.identity(40),
                     basis,

@@ -1,7 +1,7 @@
 """Module for computing properties related to the stress tensor."""
 from gbasis.evals.density import (
     evaluate_density_laplacian,
-    evaluate_deriv_density,
+    evaluate_density_deriv,
     evaluate_deriv_reduced_density_matrix,
 )
 import numpy as np
@@ -258,7 +258,7 @@ def evaluate_ehrenfest_force(
                 output[i] -= (
                     0.5
                     * beta
-                    * evaluate_deriv_density(
+                    * evaluate_density_deriv(
                         2 * orders_one + orders_two,
                         one_density_matrix,
                         basis,
@@ -443,7 +443,7 @@ def evaluate_ehrenfest_hessian(
                     output[i, j] -= (
                         0.5
                         * beta
-                        * evaluate_deriv_density(
+                        * evaluate_density_deriv(
                             2 * orders_one + orders_two + orders_three,
                             one_density_matrix,
                             basis,
