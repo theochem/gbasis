@@ -604,7 +604,7 @@ output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao, coord_type="s
 
 \subsection{Evaluation of derivatives of contractions}
 In \verb|gbasis|, contractions can be derivatized to arbitrary orders.
-The functions in module \verb|gbasis.evals.eval_deriv| return the evaluations of the
+The functions in module \verb|gbasis.evals.basis_deriv| return the evaluations of the
 given derivative of the contractions at different coordinates.
 \begin{equation}
   \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
@@ -621,13 +621,13 @@ Suppose the following derivative of the contraction is desired:
 \begin{itemize}
 \item To evaluate the derivatives of the atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_deriv_basis
 
 output = evaluate_deriv_basis(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the derivatives of the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_deriv_basis
 
 output = evaluate_deriv_basis(
     basis, grid_3d, np.array([1, 2, 0]), transform=transform_mo_ao, coord_type="spherical"
