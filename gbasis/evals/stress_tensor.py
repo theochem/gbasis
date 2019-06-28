@@ -1,7 +1,7 @@
 """Module for computing properties related to the stress tensor."""
 from gbasis.evals.density import (
-    evaluate_density_laplacian,
     evaluate_density_deriv,
+    evaluate_density_laplacian,
     evaluate_deriv_reduced_density_matrix,
 )
 import numpy as np

@@ -1,6 +1,6 @@
 """Density Evaluation."""
-from gbasis.evals.basis_eval import evaluate_basis
 from gbasis.evals.basis_deriv import evaluate_basis_deriv
+from gbasis.evals.basis_eval import evaluate_basis
 import numpy as np
 from scipy.special import comb
 

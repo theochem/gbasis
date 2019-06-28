@@ -1,7 +1,7 @@
 """Test gbasis.evals.stress_tensor."""
 from gbasis.evals.density import (
-    evaluate_density_laplacian,
     evaluate_density_deriv,
+    evaluate_density_laplacian,
     evaluate_deriv_reduced_density_matrix,
 )
 from gbasis.evals.stress_tensor import (
