@@ -621,15 +621,15 @@ Suppose the following derivative of the contraction is desired:
 \begin{itemize}
 \item To evaluate the derivatives of the atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.basis_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_basis_deriv
 
-output = evaluate_deriv_basis(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
+output = evaluate_basis_deriv(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the derivatives of the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.basis_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_basis_deriv
 
-output = evaluate_deriv_basis(
+output = evaluate_basis_deriv(
     basis, grid_3d, np.array([1, 2, 0]), transform=transform_mo_ao, coord_type="spherical"
 )
 \end{lstlisting}

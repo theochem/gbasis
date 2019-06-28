@@ -10,7 +10,7 @@ from gbasis.evals.density import (
     evaluate_posdef_kinetic_energy_density,
 )
 from gbasis.evals.basis_eval import evaluate_basis
-from gbasis.evals.basis_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_basis_deriv
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -90,14 +90,14 @@ def test_evaluate_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([1, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 0, 0]), transform),
             evaluate_basis(basis, points, transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
             evaluate_basis(basis, points, transform),
-            evaluate_deriv_basis(basis, points, np.array([1, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 0, 0]), transform),
         ),
     )
 
@@ -106,14 +106,14 @@ def test_evaluate_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([0, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 1, 0]), transform),
             evaluate_basis(basis, points, transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
             evaluate_basis(basis, points, transform),
-            evaluate_deriv_basis(basis, points, np.array([0, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 1, 0]), transform),
         ),
     )
 
@@ -122,14 +122,14 @@ def test_evaluate_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([0, 0, 1]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 0, 1]), transform),
             evaluate_basis(basis, points, transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
             evaluate_basis(basis, points, transform),
-            evaluate_deriv_basis(basis, points, np.array([0, 0, 1]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 0, 1]), transform),
         ),
     )
 
@@ -138,84 +138,84 @@ def test_evaluate_deriv_density():
         np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([0, 0, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([2, 3, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 3, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([0, 1, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([2, 2, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 2, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([0, 2, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([2, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 2, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 1, 0]), transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([0, 3, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([2, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 3, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 0, 0]), transform),
         )
         + 2
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([1, 0, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([1, 3, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 3, 0]), transform),
         )
         + 2
         * 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([1, 1, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([1, 2, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 2, 0]), transform),
         )
         + 2
         * 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([1, 2, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([1, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 2, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 1, 0]), transform),
         )
         + 2
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([1, 3, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([1, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 3, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([1, 0, 0]), transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([2, 0, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([0, 3, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 3, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([2, 1, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([0, 2, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 2, 0]), transform),
         )
         + 3
         * np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([2, 2, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([0, 1, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 2, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 1, 0]), transform),
         )
         + np.einsum(
             "ij,ik,jk->k",
             density,
-            evaluate_deriv_basis(basis, points, np.array([2, 3, 0]), transform),
-            evaluate_deriv_basis(basis, points, np.array([0, 0, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([2, 3, 0]), transform),
+            evaluate_basis_deriv(basis, points, np.array([0, 0, 0]), transform),
         ),
     )
 
@@ -236,38 +236,38 @@ def test_evaluate_density_gradient():
                 np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_deriv_basis(basis, points, np.array([1, 0, 0]), transform),
+                    evaluate_basis_deriv(basis, points, np.array([1, 0, 0]), transform),
                     evaluate_basis(basis, points, transform),
                 )
                 + np.einsum(
                     "ij,ik,jk->k",
                     density,
                     evaluate_basis(basis, points, transform),
-                    evaluate_deriv_basis(basis, points, np.array([1, 0, 0]), transform),
+                    evaluate_basis_deriv(basis, points, np.array([1, 0, 0]), transform),
                 ),
                 np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_deriv_basis(basis, points, np.array([0, 1, 0]), transform),
+                    evaluate_basis_deriv(basis, points, np.array([0, 1, 0]), transform),
                     evaluate_basis(basis, points, transform),
                 )
                 + np.einsum(
                     "ij,ik,jk->k",
                     density,
                     evaluate_basis(basis, points, transform),
-                    evaluate_deriv_basis(basis, points, np.array([0, 1, 0]), transform),
+                    evaluate_basis_deriv(basis, points, np.array([0, 1, 0]), transform),
                 ),
                 np.einsum(
                     "ij,ik,jk->k",
                     density,
-                    evaluate_deriv_basis(basis, points, np.array([0, 0, 1]), transform),
+                    evaluate_basis_deriv(basis, points, np.array([0, 0, 1]), transform),
                     evaluate_basis(basis, points, transform),
                 )
                 + np.einsum(
                     "ij,ik,jk->k",
                     density,
                     evaluate_basis(basis, points, transform),
-                    evaluate_deriv_basis(basis, points, np.array([0, 0, 1]), transform),
+                    evaluate_basis_deriv(basis, points, np.array([0, 0, 1]), transform),
                 ),
             ]
         ),

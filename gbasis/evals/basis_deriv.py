@@ -126,7 +126,7 @@ class BasisDeriv(BaseOneIndex):
         return output
 
 
-def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="spherical"):
+def evaluate_basis_deriv(basis, points, orders, transform=None, coord_type="spherical"):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
     Parameters
