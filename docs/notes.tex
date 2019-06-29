@@ -1380,9 +1380,9 @@ matrix is given by \verb|one_dm|.
 \item To compute the electrostatic potential using density matrix expressed with
   respect to atomic orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.esp import electrostatic_potential
+from gbasis.evals.esp import evaluate_electrostatic_potential
 
-output = electrostatic_potential(
+output = evaluate_electrostatic_potential(
     basis,
     one_dm,
     np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
@@ -1394,9 +1394,9 @@ output = electrostatic_potential(
 \item To compute the electrostatic potential using density matrix expressed with
   respect to molecular orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.esp import electrostatic_potential
+from gbasis.evals.esp import evaluate_electrostatic_potential
 
-output = electrostatic_potential(
+output = evaluate_electrostatic_potential(
     basis,
     one_dm,
     np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),

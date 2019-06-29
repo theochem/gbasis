@@ -3,7 +3,7 @@ from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
 
 
-def electrostatic_potential(
+def evaluate_electrostatic_potential(
     basis,
     one_density_matrix,
     points,

@@ -1,5 +1,5 @@
 """Tests for gbasis.evals.esp."""
-from gbasis.evals.esp import electrostatic_potential
+from gbasis.evals.esp import evaluate_electrostatic_potential
 from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
@@ -15,7 +15,7 @@ def test_electrostatic_potential_raises():
 
     # check density_matrix type
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103).tolist(),
             np.random.rand(10, 3),
@@ -24,7 +24,7 @@ def test_electrostatic_potential_raises():
             coord_type="cartesian",
         )
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103).flatten(),
             np.random.rand(10, 3),
@@ -34,7 +34,7 @@ def test_electrostatic_potential_raises():
         )
     # check nuclear_coords
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -43,7 +43,7 @@ def test_electrostatic_potential_raises():
             coord_type="cartesian",
         )
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -53,7 +53,7 @@ def test_electrostatic_potential_raises():
         )
     # check nuclear charges
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -62,7 +62,7 @@ def test_electrostatic_potential_raises():
             coord_type="cartesian",
         )
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -72,7 +72,7 @@ def test_electrostatic_potential_raises():
         )
     # check density_matrix symmetry
     with pytest.raises(ValueError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.eye(103, 102),
             np.random.rand(10, 3),
@@ -82,7 +82,7 @@ def test_electrostatic_potential_raises():
         )
     # check nuclear_coords and nuclear_charges shapes
     with pytest.raises(ValueError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -92,7 +92,7 @@ def test_electrostatic_potential_raises():
         )
     # check threshold_dist types
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -103,7 +103,7 @@ def test_electrostatic_potential_raises():
         )
     # check threshold_dist value
     with pytest.raises(ValueError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -114,7 +114,7 @@ def test_electrostatic_potential_raises():
         )
     # check coord_types type
     with pytest.raises(TypeError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -123,7 +123,7 @@ def test_electrostatic_potential_raises():
             coord_type="bad",
         )
     with pytest.raises(ValueError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(88),
             np.random.rand(10, 3),
@@ -132,7 +132,7 @@ def test_electrostatic_potential_raises():
             coord_type="cartesian",
         )
     with pytest.raises(ValueError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -141,7 +141,7 @@ def test_electrostatic_potential_raises():
             coord_type="spherical",
         )
     with pytest.raises(ValueError):
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis,
             np.identity(103),
             np.random.rand(10, 3),
@@ -170,7 +170,7 @@ def test_electrostatic_potential_cartesian():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_esp.npy"))
     assert np.allclose(
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis, np.identity(103), grid_3d, coords, np.array([1, 2]), coord_type="cartesian"
         ),
         horton_nucattract,
@@ -196,7 +196,7 @@ def test_electrostatic_potential_spherical():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_sph_esp.npy"))
     assert np.allclose(
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis, np.identity(88), grid_3d, coords, np.array([1, 2]), coord_type="spherical"
         ),
         horton_nucattract,
@@ -222,14 +222,14 @@ def test_electrostatic_potential_mix():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_sph_esp.npy"))
     assert np.allclose(
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis, np.identity(88), grid_3d, coords, np.array([1, 2]), coord_type=["spherical"] * 9
         ),
         horton_nucattract,
     )
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_esp.npy"))
     assert np.allclose(
-        electrostatic_potential(
+        evaluate_electrostatic_potential(
             basis, np.identity(103), grid_3d, coords, np.array([1, 2]), coord_type=["cartesian"] * 9
         ),
         horton_nucattract,
