@@ -96,3 +96,11 @@ Following features are supported in `gbasis`:
 - point charge interaction integral (`gbasis.point_charge.point_charge_integral`)
 - nuclear-electron attraction integral (`gbasis.point_charge.point_charge_integral`)
 - electron-electron repulsion integral (`gbasis.electron_repulsion.electron_repulsion_integral`)
+
+## Acknowledgements
+This software was developed using funding from a variety of international sources including, but not
+limited to: Canarie, the Canada Research Chairs, Compute Canada, the European Union's Horizon 2020
+Marie Sklodowska-Curie Actions (Individual Fellowship No 800130), the Foundation of Scientific
+Research--Flanders (FWO), McMaster University, the National Fund for Scientific and Technological
+Development of Chile (FONDECYT), the Natural Sciences and Engineering Research Council of Canada
+(NSERC), the Research Board of Ghent University (BOF), and Sharcnet.
