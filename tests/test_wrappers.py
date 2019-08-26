@@ -64,12 +64,12 @@ def test_from_iodata():
 
     # NOTE: you shouldn't actually change the magnetic quantum number that is not compatible with
     # the angular momentum, but we do so here to check that user input is accepted
-    mol.obasis.conventions[(0, "p")] = ["sc1"]
+    mol.obasis.conventions[(0, "p")] = ["c1"]
     basis = from_iodata(mol)
     basis[2].angmom = 0
     assert basis[2].angmom_components_sph == (1,)
 
-    mol.obasis.conventions[(1, "p")] = ["pc1", "pc0", "ps1"]
+    mol.obasis.conventions[(1, "p")] = ["c1", "c0", "s1"]
     basis = from_iodata(mol)
     basis[2].angmom = 1
     assert basis[2].angmom_components_sph == (1, 0, -1)

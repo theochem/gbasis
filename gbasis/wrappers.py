@@ -44,15 +44,12 @@ def from_iodata(mol):
     cart_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "c"}
     sph_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "p"}
     if 0 not in sph_conventions:
-        sph_conventions[0] = ["sc0"]
+        sph_conventions[0] = ["c0"]
     if 1 not in sph_conventions:
         # hard code conversion from cartesian form to spherical
-        p_orb_conversion = {"x": "pc1", "z": "pc0", "y": "ps1"}
+        p_orb_conversion = {"x": "c1", "z": "c0", "y": "s1"}
         # convert given cartesian ordering to spherical
         sph_conventions[1] = [p_orb_conversion[i] for i in cart_conventions[1]]
-
-    # NOTE: hard-coded angular momentum from iodata.basis.ANGMOM_CHARS
-    iodata_angmom = "spdfghiklmnoqrtuvwxyzabce"
 
     class IODataShell(GeneralizedContractionShell):
         """Shell object that is compatible with `gbasis`' shell object.
@@ -117,15 +114,10 @@ def from_iodata(mol):
                         "Only the real solid harmonics as defined in Helgaker Section 6.4.2. is "
                         "supported."
                     )
-                if j[0] != iodata_angmom[self.angmom]:  # pragma: no cover
-                    raise NotImplementedError(
-                        "The angular momentum character, {0}, does not match up with the given "
-                        "angular momentum, {1}".format(j[0], self.angmom)
-                    )
 
-                if j[1] == "c":
+                if j[0] == "c":
                     factor = 1
-                elif j[1] == "s":
+                elif j[0] == "s":
                     factor = -1
                 else:  # pragma: no cover
                     raise ValueError(
@@ -133,7 +125,7 @@ def from_iodata(mol):
                         "or 's'."
                     )
 
-                output.append(factor * int(j[2:]))
+                output.append(factor * int(j[1:]))
 
             return tuple(output)
 
