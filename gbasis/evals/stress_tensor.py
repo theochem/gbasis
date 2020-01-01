@@ -141,28 +141,28 @@ def evaluate_ehrenfest_force(
 ):
     r"""Return the Ehrenfest force.
 
-    Ehrenfest force is the divergence of the stress tensor:
+    Ehrenfest force is the negative of the divergence of the stress tensor:
     .. math::
 
         F_{j}(\mathbf{r}_n | \alpha, \beta)
-        =& \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
+        =&- \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
         =&
-        - \alpha
+        \alpha
         \sum_i
         \left.
           \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
         \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &+ (1 - \alpha)
+        &- (1 - \alpha)
         \sum_i
         \left.
           \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
         \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-        + (1 - 2\alpha)
+        - (1 - 2\alpha)
         \sum_i
         \left.
           \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
         \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &- \frac{1}{2} \beta
+        &+ \frac{1}{2} \beta
         \left.
           \left(
             \frac{\partial^3}{\partial r_j \partial x^2}
@@ -225,7 +225,7 @@ def evaluate_ehrenfest_force(
     for i, orders_two in enumerate(np.identity(3, dtype=int)):
         for orders_one in np.identity(3, dtype=int):
             if alpha != 0:
-                output[i] -= alpha * evaluate_deriv_reduced_density_matrix(
+                output[i] += alpha * evaluate_deriv_reduced_density_matrix(
                     2 * orders_one,
                     orders_two,
                     one_density_matrix,
@@ -235,7 +235,7 @@ def evaluate_ehrenfest_force(
                     coord_type=coord_type,
                 )
             if alpha != 1:
-                output[i] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
+                output[i] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                     2 * orders_one + orders_two,
                     np.array([0, 0, 0]),
                     one_density_matrix,
@@ -245,7 +245,7 @@ def evaluate_ehrenfest_force(
                     coord_type=coord_type,
                 )
             if alpha != 0.5:
-                output[i] += (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
+                output[i] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                     orders_one + orders_two,
                     orders_one,
                     one_density_matrix,
@@ -255,7 +255,7 @@ def evaluate_ehrenfest_force(
                     coord_type=coord_type,
                 )
             if beta != 0:
-                output[i] -= (
+                output[i] += (
                     0.5
                     * beta
                     * evaluate_deriv_density(
@@ -288,9 +288,9 @@ def evaluate_ehrenfest_hessian(
 
         H_{jk}(\mathbf{r}_n | \alpha, \beta)
         =&
-        \frac{\partial}{\partial r_k} F_j(\mathbf{r}_n | \alpha, \beta)\\
+        - \frac{\partial}{\partial r_k} F_j(\mathbf{r}_n | \alpha, \beta)\\
         =&
-        - \alpha
+        \alpha
         \sum_i
         \left(
             \frac{\partial^4}{\partial r^2_i \partial r_k \partial r'_j}
@@ -298,7 +298,7 @@ def evaluate_ehrenfest_hessian(
             +\frac{\partial^4}{\partial r^2_i \partial r'_j \partial r'_k}
             \gamma(\mathbf{r}, \mathbf{r}')
         \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &+ (1 - \alpha)
+        &- (1 - \alpha)
         \sum_i
         \left(
             \frac{\partial^4}{\partial r^2_i \partial r_j \partial r_k}
@@ -306,7 +306,7 @@ def evaluate_ehrenfest_hessian(
             + \frac{\partial^4}{\partial r^2_i \partial r_j \partial r'_k}
             \gamma(\mathbf{r}, \mathbf{r})
         \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &+ (1 - 2\alpha)
+        &- (1 - 2\alpha)
         \sum_i
         \left(
             \frac{\partial^4}{\partial r_i \partial r_j \partial r_k \partial r'_i}
@@ -314,7 +314,7 @@ def evaluate_ehrenfest_hessian(
             + \frac{\partial^4}{\partial r_i \partial r_j \partial r'_i \partial r'_k}
             \gamma(\mathbf{r}, \mathbf{r})
         \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &- \frac{1}{2} \beta
+        &+ \frac{1}{2} \beta
         \left.
             \left(
                 \frac{\partial^4}{\partial r_j \partial r_k \partial x^2}
@@ -383,7 +383,7 @@ def evaluate_ehrenfest_hessian(
         for j, orders_three in enumerate(np.identity(3, dtype=int)):
             for orders_one in np.identity(3, dtype=int):
                 if alpha != 0:
-                    output[i, j] -= alpha * evaluate_deriv_reduced_density_matrix(
+                    output[i, j] += alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_three,
                         orders_two,
                         one_density_matrix,
@@ -392,7 +392,7 @@ def evaluate_ehrenfest_hessian(
                         transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] -= alpha * evaluate_deriv_reduced_density_matrix(
+                    output[i, j] += alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one,
                         orders_two + orders_three,
                         one_density_matrix,
@@ -402,7 +402,7 @@ def evaluate_ehrenfest_hessian(
                         coord_type=coord_type,
                     )
                 if alpha != 1:
-                    output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
+                    output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two + orders_three,
                         np.array([0, 0, 0]),
                         one_density_matrix,
@@ -411,7 +411,7 @@ def evaluate_ehrenfest_hessian(
                         transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
+                    output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
                         orders_three,
                         one_density_matrix,
@@ -421,7 +421,7 @@ def evaluate_ehrenfest_hessian(
                         coord_type=coord_type,
                     )
                 if alpha != 0.5:
-                    output[i, j] += (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
+                    output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two + orders_three,
                         orders_one,
                         one_density_matrix,
@@ -430,7 +430,7 @@ def evaluate_ehrenfest_hessian(
                         transform=transform,
                         coord_type=coord_type,
                     )
-                    output[i, j] += (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
+                    output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two,
                         orders_one + orders_three,
                         one_density_matrix,
@@ -440,7 +440,7 @@ def evaluate_ehrenfest_hessian(
                         coord_type=coord_type,
                     )
                 if beta != 0:
-                    output[i, j] -= (
+                    output[i, j] += (
                         0.5
                         * beta
                         * evaluate_deriv_density(
