@@ -129,10 +129,10 @@ def test_evaluate_ehrenfest_force():
             ref_b += -temp1 - temp2
             ref_c += -0.5 * temp1 - 0.5 * temp2 + 0.5 * temp3 + 0.5 * temp4
             ref_d += temp3 + temp4 - temp5
-        assert np.allclose(test_a[:, j], ref_a)
-        assert np.allclose(test_b[:, j], ref_b)
-        assert np.allclose(test_c[:, j], ref_c)
-        assert np.allclose(test_d[:, j], ref_d)
+        assert np.allclose(test_a[:, j], -ref_a)
+        assert np.allclose(test_b[:, j], -ref_b)
+        assert np.allclose(test_c[:, j], -ref_c)
+        assert np.allclose(test_d[:, j], -ref_d)
 
 
 def test_evaluate_ehrenfest_hessian():
@@ -255,10 +255,10 @@ def test_evaluate_ehrenfest_hessian():
                     + 0.5 * temp8
                 )
                 ref_d += temp3 + temp4 + temp5 + temp6 - temp9
-            assert np.allclose(test_a[:, j, k], ref_a)
-            assert np.allclose(test_b[:, j, k], ref_b)
-            assert np.allclose(test_c[:, j, k], ref_c)
-            assert np.allclose(test_d[:, j, k], ref_d)
+            assert np.allclose(test_a[:, j, k], -ref_a)
+            assert np.allclose(test_b[:, j, k], -ref_b)
+            assert np.allclose(test_c[:, j, k], -ref_c)
+            assert np.allclose(test_d[:, j, k], -ref_d)
     assert np.allclose(
         evaluate_ehrenfest_hessian(
             np.identity(40), basis, points, 0, 0, np.identity(40), symmetric=True
