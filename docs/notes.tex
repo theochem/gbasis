@@ -894,53 +894,53 @@ output = evaluate_stress_tensor(
 \end{lstlisting}
 \end{itemize}
 \subsubsection{Ehrenfest force}
-Ehrenfest force is defined as the divergence of the stress tensor
+Ehrenfest force is defined as the negative of the divergence of the stress tensor
 \begin{equation}
   \hspace{-4em}
   \begin{split}
     F_{j}(\mathbf{r}_n | \alpha, \beta)
     =&
-    \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
+    - \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
     =&
-    - \alpha
+    \alpha
     \sum_i
     \left.
       \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-    - \alpha
+    + \alpha
     \sum_i
     \left.
       \frac{\partial^3}{\partial r_i \partial r'_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-    &+ (1 - \alpha)
+    &- (1 - \alpha)
     \sum_i
     \left.
       \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-    + (1 - \alpha)
+    - (1 - \alpha)
     \sum_i
     \left.
       \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-    - \frac{1}{2} \sum_i \delta_{ij} \beta
+    + \frac{1}{2} \sum_i \delta_{ij} \beta
     \frac{\partial}{\partial r_i} \nabla^2 \rho(\mathbf{r}_n)\\
     =&
-    - \alpha
+    \alpha
     \sum_i
     \left.
       \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-    &+ (1 - \alpha)
+    &- (1 - \alpha)
     \sum_i
     \left.
       \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-    + (1 - 2\alpha)
+    - (1 - 2\alpha)
     \sum_i
     \left.
       \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
     \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-    - \frac{1}{2} \sum_i \delta_{ij} \beta
+    + \frac{1}{2} \sum_i \delta_{ij} \beta
     \frac{\partial}{\partial r_i} \nabla^2 \rho(\mathbf{r}_n)\\
   \end{split}
 \end{equation}
@@ -977,27 +977,27 @@ output = evaluate_ehrenfest_force(
   \begin{split}
     H_{jk}(\mathbf{r}_n | \alpha, \beta)
     =&
-    \frac{\partial}{\partial r_k} F_j(\mathbf{r}_n | \alpha, \beta)\\
+    - \frac{\partial}{\partial r_k} F_j(\mathbf{r}_n | \alpha, \beta)\\
     =&
-    - \alpha
+    \alpha
     \sum_i
     \left(
       \frac{\partial^4}{\partial r^2_i \partial r_k \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
       +\frac{\partial^4}{\partial r^2_i \partial r'_j \partial r'_k} \gamma(\mathbf{r}, \mathbf{r}')
     \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-    &+ (1 - \alpha)
+    &- (1 - \alpha)
     \sum_i
     \left(
       \frac{\partial^4}{\partial r^2_i \partial r_j \partial r_k} \gamma(\mathbf{r}, \mathbf{r})
       + \frac{\partial^4}{\partial r^2_i \partial r_j \partial r'_k} \gamma(\mathbf{r}, \mathbf{r})
     \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-    &+ (1 - 2\alpha)
+    &- (1 - 2\alpha)
     \sum_i
     \left(
       \frac{\partial^4}{\partial r_i \partial r_j \partial r_k \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
       + \frac{\partial^4}{\partial r_i \partial r_j \partial r'_i \partial r'_k} \gamma(\mathbf{r}, \mathbf{r})
     \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-    &- \frac{1}{2} \sum_i \delta_{ij} \beta
+    &+ \frac{1}{2} \sum_i \delta_{ij} \beta
     \frac{\partial^2}{\partial r_i \partial r_k} \nabla^2 \rho(\mathbf{r}_n)\\
   \end{split}
 \end{equation}
