@@ -14,8 +14,9 @@ def test_from_iodata():
 
     mol = load_one(find_datafile("data_iodata_water_sto3g_hf_g03.fchk"))
 
-    basis = from_iodata(mol)
+    basis, coord_types = from_iodata(mol)
 
+    assert coord_types == ["cartesian"] * 5
     assert all(isinstance(i, GeneralizedContractionShell) for i in basis)
     assert basis[0].angmom == 0
     assert np.allclose(basis[0].coord, mol.atcoords[0])
@@ -23,6 +24,7 @@ def test_from_iodata():
     assert np.allclose(
         basis[0].coeffs, np.array([0.1543289673, 0.5353281423, 0.4446345422]).reshape(-1, 1)
     )
+    assert np.allclose(basis[0].norm_cont, 1.0)
 
     assert basis[1].angmom == 0
     assert np.allclose(basis[1].coord, mol.atcoords[0])
@@ -30,6 +32,7 @@ def test_from_iodata():
     assert np.allclose(
         basis[1].coeffs, np.array([-0.09996722919, 0.3995128261, 0.7001154689]).reshape(-1, 1)
     )
+    assert np.allclose(basis[1].norm_cont, 1.0)
 
     assert basis[2].angmom == 1
     assert np.allclose(basis[2].coord, mol.atcoords[0])
@@ -37,6 +40,7 @@ def test_from_iodata():
     assert np.allclose(
         basis[2].coeffs, np.array([0.1559162750, 0.6076837186, 0.3919573931]).reshape(-1, 1)
     )
+    assert np.allclose(basis[2].norm_cont, 1.0)
 
     assert basis[3].angmom == 0
     assert np.allclose(basis[3].coord, mol.atcoords[1])
@@ -44,6 +48,7 @@ def test_from_iodata():
     assert np.allclose(
         basis[3].coeffs, np.array([0.1543289673, 0.5353281423, 0.4446345422]).reshape(-1, 1)
     )
+    assert np.allclose(basis[3].norm_cont, 1.0)
 
     assert basis[4].angmom == 0
     assert np.allclose(basis[4].coord, mol.atcoords[2])
@@ -51,12 +56,19 @@ def test_from_iodata():
     assert np.allclose(
         basis[4].coeffs, np.array([0.1543289673, 0.5353281423, 0.4446345422]).reshape(-1, 1)
     )
+    assert np.allclose(basis[4].norm_cont, 1.0)
 
-    # artificially change angular momentum
-    basis[2].angmom = 0
-    assert basis[2].angmom_components_sph == (0,)
-    basis[2].angmom = 1
-    assert basis[2].angmom_components_sph == (1, -1, 0)
+    # Artificially change angular momentum.
+    # The following few lines are commented out deliberately. The file
+    # "data_iodata_water_sto3g_hf_g03.fchk" does not contain "spherical"
+    # functions for angular momenta 0 and 1, so there is no need to have
+    # conventions for them. (This is a fairly common pattern in most QC codes.)
+    # -- BEGIN COMMENTED ASSERTS
+    # basis[2].angmom = 0
+    # assert basis[2].angmom_components_sph == (0,)
+    # basis[2].angmom = 1
+    # assert basis[2].angmom_components_sph == (1, -1, 0)
+    # -- END COMMENTED ASSERTS
     basis[2].angmom = 2
     assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2)
     basis[2].angmom = 3
@@ -65,14 +77,18 @@ def test_from_iodata():
     # NOTE: you shouldn't actually change the magnetic quantum number that is not compatible with
     # the angular momentum, but we do so here to check that user input is accepted
     mol.obasis.conventions[(0, "p")] = ["c1"]
-    basis = from_iodata(mol)
+    basis, coord_types = from_iodata(mol)
     basis[2].angmom = 0
+    assert coord_types == ["cartesian"] * 5
     assert basis[2].angmom_components_sph == (1,)
+    assert np.allclose(basis[2].norm_cont, 1.0)
 
     mol.obasis.conventions[(1, "p")] = ["c1", "c0", "s1"]
-    basis = from_iodata(mol)
+    basis, coord_types = from_iodata(mol)
     basis[2].angmom = 1
+    assert coord_types == ["cartesian"] * 5
     assert basis[2].angmom_components_sph == (1, 0, -1)
+    assert np.allclose(basis[2].norm_cont, 1.0)
 
     with pytest.raises(ValueError):
         basis[2].angmom = -1
@@ -80,7 +96,7 @@ def test_from_iodata():
 
     with pytest.raises(ValueError):
         mol.obasis = mol.obasis._replace(primitive_normalization="L1")
-        basis = from_iodata(mol)
+        basis, coord_types = from_iodata(mol)
 
 
 def test_from_pyscf():

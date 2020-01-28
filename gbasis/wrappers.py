@@ -16,6 +16,11 @@ def from_iodata(mol):
     basis : tuple of gbasis.contraciton.GeneralizedContractionShell
         Basis set object used within the `gbasis` module.
         `GeneralizedContractionShell` corresponds to the `Shell` object within `iodata.basis`.
+    coord_types : list of str
+        A list of strings, each on being either ``"cartesian"`` or
+        ``"spherical"``, which needs to be passed into integral and eval
+        functions. This part of the basis set is not stored in the ``basis``
+        return value. Users need to keep track of this in a separate variable.
 
     Raises
     ------
@@ -43,13 +48,6 @@ def from_iodata(mol):
 
     cart_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "c"}
     sph_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "p"}
-    if 0 not in sph_conventions:
-        sph_conventions[0] = ["c0"]
-    if 1 not in sph_conventions:
-        # hard code conversion from cartesian form to spherical
-        p_orb_conversion = {"x": "c1", "z": "c0", "y": "s1"}
-        # convert given cartesian ordering to spherical
-        sph_conventions[1] = [p_orb_conversion[i] for i in cart_conventions[1]]
 
     class IODataShell(GeneralizedContractionShell):
         """Shell object that is compatible with `gbasis`' shell object.
@@ -57,6 +55,15 @@ def from_iodata(mol):
         See `gbasis.contractions.GeneralizedContractionShell` for the documentation.
 
         """
+
+        def assign_norm_cont(self):
+            """Asign 1.0 as normalization constant instead of renormalizing.
+
+            IOData does not impose a normalization convention of the contractions
+            to support file formats that follow different conventions.
+            """
+            num_components_cart = ((self.angmom + 1) * (self.angmom + 2)) // 2
+            self.norm_cont = np.ones((num_components_cart, self.coeffs.shape[1]))
 
         @property
         def angmom_components_cart(self):
@@ -71,8 +78,12 @@ def from_iodata(mol):
                 angular momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`
 
             """
-            if self.angmom == 0:
-                return np.array([[0, 0, 0]])
+            if self.angmom not in cart_conventions:
+                # GBasis needs Cartesian conventions for all angular momenta that
+                # are used, even when these only appear as Spherical functions
+                # in the basis set. Any convention will do when they are not
+                # set by IOData.
+                return super().angmom_components_cart
             return np.array(
                 [(j.count("x"), j.count("y"), j.count("z")) for j in cart_conventions[self.angmom]]
             )
@@ -98,7 +109,6 @@ def from_iodata(mol):
                 If convention does not support given angular momentum.
                 If convention for the sign of the magnetic quantum number is not cosine (+1) or sine
                 (-1).
-
 
             """
             output = []
@@ -148,11 +158,7 @@ def from_iodata(mol):
                 shells.append(
                     # NOTE: _replace returns a copy (so the original is not affected)
                     grouped_shell._replace(
-                        icenter=grouped_shell.icenter,
-                        angmoms=[angmom],
-                        kinds=[kind],
-                        exponents=grouped_shell.exponents,
-                        coeffs=coeffs.reshape(-1, 1),
+                        angmoms=[angmom], kinds=[kind], coeffs=coeffs.reshape(-1, 1),
                     )
                 )
         else:
@@ -164,14 +170,14 @@ def from_iodata(mol):
             angmom = int(shell.angmoms[0])
 
             # get type
-            coord_types.append(shell.kinds[0])
+            coord_types.append({"c": "cartesian", "p": "spherical"}[shell.kinds[0]])
 
             # pylint: disable=E1136
             basis.append(
                 IODataShell(angmom, mol.atcoords[shell.icenter], shell.coeffs, shell.exponents)
             )
 
-    return basis
+    return basis, coord_types
 
 
 def from_pyscf(mol):
