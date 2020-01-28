@@ -234,6 +234,28 @@ def test_contruct_array_mix():
         test.construct_array_mix(["cartesian"] * 3, a=3),
 
 
+def test_construct_array_mix_missing_conventions():
+    class SpecialShell(GeneralizedContractionShell):
+        @property
+        def angmom_components_sph(self):
+            """These conventions are not necessarily defined."""
+            raise NotImplementedError
+
+    contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1))
+    Test = disable_abstract(  # noqa: N806
+        BaseOneIndex,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont, a=2: np.arange(18, dtype=float).reshape(2, 3, 3) * a
+            )
+        },
+    )
+    test = Test([contractions, contractions])
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
+    )
+
+
 def test_contruct_array_lincomb():
     """Test BaseOneIndex.construct_array_lincomb."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))

@@ -220,19 +220,20 @@ class BaseOneIndex(BaseGaussianRelatedArray):
 
         matrices = []
         for cont, coord_type in zip(self.contractions, coord_types):
-            # get transformation from cartesian to spherical (applied to left)
-            transform = generate_transformation(
-                cont.angmom, cont.angmom_components_cart, cont.angmom_components_sph, "left"
-            )
             # evaluate the function at the given points
             matrix_contraction = self.construct_array_contraction(cont, **kwargs)
             # normalize contractions
             matrix_contraction *= cont.norm_cont.reshape(
                 *matrix_contraction.shape[:2], *[1 for _ in matrix_contraction.shape[2:]]
             )
-            # transform
-            # ASSUME array always has shape (M, L, ...)
             if coord_type == "spherical":
+                # get transformation from cartesian to spherical
+                # (applied to left), only when it is needed.
+                transform = generate_transformation(
+                    cont.angmom, cont.angmom_components_cart, cont.angmom_components_sph, "left"
+                )
+                # Apply the transform.
+                # ASSUME array always has shape (M, L, ...)
                 matrix_contraction = np.tensordot(transform, matrix_contraction, (1, 1))
                 matrix_contraction = np.swapaxes(matrix_contraction, 0, 1)
             matrix_contraction = np.concatenate(matrix_contraction, axis=0)
