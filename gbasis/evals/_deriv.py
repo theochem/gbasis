@@ -116,7 +116,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         coeffs = (
             comb(nonzero_orders, indices_herm)
             * perm(nonzero_angmom_comps, nonzero_orders - indices_herm)
-            * (-alphas ** 0.5) ** indices_herm
+            * (-(alphas ** 0.5)) ** indices_herm
             * nonzero_coords ** indices_angmom
         )
         # zero out the appropriate terms

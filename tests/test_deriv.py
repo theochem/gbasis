@@ -97,7 +97,7 @@ def test_evaluate_prim():
     # angular momentum 1
     assert np.allclose(
         evaluate_prim(np.array([2.0, 0, 0]), np.array([0, 0, 0]), np.array([1, 0, 0]), 1),
-        2 * np.exp(-2 ** 2),
+        2 * np.exp(-(2 ** 2)),
     )
     # other angular momentum
     assert np.allclose(
@@ -205,7 +205,7 @@ def test_evaluate_contractions():
             np.array([1.0]),
             np.array([[1.0]]),
         ),
-        2 * np.exp(-2 ** 2),
+        2 * np.exp(-(2 ** 2)),
     )
     # other angular momentum
     assert np.allclose(
