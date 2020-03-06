@@ -236,6 +236,7 @@ def test_contruct_array_mix():
 
 def test_construct_array_mix_missing_conventions():
     """Test BaseOneIndex.construct_array_mix with partially defined conventions."""
+
     class SpecialShell(GeneralizedContractionShell):
         @property
         def angmom_components_sph(self):
