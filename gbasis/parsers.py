@@ -1,8 +1,8 @@
 """Parsers for reading basis set files."""
 import re
 
-from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
+from gbasis.contractions import GeneralizedContractionShell
 
 
 def parse_nwchem(nwchem_basis_file):
@@ -99,15 +99,15 @@ def parse_gbs(gbs_basis_file):
     # pylint: disable=R0914
     with open(gbs_basis_file, "r") as basis_fh:
         gbs_basis = basis_fh.read()
-
+    # splits file into 'element', 'basis stuff', 'element',' basis stuff'
+    # e.g., ['H','stuff with exponents & coefficients\n', 'C', 'stuff with etc\n']
     data = re.split(r"\n\s*(\w[\w]?)\s+\w+\s*\n", gbs_basis)
     dict_angmom = {"s": 0, "p": 1, "d": 2, "f": 3, "g": 4, "h": 5, "i": 6, "k": 7}
     # remove first part
     if "\n" in data[0]:  # pragma: no branch
         data = data[1:]
-
-    atoms = data[::2]
-    basis = data[1::2]
+    atoms = data[::2]  # stride of 2 get the ['H','C', etc] from e.g., above
+    basis = data[1::2]  # starting with 'stuff' take strides of 2 to skip elements
     # trim out headers at the end
     output = {}
     for atom, shells in zip(atoms, basis):
@@ -120,6 +120,7 @@ def parse_gbs(gbs_basis_file):
         angmom_shells = atom_basis[::2]
         # get exponents and coefficients
         exps_coeffs_shells = atom_basis[1::2]
+
         for angmom_seg, exp_coeffs in zip(angmom_shells, exps_coeffs_shells):
             angmom_seg = [dict_angmom[i.lower()] for i in angmom_seg]
             exps = []
@@ -146,18 +147,26 @@ def parse_gbs(gbs_basis_file):
             # if len(angmom_seg) == 1:
             #     coeffs_seg = coeffs_seg[:, None]
             for i, angmom in enumerate(angmom_seg):
+
+                # dummy fix for np.allclose
+                if output[atom] and len(output[atom][-1][1]) == len(exps):
+                    hstack = np.allclose(output[atom][-1][1], exps)
+                else:
+                    hstack = False
+
                 if (
-                    output[atom]
-                    and output[atom][-1][0] == angmom
-                    and np.allclose(output[atom][-1][1], exps)
+                        output[atom]
+                        and output[atom][-1][0] == angmom
+                        and hstack
+                        # and np.allclose(output[atom][-1][1], exps)
                 ):
                     output[atom][-1] = (
                         angmom,
                         exps,
-                        np.hstack([output[atom][-1][2], coeffs_seg[:, i : i + 1]]),
+                        np.hstack([output[atom][-1][2], coeffs_seg[:, i: i + 1]]),
                     )
                 else:
-                    output[atom].append((angmom, exps, coeffs_seg[:, i : i + 1]))
+                    output[atom].append((angmom, exps, coeffs_seg[:, i: i + 1]))
 
     return output
 
