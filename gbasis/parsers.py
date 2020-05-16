@@ -163,10 +163,10 @@ def parse_gbs(gbs_basis_file):
                     output[atom][-1] = (
                         angmom,
                         exps,
-                        np.hstack([output[atom][-1][2], coeffs_seg[:, i: i + 1]]),
+                        np.hstack([output[atom][-1][2], coeffs_seg[:, i:i + 1]]),
                     )
                 else:
-                    output[atom].append((angmom, exps, coeffs_seg[:, i: i + 1]))
+                    output[atom].append((angmom, exps, coeffs_seg[:, i:i + 1]))
 
     return output
 
