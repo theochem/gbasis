@@ -94,7 +94,7 @@ def from_iodata(mol):
 
             Returns
             -------
-            angmom_components_sph : tuple of int
+            angmom_components_sph : tuple of str
                 Tuple of magnetic quantum numbers of the contractions that specifies the
                 ordering after transforming the contractions from the Cartesian to spherical
                 coordinate system.
@@ -111,33 +111,13 @@ def from_iodata(mol):
                 (-1).
 
             """
-            output = []
             if self.angmom not in sph_conventions:
                 raise ValueError(
                     "Given convention does not support spherical contractions for the angular "
                     "momentum {0}".format(self.angmom)
                 )
 
-            for j in sph_conventions[self.angmom]:
-                if j[0] == "-":  # pragma: no cover
-                    raise NotImplementedError(
-                        "Only the real solid harmonics as defined in Helgaker Section 6.4.2. is "
-                        "supported."
-                    )
-
-                if j[0] == "c":
-                    factor = 1
-                elif j[0] == "s":
-                    factor = -1
-                else:  # pragma: no cover
-                    raise ValueError(
-                        "Convention for the sign of the magnetic quantum number must be either 'c' "
-                        "or 's'."
-                    )
-
-                output.append(factor * int(j[1:]))
-
-            return tuple(output)
+            return tuple(sph_conventions[self.angmom])
 
     if molbasis.primitive_normalization != "L2":  # pragma: no cover
         raise ValueError(
@@ -158,7 +138,7 @@ def from_iodata(mol):
                 shells.append(
                     # NOTE: _replace returns a copy (so the original is not affected)
                     grouped_shell._replace(
-                        angmoms=[angmom], kinds=[kind], coeffs=coeffs.reshape(-1, 1),
+                        angmoms=[angmom], kinds=[kind], coeffs=coeffs.reshape(-1, 1)
                     )
                 )
         else:
@@ -221,7 +201,7 @@ def from_pyscf(mol):
         def angmom_components_sph(self):
             """Return the ordering of the magnetic quantum numbers for the given angmom in pyscf."""
             if self.angmom == 1:
-                return (1, -1, 0)
+                return ("c1", "s1", "c0")
             return super().angmom_components_sph
 
     basis = []
