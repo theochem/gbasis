@@ -149,7 +149,7 @@ def parse_gbs(gbs_basis_file):
             for i, angmom in enumerate(angmom_seg):
                 # ensure previous and current exps are same length before using np.allclose()
                 if output[atom] and len(output[atom][-1][1]) == len(exps):
-                    # check if current exp's should be added to previous  generalized contraction
+                    # check if current exp's should be added to previous generalized contraction
                     hstack = np.allclose(output[atom][-1][1], exps)
                 else:
                     hstack = False
