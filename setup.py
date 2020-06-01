@@ -62,7 +62,7 @@ setup(
     extras_require={
         "dev": ["tox"],
         "test": ["tox", "pytest", "pytest-cov"],
-        "iodata": ["iodata>0.1.7"],
+        # "iodata": ["iodata>0.1.7"],
         "pyscf": ["pyscf>=1.6.1"],
     },
     # If there are data files included in your packages that need to be

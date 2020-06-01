@@ -1,8 +1,8 @@
 """Parsers for reading basis set files."""
 import re
 
-import numpy as np
 from gbasis.contractions import GeneralizedContractionShell
+import numpy as np
 
 
 def parse_nwchem(nwchem_basis_file):
@@ -106,8 +106,9 @@ def parse_gbs(gbs_basis_file):
     # remove first part
     if "\n" in data[0]:  # pragma: no branch
         data = data[1:]
-    atoms = data[::2]  # stride of 2 get the ['H','C', etc] from e.g., above
-    basis = data[1::2]  # starting with 'stuff' take strides of 2 to skip elements
+    # atoms: stride of 2 get the ['H','C', etc]. basis: take strides of 2 to skip elements
+    atoms = data[::2]
+    basis = data[1::2]
     # trim out headers at the end
     output = {}
     for atom, shells in zip(atoms, basis):
@@ -143,23 +144,16 @@ def parse_gbs(gbs_basis_file):
                 coeffs_seg.append(coeff_seg)
             exps = np.array(exps)
             coeffs_seg = np.array(coeffs_seg)
-
             # if len(angmom_seg) == 1:
             #     coeffs_seg = coeffs_seg[:, None]
             for i, angmom in enumerate(angmom_seg):
-
-                # dummy fix for np.allclose
+                # ensure previous and current exps are same length before using np.allclose()
                 if output[atom] and len(output[atom][-1][1]) == len(exps):
+                    # check if current exp's should be added to previous  generalized contraction
                     hstack = np.allclose(output[atom][-1][1], exps)
                 else:
                     hstack = False
-
-                if (
-                        output[atom]
-                        and output[atom][-1][0] == angmom
-                        and hstack
-                        # and np.allclose(output[atom][-1][1], exps)
-                ):
+                if output[atom] and output[atom][-1][0] == angmom and hstack:
                     output[atom][-1] = (
                         angmom,
                         exps,
