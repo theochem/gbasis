@@ -456,6 +456,237 @@ def test_parse_gbs_sto6g():
     )
 
 
+def test_parse_gbs_631g():
+    """Test gbasis.parsers.parse_gbs for 6-31G."""
+    test = parse_gbs(find_datafile("data_631g.gbs"))
+    # test specific cases
+    assert len(test["H"]) == 2
+    assert test["H"][0][0] == 0
+    assert test["H"][1][0] == 0
+    assert np.allclose(test["H"][0][1], np.array([18.73113696, 2.825394365, 0.6401216923]))
+    assert np.allclose(
+        test["H"][0][2], np.array([0.03349460434, 0.2347269535, 0.8137573261]).reshape(3, 1)
+    )
+    assert len(test["Li"]) == 5
+    assert test["Li"][0][0] == 0
+    assert np.allclose(
+        test["Li"][0][1],
+        np.array([642.4189150, 96.79851530, 22.09112120, 6.201070250, 1.935117680, 0.636735789]),
+    )
+    assert np.allclose(
+        test["Li"][0][2],
+        np.array(
+            [
+                0.002142607810,
+                0.01620887150,
+                0.07731557250,
+                0.2457860520,
+                0.4701890040,
+                0.3454708450,
+            ]
+        ).reshape(6, 1),
+    )
+    assert test["Li"][1][0] == 0
+    assert np.allclose(test["Li"][1][1], np.array([2.324918408, 0.6324303556, 0.07905343475]))
+    assert np.allclose(
+        test["Li"][1][2], np.array([-0.03509174574, -0.1912328431, 1.083987795]).reshape(-1, 1)
+    )
+    assert test["Li"][2][0] == 1
+    assert np.allclose(test["Li"][2][1], np.array([2.324918408, 0.6324303556, 0.07905343475]))
+    assert np.allclose(
+        test["Li"][2][2], np.array([0.008941508043, 0.1410094640, 0.9453636953]).reshape(-1, 1)
+    )
+
+    assert test["Li"][3][0] == 0
+    assert np.allclose(test["Li"][3][1], np.array([0.3596197175e-01]))
+    assert np.allclose(test["Li"][3][2], np.array([0.100000000e01]))
+    assert len(test["Kr"]) == 11
+    assert test["Kr"][0][0] == 0
+    assert np.allclose(
+        test["Kr"][0][1],
+        np.array(
+            [
+                0.1205524000e06,
+                0.1810225000e05,
+                0.4124126000e04,
+                0.1163472000e04,
+                0.3734612000e03,
+                0.1280897000e03,
+            ]
+        ),
+    )
+    assert np.allclose(
+        test["Kr"][0][2],
+        np.array(
+            [
+                0.1714050000e-02,
+                0.1313805000e-01,
+                0.6490006000e-01,
+                0.2265185000e00,
+                0.4764961000e00,
+                0.3591952000e00,
+            ]
+        ).reshape(6, 1),
+    )
+    assert test["Kr"][4][0] == 1
+    assert np.allclose(
+        test["Kr"][4][1],
+        np.array(
+            [
+                0.1175107000e03,
+                0.4152553000e02,
+                0.1765290000e02,
+                0.7818313000e01,
+                0.3571775000e01,
+                0.1623750000e01,
+            ]
+        ),
+    )
+    assert np.allclose(
+        test["Kr"][4][2],
+        np.array(
+            [
+                -0.6922855000e-02,
+                -0.3069239000e-01,
+                0.4480260000e-01,
+                0.3636775000e00,
+                0.4952412000e00,
+                0.2086340000e00,
+            ]
+        ).reshape(-1, 1),
+    )
+
+    assert test["Kr"][5][0] == 0
+    assert np.allclose(test["Kr"][5][1], np.array([0.2374560e01, 0.8691930e00, 0.3474730e00]))
+    assert np.allclose(
+        test["Kr"][5][2],
+        np.array([0.3251184000e00, -0.2141533000e00, -0.9755083000e00]).reshape(-1, 1),
+    )
+    assert test["Kr"][8][0] == 1
+    assert np.allclose(test["Kr"][8][1], np.array([0.1264790000e00]))
+    assert np.allclose(test["Kr"][8][2], np.array([0.1e01]))
+    assert test["Kr"][9][0] == 2
+    assert np.allclose(test["Kr"][9][1], np.array([0.6853888e02, 0.1914333e02, 0.6251213e01]))
+    assert np.allclose(
+        test["Kr"][9][2], np.array([0.7530705e-01, 0.3673551e00, 0.7120146e00]).reshape(3, 1)
+    )
+    assert test["Kr"][10][0] == 2
+    assert np.allclose(test["Kr"][10][1], np.array([0.1979236000e01]))
+    assert np.allclose(test["Kr"][10][2], np.array([0.1000000000e01]))
+
+
+def test_parse_nwchem_631g():
+    """Test gbasis.parsers.parse_nwchem for 6-31G."""
+    test = parse_nwchem(find_datafile("data_631g.nwchem"))
+    # test specific cases
+    assert len(test["H"]) == 2
+    assert test["H"][0][0] == 0
+    assert test["H"][1][0] == 0
+    assert np.allclose(test["H"][0][1], np.array([18.73113696, 2.825394365, 0.6401216923]))
+    assert np.allclose(
+        test["H"][0][2], np.array([0.03349460434, 0.2347269535, 0.8137573261]).reshape(3, 1)
+    )
+    assert len(test["Li"]) == 5
+    assert test["Li"][0][0] == 0
+    assert np.allclose(
+        test["Li"][0][1],
+        np.array([642.4189150, 96.79851530, 22.09112120, 6.201070250, 1.935117680, 0.636735789]),
+    )
+    assert np.allclose(
+        test["Li"][0][2],
+        np.array(
+            [
+                0.002142607810,
+                0.01620887150,
+                0.07731557250,
+                0.2457860520,
+                0.4701890040,
+                0.3454708450,
+            ]
+        ).reshape(6, 1),
+    )
+    assert test["Li"][1][0] == 0
+    assert np.allclose(test["Li"][1][1], np.array([2.324918408, 0.6324303556, 0.07905343475]))
+    assert np.allclose(test["Li"][1][2], np.array([-0.03509174574, -0.1912328431, 1.083987795]))
+    assert test["Li"][2][0] == 1
+    assert np.allclose(test["Li"][2][1], np.array([2.324918408, 0.6324303556, 0.07905343475]))
+    assert np.allclose(test["Li"][2][2], np.array([0.008941508043, 0.1410094640, 0.9453636953]))
+
+    assert test["Li"][3][0] == 0
+    assert np.allclose(test["Li"][3][1], np.array([0.3596197175e-01]))
+    assert np.allclose(test["Li"][3][2], np.array([0.100000000e01]).reshape(-1, 1))
+    assert len(test["Kr"]) == 11
+    assert test["Kr"][0][0] == 0
+    assert np.allclose(
+        test["Kr"][0][1],
+        np.array(
+            [
+                0.1205524000e06,
+                0.1810225000e05,
+                0.4124126000e04,
+                0.1163472000e04,
+                0.3734612000e03,
+                0.1280897000e03,
+            ]
+        ),
+    )
+    assert np.allclose(
+        test["Kr"][0][2],
+        np.array(
+            [
+                0.1714050000e-02,
+                0.1313805000e-01,
+                0.6490006000e-01,
+                0.2265185000e00,
+                0.4764961000e00,
+                0.3591952000e00,
+            ]
+        ).reshape(6, 1),
+    )
+    assert test["Kr"][4][0] == 1
+    assert np.allclose(
+        test["Kr"][4][1],
+        np.array(
+            [
+                0.1175107000e03,
+                0.4152553000e02,
+                0.1765290000e02,
+                0.7818313000e01,
+                0.3571775000e01,
+                0.1623750000e01,
+            ]
+        ),
+    )
+    assert np.allclose(
+        test["Kr"][4][2],
+        np.array(
+            [
+                -0.6922855000e-02,
+                -0.3069239000e-01,
+                0.4480260000e-01,
+                0.3636775000e00,
+                0.4952412000e00,
+                0.2086340000e00,
+            ]
+        ),
+    )
+
+    assert test["Kr"][5][0] == 0
+    assert np.allclose(test["Kr"][5][1], np.array([0.23745600e01, 0.8691930e00, 0.34747300e00]))
+    assert np.allclose(test["Kr"][5][2], np.array([0.3251184e00, -0.2141533e00, -0.9755083e00]))
+    assert test["Kr"][8][0] == 1
+    assert np.allclose(test["Kr"][8][1], np.array([0.1264790000e00]))
+    assert np.allclose(test["Kr"][8][2], np.array([0.1e01]).reshape(1, 1))
+    assert test["Kr"][9][0] == 2
+    assert np.allclose(test["Kr"][9][1], np.array([0.6853888e02, 0.1914333e02, 0.6251213e01]))
+    assert np.allclose(
+        test["Kr"][9][2], np.array([0.7530705e-01, 0.3673551e00, 0.7120146e00]).reshape(3, 1)
+    )
+    assert test["Kr"][10][0] == 2
+    assert np.allclose(test["Kr"][10][1], np.array([0.197923600e01]))
+    assert np.allclose(test["Kr"][10][2], np.array([0.10000000e01]))
+
+
 def test_parse_gbs_anorcc():
     """Test gbasis.parsers.parse_gbs for anorcc."""
     test = parse_gbs(find_datafile("data_anorcc.gbs"))
