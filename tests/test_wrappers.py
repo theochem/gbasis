@@ -90,6 +90,18 @@ def test_from_iodata():
     assert basis[2].angmom_components_sph == ("c1", "c0", "s1")
     assert np.allclose(basis[2].norm_cont, 1.0)
 
+    mol.obasis.conventions[(1, "c")] = ["z", "y", "x"]
+    basis, coord_types = from_iodata(mol)
+    basis[2].angmom = 1
+    assert np.allclose(np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]]), basis[2].angmom_components_cart)
+
+    # Test Cartesian convention generation for missing angmom
+    # Needed for cases when only spherical basis is used in basis set
+    del mol.obasis.conventions[(1, "c")]
+    basis, coord_types = from_iodata(mol)
+    basis[2].angmom = 1
+    assert np.allclose(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), basis[2].angmom_components_cart)
+
     with pytest.raises(ValueError):
         basis[2].angmom = 10
         basis[2].angmom_components_sph
