@@ -778,6 +778,10 @@ def test_make_contractions():
 
     with pytest.raises(TypeError):
         make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0])
+    with pytest.raises(TypeError):
+        make_contractions(
+            basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0], overlap=False
+        )
 
     test = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
     assert isinstance(test, tuple)
@@ -820,3 +824,29 @@ def test_make_contractions():
         test[1].exps,
         np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
     )
+
+
+def test_make_contractions_gbs():
+    """Test gbasis.contractions.make_contractions."""
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, {"H", "H"}, np.array([[0, 0, 0], [1, 1, 1]]))
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, [0, 0], np.array([[0, 0, 0], [1, 1, 1]]))
+
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], [[0, 0, 0], [1, 1, 1]])
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], np.array([0, 0, 0, 1, 1, 1]))
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0, 2], [1, 1, 1, 2]]))
+
+    with pytest.raises(ValueError):
+        make_contractions(basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0])
+    with pytest.raises(TypeError):
+        make_contractions(
+            basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), [0, 0], overlap=False
+        )

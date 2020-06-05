@@ -2,7 +2,7 @@
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.overlap import Overlap, overlap_integral
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial2
@@ -206,3 +206,223 @@ def test_overlap_horton_anorcc_bec():
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
     assert np.allclose(overlap_integral(basis, coord_type="cartesian"), horton_overlap)
+
+
+def test_overlap_screening_631g_gbs():
+    """Test that the overlap screening mask has been correctly created for several cases."""
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+
+    # Test 1
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+    # tolerance for overlap is by default 1E-20. To change add tol = X as the end argument
+    contraction[0].create_overlap_mask(contraction)
+    if not any(contraction[0].ovr_mask):
+        raise ValueError("Two hydrogens at this distance should require overlap calculations")
+
+    # Test 2
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 20]]))
+    alpha_a = alpha_b = min(contraction[0].exps)
+    rij = np.linalg.norm(np.array([0, 0, 0]) - np.array([1, 1, 10]))
+    cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(1e-20))
+    # tolerance for overlap is by default 1e-20. To change add tol = X to make_contractions()
+    contraction[0].create_overlap_mask(contraction)
+    if contraction[0].ovr_mask[2] or contraction[0].ovr_mask[2]:
+        raise ValueError(
+            "Two hydrogens at this distance should NOT require overlap calculations"
+            " distance is {} and cutoff distance is {}".format(rij, cutoff)
+        )
+    if not contraction[0].ovr_mask[0] or not contraction[0].ovr_mask[1]:
+        raise ValueError("Self overlaps should not be skipped in overlap screening")
+
+
+def test_overlap_screening_sto6g_gbs():
+    """Test that the overlap screening mask has been correctly created for several cases."""
+    basis_dict = parse_gbs(find_datafile("data_sto6g.gbs"))
+
+    # Test 1
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    contraction[0].create_overlap_mask(contraction)
+    if not any(contraction[0].ovr_mask):
+        raise ValueError("Two hydrogens at this distance should require overlap calculations")
+
+    # Test 2
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 31]]))
+    alpha_a = alpha_b = min(contraction[0].exps)
+    rij = np.linalg.norm(np.array([0, 0, 0]) - np.array([1, 1, 10]))
+    cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(1e-20))
+    # tolerance for overlap is by default 1e-20. To change add tol = X to make_contractions()
+    contraction[0].create_overlap_mask(contraction)
+    if contraction[0].ovr_mask[1] or contraction[0].ovr_mask[1]:
+        raise ValueError(
+            "Two hydrogens at this distance should NOT require overlap calculations."
+            " Distance is {} and cutoff distance is {}".format(rij, cutoff)
+        )
+    # Test self interactions between contractions.
+    contraction[1].create_overlap_mask(contraction)
+    if not contraction[0].ovr_mask[0] or not contraction[1].ovr_mask[1]:
+        raise ValueError("Self overlaps should not be skipped in overlap screening")
+
+
+def test_overlap_screening_631g_nwchem():
+    """Test that the overlap screening mask has been correctly created for several cases."""
+    basis_dict = parse_nwchem(find_datafile("data_631g.nwchem"))
+
+    # Test 1
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    contraction[0].create_overlap_mask(contraction)
+    if not any(contraction[0].ovr_mask):
+        raise ValueError("Two hydrogens at this distance should require overlap calculations")
+
+    # Test 2
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 20]]))
+    alpha_a = alpha_b = min(contraction[0].exps)
+    rij = np.linalg.norm(np.array([0, 0, 0]) - np.array([1, 1, 10]))
+    cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(1.0e-20))
+    # tolerance for overlap is by default 1e-20. To change add tol = X to make_contractions()
+    contraction[0].create_overlap_mask(contraction)
+    if contraction[0].ovr_mask[2] or contraction[0].ovr_mask[2]:
+        raise ValueError(
+            "Two hydrogens at this distance should NOT require overlap calculations"
+            " distance is {} and cutoff distance is {}".format(rij, cutoff)
+        )
+    if not contraction[0].ovr_mask[0] or not contraction[0].ovr_mask[1]:
+        raise ValueError("Self overlaps should not be skipped in overlap screening")
+
+
+def test_overlap_screening_sto6g_nwchem():
+    """Test that the overlap screening mask has been correctly created for several cases."""
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
+
+    # Test 1
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+    # tolerance for overlap is by default 1E-20. To change add tol = X as the end argument
+    contraction[0].create_overlap_mask(contraction)
+    if not any(contraction[0].ovr_mask):
+        raise ValueError("Two hydrogens at this distance should require overlap calculations")
+
+    # Test 2
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 31]]))
+    alpha_a = alpha_b = min(contraction[0].exps)
+    rij = np.linalg.norm(np.array([0, 0, 0]) - np.array([1, 1, 10]))
+    cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(1.0e-20))
+    # tolerance for overlap is by default 1E-20. To change add tol = X to make_contractions()
+    contraction[0].create_overlap_mask(contraction)
+    if contraction[0].ovr_mask[1] or contraction[0].ovr_mask[1]:
+        raise ValueError(
+            "Two hydrogens at this distance should NOT require overlap calculations."
+            " Distance is {} and cutoff distance is {}".format(rij, cutoff)
+        )
+    # Test self interactions between contractions.
+    contraction[1].create_overlap_mask(contraction)
+    if not contraction[0].ovr_mask[0] or not contraction[1].ovr_mask[1]:
+        raise ValueError("Self overlaps should not be skipped in overlap screening")
+
+
+def test_overlap_screening_vs_without_screening():
+    """Test that the overlap screening mask has been correctly created for several cases."""
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
+
+    # Test 1
+    contraction = make_contractions(basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]))
+    contraction_without_screen = make_contractions(
+        basis_dict, ["H", "H"], np.array([[0, 0, 0], [1, 1, 1]]), overlap=False
+    )
+    # tolerance for overlap is by default 1E-20. To change add tol = X as the end argument
+    contraction[0].create_overlap_mask(contraction)
+    contraction[1].create_overlap_mask(contraction)
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    assert np.allclose(overlaps, overlaps_no_screen)
+
+    # Test that screened and unscreened overlaps are the SAME with tight tolerances
+    contraction = make_contractions(
+        basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 31]])
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 31]]), overlap=False
+    )
+
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    for i in range(len(contraction)):
+        contraction[i].create_overlap_mask(contraction)
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    assert np.allclose(overlaps, overlaps_no_screen, rtol=1.0e-5, atol=1.0e-8)
+
+    # Test that screened and un-screened overlaps are DIFFERENT [use large tol for (small) cutoff]
+    contraction = make_contractions(
+        basis_dict, ["C", "C", "C"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 20]])
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["C", "C", "C"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 20]])
+    )
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    for item in contraction:
+        item.create_overlap_mask(contraction, tol=1.0e-4)
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    assert not np.allclose(overlaps, overlaps_no_screen, rtol=1.0e-5, atol=1.0e-8)
+
+    # Use gaussian file now, and also switch to using 6-31G basis set
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    # Test that screened and unscreened overlaps are the SAME with very tight tolerances
+    contraction = make_contractions(
+        basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 31]])
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["H", "H", "H"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 31]]), overlap=False
+    )
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    for item in contraction:
+        item.create_overlap_mask(contraction)
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    assert np.allclose(overlaps, overlaps_no_screen, rtol=1.0e-5, atol=1.0e-8)
+
+    # Test that screened and unscreened overlaps are DIFFERENT [use large tol for (small) cutoff]
+    contraction = make_contractions(
+        basis_dict, ["C", "C", "C"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 20]])
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["C", "C", "C"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 20]]), overlap=False
+    )
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    for item in contraction:
+        item.create_overlap_mask(contraction, tol=1.0e-4)
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    assert not np.allclose(overlaps, overlaps_no_screen, rtol=1.0e-5, atol=1.0e-8)
+
+
+def test_overlap_screening_with_cartesian():
+    """Test that the overlap screening mask has been correctly created for several cases."""
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
+
+    # Test that screened and unscreened overlaps are DIFFERENT [use large tol for (small) cutoff]
+    # Note #2 overlap=True tests the creation of masks in parsers. Do not remove!
+    contraction = make_contractions(
+        basis_dict, ["C", "C", "C"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 20]]), overlap=True
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["C", "C", "C"], np.array([[0, 0, 0], [0, 0, 11], [1, 1, 20]]), overlap=False
+    )
+    # tolerance for overlap is by default 1e-20. To change add tol = X as the end argument
+    for item in contraction:
+        item.create_overlap_mask(contraction, tol=1.0e-4)
+
+    overlaps = overlap_integral(contraction, coord_type="cartesian")
+    overlaps_no_screen = overlap_integral(contraction_without_screen, coord_type="cartesian")
+
+    assert not np.allclose(overlaps, overlaps_no_screen, rtol=1.0e-5, atol=1.0e-8)

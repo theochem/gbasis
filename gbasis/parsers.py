@@ -165,7 +165,7 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
-def make_contractions(basis_dict, atoms, coords):
+def make_contractions(basis_dict, atoms, coords, overlap=False):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
@@ -176,6 +176,8 @@ def make_contractions(basis_dict, atoms, coords):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
+    overlap : boolean
+        True if overlap screening is to be performed, False otherwise.
 
     Returns
     -------
@@ -188,6 +190,7 @@ def make_contractions(basis_dict, atoms, coords):
     TypeError
         If `atoms` is not a list or tuple of strings.
         If `coords` is not a two-dimensional `numpy` array with 3 columns.
+        If `overlap` is not boolean.
     ValueError
         If the length of atoms is not equal to the number of rows of `coords`.
 
@@ -200,9 +203,17 @@ def make_contractions(basis_dict, atoms, coords):
         )
     if len(atoms) != coords.shape[0]:
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
+    if not isinstance(overlap, bool):
+        raise TypeError("overlap - 4th argument, must be boolean")
 
+    index = 0
     basis = []
     for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps))
+            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, index))
+            index += 1
+    # create overlap masks for screening
+    if overlap:
+        for contractions in enumerate(basis):
+            contractions[1].create_overlap_mask(basis)
     return tuple(basis)

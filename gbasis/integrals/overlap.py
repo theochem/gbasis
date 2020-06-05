@@ -64,9 +64,9 @@ class Overlap(BaseTwoIndexSymmetric):
         -------
         array_contraction : np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
             Overlap associated with the given instances of `GeneralizedContractionShell`.
-            Dimension 0 corresponds to the segmented contraction within `cont_one`. `M_1` is
-            the number of segmented contractions with the same exponents (and angular momentum)
-            associated with the first index.
+            Dimension 0 corresponds to the segmented contraction within `cont_one`.
+            `M_1` is the number of segmented contractions with the same exponents
+             (and angular momentum) associated with the first index.
             Dimension 1 corresponds to the angular momentum vector of the `cont_one`.
             `L_cart_1` is the number of Cartesian contractions for the given angular momentum
             associated with the first index.
@@ -84,11 +84,41 @@ class Overlap(BaseTwoIndexSymmetric):
             If contractions_two is not a `GeneralizedContractionShell` instance.
 
         """
+
         if not isinstance(contractions_one, GeneralizedContractionShell):
             raise TypeError("`contractions_one` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
+        # hasattr used since the first call doesn't have overlap saved yet
+        if hasattr(contractions_one, "overlap"):
+            if contractions_one.ovr_mask[contractions_two.indx]:
+                return _compute_multipole_moment_integrals(
+                    np.zeros(3),
+                    np.zeros((1, 3), dtype=int),
+                    # contraction on the left hand side
+                    contractions_one.coord,
+                    contractions_one.angmom_components_cart,
+                    contractions_one.exps,
+                    contractions_one.coeffs,
+                    contractions_one.norm_prim_cart,
+                    # contraction on the right hand side
+                    contractions_two.coord,
+                    contractions_two.angmom_components_cart,
+                    contractions_two.exps,
+                    contractions_two.coeffs,
+                    contractions_two.norm_prim_cart,
+                )[0]
+            # calculate zeros matrix, and return
+            return np.zeros(
+                (
+                    contractions_one.num_seg_cont,
+                    len(contractions_one.norm_prim_cart),
+                    contractions_two.num_seg_cont,
+                    len(contractions_two.norm_prim_cart),
+                )
+            )
 
+        # return overlap integral without applying screening
         return _compute_multipole_moment_integrals(
             np.zeros(3),
             np.zeros((1, 3), dtype=int),
@@ -142,4 +172,5 @@ def overlap_integral(basis, transform=None, coord_type="spherical"):
         return Overlap(basis).construct_array_cartesian()
     if coord_type == "spherical":
         return Overlap(basis).construct_array_spherical()
+
     return Overlap(basis).construct_array_mix(coord_type)

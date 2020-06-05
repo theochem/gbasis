@@ -50,6 +50,61 @@ def test_overlap_integral_asymmetric_horton_anorcc_bec():
     )
 
 
+def test_overlap_integral_asymmetric_horton_anorcc_bec_screening_passes():
+    """Test integrals.overlap_asymm.overlap_integral_asymmetric for screened and unscreened overlap.
+
+    The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
+
+    """
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    basis_screened = make_contractions(
+        basis_dict,
+        ["Be", "C"],
+        np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]]),
+        overlap=True,
+    )
+    basis_unscreened = make_contractions(
+        basis_dict,
+        ["Be", "C"],
+        np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]]),
+        overlap=False,
+    )
+
+    overlap_screened = overlap_integral(basis_screened)
+    overlap_unscreened = overlap_integral(basis_unscreened)
+
+    assert np.allclose(overlap_screened, overlap_unscreened)
+
+
+def test_overlap_integral_asymmetric_horton_anorcc_bec_screening_fails():
+    """Test integrals.overlap_asymm.overlap_integral_asymmetric for screened and unscreened overlap.
+
+    The test case is diatomic with Be and C with basis set ANO-RCC.
+
+    """
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    # NOTE: atoms are further apart than previous test. Don't use overlap=True. See below.
+    basis_screened = make_contractions(
+        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [10.0 * 1.0 / 0.5291772083, 0, 0]])
+    )
+    basis_unscreened = make_contractions(
+        basis_dict,
+        ["Be", "C"],
+        np.array([[0, 0, 0], [10.0 * 1.0 / 0.5291772083, 0, 0]]),
+        overlap=False,
+    )
+    # manually make masks so that custom tolerance can be used
+    for i in range(len(basis_screened)):
+        basis_screened[i].create_overlap_mask(basis_screened, tol=0.001)
+
+    overlap_screened = overlap_integral(basis_screened)
+    overlap_unscreened = overlap_integral(basis_unscreened)
+
+    # np.allclose() should say they are not the same given the very large value for tol.
+    assert not np.allclose(overlap_screened, overlap_unscreened)
+
+
 def test_overlap_integral_asymmetric_compare():
     """Test overlap_asymm.overlap_integral_asymmetric against overlap.overlap_integral."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
