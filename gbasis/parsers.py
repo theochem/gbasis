@@ -165,7 +165,7 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
-def make_contractions(basis_dict, atoms, coords):
+def make_contractions(basis_dict, atoms, coords, tol=1e-20, overlap=False):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
@@ -176,6 +176,10 @@ def make_contractions(basis_dict, atoms, coords):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
+    ovr : bool
+        Flag for performing overlap screening between contractions.
+    tol : float
+        Tolerance used in overlap screening.
 
     Returns
     -------
@@ -188,6 +192,8 @@ def make_contractions(basis_dict, atoms, coords):
     TypeError
         If `atoms` is not a list or tuple of strings.
         If `coords` is not a two-dimensional `numpy` array with 3 columns.
+        If `tol` is not a float.
+        If `ovr` is not boolean
     ValueError
         If the length of atoms is not equal to the number of rows of `coords`.
 
@@ -198,11 +204,20 @@ def make_contractions(basis_dict, atoms, coords):
         raise TypeError(
             "Coordinates must be provided as a two-dimensional `numpy` array with three columns."
         )
+    if not isinstance(tol, float):
+        raise TypeError("Tolerance must be provided as a float.")
+    if not isinstance(overlap, bool):
+        raise TypeError("Tolerance must be provided as True or False.")
     if len(atoms) != coords.shape[0]:
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 
     basis = []
     for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps))
+            basis.append(
+                GeneralizedContractionShell(
+                    angmom, coord, coeffs, exps, tol=tol, ovr_screen=overlap
+                )
+            )
+
     return tuple(basis)
