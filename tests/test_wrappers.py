@@ -70,9 +70,9 @@ def test_from_iodata():
     # assert basis[2].angmom_components_sph == (1, -1, 0)
     # -- END COMMENTED ASSERTS
     basis[2].angmom = 2
-    assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2)
+    assert basis[2].angmom_components_sph == ("c0", "c1", "s1", "c2", "s2")
     basis[2].angmom = 3
-    assert basis[2].angmom_components_sph == (0, 1, -1, 2, -2, 3, -3)
+    assert basis[2].angmom_components_sph == ("c0", "c1", "s1", "c2", "s2", "c3", "s3")
 
     # NOTE: you shouldn't actually change the magnetic quantum number that is not compatible with
     # the angular momentum, but we do so here to check that user input is accepted
@@ -80,15 +80,27 @@ def test_from_iodata():
     basis, coord_types = from_iodata(mol)
     basis[2].angmom = 0
     assert coord_types == ["cartesian"] * 5
-    assert basis[2].angmom_components_sph == (1,)
+    assert basis[2].angmom_components_sph == ("c1",)
     assert np.allclose(basis[2].norm_cont, 1.0)
 
     mol.obasis.conventions[(1, "p")] = ["c1", "c0", "s1"]
     basis, coord_types = from_iodata(mol)
     basis[2].angmom = 1
     assert coord_types == ["cartesian"] * 5
-    assert basis[2].angmom_components_sph == (1, 0, -1)
+    assert basis[2].angmom_components_sph == ("c1", "c0", "s1")
     assert np.allclose(basis[2].norm_cont, 1.0)
+
+    mol.obasis.conventions[(1, "c")] = ["z", "y", "x"]
+    basis, coord_types = from_iodata(mol)
+    basis[2].angmom = 1
+    assert np.allclose(np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]]), basis[2].angmom_components_cart)
+
+    # Test Cartesian convention generation for missing angmom
+    # Needed for cases when only spherical basis is used in basis set
+    del mol.obasis.conventions[(1, "c")]
+    basis, coord_types = from_iodata(mol)
+    basis[2].angmom = 1
+    assert np.allclose(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), basis[2].angmom_components_cart)
 
     with pytest.raises(ValueError):
         basis[2].angmom = 10
@@ -126,6 +138,6 @@ def test_from_pyscf():
         assert np.allclose(i.coeffs, j.coeffs)
         assert np.allclose(i.norm_cont, j.norm_cont)
 
-    assert test[0].angmom_components_sph == (0,)
-    assert test[1].angmom_components_sph == (1, -1, 0)
-    assert test[2].angmom_components_sph == (-2, -1, 0, 1, 2)
+    assert test[0].angmom_components_sph == ("c0",)
+    assert test[1].angmom_components_sph == ("c1", "s1", "c0")
+    assert test[2].angmom_components_sph == ("s2", "s1", "c0", "c1", "c2")

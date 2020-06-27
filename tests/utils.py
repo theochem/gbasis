@@ -188,6 +188,10 @@ class HortonContractions(GeneralizedContractionShell):
     def angmom_components_sph(self):
         """Ordering of the magnetic quantum number for HORTON's convention."""
         if self.angmom == 1:
-            return [1, -1, 0]
-        output = [(i, -i) for i in range(self.angmom + 1)]
-        return [j for i in output for j in i][1:]
+            return ("c1", "s1", "c0")
+        cosines = ["c{}".format(m) for m in range(1, self.angmom + 1)]
+        sines = ["s{}".format(m) for m in range(1, self.angmom + 1)]
+        output = ["c0"] + [None for _ in range(2 * self.angmom)]
+        output[1::2] = cosines
+        output[2::2] = sines
+        return output

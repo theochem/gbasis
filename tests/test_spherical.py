@@ -110,70 +110,82 @@ def test_real_solid_harmonic():
 def test_generate_transformation():
     """Test spherical.generate_transformation."""
     assert np.array_equal(
-        generate_transformation(0, np.array([(0, 0, 0)]), (0,), "right"), np.array([[1.0]])
+        generate_transformation(0, np.array([(0, 0, 0)]), ("c0",), "right"), np.array([[1.0]])
     )
     assert np.array_equal(
         generate_transformation(
-            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "right"
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), "right"
         ),
         np.array([[0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]]),
     )
     assert np.array_equal(
-        generate_transformation(0, np.array([(0, 0, 0)]), (0,), "right").T,
-        generate_transformation(0, np.array([(0, 0, 0)]), (0,), "left"),
+        generate_transformation(0, np.array([(0, 0, 0)]), ("c0",), "right").T,
+        generate_transformation(0, np.array([(0, 0, 0)]), ("c0",), "left"),
     )
     assert np.array_equal(
         generate_transformation(
-            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "right"
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), "right"
         ).T,
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "left"),
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), "left"
+        ),
     )
     with pytest.raises(TypeError):
-        generate_transformation(0.0, np.array([(0, 0, 0)]), (0,), "right")
+        generate_transformation(0.0, np.array([(0, 0, 0)]), ("c0",), "right")
     with pytest.raises(TypeError):
-        generate_transformation(0, 0, (0,), "right")
+        generate_transformation(0, 0, ("c0",), "right")
     with pytest.raises(ValueError):
         generate_transformation(
-            -1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "right"
+            -1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), "right"
         )
     with pytest.raises(ValueError):
-        generate_transformation(0, np.array([(0, 0, 0, 0)]), (0,), "right")
-    with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 1)]), (-1, 0, 1), "right")
+        generate_transformation(0, np.array([(0, 0, 0, 0)]), ("c0",), "right")
     with pytest.raises(ValueError):
         generate_transformation(
-            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]), (-1, 0, 1), "right"
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 1)]), ("s1", "c0", "c1"), "right"
         )
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0)]), (-1, 0, 1), "right")
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]), ("s1", "c0", "c1"), "right"
+        )
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 0, 0), (0, 0, 2)]), (-1, 0, 1), "right")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0)]), ("s1", "c0", "c1"), "right")
+    with pytest.raises(ValueError):
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 0, 0), (0, 0, 2)]), ("s1", "c0", "c1"), "right"
+        )
     with pytest.raises(TypeError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), 1)
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), 1
+        )
     with pytest.raises(TypeError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), None)
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), None
+        )
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "up")
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), "up"
+        )
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1), "")
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("s1", "c0", "c1"), ""
+        )
     # check angmom_components_sph type
     with pytest.raises(TypeError):
-        generate_transformation(
-            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), np.array([-1, 0, 1]), "left"
-        )
-    with pytest.raises(TypeError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), {-1, 0, 1}, "left")
+        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), [-1, 0, 1], "left")
     with pytest.raises(TypeError):
         generate_transformation(
-            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), [-1, 0, 1.0], "left"
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), np.array(["c0", "s1", "c1"]), "left"
         )
     # check angmom_components_sph value
     with pytest.raises(ValueError):
         generate_transformation(
-            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 0, 1, 1), "left"
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("c0", "s1", "c1", "c0"), "left"
         )
     with pytest.raises(ValueError):
-        generate_transformation(1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), (-1, 2, 1), "left")
+        generate_transformation(
+            1, np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)]), ("c0", "c1", "s0"), "left"
+        )
 
 
 def test_generate_transformation_horton():
@@ -183,11 +195,13 @@ def test_generate_transformation_horton():
 
     """
     answer = np.array([[1]])
-    assert np.allclose(generate_transformation(0, np.array([[0, 0, 0]]), (0,), "left"), answer)
+    assert np.allclose(generate_transformation(0, np.array([[0, 0, 0]]), ("c0",), "left"), answer)
 
     answer = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
     assert np.allclose(
-        generate_transformation(1, np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), (0, 1, -1), "left"),
+        generate_transformation(
+            1, np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), ("c0", "c1", "s1"), "left"
+        ),
         answer,
     )
 
@@ -204,7 +218,7 @@ def test_generate_transformation_horton():
         generate_transformation(
             2,
             np.array([[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1], [0, 0, 2]]),
-            (0, 1, -1, 2, -2),
+            ("c0", "c1", "s1", "c2", "s2"),
             "left",
         ),
         answer,
@@ -239,7 +253,114 @@ def test_generate_transformation_horton():
                     [0, 0, 3],
                 ]
             ),
-            (0, 1, -1, 2, -2, 3, -3),
+            ("c0", "c1", "s1", "c2", "s2", "c3", "s3"),
+            "left",
+        ),
+        answer,
+    )
+
+
+def test_generate_transformation_horton_negative_components():
+    """Test spherical.generate_transformation using horton reference and ORCA-style conventions.
+
+    Conventions obtained from `IOData.formats.molden._fix_obasis_orca`.
+
+    """
+    # Answer obtained from https://theochem.github.io/horton/2.0.1/tech_ref_gaussian_basis.html.
+    answer = np.array(
+        [
+            [0, 0, -3 / 10 * 5 ** 0.5, 0, 0, 0, 0, -3 / 10 * 5 ** 0.5, 0, 1],
+            [-1 / 4 * 6 ** 0.5, 0, 0, -1 / 20 * 30 ** 0.5, 0, 1 / 5 * 30 ** 0.5, 0, 0, 0, 0],
+            [0, -1 / 20 * 30 ** 0.5, 0, 0, 0, 0, -1 / 4 * 6 ** 0.5, 0, 1 / 5 * 30 ** 0.5, 0],
+            [0, 0, 1 / 2 * 3 ** 0.5, 0, 0, 0, 0, -1 / 2 * 3 ** 0.5, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [-1 / 4 * 10 ** 0.5, 0, 0, 3 / 4 * 2 ** 0.5, 0, 0, 0, 0, 0, 0],
+            [0, -3 / 4 * 2 ** 0.5, 0, 0, 0, 0, 1 / 4 * 10 ** 0.5, 0, 0, 0],
+        ]
+    )
+    assert np.allclose(
+        generate_transformation(
+            3,
+            np.array(
+                [
+                    [3, 0, 0],
+                    [2, 1, 0],
+                    [2, 0, 1],
+                    [1, 2, 0],
+                    [1, 1, 1],
+                    [1, 0, 2],
+                    [0, 3, 0],
+                    [0, 2, 1],
+                    [0, 1, 2],
+                    [0, 0, 3],
+                ]
+            ),
+            ("c0", "c1", "s1", "c2", "s2", "-c3", "-s3"),
+            "left",
+        ),
+        answer,
+    )
+    # taken from HORTON's gbasis/cartpure.cpp
+    horton_transform = [
+        [0, 0, 0.375],
+        [0, 3, 0.21957751641341996535],
+        [0, 5, -0.87831006565367986142],
+        [0, 10, 0.375],
+        [0, 12, -0.87831006565367986142],
+        [0, 14, 1.0],
+        [1, 2, -0.89642145700079522998],
+        [1, 7, -0.40089186286863657703],
+        [1, 9, 1.19522860933439364],
+        [2, 4, -0.40089186286863657703],
+        [2, 11, -0.89642145700079522998],
+        [2, 13, 1.19522860933439364],
+        [3, 0, -0.5590169943749474241],
+        [3, 5, 0.9819805060619657157],
+        [3, 10, 0.5590169943749474241],
+        [3, 12, -0.9819805060619657157],
+        [4, 1, -0.42257712736425828875],
+        [4, 6, -0.42257712736425828875],
+        [4, 8, 1.1338934190276816816],
+        [5, 2, 0.790569415042094833],
+        [5, 7, -1.0606601717798212866],
+        [6, 4, 1.0606601717798212866],
+        [6, 11, -0.790569415042094833],
+        [7, 0, 0.73950997288745200532],
+        [7, 3, -1.2990381056766579701],
+        [7, 10, 0.73950997288745200532],
+        [8, 1, 1.1180339887498948482],
+        [8, 6, -1.1180339887498948482],
+    ]
+    answer = np.zeros((9, 15))
+    for i in horton_transform:
+        # Negative of c3, s3, c4, s4
+        if i[0] > 4:
+            answer[i[0], i[1]] = -i[2]
+        else:
+            answer[i[0], i[1]] = i[2]
+    assert np.allclose(
+        generate_transformation(
+            4,
+            np.array(
+                [
+                    [4, 0, 0],
+                    [3, 1, 0],
+                    [3, 0, 1],
+                    [2, 2, 0],
+                    [2, 1, 1],
+                    [2, 0, 2],
+                    [1, 3, 0],
+                    [1, 2, 1],
+                    [1, 1, 2],
+                    [1, 0, 3],
+                    [0, 4, 0],
+                    [0, 3, 1],
+                    [0, 2, 2],
+                    [0, 1, 3],
+                    [0, 0, 4],
+                ]
+            ),
+            ("c0", "c1", "s1", "c2", "s2", "-c3", "-s3", "-c4", "-s4"),
             "left",
         ),
         answer,
@@ -309,7 +430,7 @@ def test_generate_transformation_horton_high_angmom():
                     [0, 0, 4],
                 ]
             ),
-            (0, 1, -1, 2, -2, 3, -3, 4, -4),
+            ("c0", "c1", "s1", "c2", "s2", "c3", "s3", "c4", "s4"),
             "left",
         ),
         answer,
@@ -377,7 +498,7 @@ def test_generate_transformation_horton_high_angmom():
                     for i in it.combinations_with_replacement(range(3), 5)
                 ]
             ),
-            (0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5),
+            ("c0", "c1", "s1", "c2", "s2", "c3", "s3", "c4", "s4", "c5", "s5"),
             "left",
         ),
         answer,
