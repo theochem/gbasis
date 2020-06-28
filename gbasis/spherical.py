@@ -225,6 +225,7 @@ def real_solid_harmonic(angmom, mag):
     return dict(harmonic)
 
 
+# pylint: disable=R0912
 def generate_transformation(angmom, cartesian_order, spherical_order, apply_from):
     r"""Generate the transformation matrix for a given shell.
 
@@ -242,6 +243,8 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         they will appear in the transformation matrix.
     spherical_order : (2 * angmom + 1)-tuple/list of int
         Order of the spherical contractions that are produced by the transformation matrix.
+        Given in cosine- and sine-like pure function notation. See
+        GeneralizedContractionShell.angmom_conventions_sph for details.
     apply_from : str
         The side on which the transformation matrix is applied. One of {"left", "right"}.
 
@@ -256,14 +259,14 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         If `angmom` is not an integer.
         If `cartesian_order` is not an array.
         If each member of `cartesian_order` is not a tuple.
-        If `spherical_order` is not a list/tuple of integers
+        If `spherical_order` is not a list/tuple of strings
     ValueError
         If `angmom` is negative.
         If `cartesian_order` does not have `shape` :math:`(\ell, 3)`.
         If the Cartesian components of any contractions do not sum to `angmom`.
         If `apply_from` is not one of "left" or "right".
-        If `spherical_order` does not contain exactly :math:`2 * \ell + 1` integers that range from
-        -`angmom` to `angmom`.
+        If `spherical_order` contains elements not of the form c{m}, s{m}, -c{m}, or -s{m}, m < L.
+        If `spherical_order` does not contain exactly :math:`2 * \ell + 1` elements.
 
     """
     if not isinstance(angmom, int):
@@ -287,18 +290,25 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
             "Specify the side of application for the transformation using 'left' or 'right'"
         )
 
+    # All pure fns must be of the form s{m}, c{m}, -s{m}, or -c{m}
     if not (
         isinstance(spherical_order, (tuple, list))
-        and all(isinstance(i, int) for i in spherical_order)
+        and all(isinstance(i, str) for i in spherical_order)
     ):
         raise TypeError("`spherical_order` must be given as a list or a tuple.")
     if not (
         len(spherical_order) == 2 * angmom + 1
-        and set(spherical_order) == set(range(-angmom, angmom + 1))
+        # Strip out "-" from the ordering to make sure the right components are there
+        and {x.replace("-", "") for x in spherical_order}
+        == set(
+            ["s{}".format(m) for m in range(angmom, 0, -1)]
+            + ["c{}".format(m) for m in range(angmom + 1)]
+        )
     ):
         raise ValueError(
-            "`spherical_order` must contain exactly 2 * `angmom` + 1 integers that range from "
-            " -`angmom` to `angmom`."
+            "`spherical_order` must contain exactly 2 * `angmom` + 1 pure function strings, with "
+            "cosine-type pure functions c{m} from m=0 to `angmom` and sine-type pure functions s{m}"
+            " from m=1 to `angmom`."
         )
 
     order = {
@@ -306,10 +316,20 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
     }
     transform = np.zeros(((angmom + 1) * (angmom + 2) // 2, 2 * angmom + 1))
 
-    for i, mag in enumerate(spherical_order):
+    for i, pure_fn in enumerate(spherical_order):
+        # Need a marker to make certain functions negative
+        if pure_fn[0] == "-":
+            sign = -1
+            pure_fn = pure_fn[1:]
+        else:
+            sign = 1
+        if pure_fn[0] == "s":
+            mag = -1 * int(pure_fn[1:])
+        else:
+            mag = int(pure_fn[1:])
         harmonic = real_solid_harmonic(angmom, mag)
         for components, coeff in harmonic.items():
-            transform[order[components], i] = coeff
+            transform[order[components], i] = sign * coeff
 
     # normalize
     transform *= np.sqrt(np.prod(factorial2(2 * cartesian_order - 1), axis=1))[:, np.newaxis]

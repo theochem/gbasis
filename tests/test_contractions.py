@@ -212,13 +212,13 @@ def test_angmom_components_sph():
     """Test GeneralizedContractionShell.angmom_components_sph."""
     test = skip_init(GeneralizedContractionShell)
     test._angmom = 0
-    assert np.allclose(test.angmom_components_sph, (0,))
+    assert test.angmom_components_sph == ("c0",)
     test._angmom = 1
-    assert np.allclose(test.angmom_components_sph, (-1, 0, 1))
+    assert test.angmom_components_sph == ("s1", "c0", "c1")
     test._angmom = 2
-    assert np.allclose(test.angmom_components_sph, (-2, -1, 0, 1, 2))
+    assert test.angmom_components_sph == ("s2", "s1", "c0", "c1", "c2")
     test._angmom = 3
-    assert np.allclose(test.angmom_components_sph, (-3, -2, -1, 0, 1, 2, 3))
+    assert test.angmom_components_sph == ("s3", "s2", "s1", "c0", "c1", "c2", "c3")
 
 
 # TODO: Test norm using actual integrals

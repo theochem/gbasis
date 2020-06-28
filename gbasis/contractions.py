@@ -401,6 +401,12 @@ class GeneralizedContractionShell:
             `L` is the number of Cartesian contracted Gaussian functions for the given
             angular momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`
 
+        Notes
+        -----
+        In `HORTON2`, :math:`(a_x, a_y, a_z)` is represented by a string of X, Y, and Z characters,
+        such that :math:`a_x` `X` characters, :math:`a_y` `Y` characters, and :math:`a_z` `Z`
+        characters appear. For example, `(2, 1, 1)` corresponds to `XXYZ`
+
         """
         return np.array(
             [
@@ -412,16 +418,45 @@ class GeneralizedContractionShell:
 
     @property
     def angmom_components_sph(self):
-        """Return the ordering of the magnetic quantum numbers for the given angular momentum.
+        r"""Return the ordering of the magnetic quantum numbers for the given angular momentum.
+
+        We define spherical components as regular solid harmonics :math:`R_{\ell, m}` such that
+            .. math::
+                R_{\ell, m} = C_{\ell, m}, m = 0 ... \ell
+
+                R_{\ell, -m} = S_{\ell, m}, m = 1 ... \ell
+
+        where :math:`C_{\ell, m}` and :math:`S_{\ell, m}` are Cosine- and Sine-like real
+        regular solid harmonics (respectively).
+
+        We will use these definitions to represent pure (spherical) functions as strings of the form
+        `c{m}` and `s{m}`. By this definition, for pure f functions, the ordering by magnetic
+        quantum number [0, 1, -1, 2, -2, 3, -3] corresponds to
+        ['c0', 'c1', 's1', 'c2', 's2', 'c3', 's3'].
+
+        Some quantum chemistry codes use different conventions that cause compatibility issues. For
+        these conventions, it may be necessary to change the sign of specific pure functions,
+        denoted by a minus sign, e.g. -c3. A primary example is for Molden files written by ORCA;
+        these files use the conventions ['c0', 'c1', 's1', 'c2', 's2', '-c3', '-s3'].
+
 
         Returns
         -------
-        angmom_components_sph : tuple of int
-            Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
-            transforming the contractions from the Cartesian to spherical coordinate system.
+        angmom_components_sph : tuple of str
+            Tuple of strings representing the cosine- and sine-like real regular solid harmonics
+            representing the magnetic quantum numbers of the contractions specifying the ordering
+            after transforming the contractions from the Cartesian to spherical coordinate system.
+
+        Notes
+        -----
+        Our default ordering is from -m to m, e.g. for :math:`\ell = 2`,
+        ['s2', 's1', 'c0', 'c1', 'c2'].
 
         """
-        return tuple(range(-self.angmom, self.angmom + 1))
+        return tuple(
+            ["s{}".format(m) for m in range(self.angmom, 0, -1)]
+            + ["c{}".format(m) for m in range(self.angmom + 1)]
+        )
 
     @property
     def norm_prim_cart(self):
