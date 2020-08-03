@@ -294,34 +294,24 @@ def evaluate_density_gradient(
         Gradient of the density evaluated at `N` grid points.
 
     """
-    return np.array(
-        [
-            evaluate_deriv_density(
-                np.array([1, 0, 0]),
-                one_density_matrix,
-                basis,
-                points,
-                transform=transform,
-                coord_type=coord_type,
-            ),
-            evaluate_deriv_density(
-                np.array([0, 1, 0]),
-                one_density_matrix,
-                basis,
-                points,
-                transform=transform,
-                coord_type=coord_type,
-            ),
-            evaluate_deriv_density(
-                np.array([0, 0, 1]),
-                one_density_matrix,
-                basis,
-                points,
-                transform=transform,
-                coord_type=coord_type,
-            ),
-        ]
-    ).T
+
+    orders_one = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
+    output = np.zeros((3, len(points)))
+    # Evaluation of generalized contraction shell for zeroth order = 0,0,0
+    zeroth_deriv = evaluate_deriv_basis(
+       basis, points, np.array([0, 0, 0]), transform=transform, coord_type=coord_type
+    )
+
+    # Evaluation of generalized contraction shell for each partial derivative
+    for ind, orders in enumerate(orders_one):
+        deriv_comp = evaluate_deriv_basis(
+                     basis, points, orders, transform=transform, coord_type=coord_type
+                     )
+        # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
+        density = one_density_matrix.dot(zeroth_deriv)
+        density *= deriv_comp
+        output[ind] = (2 * 1 * np.sum(density, axis=0))
+    return output.T
 
 
 def evaluate_density_laplacian(
