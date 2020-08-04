@@ -160,23 +160,22 @@ def _eval_first_order_deriv_contractions(
     zeroth_deriv = np.prod(raw_zeroth_deriv, axis=1)
 
     # First order derivative
-    if orders[~indices_noderiv].size != 0:
+    if not indices_noderiv.all():
         first_coords = new_coords[~indices_noderiv]
         first_gauss = gauss[:, ~indices_noderiv]
         first_ang_comp = angmom_comps.T[~indices_noderiv]
         part1 = first_coords[:, None, :] ** (first_ang_comp[:, :, None] - 1)
         part2 = (2 * alphas[:, None, None]) * (first_coords ** 2)
         part2 = first_ang_comp.T - part2[:, :, None, :]
-        raw_first_deriv_ang1 = part1 * part2
-        raw_first_deriv_ang1 = raw_first_deriv_ang1 * first_gauss[:, :, None, :]
-        first_deriv = np.prod(raw_first_deriv_ang1, axis=1)
+        raw_first_deriv = part1 * part2
+        raw_first_deriv = raw_first_deriv * first_gauss[:, :, None, :]
+        first_deriv = np.prod(raw_first_deriv, axis=1)
 
         norm = norm.T[:, :, np.newaxis]
         output = np.tensordot(prim_coeffs, norm * zeroth_deriv * first_deriv, (0, 0))
-        return output
 
     else:
         norm = norm.T[:, :, np.newaxis]
         output = np.tensordot(prim_coeffs, norm * zeroth_deriv, (0, 0))
 
-        return output
+    return output
