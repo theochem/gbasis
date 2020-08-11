@@ -2,7 +2,7 @@
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
-from gbasis.evals._deriv import _eval_first_order_deriv_contractions
+from gbasis.evals._deriv import _eval_first_second_order_deriv_contractions
 import numpy as np
 
 
@@ -132,7 +132,7 @@ class EvalDeriv(BaseOneIndex):
                     points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         elif deriv_type == "direct":
-            output = _eval_first_order_deriv_contractions(
+            output = _eval_first_second_order_deriv_contractions(
                     points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         return output

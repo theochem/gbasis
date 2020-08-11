@@ -142,16 +142,20 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
     return np.tensordot(prim_coeffs, norm * zeroth_part * deriv_part, (0, 0))
 
 
-def _eval_first_order_deriv_contractions(
+def _eval_first_second_order_deriv_contractions(
     coords, orders, center, angmom_comps, alphas, prim_coeffs, norm
 ):
-    """Direct implementation of first order contraction derivatives"""
+    """Direct implementation of first and second order contraction derivatives"""
 
     new_coords = coords.T - center[None, :].T
     gauss = np.exp(-alphas[:, None, None] * (new_coords ** 2))
 
-    # Zeroth order derivative
+    # Filter derivative orders
     indices_noderiv = orders <= 0
+    indices_first_deriv = orders == 1
+    indices_second_deriv = orders == 2
+
+    # Zeroth order derivative
     raw_zeroth_coords = new_coords[indices_noderiv]
     zeroth_angmom_comps = angmom_comps.T[indices_noderiv]
     zeroth_gauss = gauss[:, indices_noderiv]
@@ -160,19 +164,42 @@ def _eval_first_order_deriv_contractions(
     zeroth_deriv = np.prod(raw_zeroth_deriv, axis=1)
 
     # First order derivative
-    if not indices_noderiv.all():
-        first_coords = new_coords[~indices_noderiv]
-        first_gauss = gauss[:, ~indices_noderiv]
-        first_ang_comp = angmom_comps.T[~indices_noderiv]
+    if indices_first_deriv.any():
+        first_coords = new_coords[indices_first_deriv]
+        first_gauss = gauss[:, indices_first_deriv]
+        first_ang_comp = angmom_comps.T[indices_first_deriv]
         part1 = first_coords[:, None, :] ** (first_ang_comp[:, :, None] - 1)
         part2 = (2 * alphas[:, None, None]) * (first_coords ** 2)
-        part2 = first_ang_comp.T - part2[:, :, None, :]
+        # part2 = first_ang_comp.T - part2[:, :, None, :]
+        part2 = first_ang_comp[None, :, :, None] - part2[:, :, None, :]
         raw_first_deriv = part1 * part2
         raw_first_deriv = raw_first_deriv * first_gauss[:, :, None, :]
         first_deriv = np.prod(raw_first_deriv, axis=1)
 
         norm = norm.T[:, :, np.newaxis]
         output = np.tensordot(prim_coeffs, norm * zeroth_deriv * first_deriv, (0, 0))
+
+    elif indices_second_deriv.any():
+        second_coords = new_coords[indices_second_deriv]
+        second_gauss = gauss[:, indices_second_deriv]
+        second_ang_comp = angmom_comps.T[indices_second_deriv]
+
+        # Computing ..math:: \left(x-X_{A}\right)^{n-2}
+        part1 = second_coords[:, None, :] ** (second_ang_comp[:, :, None] - 2)
+
+        # Computing
+        # ..math:: 4 \alpha^{2}\left(x-X_{A}\right)^{4}-\alpha(4 n+2)\left(x-X_{A}\right)^{2}+n(n-1)
+        part2_1 = (4 * alphas[:, None, None] ** 2) * (second_coords ** 4)
+        part2_2 = alphas[:, None, None, None] * (4 * second_ang_comp[:, :, None] + 2) * second_coords[:, None, :] ** 2
+        part2_3 = second_ang_comp * (second_ang_comp - 1)
+        part2 = part2_1[:, :, None, :] - part2_2 + part2_3[None, :, :, None]
+
+        raw_second_deriv = part1[None, :, :, :] * part2
+        raw_second_deriv = raw_second_deriv * second_gauss[:, :, None, :]
+        second_deriv = np.prod(raw_second_deriv, axis=1)
+
+        norm = norm.T[:, :, np.newaxis]
+        output = np.tensordot(prim_coeffs, norm * zeroth_deriv * second_deriv, (0, 0))
 
     else:
         norm = norm.T[:, :, np.newaxis]
