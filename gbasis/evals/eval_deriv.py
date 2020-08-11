@@ -70,12 +70,12 @@ class EvalDeriv(BaseOneIndex):
             components.
         orders : np.ndarray(3,)
             Orders of the derivative.
-        deriv_type : "general" or "first_order"
-            Specification of derivative of contraction function in _deriv.py. "general" makes
-            reference to general implementation of any order derivative
-            function (_eval_deriv_contractions()) and "first_order" makes reference to specific
-            implementation of first order derivative for generalized contraction
-            (_eval_first_order_deriv_contractions()).
+        deriv_type : "general" or "direct"
+            Specification of derivative of contraction function in _deriv.py. "general"
+            makes reference to general implementation of any order derivative
+            function (_eval_deriv_contractions()) and "direct" makes reference to specific
+            implementation of first and second order derivatives for generalized
+            contraction (_eval_first_second_order_deriv_contractions()).
 
         Returns
         -------
@@ -129,11 +129,11 @@ class EvalDeriv(BaseOneIndex):
         norm_prim_cart = contractions.norm_prim_cart
         if deriv_type == "general":
             output = _eval_deriv_contractions(
-            points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
-        elif deriv_type == "first_order":
+        elif deriv_type == "direct":
             output = _eval_first_order_deriv_contractions(
-            points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         return output
 
@@ -170,11 +170,11 @@ def evaluate_deriv_basis(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
-    deriv_type : "general" or "first_order"
+    deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
-        and "first_order" makes reference to specific implementation of first order derivative for
-        generalized contraction (_eval_first_order_deriv_contractions()).
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
