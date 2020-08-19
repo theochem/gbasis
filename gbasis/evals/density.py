@@ -333,6 +333,105 @@ def evaluate_density_gradient(
     return output.T
 
 
+def evaluate_density_laplacian_alt(
+    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="direct"
+):
+    orders_one_second = np.array(([2, 0, 0], [0, 2, 0], [0, 0, 2]))
+    orders_one_first = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
+    orders_two = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
+    output = np.zeros(points.shape[0])
+    # Evaluation of generalized contraction shell for zeroth order = 0,0,0
+    zeroth_deriv = evaluate_deriv_basis(
+        basis, points, np.array([0, 0, 0]),
+        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+    )
+
+    # Evaluation of generalized contraction shell for each partial derivative
+    for orders in orders_one_second:
+        deriv_one = evaluate_deriv_basis(
+            basis, points, orders, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        )
+
+        density = one_density_matrix.dot(zeroth_deriv)
+        density *= deriv_one
+        output += (2 * 1 * np.sum(density, axis=0))
+
+    for orders in zip(orders_one_first, orders_two):
+        deriv_one = evaluate_deriv_basis(
+            basis, points, orders[0], transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
+        )
+
+        deriv_two = evaluate_deriv_basis(
+            basis, points, orders[1], transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
+        )
+        # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
+        density = one_density_matrix.dot(deriv_two)
+        density *= deriv_one
+        output += (2 * 1 * np.sum(density, axis=0))
+
+    return output
+
+
+def evaluate_density_hessian_alt(
+    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
+):
+    # Orders combined with zeroth derivative
+    orders_one_zeroth = np.array(([[2, 0, 0], [1, 1, 0], [1, 0, 1]],
+                                  [[1, 1, 0], [0, 2, 0], [0, 1, 1]],
+                                  [[1, 0, 1], [0, 1, 1], [0, 0, 2]]))
+
+    # Pairs of first order derivatives
+    orders_one_two = np.array(([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                               [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                               [[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
+
+    # Evaluation of generalized contraction shell for zeroth order = 0,0,0
+    zeroth_deriv = evaluate_deriv_basis(
+        basis, points, np.array([0, 0, 0]),
+        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+    )
+
+    # Arrays for derivative
+    zeroth_arr = np.full((3, 3, one_density_matrix.shape[0], points.shape[0]), zeroth_deriv)
+    one_zeroth_arr = np.zeros((3, 3, one_density_matrix.shape[0], points.shape[0]))
+    one_two_arr_1 = np.zeros((3, 3, one_density_matrix.shape[0], points.shape[0]))
+    one_two_arr_2 = np.zeros((3, 3, one_density_matrix.shape[0], points.shape[0]))
+
+    for i in range(3):
+        for j in range(i+1):
+            one_zeroth_arr[j][i] = evaluate_deriv_basis(
+                                   basis, points, orders_one_zeroth[j][i], transform=transform,
+                                   coord_type=coord_type, deriv_type=deriv_type
+                                   )
+            one_two_arr_1[j][i] = evaluate_deriv_basis(
+                                  basis, points, orders_one_two[j][j], transform=transform,
+                                  coord_type=coord_type, deriv_type=deriv_type
+                                  )
+            one_two_arr_2[j][i] = evaluate_deriv_basis(
+                                  basis, points, orders_one_two[j][i], transform=transform,
+                                  coord_type=coord_type, deriv_type=deriv_type
+                                  )
+
+    # double orders-zeroth density
+    raw_density_1 = np.tensordot(one_zeroth_arr, one_density_matrix, (2, 1))
+    density_1 = np.einsum('ijkm,ijmk -> ijkm', zeroth_arr, raw_density_1)
+
+    # one_two density
+    raw_density_2 = np.tensordot(one_two_arr_2, one_density_matrix, (2, 1))
+    density_2 = np.einsum('ijkm,ijmk -> ijkm', one_two_arr_1, raw_density_2)
+
+    # factors and sum over basis functions
+    output = 2 * 1 * np.sum(density_1, axis=2)
+    output += 2 * 1 * np.sum(density_2, axis=2)
+
+    # copying lower matrix to upper matrix
+    upp = np.swapaxes(output, 0, 1)
+    upp = np.triu(upp.T, 1)
+    return output.T + upp
+
+
 def evaluate_density_laplacian(
     one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
 ):
