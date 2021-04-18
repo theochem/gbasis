@@ -255,16 +255,28 @@ def evaluate_deriv_density(
                 num_occurence = comb(total_l_x, l_x) * comb(total_l_y, l_y) * comb(total_l_z, l_z)
                 orders_one = np.array([l_x, l_y, l_z])
                 orders_two = orders - orders_one
-                density = evaluate_deriv_reduced_density_matrix(
-                    orders_one,
-                    orders_two,
-                    one_density_matrix,
-                    basis,
-                    points,
-                    transform=transform,
-                    coord_type=coord_type,
-                    deriv_type=deriv_type,
-                )
+                if any(orders_one > 2) or any(orders_two > 2):
+                    density = evaluate_deriv_reduced_density_matrix(
+                            orders_one,
+                            orders_two,
+                            one_density_matrix,
+                            basis,
+                            points,
+                            transform=transform,
+                            coord_type=coord_type,
+                            deriv_type='general',
+                        )
+                else:
+                    density = evaluate_deriv_reduced_density_matrix(
+                        orders_one,
+                        orders_two,
+                        one_density_matrix,
+                        basis,
+                        points,
+                        transform=transform,
+                        coord_type=coord_type,
+                        deriv_type=deriv_type,
+                    )
                 output += factor * num_occurence * density
     return output
 
