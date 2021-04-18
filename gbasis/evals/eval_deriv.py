@@ -188,7 +188,7 @@ def evaluate_deriv_basis(
     """
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
-            transform, coord_type, points=points, orders=orders
+            transform, coord_type, points=points, orders=orders, deriv_type=deriv_type
         )
     if all([item == 'cartesian' for item in coord_type]):
         return EvalDeriv(basis).construct_array_cartesian(
