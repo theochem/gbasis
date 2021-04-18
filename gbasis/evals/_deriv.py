@@ -166,14 +166,17 @@ def _eval_first_second_order_deriv_contractions(
     first_deriv = np.ones(zeroth_deriv.shape)
     second_deriv = np.ones(zeroth_deriv.shape)
 
-    # First order derivative
+    # Calling 1st and 2nd derivatives functions for different combination of orders
     if indices_first_deriv.any():
         first_deriv = first_derivative(new_coords, gauss, indices_first_deriv, angmom_comps, alphas)
-
-    # Second order derivative
+        if indices_second_deriv.any():
+            second_deriv = second_derivative(new_coords, gauss, indices_second_deriv, angmom_comps,
+                                         alphas)
     elif indices_second_deriv.any():
         second_deriv = second_derivative(new_coords, gauss, indices_second_deriv, angmom_comps, alphas)
-
+        if indices_first_deriv.any():
+            first_deriv = first_derivative(new_coords, gauss, indices_first_deriv, angmom_comps,
+                                           alphas)
     # Combining all the derivatives
     norm = norm.T[:, :, np.newaxis]
     output = np.tensordot(prim_coeffs, norm * zeroth_deriv * first_deriv * second_deriv, (0, 0))
@@ -231,28 +234,30 @@ def second_derivative(new_coords, gauss, indices_second_deriv, angmom_comps, alp
                 - (2 * alphas[:, None, None])
     raw_second_deriv = total_n_0[:, :, None, :] ** array_ones[None, :, :, None]
     # angular momentum == 1
-    total_n_1 = ((4 * alphas[:, None, None] ** 2) * (second_coords ** 3)) \
-                - ((6 * alphas[:, None, None]) * second_coords)
-    total_n_1 = total_n_1[:, :, None, :] ** array_ones[None, :, :, None]
-    # Substitute angular components n=1 with correct derivative
-    raw_second_deriv[:, n_1_indices, :] = total_n_1[:, n_1_indices, :]
-    # angular momentum >= 2
-    # Calculating ..math:: \left(x-X_{A}\right)^{n-2}
-    power_part_1 = second_ang_comp - 2
-    # NOTE: the negative indices must be turned into zeros because (x-Xa)
-    # terms are sometimes zeros (and negative power is undefined).
-    power_part_1[power_part_1 < 0] = 0
-    part1_n_2 = second_coords[:, None, :] ** (power_part_1[:, :, None])
-    # Calculating
-    # ..math:: 4 \alpha^{2}\left(x-X_{A}\right)^{4}-\alpha(4 n+2)\left(x-X_{A}\right)^{2}+n(n-1)
-    part2_1_n_2 = (4 * alphas[:, None, None] ** 2) * (second_coords ** 4)
-    part2_2_n_2 = alphas[:, None, None, None] * (4 * second_ang_comp[:, :, None] + 2) \
-                  * second_coords[:, None, :] ** 2
-    part2_3_n_2 = second_ang_comp * (second_ang_comp - 1)
-    part2_n_2 = part2_1_n_2[:, :, None, :] - part2_2_n_2 + part2_3_n_2[None, :, :, None]
-    total_n_2 = part1_n_2[None, :, :, :] * part2_n_2
-    # Substitute angular components n=2 with correct derivative
-    raw_second_deriv[:, n_2_indices, :] = total_n_2[:, n_2_indices, :]
+    if any(second_ang_comp[0] == 1):
+        total_n_1 = ((4 * alphas[:, None, None] ** 2) * (second_coords ** 3)) \
+                    - ((6 * alphas[:, None, None]) * second_coords)
+        total_n_1 = total_n_1[:, :, None, :] ** array_ones[None, :, :, None]
+        # Substitute angular components n=1 with correct derivative
+        raw_second_deriv[:, n_1_indices, :] = total_n_1[:, n_1_indices, :]
+        # angular momentum >= 2
+        if any(second_ang_comp[0] >= 2):
+            # Calculating ..math:: \left(x-X_{A}\right)^{n-2}
+            power_part_1 = second_ang_comp - 2
+            # NOTE: the negative indices must be turned into zeros because (x-Xa)
+            # terms are sometimes zeros (and negative power is undefined).
+            power_part_1[power_part_1 < 0] = 0
+            part1_n_2 = second_coords[:, None, :] ** (power_part_1[:, :, None])
+            # Calculating
+            # ..math:: 4 \alpha^{2}\left(x-X_{A}\right)^{4}-\alpha(4 n+2)\left(x-X_{A}\right)^{2}+n(n-1)
+            part2_1_n_2 = (4 * alphas[:, None, None] ** 2) * (second_coords ** 4)
+            part2_2_n_2 = alphas[:, None, None, None] * (4 * second_ang_comp[:, :, None] + 2) \
+                          * second_coords[:, None, :] ** 2
+            part2_3_n_2 = second_ang_comp * (second_ang_comp - 1)
+            part2_n_2 = part2_1_n_2[:, :, None, :] - part2_2_n_2 + part2_3_n_2[None, :, :, None]
+            total_n_2 = part1_n_2[None, :, :, :] * part2_n_2
+            # Substitute angular components n=2 with correct derivative
+            raw_second_deriv[:, n_2_indices, :] = total_n_2[:, n_2_indices, :]
     raw_second_deriv = raw_second_deriv * second_gauss[:, :, None, :]
     second_deriv = np.prod(raw_second_deriv, axis=1)
 
