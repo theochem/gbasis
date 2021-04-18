@@ -190,11 +190,11 @@ def evaluate_deriv_basis(
         return EvalDeriv(basis).construct_array_lincomb(
             transform, coord_type, points=points, orders=orders, deriv_type=deriv_type
         )
-    if all([item == 'cartesian' for item in coord_type]):
+    if all([item == "cartesian" for item in coord_type]) or coord_type == "cartesian":
         return EvalDeriv(basis).construct_array_cartesian(
                points=points, orders=orders, deriv_type=deriv_type
                )
-    if all([item == 'spherical' for item in coord_type]):
+    if all([item == "spherical" for item in coord_type]) or coord_type == "spherical":
         return EvalDeriv(basis).construct_array_spherical(
                points=points, orders=orders, deriv_type=deriv_type
                )
