@@ -451,3 +451,28 @@ def test_contruct_array_lincomb():
             [(np.arange(9).reshape(3, 3)).dot(sph_transform.T) * 2, np.arange(9).reshape(3, 3) * 2]
         ),
     )
+
+
+def test_construct_array_mix_missing_conventions():
+    """Test BaseTwoIndexSymmetric.construct_array_mix with partially defined conventions."""
+    class SpecialShell(GeneralizedContractionShell):
+        @property
+        def angmom_components_sph(self):
+            """Raise error in case undefined conventions are accessed."""
+            raise NotImplementedError
+
+    contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1))
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexAsymmetric,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont1, cont2, a=2:
+                    np.arange((2 * 3)**2, dtype=float).reshape(2, 3, 2, 3) * a
+            )
+        },
+    )
+    test = Test([contractions, contractions], [contractions, contractions])
+    assert np.allclose(
+        test.construct_array_cartesian(a=3),
+        test.construct_array_mix(["cartesian"] * 2, ["cartesian"] * 2, a=3)
+    )

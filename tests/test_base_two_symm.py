@@ -758,3 +758,26 @@ def test_compare_two_asymm():
             cart_orb_transform, cart_orb_transform, "cartesian", "cartesian"
         ),
     )
+
+
+def test_construct_array_mix_missing_conventions():
+    """Test BaseTwoIndexSymmetric.construct_array_mix with partially defined conventions."""
+    class SpecialShell(GeneralizedContractionShell):
+        @property
+        def angmom_components_sph(self):
+            """Raise error in case undefined conventions are accessed."""
+            raise NotImplementedError
+
+    contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1))
+    Test = disable_abstract(  # noqa: N806
+        BaseTwoIndexSymmetric,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont1, cont2, a=2: np.arange(36, dtype=float).reshape(2, 3, 2, 3) * a
+            )
+        },
+    )
+    test = Test([contractions, contractions])
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
+    )

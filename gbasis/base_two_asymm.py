@@ -318,23 +318,8 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
 
         matrices_spherical = []
         for cont_one, type_one in zip(self.contractions_one, coord_types_one):
-            # get transformation from cartesian to spherical for the first index (applied to left)
-            transform_one = generate_transformation(
-                cont_one.angmom,
-                cont_one.angmom_components_cart,
-                cont_one.angmom_components_sph,
-                "left",
-            )
             matrices_spherical_cols = []
             for cont_two, type_two in zip(self.contractions_two, coord_types_two):
-                # get transformation from cartesian to spherical for the first index (applied to
-                # left)
-                transform_two = generate_transformation(
-                    cont_two.angmom,
-                    cont_two.angmom_components_cart,
-                    cont_two.angmom_components_sph,
-                    "left",
-                )
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
@@ -345,11 +330,27 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
                 # transform
                 # assume array always has shape (M_1, L_1, M_2, L_2, ...)
                 if type_one == "spherical":
+                    # get transformation from cartesian to spherical for the first index (applied to
+                    # left)
+                    transform_one = generate_transformation(
+                        cont_one.angmom,
+                        cont_one.angmom_components_cart,
+                        cont_one.angmom_components_sph,
+                        "left",
+                    )
                     block = np.tensordot(transform_one, block, (1, 1))
                     block = np.swapaxes(block, 0, 1)
                 block = np.concatenate(block, axis=0)
                 # array now has shape (M_1 L_1, M_2, L_2, ...)
                 if type_two == "spherical":
+                    # get transformation from cartesian to spherical for the first index (applied to
+                    # left)
+                    transform_two = generate_transformation(
+                        cont_two.angmom,
+                        cont_two.angmom_components_cart,
+                        cont_two.angmom_components_sph,
+                        "left",
+                    )
                     block = np.tensordot(transform_two, block, (1, 2))
                     block = np.swapaxes(np.swapaxes(block, 0, 1), 0, 2)
                 else:
