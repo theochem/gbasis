@@ -435,6 +435,20 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
             )
         )
         for pair_ind, ((i, cont_one, type_one), (j, cont_two, type_two)) in enumerate(pair_i_cont):
+            if type_one == "spherical":
+                transform_one = generate_transformation(
+                    cont_one.angmom,
+                    cont_one.angmom_components_cart,
+                    cont_one.angmom_components_sph,
+                    "left",
+                )
+            if type_two == "spherical":
+                transform_two = generate_transformation(
+                    cont_two.angmom,
+                    cont_two.angmom_components_cart,
+                    cont_two.angmom_components_sph,
+                    "left",
+                )
             for (k, cont_three, type_three), (l, cont_four, type_four) in pair_i_cont[pair_ind:]:
                 block = self.construct_array_contraction(
                     cont_one, cont_two, cont_three, cont_four, **kwargs
@@ -450,23 +464,12 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
                 block *= cont_four.norm_cont.reshape(
                     1, 1, 1, 1, 1, 1, *block.shape[6:8], *[1 for _ in block.shape[8:]]
                 )
+
                 # transform
                 if type_one == "spherical":
-                    transform_one = generate_transformation(
-                        cont_one.angmom,
-                        cont_one.angmom_components_cart,
-                        cont_one.angmom_components_sph,
-                        "left",
-                    )
                     block = np.tensordot(transform_one, block, (1, 1))
                     block = np.swapaxes(block, 0, 1)
                 if type_two == "spherical":
-                    transform_two = generate_transformation(
-                        cont_two.angmom,
-                        cont_two.angmom_components_cart,
-                        cont_two.angmom_components_sph,
-                        "left",
-                    )
                     block = np.tensordot(transform_two, block, (1, 3))
                     block = np.swapaxes(np.swapaxes(np.swapaxes(block, 0, 1), 1, 2), 2, 3)
                 if type_three == "spherical":

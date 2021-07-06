@@ -297,6 +297,14 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         triu_blocks = []
         for i, (cont_one, type_one) in enumerate(zip(self.contractions, coord_types)):
+            if type_one == "spherical":
+                # get transformation from cartesian to spherical (applied to left)
+                transform_one = generate_transformation(
+                    cont_one.angmom,
+                    cont_one.angmom_components_cart,
+                    cont_one.angmom_components_sph,
+                    "left",
+                )
             for cont_two, type_two in zip(self.contractions[i:], coord_types[i:]):
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
@@ -307,13 +315,6 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 )
                 # assume array has shape (M_1, L_1, M_2, L_2, ...)
                 if type_one == "spherical":
-                    # get transformation from cartesian to spherical (applied to left)
-                    transform_one = generate_transformation(
-                        cont_one.angmom,
-                        cont_one.angmom_components_cart,
-                        cont_one.angmom_components_sph,
-                        "left",
-                    )
                     # transform
                     block = np.tensordot(transform_one, block, (1, 1))
                     block = np.swapaxes(block, 0, 1)

@@ -694,30 +694,39 @@ def test_contruct_array_lincomb():
 
 def test_construct_array_mix():
     r"""Test construct_array_mix with both a P-Type Cartesian and D-Type Spherical contractions."""
-    NUM_PTS = 1
+    num_pts = 1
     # Define the coefficients used to seperate which contraction block it is
-    COEFF_P_P_TYPE = 2
-    COEFF_P_D_TYPE = 4
-    COEFF_D_D_TYPE = 6
+    coeff_p_p_type = 2
+    coeff_p_d_type = 4
+    coeff_d_d_type = 6
 
     def construct_array_cont(self, cont_one, cont_two):
         if cont_one.angmom == 1:
             if cont_two.angmom == 1:
                 # Return array with all values of "COEFF_P_PTYPE" with right size
-                output= np.ones(cont_one.num_cart * cont_two.num_cart * NUM_PTS, dtype=float).reshape(
-                    1, cont_one.num_cart, 1, cont_two.num_cart, NUM_PTS
-                ) * COEFF_P_P_TYPE
+                output = (
+                    np.ones(cont_one.num_cart * cont_two.num_cart * num_pts, dtype=float).reshape(
+                        1, cont_one.num_cart, 1, cont_two.num_cart, num_pts
+                    )
+                    * coeff_p_p_type
+                )
             elif cont_two.angmom == 2:
                 # Return array with all values of "COEFF_P_D_TYPE" with right size
-                output = np.ones(cont_one.num_cart * cont_two.num_cart * NUM_PTS, dtype=float).reshape(
-                    1, cont_one.num_cart, 1, cont_two.num_cart, NUM_PTS
-                ) * COEFF_P_D_TYPE
+                output = (
+                    np.ones(cont_one.num_cart * cont_two.num_cart * num_pts, dtype=float).reshape(
+                        1, cont_one.num_cart, 1, cont_two.num_cart, num_pts
+                    )
+                    * coeff_p_d_type
+                )
         if cont_one.angmom == 2:
             if cont_two.angmom == 2:
                 # Return array with all values of "COEFF_D_D_TYPE" with right size
-                output = np.ones(cont_one.num_cart * cont_two.num_cart * NUM_PTS, dtype=float).reshape(
-                    1, cont_one.num_cart, 1, cont_two.num_cart, NUM_PTS
-                ) * COEFF_D_D_TYPE
+                output = (
+                    np.ones(cont_one.num_cart * cont_two.num_cart * num_pts, dtype=float).reshape(
+                        1, cont_one.num_cart, 1, cont_two.num_cart, num_pts
+                    )
+                    * coeff_d_d_type
+                )
         return output
 
     Test = disable_abstract(  # noqa: N806
@@ -737,29 +746,32 @@ def test_construct_array_mix():
     actual = test.construct_array_mix(["cartesian", "spherical"])[:, :, 0]
 
     # Test P-type to P-type
-    assert np.allclose(actual[:3, :3], np.ones((3, 3)) * COEFF_P_P_TYPE)
+    assert np.allclose(actual[:3, :3], np.ones((3, 3)) * coeff_p_p_type)
     # Test P-type to D-type
     # Transformation matrix from  normalized Cartesian to normalized Spherical,
     #       Transfers [xx, xy, xz, yy, yz, zz] to [S_{22}, S_{21}, C_{20}, C_{21}, C_{22}]
     #       Obtained form iodata website or can find it in Helgeker's book.
-    generate_transformation_array = np.array([[0, 1, 0, 0, 0, 0],
-                                              [0, 0, 0, 0, 1, 0],
-                                              [-0.5, 0, 0, -0.5, 0, 1],
-                                              [0, 0, 1, 0, 0, 0],
-                                              [np.sqrt(3.)/2.0, 0, 0, -np.sqrt(3.)/2.0, 0, 0],
-                                              ])
-    assert np.allclose(
-        actual[:3, 3:], np.ones((3, 6)).dot(generate_transformation_array.T) * COEFF_P_D_TYPE
+    generate_transformation_array = np.array(
+        [
+            [0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0],
+            [-0.5, 0, 0, -0.5, 0, 1],
+            [0, 0, 1, 0, 0, 0],
+            [np.sqrt(3.0) / 2.0, 0, 0, -np.sqrt(3.0) / 2.0, 0, 0],
+        ]
     )
     assert np.allclose(
-        actual[3:, :3], generate_transformation_array.dot(np.ones((6, 3))) * COEFF_P_D_TYPE
+        actual[:3, 3:], np.ones((3, 6)).dot(generate_transformation_array.T) * coeff_p_d_type
+    )
+    assert np.allclose(
+        actual[3:, :3], generate_transformation_array.dot(np.ones((6, 3))) * coeff_p_d_type
     )
     # Test D-type to D-type.
     assert np.allclose(
         actual[3:, 3:],
         generate_transformation_array.dot(np.ones(6 * 6, dtype=float).reshape(6, 6) * 6).dot(
-                generate_transformation_array.T
-        )
+            generate_transformation_array.T
+        ),
     )
 
 
@@ -833,6 +845,7 @@ def test_compare_two_asymm():
 
 def test_construct_array_mix_missing_conventions():
     """Test BaseTwoIndexSymmetric.construct_array_mix with partially defined conventions."""
+
     class SpecialShell(GeneralizedContractionShell):
         @property
         def angmom_components_sph(self):
