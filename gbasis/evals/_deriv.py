@@ -145,8 +145,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
 def _eval_first_second_order_deriv_contractions(
         coords, orders, center, angmom_comps, alphas, prim_coeffs, norm
 ):
-    r"""Return the evaluation of direct implementation of 1st and 2nd derivative orders
-     of a Cartesian contraction.
+    """Return the evaluation of direct 1st and 2nd derivative orders of a Cartesian contraction.
 
     Parameters
     ----------
@@ -217,15 +216,17 @@ def _eval_first_second_order_deriv_contractions(
 
     # Calling 1st and 2nd derivatives functions for different combination of orders
     if indices_first_deriv.any():
-        first_deriv = _first_derivative(new_coords, gauss, indices_first_deriv, angmom_comps, alphas)
+        first_deriv = _first_derivative(new_coords, gauss, indices_first_deriv,
+                                        angmom_comps, alphas)
         if indices_second_deriv.any():
-            second_deriv = _second_derivative(new_coords, gauss, indices_second_deriv, angmom_comps,
-                                         alphas)
+            second_deriv = _second_derivative(new_coords, gauss, indices_second_deriv,
+                                              angmom_comps, alphas)
     elif indices_second_deriv.any():
-        second_deriv = _second_derivative(new_coords, gauss, indices_second_deriv, angmom_comps, alphas)
+        second_deriv = _second_derivative(new_coords, gauss, indices_second_deriv,
+                                          angmom_comps, alphas)
         if indices_first_deriv.any():
-            first_deriv = _first_derivative(new_coords, gauss, indices_first_deriv, angmom_comps,
-                                           alphas)
+            first_deriv = _first_derivative(new_coords, gauss, indices_first_deriv,
+                                            angmom_comps, alphas)
     # Combining all the derivatives
     norm = norm.T[:, :, np.newaxis]
     output = np.tensordot(prim_coeffs, norm * zeroth_deriv * first_deriv * second_deriv, (0, 0))
@@ -234,7 +235,7 @@ def _eval_first_second_order_deriv_contractions(
 
 
 def _first_derivative(center_coords, gauss, indices_first_deriv, angmom_comps, alphas):
-    r"""Helper function for calculation of explicit first derivative order for contracted gaussian
+    r"""Help function for calculation of explicit first derivative order for contracted gaussian.
 
     Parameters
     ----------
@@ -296,7 +297,7 @@ def _first_derivative(center_coords, gauss, indices_first_deriv, angmom_comps, a
 
 
 def _second_derivative(center_coords, gauss, indices_second_deriv, angmom_comps, alphas):
-    r"""Helper function for calculation of explicit second derivative order for contracted gaussian
+    r"""Help function for calculation of explicit second derivative order for contracted gaussian.
 
     Parameters
     ----------
@@ -341,8 +342,8 @@ def _second_derivative(center_coords, gauss, indices_second_deriv, angmom_comps,
     n_2_indices = second_ang_comp >= 2
 
     # angular momentum == 0
-    total_n_0 = ((4 * alphas[:, None, None] ** 2) * (second_coords ** 2)) \
-                - (2 * alphas[:, None, None])
+    total_n_0 = ((4 * alphas[:, None, None] ** 2) * (second_coords ** 2)) - \
+                (2 * alphas[:, None, None])
     raw_second_deriv = total_n_0[:, :, None, :] ** array_ones[None, :, :, None]
     # angular momentum == 1
     if any(second_ang_comp[0] == 1):
@@ -360,10 +361,11 @@ def _second_derivative(center_coords, gauss, indices_second_deriv, angmom_comps,
             power_part_1[power_part_1 < 0] = 0
             part1_n_2 = second_coords[:, None, :] ** (power_part_1[:, :, None])
             # Calculating
-            # ..math:: 4 \alpha^{2}\left(x-X_{A}\right)^{4}-\alpha(4 n+2)\left(x-X_{A}\right)^{2}+n(n-1)
+            # ..math:: 4 \alpha^{2}\left(x-X_{A}\right)^{4}-
+            # \alpha(4 n+2)\left(x-X_{A}\right)^{2}+n(n-1)
             part2_1_n_2 = (4 * alphas[:, None, None] ** 2) * (second_coords ** 4)
             part2_2_n_2 = alphas[:, None, None, None] * (4 * second_ang_comp[:, :, None] + 2) \
-                          * second_coords[:, None, :] ** 2
+                                                      * second_coords[:, None, :] ** 2
             part2_3_n_2 = second_ang_comp * (second_ang_comp - 1)
             part2_n_2 = part2_1_n_2[:, :, None, :] - part2_2_n_2 + part2_3_n_2[None, :, :, None]
             total_n_2 = part1_n_2[None, :, :, :] * part2_n_2

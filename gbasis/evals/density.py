@@ -177,13 +177,14 @@ def evaluate_deriv_reduced_density_matrix(
 
     """
     deriv_orb_eval_one = evaluate_deriv_basis(
-    basis, points, orders_one, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        basis, points, orders_one, transform=transform, coord_type=coord_type, deriv_type=deriv_type
     )
     if np.array_equal(orders_one, orders_two):
         deriv_orb_eval_two = deriv_orb_eval_one
     else:
         deriv_orb_eval_two = evaluate_deriv_basis(
-        basis, points, orders_two, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+            basis, points, orders_two, transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
     density *= deriv_orb_eval_one
@@ -662,10 +663,12 @@ def evaluate_general_kinetic_energy_density(
         raise TypeError("`alpha` must be an int or float.")
 
     general_kinetic_energy_density = evaluate_posdef_kinetic_energy_density(
-        one_density_matrix, basis, points, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        one_density_matrix, basis, points, transform=transform, coord_type=coord_type,
+        deriv_type=deriv_type
     )
     if alpha != 0:
         general_kinetic_energy_density += alpha * evaluate_density_laplacian(
-            one_density_matrix, basis, points, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+            one_density_matrix, basis, points, transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
         )
     return general_kinetic_energy_density

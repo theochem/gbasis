@@ -137,7 +137,8 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([2, 3, 0]), density, basis, points, transform, deriv_type='direct'),
+        evaluate_deriv_density(np.array([2, 3, 0]), density, basis, points,
+                               transform, deriv_type='direct'),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -454,7 +455,10 @@ def test_evaluate_general_kinetic_energy_density():
             np.identity(40), basis, points, None, np.identity(40), deriv_type='direct'
         )
     assert np.allclose(
-        evaluate_general_kinetic_energy_density(np.identity(40), basis, points, 1, np.identity(40), deriv_type='direct'),
-        evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40), deriv_type='direct')
-        + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40), deriv_type='direct'),
+        evaluate_general_kinetic_energy_density(np.identity(40), basis, points, 1,
+                                                np.identity(40), deriv_type='direct'),
+        evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points,
+                                               np.identity(40), deriv_type='direct')
+        + evaluate_density_laplacian(np.identity(40), basis, points,
+                                     np.identity(40), deriv_type='direct'),
     )
