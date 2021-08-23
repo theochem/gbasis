@@ -297,20 +297,15 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
 
         triu_blocks = []
         for i, (cont_one, type_one) in enumerate(zip(self.contractions, coord_types)):
-            # get transformation from cartesian to spherical (applied to left)
-            transform_one = generate_transformation(
-                cont_one.angmom,
-                cont_one.angmom_components_cart,
-                cont_one.angmom_components_sph,
-                "left",
-            )
-            for cont_two, type_two in zip(self.contractions[i:], coord_types[i:]):
-                transform_two = generate_transformation(
-                    cont_two.angmom,
-                    cont_two.angmom_components_cart,
-                    cont_two.angmom_components_sph,
+            if type_one == "spherical":
+                # get transformation from cartesian to spherical (applied to left)
+                transform_one = generate_transformation(
+                    cont_one.angmom,
+                    cont_one.angmom_components_cart,
+                    cont_one.angmom_components_sph,
                     "left",
                 )
+            for cont_two, type_two in zip(self.contractions[i:], coord_types[i:]):
                 # evaluate
                 block = self.construct_array_contraction(cont_one, cont_two, **kwargs)
                 # normalize contractions
@@ -326,6 +321,13 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
                 block = np.concatenate(block, axis=0)
                 # array now has shape (M_1 L_1, M_2, L_2, ...)
                 if type_two == "spherical":
+                    # get transformation from cartesian to spherical (applied to left)
+                    transform_two = generate_transformation(
+                        cont_two.angmom,
+                        cont_two.angmom_components_cart,
+                        cont_two.angmom_components_sph,
+                        "left",
+                    )
                     block = np.tensordot(transform_two, block, (1, 2))
                     block = np.swapaxes(np.swapaxes(block, 0, 1), 0, 2)
                 else:

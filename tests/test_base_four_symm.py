@@ -509,6 +509,151 @@ def test_construct_array_mix():
         test.construct_array_mix(["cartesian"] * 3, a=3),
 
 
+def test_construct_array_mix_with_both_cartesian_and_spherical():
+    r"""Test construct_array_mix with both a P-Type Cartesian and D-Type Spherical contractions."""
+    num_pts, num_seg_shell = 1, 1
+    # Define the coefficients used to seperate which contraction block it is,
+    #       Put it in a dictionary to avoid doing so many nested if-statements.
+    coeff_p_p_p_p_type = 2
+    coeff_p_p_p_d_type = 4
+    coeff_p_p_d_d_type = 5
+    coeff_p_d_p_p_type = 6
+    coeff_p_d_p_d_type = 8
+    coeff_p_d_d_d_type = 10
+    coeff_d_d_p_p_type = 12
+    coeff_d_d_p_d_type = 14
+    coeff_d_d_d_d_type = 16
+    coeff_dict = {
+        "1111": coeff_p_p_p_p_type,
+        "1112": coeff_p_p_p_d_type,
+        "1122": coeff_p_p_d_d_type,
+        "1211": coeff_p_d_p_p_type,
+        "1212": coeff_p_d_p_d_type,
+        "1222": coeff_p_d_d_d_type,
+        "2211": coeff_d_d_p_p_type,
+        "2212": coeff_d_d_p_d_type,
+        "2222": coeff_d_d_d_d_type,
+    }
+
+    def construct_array_cont(self, cont_one, cont_two, cont_three, cont_four):
+        output = np.ones(
+            cont_one.num_cart
+            * cont_two.num_cart
+            * cont_three.num_cart
+            * cont_four.num_cart
+            * num_pts,
+            dtype=float,
+        ).reshape(
+            num_seg_shell,
+            cont_one.num_cart,
+            num_seg_shell,
+            cont_two.num_cart,
+            num_seg_shell,
+            cont_three.num_cart,
+            num_seg_shell,
+            cont_four.num_cart,
+            num_pts,
+        )
+        identifier = (
+            str(cont_one.angmom)
+            + str(cont_two.angmom)
+            + str(cont_three.angmom)
+            + str(cont_four.angmom)
+        )
+        return output * coeff_dict[identifier]
+
+    Test = disable_abstract(  # noqa: N806
+        BaseFourIndexSymmetric,
+        dict_overwrite={"construct_array_contraction": construct_array_cont},
+    )
+    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
+    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), np.ones(1), np.ones(1))
+
+    # Remove the dependence on norm constants.
+    cont_one.norm_cont = np.ones((1, cont_one.num_cart))
+    cont_two.norm_cont = np.ones((1, cont_two.num_cart))
+    test = Test([cont_one, cont_two])
+
+    # Should have shape (3 + 5, 3 + 5, NUM_PTS), due to the following:
+    #           3-> Number of P-type, 5->Number of Spherical D-type.
+    actual = test.construct_array_mix(["cartesian", "spherical"])[:, :, :, :, 0]
+
+    # Test P-type to P-type to P-Type To P-type i.e. (P, P, P, P)
+    assert np.allclose(actual[:3, :3, :3, :3], np.ones((3, 3)) * coeff_p_p_p_p_type)
+    # Test (P, P, P, D)
+    # Transformation matrix from  normalized Cartesian to normalized Spherical,
+    #       Transfers [xx, xy, xz, yy, yz, zz] to [S_{22}, S_{21}, C_{20}, C_{21}, C_{22}]
+    #       Obtained form iodata website or can find it in Helgeker's book.
+    generate_transformation_array = np.array(
+        [
+            [0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0],
+            [-0.5, 0, 0, -0.5, 0, 1],
+            [0, 0, 1, 0, 0, 0],
+            [np.sqrt(3.0) / 2.0, 0, 0, -np.sqrt(3.0) / 2.0, 0, 0],
+        ]
+    )
+    assert np.allclose(
+        actual[:3, :3, :3, 3:],
+        np.ones((3, 3, 3, 6)).dot(generate_transformation_array.T) * coeff_p_p_p_d_type,
+    )
+
+    assert np.allclose(
+        actual[:3, :3, 3:, :3],
+        np.einsum("ij,mnjl->mnil", generate_transformation_array, np.ones((3, 3, 6, 3)))
+        * coeff_p_p_p_d_type,
+    )
+    # Test (P, P, D, D), (D, D, P, P)
+    assert np.allclose(
+        actual[:3, :3, 3:, 3:],
+        np.einsum(
+            "ij,mnjl,pl->mnip",
+            generate_transformation_array,
+            np.ones((3, 3, 6, 6)),
+            generate_transformation_array,
+        )
+        * coeff_p_p_d_d_type,
+    )
+    assert np.allclose(actual[3:, 3:, :3, :3], actual[:3, :3, 3:, 3:].T)  # Symmetry
+    # Test (P, D, P, D)
+    assert np.allclose(
+        actual[:3, 3:, :3, 3:],
+        np.einsum(
+            "ij,mjnl,pl->minp",
+            generate_transformation_array,
+            np.ones((3, 6, 3, 6)),
+            generate_transformation_array,
+        )
+        * coeff_p_d_p_d_type,
+    )
+    # Test (P, D, D, D), & (D, D, P, D)
+    assert np.allclose(
+        actual[:3, 3:, 3:, 3:],
+        np.einsum(
+            "in,mnjl,pl,oj->miop",
+            generate_transformation_array,
+            np.ones((3, 6, 6, 6)),
+            generate_transformation_array,
+            generate_transformation_array,
+        )
+        * coeff_p_d_d_d_type,
+    )
+    assert np.allclose(actual[3:, 3:, :3, 3:], np.einsum("ijkl->klij", actual[:3, 3:, 3:, 3:]))
+    # Test (D, D, D, D)
+    assert np.allclose(
+        actual[3:, 3:, 3:, 3:],
+        np.einsum(
+            "dm,in,mnjl,pl,oj->diop",
+            generate_transformation_array,
+            generate_transformation_array,
+            np.ones((6, 6, 6, 6)),
+            generate_transformation_array,
+            generate_transformation_array,
+        )
+        * coeff_d_d_d_d_type,
+    )
+
+
 def test_construct_array_lincomb():
     """Test BaseFourIndexSymmetric.construct_array_lincomb."""
     contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1))
@@ -1093,4 +1238,31 @@ def test_construct_array_lincomb():
             orb_transform,
             orb_transform,
         ),
+    )
+
+
+def test_construct_array_mix_missing_conventions():
+    """Test BaseFourIndexSymmetric.construct_array_mix with partially defined conventions."""
+
+    class SpecialShell(GeneralizedContractionShell):
+        @property
+        def angmom_components_sph(self):
+            """Raise error in case undefined conventions are accessed."""
+            raise NotImplementedError
+
+    contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1))
+    Test = disable_abstract(  # noqa: N806
+        BaseFourIndexSymmetric,
+        dict_overwrite={
+            "construct_array_contraction": (
+                lambda self, cont1, cont2, cont3, cont4, a=2: np.arange(
+                    (2 * 3) ** 4, dtype=float
+                ).reshape(2, 3, 2, 3, 2, 3, 2, 3)
+                * a
+            )
+        },
+    )
+    test = Test([contractions, contractions])
+    assert np.allclose(
+        test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
     )
