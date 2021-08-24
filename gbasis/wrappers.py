@@ -44,7 +44,8 @@ def from_iodata(mol):
     ):  # pragma: no cover
         raise ValueError("`mol` must be an IOData instance.")
 
-    molbasis = mol.obasis
+    # GBasis can only work with segmented basis sets.
+    molbasis = mol.obasis.get_segmented()
 
     cart_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "c"}
     sph_conventions = {i[0]: j for i, j in molbasis.conventions.items() if i[1] == "p"}
@@ -127,35 +128,20 @@ def from_iodata(mol):
 
     basis = []
     coord_types = []
-    for grouped_shell in molbasis.shells:
-        # segment the shell if not every contraction within the shell has the same angular
-        # momentum and "kind"
-        if len(set(grouped_shell.angmoms)) != 1 or len(set(grouped_shell.kinds)) != 1:
-            shells = []
-            for angmom, kind, coeffs in zip(
-                grouped_shell.angmoms, grouped_shell.kinds, grouped_shell.coeffs.T
-            ):
-                shells.append(
-                    # NOTE: _replace returns a copy (so the original is not affected)
-                    grouped_shell._replace(
-                        angmoms=[angmom], kinds=[kind], coeffs=coeffs.reshape(-1, 1)
-                    )
-                )
-        else:
-            shells = [grouped_shell]
+    for shell in molbasis.shells:
+        # Verify that this is not a generalized contraction.
+        assert shell.ncon == 1
+        # get angular momentum
+        # NOTE: GeneralizedContractionShell only accepts angular momentum as an int.
+        angmom = int(shell.angmoms[0])
 
-        for shell in shells:
-            # get angular momentum
-            # NOTE: GeneralizedContractionShell only accepts angular momentum as an int.
-            angmom = int(shell.angmoms[0])
+        # get type
+        coord_types.append({"c": "cartesian", "p": "spherical"}[shell.kinds[0]])
 
-            # get type
-            coord_types.append({"c": "cartesian", "p": "spherical"}[shell.kinds[0]])
-
-            # pylint: disable=E1136
-            basis.append(
-                IODataShell(angmom, mol.atcoords[shell.icenter], shell.coeffs, shell.exponents)
-            )
+        # pylint: disable=E1136
+        basis.append(
+            IODataShell(angmom, mol.atcoords[shell.icenter], shell.coeffs, shell.exponents)
+        )
 
     return basis, coord_types
 
