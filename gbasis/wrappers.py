@@ -130,7 +130,8 @@ def from_iodata(mol):
     coord_types = []
     for shell in molbasis.shells:
         # Verify that this is not a generalized contraction.
-        assert shell.ncon == 1
+        if shell.ncon != 1:
+            raise AssertionError("Generalized contraction found. The basis should be segmented.")
         # get angular momentum
         # NOTE: GeneralizedContractionShell only accepts angular momentum as an int.
         angmom = int(shell.angmoms[0])
