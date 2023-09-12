@@ -58,7 +58,7 @@ setup(
     keywords="gaussian primitive contraction orbital integral differentiation evaluation density ",
     packages=find_packages(exclude=["docs", "tests"]),
     python_requires=">=3.5",
-    install_requires=["numpy>=1.10", "scipy>=1.0"],
+    install_requires=["numpy>=1.10", "scipy>=1.0,<=1.10.1"],
     extras_require={
         "dev": ["tox"],
         "test": ["tox", "pytest", "pytest-cov"],
