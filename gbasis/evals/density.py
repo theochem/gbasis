@@ -1,6 +1,6 @@
 """Density Evaluation."""
-from gbasis.evals.eval import evaluate_basis
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_basis_deriv
+from gbasis.evals.basis_eval import evaluate_basis
 import numpy as np
 from scipy.special import comb
 
@@ -170,13 +170,13 @@ def evaluate_deriv_reduced_density_matrix(
         Derivative of the first-order reduced density matrix evaluated at `N` grid points.
 
     """
-    deriv_orb_eval_one = evaluate_deriv_basis(
+    deriv_orb_eval_one = evaluate_basis_deriv(
         basis, points, orders_one, transform=transform, coord_type=coord_type
     )
     if np.array_equal(orders_one, orders_two):
         deriv_orb_eval_two = deriv_orb_eval_one
     else:
-        deriv_orb_eval_two = evaluate_deriv_basis(
+        deriv_orb_eval_two = evaluate_basis_deriv(
             basis, points, orders_two, transform=transform, coord_type=coord_type
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
@@ -185,7 +185,7 @@ def evaluate_deriv_reduced_density_matrix(
     return density
 
 
-def evaluate_deriv_density(
+def evaluate_density_deriv(
     orders, one_density_matrix, basis, points, transform=None, coord_type="spherical"
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
@@ -296,7 +296,7 @@ def evaluate_density_gradient(
     """
     return np.array(
         [
-            evaluate_deriv_density(
+            evaluate_density_deriv(
                 np.array([1, 0, 0]),
                 one_density_matrix,
                 basis,
@@ -304,7 +304,7 @@ def evaluate_density_gradient(
                 transform=transform,
                 coord_type=coord_type,
             ),
-            evaluate_deriv_density(
+            evaluate_density_deriv(
                 np.array([0, 1, 0]),
                 one_density_matrix,
                 basis,
@@ -312,7 +312,7 @@ def evaluate_density_gradient(
                 transform=transform,
                 coord_type=coord_type,
             ),
-            evaluate_deriv_density(
+            evaluate_density_deriv(
                 np.array([0, 0, 1]),
                 one_density_matrix,
                 basis,
@@ -362,7 +362,7 @@ def evaluate_density_laplacian(
         Laplacian of the density evaluated at `N` grid points.
 
     """
-    output = evaluate_deriv_density(
+    output = evaluate_density_deriv(
         np.array([2, 0, 0]),
         one_density_matrix,
         basis,
@@ -370,7 +370,7 @@ def evaluate_density_laplacian(
         transform=transform,
         coord_type=coord_type,
     )
-    output += evaluate_deriv_density(
+    output += evaluate_density_deriv(
         np.array([0, 2, 0]),
         one_density_matrix,
         basis,
@@ -378,7 +378,7 @@ def evaluate_density_laplacian(
         transform=transform,
         coord_type=coord_type,
     )
-    output += evaluate_deriv_density(
+    output += evaluate_density_deriv(
         np.array([0, 0, 2]),
         one_density_matrix,
         basis,
@@ -433,7 +433,7 @@ def evaluate_density_hessian(
     return np.array(
         [
             [
-                evaluate_deriv_density(
+                evaluate_density_deriv(
                     orders_one + orders_two,
                     one_density_matrix,
                     basis,

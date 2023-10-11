@@ -656,7 +656,7 @@ grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 \end{lstlisting}
 
 \subsection{Evaluation of contractions}
-The functions in module \verb|gbasis.evals.eval| return the evaluations of the
+The functions in module \verb|gbasis.evals.basis_eval| return the evaluations of the
 contractions at different coordinates:
 \begin{equation}
   \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha})
@@ -671,13 +671,13 @@ Example:
 \begin{itemize}
 \item To evaluate the atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.basis_eval import evaluate_basis
 
 output = evaluate_basis(basis, grid_3d, coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.basis_eval import evaluate_basis
 
 output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao, coord_type="spherical")
 \end{lstlisting}
@@ -685,7 +685,7 @@ output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao, coord_type="s
 
 \subsection{Evaluation of derivatives of contractions}
 In \verb|gbasis|, contractions can be derivatized to arbitrary orders.
-The functions in module \verb|gbasis.evals.eval_deriv| return the evaluations of the
+The functions in module \verb|gbasis.evals.basis_deriv| return the evaluations of the
 given derivative of the contractions at different coordinates.
 \begin{equation}
   \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
@@ -702,15 +702,15 @@ Suppose the following derivative of the contraction is desired:
 \begin{itemize}
 \item To evaluate the derivatives of the atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_basis_deriv
 
-output = evaluate_deriv_basis(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
+output = evaluate_basis_deriv(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the derivatives of the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
+from gbasis.evals.basis_deriv import evaluate_basis_deriv
 
-output = evaluate_deriv_basis(
+output = evaluate_basis_deriv(
     basis, grid_3d, np.array([1, 2, 0]), transform=transform_mo_ao, coord_type="spherical"
 )
 \end{lstlisting}
@@ -767,16 +767,16 @@ Suppose the following derivative of the density is desired:
 \item To evaluate the derivative of the density using density matrix expressed
   with respect to atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.density import evaluate_deriv_density
+from gbasis.evals.density import evaluate_density_deriv
 
-output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_density_deriv(np.array([1, 2, 0]), one_dm, basis, grid_3d, coord_type="spherical")
 \end{lstlisting}
 \item To evaluate the derivative of the density using density matrix expressed
   with respect to molecular orbitals,
 \begin{lstlisting}
-from gbasis.evals.density import evaluate_deriv_density
+from gbasis.evals.density import evaluate_density_deriv
 
-output = evaluate_deriv_density(
+output = evaluate_density_deriv(
     np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
 )
 \end{lstlisting}
@@ -1461,9 +1461,9 @@ matrix is given by \verb|one_dm|.
 \item To compute the electrostatic potential using density matrix expressed with
   respect to atomic orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.electrostatic_potential import electrostatic_potential
+from gbasis.evals.esp import evaluate_electrostatic_potential
 
-output = electrostatic_potential(
+output = evaluate_electrostatic_potential(
     basis,
     one_dm,
     np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
@@ -1475,9 +1475,9 @@ output = electrostatic_potential(
 \item To compute the electrostatic potential using density matrix expressed with
   respect to molecular orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
-from gbasis.evals.electrostatic_potential import electrostatic_potential
+from gbasis.evals.esp import evaluate_electrostatic_potential
 
-output = electrostatic_potential(
+output = evaluate_electrostatic_potential(
     basis,
     one_dm,
     np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
