@@ -1,0 +1,1464 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>gbasis.evals package &#8212; Ayers Lab</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/gbasis.evals';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="gbasis.integrals package" href="gbasis.integrals.html" />
+    <link rel="prev" title="gbasis package" href="gbasis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to GBasis’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="gbasis.html">gbasis package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">gbasis.evals package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html">gbasis.integrals package</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis/issues/new?title=Issue%20on%20page%20%2F_autosummary/gbasis.evals.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/_autosummary/gbasis.evals.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>gbasis.evals package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.density">gbasis.evals.density module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.electrostatic_potential">gbasis.evals.electrostatic_potential module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.eval">gbasis.evals.eval module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.eval_deriv">gbasis.evals.eval_deriv module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.stress_tensor">gbasis.evals.stress_tensor module</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="module-gbasis.evals">
+<span id="gbasis-evals-package"></span><h1>gbasis.evals package<a class="headerlink" href="#module-gbasis.evals" title="Permalink to this heading">#</a></h1>
+<p>Collection of modules that compute evaluations of different properties of the contractions.</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="module-gbasis.evals.density">
+<span id="gbasis-evals-density-module"></span><h2>gbasis.evals.density module<a class="headerlink" href="#module-gbasis.evals.density" title="Permalink to this heading">#</a></h2>
+<p>Density Evaluation.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the density of the given basis set at the given points.</p>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>density<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Density evaluated at <cite>N</cite> grid points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_gradient">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_gradient" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the gradient of the density evaluated at the given points.</p>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>density_gradient<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Gradient of the density evaluated at <cite>N</cite> grid points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_hessian">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_hessian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the Hessian of the density evaluated at the given points.</p>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>density_hessian<span class="classifier">np.ndarray(N, 3, 3)</span></dt><dd><p>Hessian of the density evaluated at <cite>N</cite> grid points.
+Dimension 0 corresponds to the point, ordered as in <cite>points</cite>.
+Dimensions 1, 2 correspond to the dimensions <cite>(x, y, z)</cite> in which the derivative of density
+was calculated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_laplacian">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_laplacian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the Laplacian of the density evaluated at the given points.</p>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>density_laplacian<span class="classifier">np.ndarray(N)</span></dt><dd><p>Laplacian of the density evaluated at <cite>N</cite> grid points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_using_evaluated_orbs">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_using_evaluated_orbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orb_eval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_using_evaluated_orbs" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the evaluation of the density given the evaluated orbitals.</p>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given orbitals.</p>
+</dd>
+<dt>orb_eval<span class="classifier">np.ndarray(K_orb, N)</span></dt><dd><p>Orbitals evaluated at <span class="math notranslate nohighlight">\(N\)</span> grid points.
+The set of orbitals must be the same basis set used to build the one-electron density
+matrix.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>density<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Density evaluated at <cite>N</cite> grid points.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>orb_eval</cite> is not a 2-dimensional <cite>numpy</cite> array with <cite>dtype</cite> float.
+If <cite>one_density_matrix</cite> is not a 2-dimensional <cite>numpy</cite> array with <cite>dtype</cite> float.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>one_density_matrix</cite> is not square.
+If the number of columns (or rows) of <cite>one_density_matrix</cite> is not equal to the number of
+rows of the orbital evaluations.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_deriv_density">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_density" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the derivative of density of the given transformed basis set at the given points.</p>
+<dl class="simple">
+<dt>orders<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative.</p>
+</dd>
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>density_deriv<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Derivative of the density evaluated at <cite>N</cite> grid points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_deriv_reduced_density_matrix">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_reduced_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_reduced_density_matrix" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the derivative of the first-order reduced density matrix at the given points.</p>
+<p>..math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">left</span><span class="o">.</span>
+\<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="p">{</span><span class="n">p_x</span> <span class="o">+</span> <span class="n">p_y</span> <span class="o">+</span> <span class="n">p_z</span><span class="p">}}{</span>\<span class="n">partial</span> <span class="n">x_1</span><span class="o">^</span><span class="p">{</span><span class="n">p_x</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">y_1</span><span class="o">^</span><span class="p">{</span><span class="n">p_y</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">z_1</span><span class="o">^</span><span class="p">{</span><span class="n">p_z</span><span class="p">}}</span>
+\<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="p">{</span><span class="n">q_x</span> <span class="o">+</span> <span class="n">q_y</span> <span class="o">+</span> <span class="n">q_z</span><span class="p">}}{</span>\<span class="n">partial</span> <span class="n">x_2</span><span class="o">^</span><span class="p">{</span><span class="n">q_x</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">y_2</span><span class="o">^</span><span class="p">{</span><span class="n">q_y</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">z_2</span><span class="o">^</span><span class="p">{</span><span class="n">q_z</span><span class="p">}}</span>
+\<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_1</span><span class="p">,</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_2</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_1</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_2</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span> <span class="o">=</span>
+\<span class="n">sum_</span><span class="p">{</span><span class="n">ij</span><span class="p">}</span> \<span class="n">gamma_</span><span class="p">{</span><span class="n">ij</span><span class="p">}</span>
+\<span class="n">left</span><span class="o">.</span>
+\<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="p">{</span><span class="n">p_x</span> <span class="o">+</span> <span class="n">p_y</span> <span class="o">+</span> <span class="n">p_z</span><span class="p">}}{</span>\<span class="n">partial</span> <span class="n">x_1</span><span class="o">^</span><span class="p">{</span><span class="n">p_x</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">y_1</span><span class="o">^</span><span class="p">{</span><span class="n">p_y</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">z_1</span><span class="o">^</span><span class="p">{</span><span class="n">p_z</span><span class="p">}}</span>
+\<span class="n">phi_i</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_1</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_1</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span>
+\<span class="n">left</span><span class="o">.</span>
+\<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="p">{</span><span class="n">q_x</span> <span class="o">+</span> <span class="n">q_y</span> <span class="o">+</span> <span class="n">q_z</span><span class="p">}}{</span>\<span class="n">partial</span> <span class="n">x_2</span><span class="o">^</span><span class="p">{</span><span class="n">q_x</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">y_2</span><span class="o">^</span><span class="p">{</span><span class="n">q_y</span><span class="p">}</span> \<span class="n">partial</span> <span class="n">z_2</span><span class="o">^</span><span class="p">{</span><span class="n">q_z</span><span class="p">}}</span>
+\<span class="n">phi_j</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_2</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_2</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{r}_1\)</span> is the first point, <span class="math notranslate nohighlight">\(\mathbf{r}_2\)</span> is the second point, and
+<span class="math notranslate nohighlight">\(\mathbf{r}_n\)</span> is the point at which the derivative is evaluated.</p>
+<dl class="simple">
+<dt>orders_one<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative for the first point, <span class="math notranslate nohighlight">\(mathbf{r}_1\)</span>.</p>
+</dd>
+<dt>orders_two<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative for the second point, <span class="math notranslate nohighlight">\(mathbf{r}_1\)</span>.</p>
+</dd>
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>deriv_reduced_density_matrix<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Derivative of the first-order reduced density matrix evaluated at <cite>N</cite> grid points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_general_kinetic_energy_density">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_general_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_general_kinetic_energy_density" title="Permalink to this definition">#</a></dt>
+<dd><p>Return evaluations of general form of the kinetic energy density at the given points.</p>
+<div class="math notranslate nohighlight">
+\[t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)\]</div>
+<p>where <span class="math notranslate nohighlight">\(t_+\)</span> is the positive definite kinetic energy density.</p>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>alpha<span class="classifier">float</span></dt><dd><p>Parameter of the general form of the kinetic energy density.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>general_kinetic_energy_density<span class="classifier">np.ndarray(N,)</span></dt><dd><p>General kinetic energy density of the given transformed basis set evaluated at <cite>N</cite>
+grid points.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>alpha</cite> is not an integer or a float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.density.evaluate_posdef_kinetic_energy_density">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_posdef_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_posdef_kinetic_energy_density" title="Permalink to this definition">#</a></dt>
+<dd><p>Return evaluations of positive definite kinetic energy density at the given points.</p>
+<p>..math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">t_</span><span class="o">+</span> <span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">)</span>
+<span class="o">&amp;=</span> \<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">left</span><span class="o">.</span>
+  \<span class="n">nabla_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}}</span> \<span class="n">cdot</span> \<span class="n">nabla_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39;} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;=</span> \<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">left</span><span class="p">(</span>
+  \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">x</span> \<span class="n">partial</span> <span class="n">x</span><span class="s1">&#39;} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+  <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">y</span> \<span class="n">partial</span> <span class="n">y</span><span class="s1">&#39;} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+  <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">z</span> \<span class="n">partial</span> <span class="n">z</span><span class="s1">&#39;} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+\<span class="n">right</span><span class="p">)</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>posdef_kindetic_energy_density<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Positive definite kinetic energy density of the given transformed basis set evaluated at
+<cite>N</cite> grid points.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.evals.electrostatic_potential">
+<span id="gbasis-evals-electrostatic-potential-module"></span><h2>gbasis.evals.electrostatic_potential module<a class="headerlink" href="#module-gbasis.evals.electrostatic_potential" title="Permalink to this heading">#</a></h2>
+<p>Module for computing electrostatic potential integrals.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.electrostatic_potential.electrostatic_potential">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.electrostatic_potential.</span></span><span class="sig-name descname"><span class="pre">electrostatic_potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_charges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.electrostatic_potential.electrostatic_potential" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the electrostatic potentials of the basis set in the Cartesian form.</p>
+<dl class="simple">
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed
+to be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>nuclear_coords<span class="classifier">np.ndarray(N_nuc, 3)</span></dt><dd><p>Cartesian coordinates of each atom.
+Rows correspond to the atoms and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>nuclear_charges<span class="classifier">np.ndarray(N_nuc)</span></dt><dd><p>Charges of each atom.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>threshold_dist<span class="classifier">{float, 0.0}</span></dt><dd><p>Threshold for rejecting nuclei whose distances to the points are less than the provided
+value. i.e. nuclei that are closer to the point than the threshold are discarded when
+computing the electrostatic potential of the point.
+Default value is 0.0, i.e. no nuclei are discarded.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(N)</span></dt><dd><p>Electrostatic potential evaluated at the given points.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>one_density_matrix</cite> is not a two-dimensional <cite>numpy</cite> array.
+If <cite>nuclear_coords</cite> is not a two-dimensional <cite>numpy</cite> array with 3 columns.
+If <cite>nuclear_charges</cite> is not a one-dimensional <cite>numpy</cite> array.
+If <cite>threshold_dist</cite> is not an integer or float.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>one_density_matrix</cite> is not a symmetric (square) matrix.
+If number of rows in <cite>nuclear_coords</cite> is not equal to the number of elements in
+<cite>nuclear_charges</cite>.
+If <cite>threshold_dist</cite> is less than 0.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.evals.eval">
+<span id="gbasis-evals-eval-module"></span><h2>gbasis.evals.eval module<a class="headerlink" href="#module-gbasis.evals.eval" title="Permalink to this heading">#</a></h2>
+<p>Functions for evaluating Gaussian contractions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.evals.eval.Eval">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval.</span></span><span class="sig-name descname"><span class="pre">Eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.Eval" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="gbasis.html#gbasis.base_one.BaseOneIndex" title="gbasis.base_one.BaseOneIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOneIndex</span></code></a></p>
+<p>Class for evaluating Gaussian contractions and their linear combinations.</p>
+<p>Dimension 0 of the returned array is associated with a contracted Gaussian (or
+a linear combination of a set of Gaussians).</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with each index of the array.
+Each tuple of GeneralizedContractionShell corresponds to an index of the array.</p>
+</dd>
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first index of the array.
+Property of <cite>Eval</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(contraction, points)<span class="classifier">np.ndarray(M, L_cart, N)</span></dt><dd><p>Return the evaluations of the given Cartesian contractions at the given coordinates.
+<cite>M</cite> is the number of segmented contractions with the same exponents (and angular
+momentum).
+<cite>L_cart</cite> is the number of Cartesian contractions for the given angular momentum.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_cartesian(self, points)<span class="classifier">np.ndarray(K_cart, N)</span></dt><dd><p>Return the evaluations of the Cartesian contractions of the instance at the given
+coordinates.
+<cite>K_cart</cite> is the total number of Cartesian contractions within the instance.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_spherical(self, points)<span class="classifier">np.ndarray(K_sph, N)</span></dt><dd><p>Return the evaluations of the spherical contractions of the instance at the given
+coordinates.
+<cite>K_sph</cite> is the total number of spherical contractions within the instance.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_mix(self, coord_types, points)<span class="classifier">np.ndarray(K_cont, N)</span></dt><dd><p>Return the evaluatations of the contraction in the given coordinate system.
+<cite>K_cont</cite> is the total number of contractions within the given basis set.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_lincomb(self, transform, coord_type, points)<span class="classifier">np.ndarray(K_orbs, N)</span></dt><dd><p>Return the evaluations of the linear combinations of contractions in the given coordinate
+system.
+<cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.evals.eval.Eval.construct_array_contraction">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.Eval.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the evaluations of the given contractions at the given coordinates.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
+array.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis
+functions are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_contraction<span class="classifier">np.ndarray(M, L_cart, N)</span></dt><dd><p>Evaluations of the given Cartesian contractions at the given points.
+Dimension 0 corresponds to segmented contractions within the given generalized
+contraction (same exponents and angular momentum, but different coefficients). <cite>M</cite> is
+the number of segmented contractions with the same exponents (and angular momentum).
+Dimension 1 corresponds to angular momentum vector. <cite>L_cart</cite> is the number of Cartesian
+contractions for the given angular momentum.
+Dimension 2 corresponds to coordinates at which the contractions are evaluated. <cite>N</cite> is
+the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If contractions is not a <cite>GeneralizedContractionShell</cite> instance.
+If points is not a two-dimensional <cite>numpy</cite> array with 3 columns.</p>
+</dd>
+</dl>
+<p>Since all of the keyword arguments of <cite>construct_array_cartesian</cite>,
+<cite>construct_array_spherical</cite>, and <cite>construct_array_lincomb</cite> are ultimately passed
+down to this method, all of the mentioned methods must be called with the keyword arguments
+<cite>points</cite> and <cite>orders</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.eval.evaluate_basis">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval.</span></span><span class="sig-name descname"><span class="pre">evaluate_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.evaluate_basis" title="Permalink to this definition">#</a></dt>
+<dd><p>Evaluate the basis set in the given coordinate system at the given points.</p>
+<dl class="simple">
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis
+functions are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>eval_array<span class="classifier">np.ndarray(K, N)</span></dt><dd><p>Evaluations of the basis functions at the given points.
+If keyword argument <cite>transform</cite> is provided, then the transformed basis functions will be
+evaluated at the given points.
+<cite>K</cite> is the total number of basis functions within the given basis set.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.evals.eval_deriv">
+<span id="gbasis-evals-eval-deriv-module"></span><h2>gbasis.evals.eval_deriv module<a class="headerlink" href="#module-gbasis.evals.eval_deriv" title="Permalink to this heading">#</a></h2>
+<p>Functions for evaluating Gaussian primitives.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.evals.eval_deriv.EvalDeriv">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval_deriv.</span></span><span class="sig-name descname"><span class="pre">EvalDeriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.EvalDeriv" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="gbasis.html#gbasis.base_one.BaseOneIndex" title="gbasis.base_one.BaseOneIndex"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOneIndex</span></code></a></p>
+<p>Class for evaluating Gaussian contractions and their linear combinations.</p>
+<p>Dimension 0 of the returned array is associated with a contracted Gaussian (or
+a linear combination of a set of Gaussians).</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with each index of the array.
+Each tuple of <cite>GeneralizedContractionShell</cite> corresponds to an index of the array.</p>
+</dd>
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first index of the array.
+Property of <cite>EvalDeriv</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(contraction, points, orders)<span class="classifier">np.ndarray(M, L_cart, N)</span></dt><dd><p>Return the evaluations of the given Cartesian contractions at the given coordinates.
+<cite>M</cite> is the number of segmented contractions with the same exponents (and angular
+momentum).
+<cite>L_cart</cite> is the number of Cartesian contractions for the given angular momentum.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_cartesian(self, points, orders)<span class="classifier">np.ndarray(K_cart, N)</span></dt><dd><p>Return the evaluations of the derivatives of the Cartesian contractions of the instance at
+the given coordinates.
+<cite>K_cart</cite> is the total number of Cartesian contractions within the instance.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_spherical(self, points, orders)<span class="classifier">np.ndarray(K_sph, N)</span></dt><dd><p>Return the evaluations of the derivatives of the spherical contractions of the instance at
+the given coordinates.
+<cite>K_sph</cite> is the total number of spherical contractions within the instance.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_mix(self, coord_types, points, orders)<span class="classifier">np.ndarray(K_cont, N)</span></dt><dd><p>Return the array associated with all of the contraction in the given coordinate system.
+<cite>K_cont</cite> is the total number of contractions within the given basis set.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+<dt>construct_array_lincomb(self, transform, coord_type, points, orders)<span class="classifier">np.ndarray(K_orbs, N)</span></dt><dd><p>Return the evaluation of derivatives of the  linear combinations of contractions in the
+given coordinate system.
+<cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
+array.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis
+functions are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>orders<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_contraction<span class="classifier">np.ndarray(M, L_cart, N)</span></dt><dd><p>Array associated with the given instance(s) of GeneralizedContractionShell.
+Dimension 0 corresponds to segmented contractions within the given generalized
+contraction (same exponents and angular momentum, but different coefficients). <cite>M</cite> is
+the number of segmented contractions with the same exponents (and angular momentum).
+Dimension 1 corresponds to angular momentum vector. <cite>L_cart</cite> is the number of Cartesian
+contractions for the given angular momentum.
+Dimension 2 corresponds to coordinates at which the contractions are evaluated. <cite>N</cite> is
+the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If contractions is not a <cite>GeneralizedContractionShell</cite> instance.
+If points is not a two-dimensional <cite>numpy</cite> array with 3 columns.
+If orders is not a one-dimensional <cite>numpy</cite> array with 3 elements.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If orders has any negative numbers.
+If orders does not have <cite>dtype</cite> int.</p>
+</dd>
+</dl>
+<p>Since all of the keyword arguments of <cite>construct_array_cartesian</cite>,
+<cite>construct_array_spherical</cite>, and <cite>construct_array_lincomb</cite> are ultimately passed
+down to this method, all of the mentioned methods must be called with the keyword arguments
+<cite>points</cite> and <cite>orders</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.eval_deriv.evaluate_deriv_basis">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval_deriv.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.evaluate_deriv_basis" title="Permalink to this definition">#</a></dt>
+<dd><p>Evaluate the derivative of the basis set in the given coordinate system at the given points.</p>
+<dl class="simple">
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis functions
+are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>orders<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative.
+First element corresponds to the order of the derivative with respect to x.
+Second element corresponds to the order of the derivative with respect to y.
+Thirds element corresponds to the order of the derivative with respect to z.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each GeneralizedContractionShell instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>eval_array<span class="classifier">np.ndarray(K, N)</span></dt><dd><p>Evaluations of the derivative of the basis functions at the given points.
+If keyword argument <cite>transform</cite> is provided, then the transformed basis functions will be
+evaluated at the given points.
+<cite>K</cite> is the total number of basis functions within the given basis set.
+<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.evals.stress_tensor">
+<span id="gbasis-evals-stress-tensor-module"></span><h2>gbasis.evals.stress_tensor module<a class="headerlink" href="#module-gbasis.evals.stress_tensor" title="Permalink to this heading">#</a></h2>
+<p>Module for computing properties related to the stress tensor.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.stress_tensor.evaluate_ehrenfest_force">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_ehrenfest_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_ehrenfest_force" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the Ehrenfest force.</p>
+<p>Ehrenfest force is the negative of the divergence of the stress tensor:
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">F_</span><span class="p">{</span><span class="n">j</span><span class="p">}(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span> <span class="o">|</span> \<span class="n">alpha</span><span class="p">,</span> \<span class="n">beta</span><span class="p">)</span>
+<span class="o">=&amp;-</span> \<span class="n">sum_i</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span><span class="p">}</span> \<span class="n">boldsymbol</span><span class="p">{</span>\<span class="n">sigma</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">ij</span><span class="p">}</span>\\
+<span class="o">=&amp;</span>
+\<span class="n">alpha</span>
+\<span class="n">sum_i</span>
+\<span class="n">left</span><span class="o">.</span>
+  \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">3</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r</span><span class="o">^</span><span class="mi">2</span><span class="n">_i</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_j} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> \<span class="n">alpha</span><span class="p">)</span>
+\<span class="n">sum_i</span>
+\<span class="n">left</span><span class="o">.</span>
+  \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">3</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r</span><span class="o">^</span><span class="mi">2</span><span class="n">_i</span> \<span class="n">partial</span> <span class="n">r_j</span><span class="p">}</span> \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span>
+<span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span>\<span class="n">alpha</span><span class="p">)</span>
+\<span class="n">sum_i</span>
+\<span class="n">left</span><span class="o">.</span>
+  \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">3</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_i} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;+</span> \<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">beta</span>
+\<span class="n">left</span><span class="o">.</span>
+  \<span class="n">left</span><span class="p">(</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">3</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span>
+    <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">3</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span>
+    <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">3</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">z</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span>
+  \<span class="n">right</span><span class="p">)</span>
+  \<span class="n">rho</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="o">=</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span>\\
+</pre></div>
+</div>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis
+functions are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>alpha<span class="classifier">{int, float}</span></dt><dd><p>First parameter of the stress tensor.
+Default value is 1.</p>
+</dd>
+<dt>beta<span class="classifier">{int, float}</span></dt><dd><p>Second parameter of the stress tensor.
+Default value is 0.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>ehrenfest_force<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Ehrenfest force of the given density matrix evaluated at the given coordinates.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>alpha</cite> is not an integer or float.
+If <cite>beta</cite> is not an integer or float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_ehrenfest_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the Ehrenfest Hessian.</p>
+<p>Ehrenfest Hessian is the gradient of the Ehrenfest force:
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H_</span><span class="p">{</span><span class="n">jk</span><span class="p">}(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span> <span class="o">|</span> \<span class="n">alpha</span><span class="p">,</span> \<span class="n">beta</span><span class="p">)</span>
+<span class="o">=&amp;</span>
+<span class="o">-</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_k</span><span class="p">}</span> <span class="n">F_j</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span> <span class="o">|</span> \<span class="n">alpha</span><span class="p">,</span> \<span class="n">beta</span><span class="p">)</span>\\
+<span class="o">=&amp;</span>
+\<span class="n">alpha</span>
+\<span class="n">sum_i</span>
+\<span class="n">left</span><span class="p">(</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r</span><span class="o">^</span><span class="mi">2</span><span class="n">_i</span> \<span class="n">partial</span> <span class="n">r_k</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_j}</span>
+    \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39;)</span>
+    <span class="o">+</span>\<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r</span><span class="o">^</span><span class="mi">2</span><span class="n">_i</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_j \partial r&#39;</span><span class="n">_k</span><span class="p">}</span>
+    \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39;)</span>
+\<span class="n">right</span><span class="p">)</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> \<span class="n">alpha</span><span class="p">)</span>
+\<span class="n">sum_i</span>
+\<span class="n">left</span><span class="p">(</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r</span><span class="o">^</span><span class="mi">2</span><span class="n">_i</span> \<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">r_k</span><span class="p">}</span>
+    \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+    <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r</span><span class="o">^</span><span class="mi">2</span><span class="n">_i</span> \<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_k}</span>
+    \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+\<span class="n">right</span><span class="p">)</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span>\<span class="n">alpha</span><span class="p">)</span>
+\<span class="n">sum_i</span>
+\<span class="n">left</span><span class="p">(</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">r_k</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_i}</span>
+    \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+    <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_i \partial r&#39;</span><span class="n">_k</span><span class="p">}</span>
+    \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+\<span class="n">right</span><span class="p">)</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;+</span> \<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">beta</span>
+\<span class="n">left</span><span class="o">.</span>
+    \<span class="n">left</span><span class="p">(</span>
+        \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">r_k</span> \<span class="n">partial</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span>
+        <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">r_k</span> \<span class="n">partial</span> <span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span>
+        <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">4</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="n">r_k</span> \<span class="n">partial</span> <span class="n">z</span><span class="o">^</span><span class="mi">2</span><span class="p">}</span>
+    \<span class="n">right</span><span class="p">)</span>
+    \<span class="n">rho</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="o">=</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span>\\
+</pre></div>
+</div>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis
+functions are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>alpha<span class="classifier">{int, float}</span></dt><dd><p>First parameter of the stress tensor.
+Default value is 1.</p>
+</dd>
+<dt>beta<span class="classifier">{int, float}</span></dt><dd><p>Second parameter of the stress tensor.
+Default value is 0.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+<dt>symmetric<span class="classifier">{True, False}</span></dt><dd><p>Flag for symmetrizing the Hessian.
+If True, then the Hessian is symmetrized by averaging it with its transpose.
+Default value is False.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>ehrenfest_hessian<span class="classifier">np.ndarray(N, 3, 3)</span></dt><dd><p>Ehrenfest Hessian of the given density matrix evaluated at the given coordinates.
+Hessian is symmetrized if <cite>symmetric</cite> is True.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>alpha</cite> is not an integer or float.
+If <cite>beta</cite> is not an integer or float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.evals.stress_tensor.evaluate_stress_tensor">
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_stress_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_stress_tensor" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the stress tensor evaluated at the given coordinates.</p>
+<p>Stress tensor is defined here as:
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">boldsymbol</span><span class="p">{</span>\<span class="n">sigma</span><span class="p">}</span><span class="n">_</span><span class="p">{</span><span class="n">ij</span><span class="p">}(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span> <span class="o">|</span> \<span class="n">alpha</span><span class="p">,</span> \<span class="n">beta</span><span class="p">)</span>
+<span class="o">=&amp;</span>
+<span class="o">-</span>\<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">alpha</span>
+\<span class="n">left</span><span class="p">(</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_j} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_j</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_i} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+\<span class="n">right</span><span class="p">)</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;</span> <span class="o">+</span>\<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> \<span class="n">alpha</span><span class="p">)</span>
+\<span class="n">left</span><span class="p">(</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="n">r_j</span><span class="p">}</span> \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+    <span class="o">+</span> \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_i \partial r&#39;</span><span class="n">_j</span><span class="p">}</span> \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39;)</span>
+\<span class="n">right</span><span class="p">)</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span><span class="se">\\</span>
+<span class="o">&amp;</span> <span class="o">-</span> \<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">delta_</span><span class="p">{</span><span class="n">ij</span><span class="p">}</span> \<span class="n">beta</span>
+\<span class="n">left</span><span class="o">.</span>
+    \<span class="n">nabla</span><span class="o">^</span><span class="mi">2</span> \<span class="n">rho</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+\<span class="n">right_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="o">=</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span>\\
+<span class="o">=&amp;</span>
+<span class="o">-</span> \<span class="n">alpha</span>
+\<span class="n">left</span><span class="o">.</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="sa">r</span><span class="s1">&#39;_j} \gamma(\mathbf</span><span class="si">{r}</span><span class="s1">, \mathbf</span><span class="si">{r}</span><span class="s1">&#39;</span><span class="p">)</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span>
+<span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> \<span class="n">alpha</span><span class="p">)</span>
+\<span class="n">left</span><span class="o">.</span>
+    \<span class="n">frac</span><span class="p">{</span>\<span class="n">partial</span><span class="o">^</span><span class="mi">2</span><span class="p">}{</span>\<span class="n">partial</span> <span class="n">r_i</span> \<span class="n">partial</span> <span class="n">r_j</span><span class="p">}</span> \<span class="n">gamma</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">},</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+\<span class="n">right</span><span class="o">|</span><span class="n">_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span> <span class="o">=</span> \<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="s1">&#39; = \mathbf</span><span class="si">{r}</span><span class="s1">_n}</span>
+<span class="o">-</span> \<span class="n">frac</span><span class="p">{</span><span class="mi">1</span><span class="p">}{</span><span class="mi">2</span><span class="p">}</span> \<span class="n">delta_</span><span class="p">{</span><span class="n">ij</span><span class="p">}</span> \<span class="n">beta</span>
+\<span class="n">left</span><span class="o">.</span>
+    \<span class="n">nabla</span><span class="o">^</span><span class="mi">2</span> \<span class="n">rho</span><span class="p">(</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">})</span>
+\<span class="n">right_</span><span class="p">{</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="o">=</span>\<span class="n">mathbf</span><span class="p">{</span><span class="n">r</span><span class="p">}</span><span class="n">_n</span><span class="p">}</span>\\
+</pre></div>
+</div>
+<dl class="simple">
+<dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
+If the basis is transformed using <cite>transform</cite> keyword, then the density matrix is assumed to
+be expressed with respect to the transformed basis set.</p>
+</dd>
+<dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
+</dd>
+<dt>points<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Cartesian coordinates of the points in space (in atomic units) where the basis
+functions are evaluated.
+Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
+components.</p>
+</dd>
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+combinations of contractions (e.g. MO).
+Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
+and index 0 of the array for contractions.
+Default is no transformation.</p>
+</dd>
+<dt>alpha<span class="classifier">{int, float}</span></dt><dd><p>First parameter of the stress tensor.
+Default value is 1.</p>
+</dd>
+<dt>beta<span class="classifier">{int, float}</span></dt><dd><p>Second parameter of the stress tensor.
+Default value is 0.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>stress_tensor<span class="classifier">np.ndarray(N, 3, 3)</span></dt><dd><p>Stress tensor of the given density matrix evaluated at the given points.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>alpha</cite> is not an integer or float.
+If <cite>beta</cite> is not an integer or float.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/gbasis",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_autosummary"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="gbasis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">gbasis package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="gbasis.integrals.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">gbasis.integrals package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.density">gbasis.evals.density module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.electrostatic_potential">gbasis.evals.electrostatic_potential module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.eval">gbasis.evals.eval module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.eval_deriv">gbasis.evals.eval_deriv module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.evals.stress_tensor">gbasis.evals.stress_tensor module</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Dev Community with the support of Digital Research Alliance of Canada and The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022-2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
