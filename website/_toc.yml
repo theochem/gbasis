@@ -7,6 +7,7 @@ parts:
     - caption: User Documentation
       chapters:
       - file: installation
+      - file: tutorial
 
     - caption: API
       chapters:
