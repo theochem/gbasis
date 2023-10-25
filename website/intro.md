@@ -3,7 +3,12 @@
 
 [Gbasis](https://github.com/theochem/gbasis/) is a free, open-source, and cross-platform Python library designed to help you effortlessly identify the most diverse subset of molecules from your dataset. Please use the following citation in any publication using Gbasis library:
 
-**"QC-Selector: A Generic Python Package for Subset Selection"**, Fanwang Meng, Alireza Tehrani, Valerii Chuiko, Abigail Broscius, Abdul, Hassan, Maximilian van Zyl, Marco Martínez González, Yang, Ramón Alain Miranda-Quintana, Paul W. Ayers, and Farnaz Heidar-Zadeh"
+**"GBasis: A Python Library for Evaluating Functions, Functionals, and
+Integrals Expressed with Gaussian Basis Functions"**, 
+Taewon David Kim, Leila Pujal, Maximilian van Zyl, Alireza Tehrani, Michelle Richer, Gabriela
+Sánchez-Díaz, Xiaotian Derrick Yang, Valerii Chuiko, Raymundo Hernández-Esparza, William Adams,
+Xiaomin Huang, Braden D. Kelly, Matthew Chan, Esteban Vöhringer-Martinez, Toon Verstraelen, Farnaz
+Heidar-Zadeh, and Paul W. Ayers
 
 The GBasis source code is hosted on [GitHub](https://github.com/theochem/gbasis/) and is released under the [GNU LESSER GENERAL PUBLIC LICENSE](https://github.com/theochem/gbasis/blob/master/LICENSE). We welcome any contributions to the GBasis library in accordance with our [Code of Conduct](https://github.com/theochem/gbasis/blob/master/CODE_OF_CONDUCT.md); please see our [Contributing Guidelines](https://github.com/theochem/gbasis/blob/master/CONTRIBUTING.md). Please report any issues you encounter while using GBasis library on [GitHub Issues](https://github.com/theochem/gbasis/issues). For further information and inquiries please contact us at qcdevs@gmail.com.
 
