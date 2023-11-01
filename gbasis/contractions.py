@@ -116,7 +116,7 @@ class GeneralizedContractionShell:
 
     """
 
-    def __init__(self, angmom, coord, coeffs, exps, coord_type, tol=1e-15, ovr_screen=False):
+    def __init__(self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -139,11 +139,12 @@ class GeneralizedContractionShell:
         coord_type : str
             Coordinate type of the contraction. Options include "cartesian" or "c" and
             "spherical" or "p".
+        icenter : np.int64 or None (optional)
+            Index for the atomic center for the contraction
         ovr_tol : float
             Tolerance used in overlap screening.
         ovr_screen : boolean
             Flag used for activating overlap screening.
-
         """
         self.angmom = angmom
         self.coord = coord
@@ -153,7 +154,41 @@ class GeneralizedContractionShell:
         self.ovr_screen = ovr_screen
         self.assign_norm_cont()
         self.coord_type = coord_type
+        self.icenter = icenter
 
+    @property
+    def icenter(self):
+        """Atom center index for the contractions.
+
+       Returns
+        -------
+        icenter : np.int64 or None
+            Index for the corresponding atom center of the contractions.
+
+        """
+        return self._icenter
+
+    @icenter.setter
+    def icenter(self, icenter):
+        """Atom center index for the contractions.
+
+        Parameters
+        ----------
+        icenter : np.int64 or None
+            Index for the corresponding atom center of the contractions.
+
+        Raises
+        ------
+        TypeError
+            If `center` is not a `numpy.int64`, `int`, `float` or `None` type.
+
+        """
+        if isinstance(icenter, int) or isinstance(icenter, float):
+            self._icenter = np.array(icenter, dtype=np.int64)
+        elif isinstance(icenter, np.int64) or isinstance(icenter, None):
+            self._icenter = icenter
+        else:
+            raise TypeError(f"Center should be of integer type. Got {type(self.icenter)}")
     @property
     def coord(self):
         """Coordinate of the center of the contractions.
