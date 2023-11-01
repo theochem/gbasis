@@ -99,7 +99,8 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, coord_ty
 
     """
     orb_eval = evaluate_basis(basis, points, transform=transform, coord_type=coord_type)
-    return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
+    # use numpy.ndarray.clip method in return to remove small negative values
+    return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval).clip(min=0.0)
 
 
 def evaluate_deriv_reduced_density_matrix(
