@@ -248,7 +248,7 @@ class CBasis:
         nbas = 0
         nexp = 0
         ncof = 0
-        for _, contractions in basis:
+        for contractions in basis:
             nshl += len(contractions)
             for shell in contractions:
                 nbas += num_angmom(shell)
