@@ -242,6 +242,12 @@ class CBasis:
             atm_basis[shell.icenter].append(shell)
         basis = list(atm_basis.items())
 
+        # Organize basis by atomic center
+        atm_basis = {center: [] for center in set((shell.icenter for shell in basis))}
+        for shell in basis:
+            atm_basis[shell.icenter].append(shell)
+        basis = list(atm_basis.values())
+
         # Set up counts of atomic centers/shells/gbfs/exps/coeffs
         natm = len(basis)
         nshl = 0
