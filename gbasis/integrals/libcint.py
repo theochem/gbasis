@@ -159,6 +159,12 @@ class CBasis:
             raise ValueError("`coordtype` parameter must be 'sph' or 'cart'; "
                              f"the provided value, '{coordtype}', is invalid")
 
+        # Organize basis by atomic center
+        atm_basis = {center: [] for center in set((shell.icenter for shell in basis))}
+        for shell in basis:
+            atm_basis[shell.icenter].append(shell)
+        basis = list(atm_basis.values())
+
         # Set up counts of atomic centers/shells/gbfs/exps/coeffs
         natm = len(basis)
         nshl = 0
@@ -182,11 +188,11 @@ class CBasis:
         # Go to next atomic center's contractions
         for contractions in basis:
             # Nuclear charge of `iatm` atom
-            self.atm[iatm, 0] = np.round(contractions.charge).astype(int)
+            self.atm[iatm, 0] = np.round(contractions[0].charge).astype(int)
             # `env` offset to save xyz coordinates
             self.atm[iatm, 1] = ioff
             # Save xyz coordinates; increment ioff
-            self.env[ioff:ioff + 3] = contractions.coord
+            self.env[ioff:ioff + 3] = contractions[0].coord
             ioff += 3
             # Go to next contracted GTO
             for shell in contractions:
