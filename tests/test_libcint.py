@@ -105,21 +105,58 @@ def test_overlap_horton_ugbs_bec():
 #     """
 #     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 #
-#     atsyms = ["Be", "C"]
+#     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+#     overlap_obj = Overlap(basis)
+#     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
 #
-#     atcoords = np.array([[0., 0., 0.], [1.0, 0., 0.]]) / 0.5291772083
+#     basis = make_contractions(basis_dict, ["Xe"], np.array([[0, 0, 0]]))
+#     overlap_obj = Overlap(basis)
+#     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
 #
-#     gbasis = make_contractions(basis_dict, atsyms, atcoords)
-#     gbasis_olp = overlap_integral(gbasis, coord_type="cartesian")
 #
-#     cbasis = CBasis(gbasis, atsyms, atcoords, coord_type="cartesian")
-#     cbasis_olp = cbasis.olp()
+# def test_overlap_cartesian_norm_sto6g():
+#     """Test the norm of gbasis.integrals.overlap_cartesian on the STO-6G basis set.
 #
-#     assert cbasis_olp.shape[0] == cbasis_olp.shape[1] == \
-#            gbasis_olp.shape[0] == gbasis_olp.shape[1] == \
-#            cbasis.nbas
+#     The contraction coefficients in STO-6G is such that the Cartesian contractions are not
+#     normalized to past 3rd decimal places.
 #
-#     print(cbasis_olp)
+#     """
+#     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 #
-#     assert np.allclose(np.diag(cbasis_olp), 1)
-#     assert np.allclose(cbasis_olp, gbasis_olp)
+#     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+#     overlap_obj = Overlap(basis)
+#     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+
+
+def test_overlap_horton_anorcc_hhe():
+    """Test gbasis.integrals.overlap.overlap_basis_cartesian against HORTON's overlap matrix.
+
+    The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
+
+    """
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    basis = make_contractions(
+        basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    )
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+
+    horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
+    assert np.allclose(CBasis(basis, coord_type="cartesian").olp(), horton_overlap)
+
+
+def test_overlap_horton_anorcc_bec():
+    """Test gbasis.integrals.overlap.overlap_cartesian against HORTON's overlap matrix.
+
+    The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
+
+    """
+    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    # NOTE: used HORTON's conversion factor for angstroms to bohr
+    basis = make_contractions(
+        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
+    )
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+
+    horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
+    assert np.allclose(CBasis(basis, coord_type="cartesian").olp(), horton_overlap)
