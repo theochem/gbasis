@@ -11,6 +11,8 @@ from operator import attrgetter
 
 from numpy.ctypeslib import load_library, ndpointer
 
+import numpy as np
+
 
 __all__ = [
     "LIBCINT",
@@ -137,7 +139,7 @@ class CBasis:
 
     """
 
-    def __init__(self, basis, coordtype="sph"):
+    def __init__(self, basis, coord_type="spherical"):
         r"""
         Initialize a ``CBasis`` instance.
 
@@ -145,19 +147,19 @@ class CBasis:
         ----------
         basis : List of list of GeneralizedContractionShell
             Shells of generalized contractions by atomic center.
-        coordtype : ('sph'|'cart')
+        coord_type : ('spherical'|'cartesian')
             Type of coordinates.
 
         """
         # Verify coordinate type
-        _coordtype = coordtype.lower()
-        if _coordtype == "sph":
+        _coord_type = coord_type.lower()
+        if _coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-        elif _coordtype == "cart":
+        elif _coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
         else:
-            raise ValueError("`coordtype` parameter must be 'sph' or 'cart'; "
-                             f"the provided value, '{coordtype}', is invalid")
+            raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
+                             f"the provided value, '{coord_type}', is invalid")
 
         # Organize basis by atomic center
         atm_basis = {center: [] for center in set((shell.icenter for shell in basis))}
@@ -182,8 +184,8 @@ class CBasis:
         iatm = 0
         ibas = 0
         ioff = 20
-        atm = np.zeros((self.natm, 6), dtype=c_int)
-        bas = np.zeros((self.nbas, 8), dtype=c_int)
+        atm = np.zeros((natm, 6), dtype=c_int)
+        bas = np.zeros((nbas, 8), dtype=c_int)
         env = np.zeros(20 + natm * 3 + nexp + ncof, dtype=c_double)
         # Go to next atomic center's contractions
         for contractions in basis:
@@ -235,15 +237,15 @@ class CBasis:
         # Make individual integral evaluation methods via `make_intNe` macro:
 
         # Kinetic energy integral
-        self.kin = self.make_int1e(cint1e_kin_cart if _coordtype == "cart" else cint1e_kin_sph)
+        self.kin = self.make_int1e(cint1e_kin_cart if _coord_type == "cart" else cint1e_kin_sph)
         # Nuclear-electron attraction integral
-        self.nuc = self.make_int1e(cint1e_nuc_cart if _coordtype == "cart" else cint1e_nuc_sph)
+        self.nuc = self.make_int1e(cint1e_nuc_cart if _coord_type == "cart" else cint1e_nuc_sph)
         # Overlap integral
-        self.ovlp = self.make_int1e(cint1e_ovlp_cart if _coordtype == "cart" else cint1e_ovlp_sph)
+        self.olp = self.make_int1e(cint1e_ovlp_cart if _coord_type == "cart" else cint1e_ovlp_sph)
         # Electrone repulsion integral
-        self.eri = self.make_int2e(cint2e_cart if _coordtype == "cart" else cint2e_sph)
+        self.eri = self.make_int2e(cint2e_cart if _coord_type == "cart" else cint2e_sph)
 
-    def make_int1e(self, func, coordtype="sph", doc=None):
+    def make_int1e(self, func, coord_type="spherical", doc=None):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -251,19 +253,19 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
-        coordtype : ('sph'|'cart')
+        coord_type : ('spherical'|'cartesian')
             Type of coordinates.
 
         """
         # Verify coordinate type
-        _coordtype = coordtype.lower()
-        if _coordtype == "sph":
+        _coord_type = coord_type.lower()
+        if _coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-        elif _coordtype == "cart":
+        elif _coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
         else:
-            raise ValueError("`coordtype` parameter must be 'sph' or 'cart'; "
-                             f"the provided value, '{coordtype}', is invalid")
+            raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
+                             f"the provided value, '{coord_type}', is invalid")
 
         # Make instance-bound integral method
         def int1e(self):
@@ -303,7 +305,7 @@ class CBasis:
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, coordtype="sph"):
+    def make_int2e(self, func, coord_type="spherical"):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -312,19 +314,19 @@ class CBasis:
         func : callable
             ``libcint`` function.
 
-        coordtype : ('sph'|'cart')
+        coord_type : ('spherical'|'cartesian')
             Type of coordinates.
 
         """
         # Verify coordinate type
-        _coordtype = coordtype.lower()
-        if _coordtype == "sph":
+        _coord_type = coord_type.lower()
+        if _coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-        elif _coordtype == "cart":
+        elif _coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
         else:
-            raise ValueError("`coordtype` parameter must be 'sph' or 'cart'; "
-                             f"the provided value, '{coordtype}', is invalid")
+            raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
+                             f"the provided value, '{coord_type}', is invalid")
 
         # Make instance-bound integral method
         def int2e(self):

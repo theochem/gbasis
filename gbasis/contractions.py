@@ -185,7 +185,7 @@ class GeneralizedContractionShell:
         """
         if isinstance(icenter, int) or isinstance(icenter, float):
             self._icenter = np.array(icenter, dtype=np.int64)
-        elif isinstance(icenter, np.int64) or isinstance(icenter, None):
+        elif isinstance(icenter, np.int64) or icenter is None:
             self._icenter = icenter
         else:
             raise TypeError(f"Center should be of integer type. Got {type(self.icenter)}")
