@@ -1,5 +1,6 @@
 """Data class for contractions of Gaussian-type primitives."""
 from gbasis.utils import factorial2
+from numbers import Integral, Real
 import numpy as np
 
 
@@ -113,7 +114,6 @@ class GeneralizedContractionShell:
     assign_norm_contr(self)
         Assign normalization constants for the contractions.
 
-
     """
 
     def __init__(self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False):
@@ -136,6 +136,7 @@ class GeneralizedContractionShell:
             dimension.
         exps : np.ndarray(K,)
             Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
+<<<<<<< HEAD
         coord_type : str
             Coordinate type of the contraction. Options include "cartesian" or "c" and
             "spherical" or "p".
@@ -145,6 +146,13 @@ class GeneralizedContractionShell:
             Tolerance used in overlap screening.
         ovr_screen : boolean
             Flag used for activating overlap screening.
+=======
+        icenter : int or None (optional)
+            Index for the atomic center for the contraction.
+        charge : float or None (optional)
+            Charge at the atomic center for the contraction.
+
+>>>>>>> Expose all attrs (center,charge) required for cint bindings
         """
         self.angmom = angmom
         self.coord = coord
@@ -155,6 +163,7 @@ class GeneralizedContractionShell:
         self.assign_norm_cont()
         self.coord_type = coord_type
         self.icenter = icenter
+        self.charge = charge
 
     @property
     def icenter(self):
@@ -162,7 +171,7 @@ class GeneralizedContractionShell:
 
        Returns
         -------
-        icenter : np.int64 or None
+        icenter : int or None
             Index for the corresponding atom center of the contractions.
 
         """
@@ -174,21 +183,56 @@ class GeneralizedContractionShell:
 
         Parameters
         ----------
-        icenter : np.int64 or None
+        icenter : int or None
             Index for the corresponding atom center of the contractions.
 
         Raises
         ------
         TypeError
-            If `center` is not a `numpy.int64`, `int`, `float` or `None` type.
+            If `center` is not an `Integral` or `None` type.
 
         """
-        if isinstance(icenter, int) or isinstance(icenter, float):
-            self._icenter = np.array(icenter, dtype=np.int64)
-        elif isinstance(icenter, np.int64) or icenter is None:
-            self._icenter = icenter
+        if isinstance(icenter, Integral):
+            self._icenter = int(icenter)
+        elif icenter is None:
+            self._icenter = None
         else:
-            raise TypeError(f"Center should be of integer type. Got {type(self.icenter)}")
+            raise TypeError(f"Center should be of `numbers.Integral` type. Got {type(icenter)}")
+
+    @property
+    def charge(self):
+        """Charge at the atomic center for the contractions.
+
+       Returns
+        -------
+        charge : float or None
+            Charge at the atomic center for the contractions.
+
+        """
+        return self._icenter
+
+    @charge.setter
+    def charge(self, charge):
+        """Charge at the atomic center for the contractions.
+
+        Parameters
+        ----------
+        charge : float or None
+            Charge at the atomic center for the contractions.
+
+        Raises
+        ------
+        TypeError
+            If `center` is not a `Real` or `None` type.
+
+        """
+        if isinstance(charge, Real):
+            self._charge = float(charge)
+        elif charge is None:
+            self._charge = None
+        else:
+            raise TypeError(f"Charge should be of `numbers.Real` type. Got {type(charge)}")
+
     @property
     def coord(self):
         """Coordinate of the center of the contractions.
