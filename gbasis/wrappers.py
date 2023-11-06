@@ -126,15 +126,10 @@ def from_iodata(mol):
 
         # pylint: disable=E1136
         basis.append(
-<<<<<<< HEAD
             IODataShell(
                 angmom, mol.atcoords[shell.icenter], shell.coeffs,
                 shell.exponents, shell.kinds[0], icenter=shell.icenter
             )
-=======
-            IODataShell(angmom, mol.atcoords[shell.icenter],
-                        shell.coeffs, shell.exponents, icenter=shell.icenter)
->>>>>>> Add icenter property to contraction base class
         )
 
     return basis

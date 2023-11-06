@@ -153,6 +153,7 @@ class GeneralizedContractionShell:
         self.assign_norm_cont()
         self.coord_type = coord_type
         self.icenter = icenter
+        self.charge = charge
 
     @property
     def icenter(self):
