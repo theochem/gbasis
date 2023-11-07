@@ -246,7 +246,7 @@ class CBasis:
         atm_basis = {center: [] for center in set((shell.icenter for shell in basis))}
         for shell in basis:
             atm_basis[shell.icenter].append(shell)
-        basis = list(atm_basis.values())
+        basis = list(atm_basis.items())
 
         # Set up counts of atomic centers/shells/gbfs/exps/coeffs
         natm = len(basis)
@@ -254,7 +254,7 @@ class CBasis:
         nbas = 0
         nexp = 0
         ncof = 0
-        for contractions in basis:
+        for _, contractions in basis:
             nshl += len(contractions)
             for shell in contractions:
                 nbas += num_angmom(shell)
@@ -319,6 +319,7 @@ class CBasis:
         # Save basis function offsets
         self.offsets = offsets
         self.max_off = max(offsets)
+
 
         # Make individual integral evaluation methods via `make_intNe` macros:
 

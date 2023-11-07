@@ -135,14 +135,19 @@ def test_overlap_horton_anorcc_hhe():
 
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+
     # NOTE: used HORTON's conversion factor for angstroms to bohr
-    basis = make_contractions(
-        basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    )
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    atcoords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+
+    basis = make_contractions(basis_dict, ["H", "He"], atcoords)
+
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, icenter=i.icenter) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
-    assert np.allclose(CBasis(basis, coord_type="cartesian").olp(), horton_overlap)
+
+    cbasis = CBasis(basis, [1, 2], atcoords, coord_type="cartesian")
+
+    assert np.allclose(cbasis.olp(), horton_overlap)
 
 
 def test_overlap_horton_anorcc_bec():
@@ -152,12 +157,16 @@ def test_overlap_horton_anorcc_bec():
 
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+
     # NOTE: used HORTON's conversion factor for angstroms to bohr
-    basis = make_contractions(
-        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
-    )
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, icenter=i.icenter,
-                                charge=i.charge) for i in basis]
+    atcoords = np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
+
+    basis = make_contractions(basis_dict, ["Be", "C"], atcoords)
+
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, icenter=i.icenter) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
-    assert np.allclose(CBasis(basis, coord_type="cartesian").olp(), horton_overlap)
+
+    cbasis = CBasis(basis, [4, 6], atcoords, coord_type="cartesian")
+
+    assert np.allclose(cbasis.olp(), horton_overlap)
