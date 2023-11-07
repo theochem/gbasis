@@ -139,19 +139,23 @@ class CBasis:
 
     """
 
-    def __init__(self, basis, coord_type="spherical"):
+    def __init__(self, basis, atnums, atcoords, coord_type="spherical"):
         r"""
         Initialize a ``CBasis`` instance.
 
         Parameters
         ----------
-        basis : List of list of GeneralizedContractionShell
-            Shells of generalized contractions by atomic center.
+        basis : List of GeneralizedContractionShell
+            Shells of generalized contractions.
+        atnums : List of Integral
+            Atomic numbers for each atomic center.
+        atcoords : List of length-3 array-like of floats
+            X, Y, and Z coordinates for each atomic center.
         coord_type : ('spherical'|'cartesian')
             Type of coordinates.
 
         """
-        # Verify coordinate type
+        # Set coord type
         _coord_type = coord_type.lower()
         if _coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
@@ -165,7 +169,7 @@ class CBasis:
         atm_basis = {center: [] for center in set((shell.icenter for shell in basis))}
         for shell in basis:
             atm_basis[shell.icenter].append(shell)
-        basis = list(atm_basis.values())
+        basis = list(atm_basis.items())
 
         # Set up counts of atomic centers/shells/gbfs/exps/coeffs
         natm = len(basis)
@@ -173,7 +177,7 @@ class CBasis:
         nbas = 0
         nexp = 0
         ncof = 0
-        for contractions in basis:
+        for _, contractions in basis:
             nshl += len(contractions)
             for shell in contractions:
                 nbas += num_angmom(shell)
@@ -187,14 +191,15 @@ class CBasis:
         atm = np.zeros((natm, 6), dtype=c_int)
         bas = np.zeros((nbas, 8), dtype=c_int)
         env = np.zeros(20 + natm * 3 + nexp + ncof, dtype=c_double)
+        offsets = []
         # Go to next atomic center's contractions
-        for contractions in basis:
+        for atnum, atcoord, (icenter, contractions) in zip(atnums, atcoords, basis):
             # Nuclear charge of `iatm` atom
-            self.atm[iatm, 0] = np.round(contractions[0].charge).astype(int)
+            atm[iatm, 0] = np.round(atnum).astype(int)
             # `env` offset to save xyz coordinates
-            self.atm[iatm, 1] = ioff
+            atm[iatm, 1] = ioff
             # Save xyz coordinates; increment ioff
-            self.env[ioff:ioff + 3] = contractions[0].coord
+            env[ioff:ioff + 3] = atcoord
             ioff += 3
             # Go to next contracted GTO
             for shell in contractions:
@@ -209,16 +214,18 @@ class CBasis:
                 # `env` offset to save exponentss of primitive GTOs
                 bas[ibas, 5] = ioff
                 # Save exponents; increment ioff
-                env[ioff:ioff + shells.exps.size] = shells.exps
-                ioff += shells.exps.size
+                env[ioff:ioff + shell.exps.size] = shell.exps
+                ioff += shell.exps.size
                 # `env` offset to save column-major contraction coefficients,
                 # i.e. a  (no. primitive-)by-(no. contracted) matrix
                 bas[ibas, 6] = ioff
                 # Save coefficients; increment ioff
-                env[ioff:ioff + shells.coeffs.size] = shells.coeffs.T
-                ioff += shells.coeffs.size
+                env[ioff:ioff + shell.coeffs.size] = shell.coeffs.T.reshape(-1)
+                ioff += shell.coeffs.size
                 # Increment contracted GTO
                 ibas += 1
+                # Save basis function offsets
+                offsets.append(num_angmom(shell))
             # Increment atomic center
             iatm += 1
 
@@ -231,9 +238,10 @@ class CBasis:
         self.env = env
 
         # Save basis function offsets
-        self.offsets = list(map(num_angmom, self.bas[:, 1]))
-        self.max_off = max(self.offsets)
+        self.offsets = offsets
+        self.max_off = max(offsets)
 
+        #
         # Make individual integral evaluation methods via `make_intNe` macro:
 
         # Kinetic energy integral
@@ -242,10 +250,10 @@ class CBasis:
         self.nuc = self.make_int1e(cint1e_nuc_cart if _coord_type == "cart" else cint1e_nuc_sph)
         # Overlap integral
         self.olp = self.make_int1e(cint1e_ovlp_cart if _coord_type == "cart" else cint1e_ovlp_sph)
-        # Electrone repulsion integral
+        # Electron repulsion integral
         self.eri = self.make_int2e(cint2e_cart if _coord_type == "cart" else cint2e_sph)
 
-    def make_int1e(self, func, coord_type="spherical", doc=None):
+    def make_int1e(self, func):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -253,22 +261,10 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
-        coord_type : ('spherical'|'cartesian')
-            Type of coordinates.
 
         """
-        # Verify coordinate type
-        _coord_type = coord_type.lower()
-        if _coord_type == "spherical":
-            num_angmom = attrgetter("num_sph")
-        elif _coord_type == "cartesian":
-            num_angmom = attrgetter("num_cart")
-        else:
-            raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
-                             f"the provided value, '{coord_type}', is invalid")
-
         # Make instance-bound integral method
-        def int1e(self):
+        def int1e():
             # Make temporary arrays
             shls = np.zeros(2, dtype=c_int)
             buf = np.zeros(self.max_off ** 2, dtype=c_double)
@@ -280,17 +276,17 @@ class CBasis:
                 shls[0] = ishl
                 p_off = self.offsets[ishl]
                 jpos = 0
-                for jshl in range(i + 1):
+                for jshl in range(ishl + 1):
                     shls[1] = jshl
                     q_off = self.offsets[jshl]
                     # Call the C function to fill `buf`
-                    func(buf, shls, self.atm, self.natm, self.nbas, self.bas, self.env, None)
+                    func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                     # Fill `out` array
                     for p in range(p_off):
                         i_off = p + ipos
                         for q in range(q_off):
                             j_off = q + jpos
-                            val = self.buf[p * q_off + q]
+                            val = buf[p * q_off + q]
                             out[i_off, j_off] = val
                             out[j_off, i_off] = val
                     # Reset `buf`
@@ -305,7 +301,7 @@ class CBasis:
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, coord_type="spherical"):
+    def make_int2e(self, func):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -314,22 +310,9 @@ class CBasis:
         func : callable
             ``libcint`` function.
 
-        coord_type : ('spherical'|'cartesian')
-            Type of coordinates.
-
         """
-        # Verify coordinate type
-        _coord_type = coord_type.lower()
-        if _coord_type == "spherical":
-            num_angmom = attrgetter("num_sph")
-        elif _coord_type == "cartesian":
-            num_angmom = attrgetter("num_cart")
-        else:
-            raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
-                             f"the provided value, '{coord_type}', is invalid")
-
         # Make instance-bound integral method
-        def int2e(self):
+        def int2e():
             # Make temporary arrays
             shls = np.zeros(4, dtype=c_int)
             buf = np.zeros(self.max_offset ** 4, dtype=c_double)
@@ -341,7 +324,7 @@ class CBasis:
                 shls[0] = ishl
                 p_off = self.offsets[ishl]
                 jpos = 0
-                for jshl in range(i + 1):
+                for jshl in range(ishl + 1):
                     ij = ((ishl + 1) * ishl) // 2 + jshl
                     shls[1] = jshl
                     q_off = self.offsets[jshl]
@@ -350,7 +333,7 @@ class CBasis:
                         shls[2] = kshl
                         r_off = self.offsets[kshl]
                         lpos = 0
-                        for lshl in range(k + 1):
+                        for lshl in range(kshl + 1):
                             kl = ((kshl + 1) * kshl) // 2 + lshl
                             shls[3] = lshl
                             s_off = self.offsets[lshl]
@@ -358,7 +341,7 @@ class CBasis:
                                 lpos += s_off
                                 continue
                             # Call the C function to fill `buf`
-                            func(buf, shls, self.atm, self.natm, self.nbas, self.bas, self.env, None)
+                            func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                             # Fill `out` array
                             for p in range(p_off):
                                 i_off = p + ipos
@@ -368,10 +351,10 @@ class CBasis:
                                         k_off = r + kpos
                                         for s in range(s_off):
                                             l_off = s + lpos
-                                            val = self.buf[p * (q_off * r_off * s_off) +
-                                                           q * (r_off * s_off) +
-                                                           r * (s_off) +
-                                                           s]
+                                            val = buf[p * (q_off * r_off * s_off) +
+                                                      q * (r_off * s_off) +
+                                                      r * (s_off) +
+                                                      s]
                                             out[i_off, j_off, k_off, l_off] = val
                                             out[i_off, j_off, l_off, k_off] = val
                                             out[j_off, i_off, k_off, l_off] = val
