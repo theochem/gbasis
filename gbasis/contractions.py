@@ -209,7 +209,7 @@ class GeneralizedContractionShell:
             Charge at the atomic center for the contractions.
 
         """
-        return self._icenter
+        return self._charge
 
     @charge.setter
     def charge(self, charge):
