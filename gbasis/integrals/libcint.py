@@ -466,16 +466,3 @@ r"""
 LIBCINT C library handle and binding generator.
 
 """
-
-
-# C fuctions used in CBasis class
-
-cint1e_kin_cart = LIBCINT.cint1e_kin_cart
-cint1e_nuc_cart = LIBCINT.cint1e_nuc_cart
-cint1e_ovlp_cart = LIBCINT.cint1e_ovlp_cart
-cint2e_cart = LIBCINT.cint2e_cart
-
-cint1e_kin_sph = LIBCINT.cint1e_kin_sph
-cint1e_nuc_sph = LIBCINT.cint1e_nuc_sph
-cint1e_ovlp_sph = LIBCINT.cint1e_ovlp_sph
-cint2e_sph = LIBCINT.cint2e_sph
