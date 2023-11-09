@@ -1,7 +1,7 @@
 <!-- #region -->
 # Welcome to GBasis's Documentation!
 
-[Gbasis](https://github.com/theochem/gbasis/) is a free, open-source, and cross-platform Python library designed to help you effortlessly identify the most diverse subset of molecules from your dataset. Please use the following citation in any publication using Gbasis library:
+[Gbasis](https://github.com/theochem/gbasis/) is a free, open-source, and cross-platform Python library designed to help you effortlessly work with Gaussian-type orbitals. Please use the following citation in any publication using Gbasis library:
 
 **"GBasis: A Python Library for Evaluating Functions, Functionals, and
 Integrals Expressed with Gaussian Basis Functions"**, 
