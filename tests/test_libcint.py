@@ -145,7 +145,7 @@ def test_overlap_horton_anorcc_hhe():
 
     horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
 
-    cbasis = CBasis(basis, [1, 2], atcoords, coord_type="cartesian")
+    cbasis = CBasis(basis, ["H", "He"], atcoords, coord_type="cartesian")
 
     assert np.allclose(cbasis.olp(), horton_overlap)
 
@@ -167,6 +167,6 @@ def test_overlap_horton_anorcc_bec():
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
 
-    cbasis = CBasis(basis, [4, 6], atcoords, coord_type="cartesian")
+    cbasis = CBasis(basis, ["Be", "C"], atcoords, coord_type="cartesian")
 
     assert np.allclose(cbasis.olp(), horton_overlap)
