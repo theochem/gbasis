@@ -20,13 +20,9 @@ __all__ = [
 ]
 
 
-#
-# Helper class for generating LibCInt function bindings
-
-
 class _LibCInt:
     r"""
-    ``libcint`` shared object library helper class.
+    ``libcint`` shared library helper class for generating C function bindings.
 
     """
 
@@ -38,7 +34,12 @@ class _LibCInt:
 
     def __new__(cls):
         r"""
-        Singleton class pattern.
+        Singleton class constructor.
+
+        Returns
+        -------
+        instance : _LibCInt
+            Singleton instance.
 
         """
         if not hasattr(cls, "_instance"):
@@ -48,6 +49,19 @@ class _LibCInt:
     def __getattr__(self, attr):
         r"""
         Helper for returning function pointers from ``libcint`` with proper signatures.
+
+        Matches the function to its signature based on the pattern of its name;
+        possible because ``libcint`` function names and signatures are systematic.
+
+        Parameters
+        ----------
+        item : str
+            Name of C function.
+
+        Returns
+        -------
+        f : callable
+            C function.
 
         """
         cfunc = getattr(self._libcint, attr)
@@ -129,16 +143,11 @@ class _LibCInt:
         return cfunc
 
 
-#
-# C basis class; translates GBasis repr to C repr and binds integral methods
-
-
 class CBasis:
     r"""
     ``libcint`` basis class.
 
     """
-
     def __init__(self, basis, atnums, atcoords, coord_type="spherical"):
         r"""
         Initialize a ``CBasis`` instance.
@@ -241,17 +250,16 @@ class CBasis:
         self.offsets = offsets
         self.max_off = max(offsets)
 
-        #
-        # Make individual integral evaluation methods via `make_intNe` macro:
+        # Make individual integral evaluation methods via `make_intNe` macros:
 
         # Kinetic energy integral
-        self.kin = self.make_int1e(cint1e_kin_cart if _coord_type == "cart" else cint1e_kin_sph)
+        self.kin = self.make_int1e(cint1e_kin_cart if _coord_type == "cartesian" else cint1e_kin_sph)
         # Nuclear-electron attraction integral
-        self.nuc = self.make_int1e(cint1e_nuc_cart if _coord_type == "cart" else cint1e_nuc_sph)
+        self.nuc = self.make_int1e(cint1e_nuc_cart if _coord_type == "cartesian" else cint1e_nuc_sph)
         # Overlap integral
-        self.olp = self.make_int1e(cint1e_ovlp_cart if _coord_type == "cart" else cint1e_ovlp_sph)
+        self.olp = self.make_int1e(cint1e_ovlp_cart if _coord_type == "cartesian" else cint1e_ovlp_sph)
         # Electron repulsion integral
-        self.eri = self.make_int2e(cint2e_cart if _coord_type == "cart" else cint2e_sph)
+        self.eri = self.make_int2e(cint2e_cart if _coord_type == "cartesian" else cint2e_sph)
 
     def make_int1e(self, func):
         r"""
@@ -380,11 +388,7 @@ class CBasis:
         return int2e
 
 
-#
-# LibCInt bindings
-
-
-# Singleton helper class instance
+# Singleton LibCInt class instance
 
 LIBCINT = _LibCInt()
 r"""
@@ -393,40 +397,14 @@ LIBCINT C library handle and binding generator.
 """
 
 
-# Define utility functions
-
-CINTlen_cart = LIBCINT.CINTlen_cart
-CINTlen_spinor = LIBCINT.CINTlen_spinor
-
-CINTcgtos_cart = LIBCINT.CINTcgtos_cart
-CINTcgtos_spheric = LIBCINT.CINTcgtos_spheric
-CINTcgtos_spinor = LIBCINT.CINTcgtos_spinor
-CINTcgto_cart = LIBCINT.CINTcgto_cart
-CINTcgto_spheric = LIBCINT.CINTcgto_spheric
-CINTcgto_spinor = LIBCINT.CINTcgto_spinor
-
-CINTtot_pgto_spheric = LIBCINT.CINTtot_pgto_spheric
-CINTtot_pgto_spinor = LIBCINT.CINTtot_pgto_spinor
-
-CINTtot_cgto_cart = LIBCINT.CINTtot_cgto_cart
-CINTtot_cgto_spheric = LIBCINT.CINTtot_cgto_spheric
-CINTtot_cgto_spinor = LIBCINT.CINTtot_cgto_spinor
-
-CINTshells_cart_offset = LIBCINT.CINTshells_cart_offset
-CINTshells_spheric_offset = LIBCINT.CINTshells_spheric_offset
-CINTshells_spinor_offset = LIBCINT.CINTshells_spinor_offset
-
-
-# Define integral functions
+# C fuctions used in CBasis class
 
 cint1e_kin_cart = LIBCINT.cint1e_kin_cart
-cint1e_kin_sph = LIBCINT.cint1e_kin_sph
-
 cint1e_nuc_cart = LIBCINT.cint1e_nuc_cart
-cint1e_nuc_sph = LIBCINT.cint1e_nuc_sph
-
 cint1e_ovlp_cart = LIBCINT.cint1e_ovlp_cart
-cint1e_ovlp_sph = LIBCINT.cint1e_ovlp_sph
-
 cint2e_cart = LIBCINT.cint2e_cart
+
+cint1e_kin_sph = LIBCINT.cint1e_kin_sph
+cint1e_nuc_sph = LIBCINT.cint1e_nuc_sph
+cint1e_ovlp_sph = LIBCINT.cint1e_ovlp_sph
 cint2e_sph = LIBCINT.cint2e_sph

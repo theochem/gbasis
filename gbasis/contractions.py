@@ -1,6 +1,6 @@
 """Data class for contractions of Gaussian-type primitives."""
 from gbasis.utils import factorial2
-from numbers import Integral, Real
+from numbers import Integral
 import numpy as np
 
 
@@ -84,8 +84,6 @@ class GeneralizedContractionShell:
         Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
         transforming the contractions from the Cartesian to spherical coordinate system.
         Property of `GeneralizedContractionShell`.
-    charge : float
-        Charge at the center of the Gaussian primitives.
     exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
     coeffs : np.ndarray(K, M)
@@ -136,7 +134,6 @@ class GeneralizedContractionShell:
             dimension.
         exps : np.ndarray(K,)
             Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
-<<<<<<< HEAD
         coord_type : str
             Coordinate type of the contraction. Options include "cartesian" or "c" and
             "spherical" or "p".
@@ -146,13 +143,6 @@ class GeneralizedContractionShell:
             Tolerance used in overlap screening.
         ovr_screen : boolean
             Flag used for activating overlap screening.
-=======
-        icenter : int or None (optional)
-            Index for the atomic center for the contraction.
-        charge : float or None (optional)
-            Charge at the atomic center for the contraction.
-
->>>>>>> Expose all attrs (center,charge) required for cint bindings
         """
         self.angmom = angmom
         self.coord = coord
@@ -163,7 +153,6 @@ class GeneralizedContractionShell:
         self.assign_norm_cont()
         self.coord_type = coord_type
         self.icenter = icenter
-        self.charge = charge
 
     @property
     def icenter(self):
@@ -198,40 +187,6 @@ class GeneralizedContractionShell:
             self._icenter = None
         else:
             raise TypeError(f"Center should be of `numbers.Integral` type. Got {type(icenter)}")
-
-    @property
-    def charge(self):
-        """Charge at the atomic center for the contractions.
-
-       Returns
-        -------
-        charge : float or None
-            Charge at the atomic center for the contractions.
-
-        """
-        return self._charge
-
-    @charge.setter
-    def charge(self, charge):
-        """Charge at the atomic center for the contractions.
-
-        Parameters
-        ----------
-        charge : float or None
-            Charge at the atomic center for the contractions.
-
-        Raises
-        ------
-        TypeError
-            If `center` is not a `Real` or `None` type.
-
-        """
-        if isinstance(charge, Real):
-            self._charge = float(charge)
-        elif charge is None:
-            self._charge = None
-        else:
-            raise TypeError(f"Charge should be of `numbers.Real` type. Got {type(charge)}")
 
     @property
     def coord(self):
