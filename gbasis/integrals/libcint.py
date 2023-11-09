@@ -67,12 +67,126 @@ class _LibCInt:
             cls._instance = super(_LibCInt, cls).__new__(cls)
         return cls._instance
 
+    def __init__(self):
+        r"""
+        Singleton class inializer.
+
+        """
+        self._cache = dict()
+
     def __getattr__(self, attr):
         r"""
         Helper for returning function pointers from ``libcint`` with proper signatures.
 
         Matches the function to its signature based on the pattern of its name;
         possible because ``libcint`` function names and signatures are systematic.
+
+        Parameters
+        ----------
+        attr : str
+            Name of C function.
+
+        Returns
+        -------
+        f : callable
+            C function.
+
+        """
+        try:
+
+            # Retrieve previously-cached function
+            cfunc = self._cache[attr]
+
+        except KeyError:
+
+            # Make the bound C function
+            cfunc = getattr(self._libcint, attr)
+
+            if attr == 'CINTlen_cart':
+                cfunc.argtypes = [c_int]
+                cfunc.restype = c_int
+
+            elif attr == 'CINTlen_spinor':
+                cfunc.argtypes = [
+                    c_int,
+                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    ]
+                cfunc.restype = c_int
+
+            elif attr == 'CINTgto_norm':
+                cfunc.argtypes = [c_int, c_double]
+                cfunc.restype = c_double
+
+            elif attr.startswith('CINTcgto') or attr.startswith('CINTtot'):
+                cfunc.argtypes = [
+                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    c_int,
+                    ]
+                cfunc.restype = c_int
+
+            elif attr.startswith('CINTshells'):
+                cfunc.argtypes = [
+                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    c_int,
+                    ]
+
+            elif attr.startswith('cint1e') and not attr.endswith('optimizer'):
+                cfunc.argtypes = [
+                    # buf
+                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    # shls
+                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # atm
+                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    # natm
+                    c_int,
+                    # bas
+                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    # nbas
+                    c_int,
+                    # env
+                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # opt (not used; put ``None`` as this argument)
+                    c_void_p,
+                    ]
+                cfunc.restype = c_int
+
+            elif attr.startswith('cint2e') and not attr.endswith('optimizer'):
+                cfunc.argtypes = [
+                    # buf
+                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    # shls
+                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # atm
+                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    # natm
+                    c_int,
+                    # bas
+                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    # nbas
+                    c_int,
+                    # env
+                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # opt (not used; put ``None`` as this argument)
+                    c_void_p,
+                    ]
+                cfunc.restype = c_int
+
+            else:
+                raise NotImplementedError('there is no ``gbasis`` API for this function')
+
+            # Cache the C function
+            self._cache[attr] = cfunc
+
+        # Return the C function
+        return cfunc
+
+    def __getitem__(self, item):
+        r"""
+        Helper for returning function pointers from ``libcint`` with proper signatures.
+
+        This is the same as `__getattr__` and exists only for convenience.
 
         Parameters
         ----------
@@ -85,83 +199,7 @@ class _LibCInt:
             C function.
 
         """
-        cfunc = getattr(self._libcint, attr)
-
-        if attr == 'CINTlen_cart':
-            cfunc.argtypes = [c_int]
-            cfunc.restype = c_int
-
-        elif attr == 'CINTlen_spinor':
-            cfunc.argtypes = [
-                c_int,
-                ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                ]
-            cfunc.restype = c_int
-
-        elif attr == 'CINTgto_norm':
-            cfunc.argtypes = [c_int, c_double]
-            cfunc.restype = c_double
-
-        elif attr.startswith('CINTcgto') or attr.startswith('CINTtot'):
-            cfunc.argtypes = [
-                ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                c_int,
-                ]
-            cfunc.restype = c_int
-
-        elif attr.startswith('CINTshells'):
-            cfunc.argtypes = [
-                ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
-                ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                c_int,
-                ]
-
-        elif attr.startswith('cint1e') and not attr.endswith('optimizer'):
-            cfunc.argtypes = [
-                # buf
-                ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
-                # shls
-                ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                # atm
-                ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
-                # natm
-                c_int,
-                # bas
-                ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
-                # nbas
-                c_int,
-                # env
-                ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
-                # opt (not used; put ``None`` as this argument)
-                c_void_p,
-                ]
-            cfunc.restype = c_int
-
-        elif attr.startswith('cint2e') and not attr.endswith('optimizer'):
-            cfunc.argtypes = [
-                # buf
-                ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
-                # shls
-                ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                # atm
-                ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
-                # natm
-                c_int,
-                # bas
-                ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
-                # nbas
-                c_int,
-                # env
-                ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
-                # opt (not used; put ``None`` as this argument)
-                c_void_p,
-                ]
-            cfunc.restype = c_int
-
-        else:
-            raise NotImplementedError('there is no ``gbasis`` API for this function')
-
-        return cfunc
+        return self.__getattr__(item)
 
 
 class CBasis:
@@ -277,13 +315,13 @@ class CBasis:
         # Make individual integral evaluation methods via `make_intNe` macros:
 
         # Kinetic energy integral
-        self.kin = self.make_int1e(cint1e_kin_cart if _coord_type == "cartesian" else cint1e_kin_sph)
+        self.kin = self.make_int1e(LIBCINT["cint1e_kin_cart" if _coord_type == "cartesian" else "cint1e_kin_sph"])
         # Nuclear-electron attraction integral
-        self.nuc = self.make_int1e(cint1e_nuc_cart if _coord_type == "cartesian" else cint1e_nuc_sph)
+        self.nuc = self.make_int1e(LIBCINT["cint1e_nuc_cart" if _coord_type == "cartesian" else "cint1e_nuc_sph"])
         # Overlap integral
-        self.olp = self.make_int1e(cint1e_ovlp_cart if _coord_type == "cartesian" else cint1e_ovlp_sph)
+        self.olp = self.make_int1e(LIBCINT["cint1e_ovlp_cart" if _coord_type == "cartesian" else "cint1e_ovlp_sph"])
         # Electron repulsion integral
-        self.eri = self.make_int2e(cint2e_cart if _coord_type == "cartesian" else cint2e_sph)
+        self.eri = self.make_int2e(LIBCINT["cint2e_cart" if _coord_type == "cartesian" else "cint2e_sph"])
 
     def make_int1e(self, func):
         r"""
@@ -419,16 +457,3 @@ r"""
 LIBCINT C library handle and binding generator.
 
 """
-
-
-# C fuctions used in CBasis class
-
-cint1e_kin_cart = LIBCINT.cint1e_kin_cart
-cint1e_nuc_cart = LIBCINT.cint1e_nuc_cart
-cint1e_ovlp_cart = LIBCINT.cint1e_ovlp_cart
-cint2e_cart = LIBCINT.cint2e_cart
-
-cint1e_kin_sph = LIBCINT.cint1e_kin_sph
-cint1e_nuc_sph = LIBCINT.cint1e_nuc_sph
-cint1e_ovlp_sph = LIBCINT.cint1e_ovlp_sph
-cint2e_sph = LIBCINT.cint2e_sph
