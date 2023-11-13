@@ -134,39 +134,49 @@ def test_overlap_horton_anorcc_hhe():
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
     """
-    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    basis_dict = parse_nwchem(find_datafile("data_ugbs.nwchem"))
 
-    # NOTE: used HORTON's conversion factor for angstroms to bohr
-    atcoords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+    atsyms = ["H", "He"]
 
-    basis = make_contractions(basis_dict, ["H", "He"], atcoords)
+    atcoords = np.array([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083
 
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, icenter=i.icenter) for i in basis]
+    gbasis = make_contractions(basis_dict, atsyms, atcoords)
+    gbasis_olp = overlap_integral(gbasis, coord_type="cartesian")
 
-    horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
+    cbasis = CBasis(gbasis, atsyms, atcoords, coord_type="cartesian")
+    cbasis_olp = cbasis.olp()
 
-    cbasis = CBasis(basis, ["H", "He"], atcoords, coord_type="cartesian")
+    assert cbasis_olp.shape[0] == cbasis_olp.shape[1] == \
+           gbasis_olp.shape[0] == gbasis_olp.shape[1] == \
+           cbasis.nbas
 
-    assert np.allclose(cbasis.olp(), horton_overlap)
+    print(cbasis_olp)
+
+    assert np.allclose(cbasis_olp, gbasis_olp)
 
 
-def test_overlap_horton_anorcc_bec():
-    """Test gbasis.integrals.overlap.overlap_cartesian against HORTON's overlap matrix.
+def test_overlap_horton_ugbs_bec():
+    """Test gbasis.integrals.libcint.CBasis.olp against GBasis's overlap matrix.
 
-    The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
+    The test case is diatomic with Be and C separated by 1.0 angstroms with basis set UGBS.
 
     """
-    basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
+    basis_dict = parse_nwchem(find_datafile("data_ugbs.nwchem"))
 
-    # NOTE: used HORTON's conversion factor for angstroms to bohr
-    atcoords = np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
+    atsyms = ["Be", "C"]
 
-    basis = make_contractions(basis_dict, ["Be", "C"], atcoords)
+    atcoords = np.array([[0., 0., 0.], [1.0, 0., 0.]]) / 0.5291772083
 
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, icenter=i.icenter) for i in basis]
+    gbasis = make_contractions(basis_dict, atsyms, atcoords)
+    gbasis_olp = overlap_integral(gbasis, coord_type="cartesian")
 
-    horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
+    cbasis = CBasis(gbasis, atsyms, atcoords, coord_type="cartesian")
+    cbasis_olp = cbasis.olp()
 
-    cbasis = CBasis(basis, ["Be", "C"], atcoords, coord_type="cartesian")
+    assert cbasis_olp.shape[0] == cbasis_olp.shape[1] == \
+           gbasis_olp.shape[0] == gbasis_olp.shape[1] == \
+           cbasis.nbas
 
-    assert np.allclose(cbasis.olp(), horton_overlap)
+    print(cbasis_olp)
+
+    assert np.allclose(cbasis_olp, gbasis_olp)
