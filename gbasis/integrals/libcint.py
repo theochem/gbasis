@@ -228,7 +228,7 @@ class CBasis:
         if _coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
         elif _coord_type == "cartesian":
-            num_angmom = attrgetter("num_cart")
+            num_angmom = lambda x: x.norm_cont.shape[1]#attrgetter("num_cart")
         else:
             raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
@@ -290,8 +290,10 @@ class CBasis:
                 # `env` offset to save column-major contraction coefficients,
                 # i.e. a  (no. primitive-)by-(no. contracted) matrix
                 bas[ibas, 6] = ioff
-                # Save coefficients; increment ioff
-                env[ioff:ioff + shell.coeffs.size] = shell.coeffs.T.reshape(-1)
+                # Save (normalized) coefficients; increment ioff
+                env_tmp = env[ioff:ioff + shell.coeffs.size].reshape(*shell.coeffs.shape)
+                for iexp, icoeffs, ienv in zip(shell.exps, shell.coeffs, env_tmp):
+                    ienv[:] = icoeffs * LIBCINT.CINTgto_norm(shell.angmom, iexp)
                 ioff += shell.coeffs.size
                 # Increment contracted GTO
                 ibas += 1
