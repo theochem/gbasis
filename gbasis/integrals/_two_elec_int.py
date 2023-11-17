@@ -1,6 +1,6 @@
 """Two-electron integrals involving Contracted Cartesian Gaussians."""
 import numpy as np
-from scipy.special import factorial2
+from gbasis.utils import factorial2
 
 # pylint: disable=C0103,R0914,R0915
 

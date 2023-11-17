@@ -3,7 +3,8 @@
 from collections import defaultdict
 
 import numpy as np
-from scipy.special import comb, factorial, factorial2
+from scipy.special import comb, factorial
+from gbasis.utils import factorial2
 
 
 def shift_factor(mag):

@@ -1,6 +1,6 @@
 """Data class for contractions of Gaussian-type primitives."""
+from gbasis.utils import factorial2
 import numpy as np
-from scipy.special import factorial2
 
 
 class GeneralizedContractionShell:
