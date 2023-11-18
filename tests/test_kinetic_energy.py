@@ -3,9 +3,9 @@ from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
 from gbasis.integrals.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.utils import factorial2
 import numpy as np
 import pytest
-from scipy.special import factorial2
 from utils import find_datafile, HortonContractions
 
 

@@ -2,8 +2,8 @@
 import itertools as it
 
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
+from gbasis.utils import factorial2
 import numpy as np
-from scipy.special import factorial2
 
 
 def answer_prim(coord_type, i, j, k):

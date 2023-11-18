@@ -3,9 +3,9 @@ from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.moment import Moment, moment_integral
 from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.utils import factorial2
 import numpy as np
 import pytest
-from scipy.special import factorial2
 from utils import find_datafile
 
 
