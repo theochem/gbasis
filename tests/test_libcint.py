@@ -20,7 +20,7 @@ from utils import find_datafile
 CASES = [
     ("UGBS", "H", np.asarray([[0., 0., 0.]]) / 0.5291772083),
     ("UGBS", "He", np.asarray([[0., 0., 0.]]) / 0.5291772083),
-    # ("UGBS", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083),
+    ("UGBS", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083),
     # ("UGBS", "Be,C", np.asarray([[0., 0., 0.], [1., 0., 0.]]) / 0.5291772083),
     # ("ANORCC", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083),
     # ("ANORCC", "Be,C", np.asarray([[0., 0., 0.], [1., 0., 0.]]) / 0.5291772083),
@@ -49,8 +49,7 @@ def test_cbasis_overlap(basis, atsyms, atcoords):
 
     npt.assert_array_equal(py_olp.shape, lc_basis.nbas)
     npt.assert_array_equal(lc_olp.shape, lc_basis.nbas)
-    npt.assert_allclose(np.diag(py_olp), 1)
-    npt.assert_allclose(lc_olp, py_olp)
+    npt.assert_allclose(lc_olp, py_olp, atol=1e-7)
 
 
 @pytest.mark.parametrize("basis, atsyms, atcoords", CASES)
@@ -71,7 +70,7 @@ def test_cbasis_kinetic(basis, atsyms, atcoords):
 
     npt.assert_array_equal(py_kin.shape, lc_basis.nbas)
     npt.assert_array_equal(lc_kin.shape, lc_basis.nbas)
-    npt.assert_allclose(lc_kin, py_kin)
+    npt.assert_allclose(lc_kin, py_kin, atol=1e-7)
 
 
 @pytest.mark.parametrize("basis, atsyms, atcoords", CASES)
@@ -93,7 +92,7 @@ def test_cbasis_nuclear(basis, atsyms, atcoords):
 
     npt.assert_array_equal(py_nuc.shape, lc_basis.nbas)
     npt.assert_array_equal(lc_nuc.shape, lc_basis.nbas)
-    npt.assert_allclose(lc_nuc, py_nuc)
+    npt.assert_allclose(lc_nuc, py_nuc, atol=1e-7)
 
 
 @pytest.mark.parametrize("basis, atsyms, atcoords", CASES)

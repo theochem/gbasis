@@ -262,7 +262,6 @@ class CBasis:
                 ncof += shell.coeffs.size
 
         # Allocate and fill C input arrays
-        iatm = 0
         ibas = 0
         ioff = 20
         atm = np.zeros((natm, 6), dtype=c_int)
@@ -271,17 +270,17 @@ class CBasis:
         offsets = []
         # Go to next atomic center's contractions
         for atnum, atcoord, (icenter, contractions) in zip(atnums, atcoords, basis):
-            # Nuclear charge of `iatm` atom
-            atm[iatm, 0] = atnum
+            # Nuclear charge of `icenter` atom
+            atm[icenter, 0] = atnum
             # `env` offset to save xyz coordinates
-            atm[iatm, 1] = ioff
+            atm[icenter, 1] = ioff
             # Save xyz coordinates; increment ioff
             env[ioff:ioff + 3] = atcoord
             ioff += 3
             # Go to next contracted GTO
             for shell in contractions:
                 # Index of corresponding atom
-                bas[ibas, 0] = iatm
+                bas[ibas, 0] = icenter
                 # Angular momentum
                 bas[ibas, 1] = shell.angmom
                 # Number of [primitive|contracted] GTOs in `ibas` basis function
@@ -305,8 +304,6 @@ class CBasis:
                 ibas += 1
                 # Save basis function offsets
                 offsets.append(num_angmom(shell))
-            # Increment atomic center
-            iatm += 1
 
         # Save inputs to `libcint` functions
         self.natm = natm
