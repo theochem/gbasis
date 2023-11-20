@@ -199,9 +199,8 @@ def test_overlap_horton_anorcc_hhe():
     gbasis = make_contractions(basis_dict, atsyms, atcoords)
     gbasis_olp = overlap_integral(gbasis, coord_type="cartesian")
 
-    cbasis = CBasis(gbasis, atsyms, atcoords, coord_type="cartesian")
-    cbasis_olp = cbasis.olp()
-
+    py_eri = electron_repulsion_integral(py_basis, coord_type="cartesian")
+    lc_eri = lc_basis.eri()
     assert cbasis_olp.shape[0] == cbasis_olp.shape[1] == \
            gbasis_olp.shape[0] == gbasis_olp.shape[1] == \
            cbasis.nbas

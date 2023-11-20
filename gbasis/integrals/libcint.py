@@ -391,7 +391,13 @@ class CBasis:
 
         """
         # Make instance-bound integral method
-        def int2e():
+        def int2e(notation="physicist"):
+            if notation == "physicist":
+                physicist = True
+            elif notation == "chemist":
+                physicist = False
+            else:
+                raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
             # Make temporary arrays
             shls = np.zeros(4, dtype=c_int)
             buf = np.zeros(self.max_off ** 4, dtype=c_double)
@@ -453,7 +459,7 @@ class CBasis:
                 # Iterate `ipos`
                 ipos += p_off
             # Return integrals in `out` array
-            return out
+            return out.transpose(0, 2, 1, 3) if physicist else out
 
         # Return instance-bound integral method
         return int2e
