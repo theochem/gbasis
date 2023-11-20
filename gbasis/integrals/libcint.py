@@ -394,7 +394,7 @@ class CBasis:
         def int2e():
             # Make temporary arrays
             shls = np.zeros(4, dtype=c_int)
-            buf = np.zeros(self.max_offset ** 4, dtype=c_double)
+            buf = np.zeros(self.max_off ** 4, dtype=c_double)
             # Make output array
             out = np.zeros((self.nbas, self.nbas, self.nbas, self.nbas), dtype=c_double)
             # Evaluate the integral function over all shells

@@ -1,7 +1,7 @@
 """Data class for contractions of Gaussian-type primitives."""
-from gbasis.utils import factorial2
 from numbers import Integral
 import numpy as np
+from gbasis.utils import factorial2
 
 
 class GeneralizedContractionShell:
