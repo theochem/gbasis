@@ -676,7 +676,7 @@ def test_construct_array_lincomb():
     contractions.norm_cont = np.ones((1, 3))
     test = Test([contractions])
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "cartesian"),
+        test.construct_array_lincomb(orb_transform, ["cartesian"]),
         np.einsum(
             "ijkl,ai,bj,ck,dl->abcd",
             np.einsum("ijkl->lkji", np.arange(81).reshape(3, 3, 3, 3)) * 2,
@@ -687,7 +687,7 @@ def test_construct_array_lincomb():
         ),
     )
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "spherical"),
+        test.construct_array_lincomb(orb_transform, ["spherical"]),
         np.einsum(
             "ijkl,ai,bj,ck,dl->abcd",
             np.einsum(
@@ -1002,7 +1002,7 @@ def test_construct_array_lincomb():
     )
 
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "spherical"),
+        test.construct_array_lincomb(orb_transform, ["spherical"]),
         np.einsum(
             "ijkl,ai,bj,ck,dl->abcd",
             sph_array,

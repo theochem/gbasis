@@ -507,11 +507,11 @@ def test_contruct_array_lincomb():
     contractions.norm_cont = np.ones((1, 3))
     test = Test([contractions])
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "cartesian"),
+        test.construct_array_lincomb(orb_transform, ["cartesian"]),
         (orb_transform.dot(np.arange(9).reshape(3, 3)).dot(orb_transform.T).T * 2),
     )
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "spherical"),
+        test.construct_array_lincomb(orb_transform, ["spherical"]),
         (
             orb_transform.dot(sph_transform)
             .dot(np.arange(9).reshape(3, 3))
@@ -522,7 +522,7 @@ def test_contruct_array_lincomb():
         ),
     )
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "spherical", a=3),
+        test.construct_array_lincomb(orb_transform, ["spherical"], a=3),
         (
             orb_transform.dot(sph_transform)
             .dot(np.arange(9).reshape(3, 3))
@@ -533,7 +533,7 @@ def test_contruct_array_lincomb():
         ),
     )
     with pytest.raises(TypeError):
-        test.construct_array_lincomb(orb_transform, "spherical", bad_keyword=3)
+        test.construct_array_lincomb(orb_transform, ["spherical"], bad_keyword=3)
     with pytest.raises(TypeError):
         test.construct_array_lincomb(orb_transform, "bad", keyword=3)
 
@@ -561,7 +561,7 @@ def test_contruct_array_lincomb():
     )
     orb_transform = np.random.rand(8, 8)
     assert np.allclose(
-        test.construct_array_lincomb(orb_transform, "spherical", a=4),
+        test.construct_array_lincomb(orb_transform, ["spherical"], a=4),
         np.swapaxes(
             np.tensordot(
                 orb_transform,
@@ -830,13 +830,13 @@ def test_compare_two_asymm():
         test_symm.construct_array_spherical(), test_asymm.construct_array_spherical()
     )
     assert np.allclose(
-        test_symm.construct_array_lincomb(sph_orb_transform, "spherical"),
+        test_symm.construct_array_lincomb(sph_orb_transform, ["spherical"]),
         test_asymm.construct_array_lincomb(
             sph_orb_transform, sph_orb_transform, "spherical", "spherical"
         ),
     )
     assert np.allclose(
-        test_symm.construct_array_lincomb(cart_orb_transform, "cartesian"),
+        test_symm.construct_array_lincomb(cart_orb_transform, ["cartesian"]),
         test_asymm.construct_array_lincomb(
             cart_orb_transform, cart_orb_transform, "cartesian", "cartesian"
         ),

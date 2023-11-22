@@ -14,144 +14,125 @@ def test_electrostatic_potential():
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    cartesian_basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
+    cartesian_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in cartesian_basis]
+    spherical_basis = make_contractions(basis_dict, ["H", "He"], coords, 'spherical')
+    spherical_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in spherical_basis]
+    mixed_basis = make_contractions(basis_dict, ["H", "He"], coords, ['spherical'] * 9)
+    mixed_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in mixed_basis]
 
     # check density_matrix type
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103).tolist(),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103).flatten(),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     # check nuclear_coords
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3).tolist(),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 4),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     # check nuclear charges
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]).reshape(1, 2),
-            coord_type="cartesian",
         )
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]).tolist(),
-            coord_type="cartesian",
         )
     # check density_matrix symmetry
     with pytest.raises(ValueError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.eye(103, 102),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     # check nuclear_coords and nuclear_charges shapes
     with pytest.raises(ValueError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(3, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     # check threshold_dist types
     with pytest.raises(TypeError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
             threshold_dist=None,
         )
     # check threshold_dist value
     with pytest.raises(ValueError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
             threshold_dist=-0.1,
-        )
-    # check coord_types type
-    with pytest.raises(TypeError):
-        electrostatic_potential(
-            basis,
-            np.identity(103),
-            np.random.rand(10, 3),
-            np.random.rand(2, 3),
-            np.array([1, 2]),
-            coord_type="bad",
         )
     with pytest.raises(ValueError):
         electrostatic_potential(
-            basis,
+            cartesian_basis,
             np.identity(88),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="cartesian",
         )
     with pytest.raises(ValueError):
         electrostatic_potential(
-            basis,
+            spherical_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type="spherical",
         )
     with pytest.raises(ValueError):
         electrostatic_potential(
-            basis,
+            mixed_basis,
             np.identity(103),
             np.random.rand(10, 3),
             np.random.rand(2, 3),
             np.array([1, 2]),
-            coord_type=["spherical"] * 9,
         )
 
 
@@ -165,8 +146,8 @@ def test_electrostatic_potential_cartesian():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
@@ -175,7 +156,7 @@ def test_electrostatic_potential_cartesian():
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_esp.npy"))
     assert np.allclose(
         electrostatic_potential(
-            basis, np.identity(103), grid_3d, coords, np.array([1, 2]), coord_type="cartesian"
+            basis, np.identity(103), grid_3d, coords, np.array([1, 2])
         ),
         horton_nucattract,
     )
@@ -191,8 +172,8 @@ def test_electrostatic_potential_spherical():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], coords, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
@@ -201,7 +182,7 @@ def test_electrostatic_potential_spherical():
     horton_nucattract = np.load(find_datafile("data_horton_hhe_sph_esp.npy"))
     assert np.allclose(
         electrostatic_potential(
-            basis, np.identity(88), grid_3d, coords, np.array([1, 2]), coord_type="spherical"
+            basis, np.identity(88), grid_3d, coords, np.array([1, 2])
         ),
         horton_nucattract,
     )
@@ -217,8 +198,10 @@ def test_electrostatic_potential_mix():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    spherical_basis = make_contractions(basis_dict, ["H", "He"], coords, ['spherical'] * 9)
+    spherical_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in spherical_basis]
+    cartesian_basis = make_contractions(basis_dict, ["H", "He"], coords, ['cartesian'] * 9)
+    cartesian_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in cartesian_basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
@@ -227,14 +210,14 @@ def test_electrostatic_potential_mix():
     horton_nucattract = np.load(find_datafile("data_horton_hhe_sph_esp.npy"))
     assert np.allclose(
         electrostatic_potential(
-            basis, np.identity(88), grid_3d, coords, np.array([1, 2]), coord_type=["spherical"] * 9
+            spherical_basis, np.identity(88), grid_3d, coords, np.array([1, 2])
         ),
         horton_nucattract,
     )
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_esp.npy"))
     assert np.allclose(
         electrostatic_potential(
-            basis, np.identity(103), grid_3d, coords, np.array([1, 2]), coord_type=["cartesian"] * 9
+            cartesian_basis, np.identity(103), grid_3d, coords, np.array([1, 2])
         ),
         horton_nucattract,
     )
