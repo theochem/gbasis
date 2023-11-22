@@ -295,7 +295,7 @@ class CBasis:
                 # Number of primitive GTOs in `ibas` basis function
                 bas[ibas:jbas, 2] = shell.coeffs.shape[0]
                 # Number of contracted GTOs in `ibas` basis function
-                bas[ibas:jbas, 3] = 1
+                bas[ibas:jbas, 3] = shell.coeffs.shape[1]
                 # Kappa for spinor GTO; unused here
                 bas[ibas:jbas, 4] = 0
                 # `env` offset to save exponentss of primitive GTOs
@@ -310,7 +310,7 @@ class CBasis:
                     env[ioff:ioff + icoeffs.size] = icoeffs * inorms
                     ioff += icoeffs.size
                     # Reserved/unused in `libcint`
-                    # bas[ibas, 7] = 0
+                    # bas[ibas:, 7] = 0
                     # Increment contracted GTO
                     ibas += 1
                 # Save basis function offsets

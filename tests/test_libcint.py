@@ -51,7 +51,7 @@ def test_cbasis_overlap(basis, atsyms, atcoords):
 
     npt.assert_array_equal(py_olp.shape, lc_basis.nbas)
     npt.assert_array_equal(lc_olp.shape, lc_basis.nbas)
-    npt.assert_allclose(lc_olp, py_olp, atol=1e-7)
+    npt.assert_allclose(lc_olp, py_olp, atol=1e-7, rtol=0)
 
 
 @pytest.mark.parametrize("basis, atsyms, atcoords", CASES)
@@ -72,7 +72,7 @@ def test_cbasis_kinetic(basis, atsyms, atcoords):
 
     npt.assert_array_equal(py_kin.shape, lc_basis.nbas)
     npt.assert_array_equal(lc_kin.shape, lc_basis.nbas)
-    npt.assert_allclose(lc_kin, py_kin, atol=1e-7)
+    npt.assert_allclose(lc_kin, py_kin, atol=1e-7, rtol=0)
 
 
 @pytest.mark.parametrize("basis, atsyms, atcoords", CASES)
@@ -94,7 +94,7 @@ def test_cbasis_nuclear(basis, atsyms, atcoords):
 
     npt.assert_array_equal(py_nuc.shape, lc_basis.nbas)
     npt.assert_array_equal(lc_nuc.shape, lc_basis.nbas)
-    npt.assert_allclose(lc_nuc, py_nuc, atol=1e-7)
+    npt.assert_allclose(lc_nuc, py_nuc, atol=1e-7, rtol=0)
 
 
 @pytest.mark.parametrize("basis, atsyms, atcoords", CASES)
