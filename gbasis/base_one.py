@@ -257,12 +257,12 @@ class BaseOneIndex(BaseGaussianRelatedArray):
             Transformation is applied to the left.
             Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
             contractions (i.e. AO).
-        coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
-            Types of the coordinate system for the contractions.
-            If "cartesian", then all of the contractions are treated as Cartesian contractions.
-            If "spherical", then all of the contractions are treated as spherical contractions.
-            If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-            coordinate type of each GeneralizedContractionShell instance.
+        coord_type : list/tuple of str
+            Types of the coordinate system for each GeneralizedContractionShell.
+            Each entry must be one of "cartesian" or "spherical". If multiple
+            instances of GeneralizedContractionShell are given but only one string
+            ("cartesian" or "spherical") is provided in the list/tuple, all of the
+            contractions will be treated according to that string.
         kwargs : dict
             Other keyword arguments that will be used to construct the array.
             These keyword arguments are passed directly to `construct_array_spherical`, which will
@@ -278,19 +278,17 @@ class BaseOneIndex(BaseGaussianRelatedArray):
         Raises
         ------
         TypeError
-            If `coord_type` is not one of "cartesian", "spherical", or a list/tuple of these
-            strings.
+            If `coord_type` is not a list/tuple of the strings 'cartesian' or 'spherical'.
 
         """
-        if coord_type == "cartesian":
+        if all(type == "cartesian" for type in coord_type):
             array = self.construct_array_cartesian(**kwargs)
-        elif coord_type == "spherical":
+        elif all(type == "spherical" for type in coord_type):
             array = self.construct_array_spherical(**kwargs)
         elif isinstance(coord_type, (list, tuple)):
             array = self.construct_array_mix(coord_type, **kwargs)
         else:
             raise TypeError(
-                "`coord_type` must be one of 'cartesian', 'spherical', or a list/tuple of these "
-                "strings."
+                "`coord_type` must be a list/tuple of the strings 'cartesian' or 'spherical'"
             )
         return np.tensordot(transform, array, (1, 0))
