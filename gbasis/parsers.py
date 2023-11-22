@@ -165,7 +165,7 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
-def make_contractions(basis_dict, atoms, coords):
+def make_contractions(basis_dict, atoms, coords, coord_types='spherical'):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
@@ -176,6 +176,13 @@ def make_contractions(basis_dict, atoms, coords):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
+    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each `GeneralizedContractionShell` instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -202,7 +209,24 @@ def make_contractions(basis_dict, atoms, coords):
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 
     basis = []
+    len_coord_types = len(coord_types)
     for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps))
+            if type(coord_types) == str:
+                # if coord_types given as a single string, assign the specified type to all contractions for all atoms
+                if coord_types == "spherical":
+                    basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, 'p'))
+                elif coord_types == "cartesian":
+                    basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, 'c'))
+                else:
+                    raise ValueError("If coord_types is a string, it must be either 'spherical' or 'cartesian'.")
+            elif type(coord_types) == list:
+                # if coord_types given as a list, assign the specified type to each atom's contractions individually
+                if len_coord_types == sum([len(basis_dict[i]) for i in atoms]):
+                    basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, coord_types.pop(0)))
+                else:
+                    raise ValueError("If coord_types is a list, it must be the same length as the total number of contractions.")
+            else:
+                raise TypeError("coord_types must be a string or list of strings.")
+
     return tuple(basis)
