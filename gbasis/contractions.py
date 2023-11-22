@@ -91,6 +91,8 @@ class GeneralizedContractionShell:
         Contraction coefficients, :math:`\{d_{ij}\}`, of the primitives.
         First axis corresponds to the primitive and the second axis corresponds to the segmented
         contraction shell.
+    coord_type : str
+        Type of the coordinate system used to specify the contractions.
     norm_cont : np.ndarray(M, L)
         Normalization constants of the Cartesian contractions of different angular momentum
         components and segmented contraction shells.
@@ -114,7 +116,7 @@ class GeneralizedContractionShell:
 
     """
 
-    def __init__(self, angmom, coord, coeffs, exps):
+    def __init__(self, angmom, coord, coeffs, exps, coord_type='p'):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -135,6 +137,9 @@ class GeneralizedContractionShell:
             dimension.
         exps : np.ndarray(K,)
             Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
+        coord_type : str
+            Coordinate type of the contraction.
+            Default is 'p' (spherical).
 
         """
         self.angmom = angmom
@@ -142,6 +147,7 @@ class GeneralizedContractionShell:
         self.coeffs = coeffs
         self.exps = exps
         self.assign_norm_cont()
+        self.coord_type = coord_type
 
     @property
     def coord(self):
@@ -479,3 +485,48 @@ class GeneralizedContractionShell:
 
         self.norm_cont = np.einsum("ijij->ij", Overlap.construct_array_contraction(self, self))
         self.norm_cont **= -0.5
+
+    @property
+    def coord_type(self):
+        """Return the coordinate type.
+
+        Returns
+        -------
+        coord_type : str
+            Coordinate type of the contraction.
+
+        """
+        return self._coord_type
+
+    @coord_type.setter
+    def coord_type(self, coord_type):
+        """Set the coordinate type.
+
+        Parameters
+        ----------
+        coord_type : str
+            Coordinate type of the contraction.
+
+        Raises
+        ------
+        TypeError
+            If `coord_type` is not a string.
+        ValueError
+            If `coord_type` is not one of the following:
+                - 'c' (cartesian)
+                - 'cartesian'
+                - 'p' (spherical)
+                - 'spherical'
+        """
+
+
+        if not isinstance(coord_type, str):
+            raise TypeError("Coordinate type must be given as a string.")
+        if coord_type not in ["c", "cartesian", "p", "spherical"]:
+            raise ValueError("`coord_type` is incorrectly specified. It must be either 'c' "
+                             "or 'cartesian' for Cartesian coordinates, or 'p' or 'spherical' "
+                             "for spherical coordinates.")
+        self._coord_type = {"c": "cartesian",
+                            "cartesian": "cartesian",
+                            "spherical": "spherical",
+                            "p": "spherical"}[coord_type]
