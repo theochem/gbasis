@@ -126,7 +126,7 @@ class EvalDeriv(BaseOneIndex):
         return output
 
 
-def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="spherical"):
+def evaluate_deriv_basis(basis, points, orders, transform=None):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
     Parameters
@@ -149,13 +149,6 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -167,12 +160,14 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
         `N` is the number of coordinates at which the contractions are evaluated.
 
     """
+    coord_type = [type for type in [shell.coord_type for shell in basis]]
+
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
             transform, coord_type, points=points, orders=orders
         )
-    if coord_type == "cartesian":
+    if all(type == "cartesian" for type in coord_type):
         return EvalDeriv(basis).construct_array_cartesian(points=points, orders=orders)
-    if coord_type == "spherical":
+    if all(type == "spherical" for type in coord_type):
         return EvalDeriv(basis).construct_array_spherical(points=points, orders=orders)
     return EvalDeriv(basis).construct_array_mix(coord_type, points=points, orders=orders)

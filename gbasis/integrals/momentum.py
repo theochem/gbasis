@@ -44,7 +44,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
         Return the integral over the momentum operator associated with the contraction in the given
         coordinate system.
         `K_cont` is the total number of contractions within the given basis set.
-    construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs, 3)
+    construct_array_lincomb(self, transform, coord_type) : np.ndarray(K_orbs, K_orbs, 3)
         Return the integral over the momentum operator associated with linear combinations of
         spherical Gaussians (linear combinations of atomic orbitals).
         `K_orbs` is the number of basis functions produced after the linear combinations.
@@ -111,7 +111,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
         return -1j * np.transpose(output, (1, 2, 3, 4, 0))
 
 
-def momentum_integral(basis, transform=None, coord_type="spherical"):
+def momentum_integral(basis, transform=None):
     """Return integral over momentum operator of the given basis set.
 
     Parameters
@@ -124,13 +124,6 @@ def momentum_integral(basis, transform=None, coord_type="spherical"):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -140,11 +133,12 @@ def momentum_integral(basis, transform=None, coord_type="spherical"):
         number of basis functions in the basis set.
 
     """
+    coord_type = [type for type in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return MomentumIntegral(basis).construct_array_lincomb(transform, coord_type)
-    if coord_type == "cartesian":
+    if all(type == "cartesian" for type in coord_type):
         return MomentumIntegral(basis).construct_array_cartesian()
-    if coord_type == "spherical":
+    if all(type == "spherical" for type in coord_type):
         return MomentumIntegral(basis).construct_array_spherical()
     return MomentumIntegral(basis).construct_array_mix(coord_type)
