@@ -257,7 +257,7 @@ class CBasis:
         for _, contractions in basis:
             nshl += len(contractions)
             for shell in contractions:
-                nbas += num_angmom(shell)
+                nbas += num_angmom(shell) * shell.coeffs.shape[1]
                 nexp += shell.exps.size
                 ncof += shell.coeffs.size
 
@@ -266,7 +266,7 @@ class CBasis:
         ioff = 20
         atm = np.zeros((natm, 6), dtype=c_int)
         bas = np.zeros((nbas, 8), dtype=c_int)
-        env = np.zeros(20 + natm * 3 + nexp + ncof, dtype=c_double)
+        env = np.zeros(20 + natm * 4 + nexp + ncof, dtype=c_double)
         offsets = []
         # Go to next atomic center's contractions
         for atnum, atcoord, (icenter, contractions) in zip(atnums, atcoords, basis):
@@ -274,34 +274,45 @@ class CBasis:
             atm[icenter, 0] = atnum
             # `env` offset to save xyz coordinates
             atm[icenter, 1] = ioff
+            # Nuclear model of `icenter`; unused here
+            atm[icenter, 2] = 0
+            # `env` offset to save nuclear model parameters zeta; unused here
+            atm[icenter, 3] = 0
+            # Reserved/unused in `libcint`
+            atm[icenter, 4:6] = 0
             # Save xyz coordinates; increment ioff
             env[ioff:ioff + 3] = atcoord
             ioff += 3
             # Go to next contracted GTO
             for shell in contractions:
+                jbas = ibas + shell.coeffs.shape[1]
                 # Index of corresponding atom
-                bas[ibas, 0] = icenter
+                bas[ibas:jbas, 0] = icenter
                 # Angular momentum
-                bas[ibas, 1] = shell.angmom
+                bas[ibas:jbas, 1] = shell.angmom
                 # Number of [primitive|contracted] GTOs in `ibas` basis function
-                bas[ibas, 2:4] = shell.coeffs.shape
+                # bas[ibas:jbas, 2:4] = shell.coeffs.shape
+                # Number of primitive GTOs in `ibas` basis function
+                bas[ibas:jbas, 2] = shell.coeffs.shape[0]
+                # Number of contracted GTOs in `ibas` basis function
+                bas[ibas:jbas, 3] = 1
                 # Kappa for spinor GTO; unused here
-                bas[ibas, 4] = 0
+                bas[ibas:jbas, 4] = 0
                 # `env` offset to save exponentss of primitive GTOs
-                bas[ibas, 5] = ioff
+                bas[ibas:jbas, 5] = ioff
                 # Save exponents; increment ioff
                 env[ioff:ioff + shell.exps.size] = shell.exps
                 ioff += shell.exps.size
-                # `env` offset to save column-major contraction coefficients,
-                # i.e. a  (no. primitive-)by-(no. contracted) matrix
-                bas[ibas, 6] = ioff
                 # Save (normalized) coefficients; increment ioff
-                env_tmp = env[ioff:ioff + shell.coeffs.size].reshape(*shell.coeffs.shape)
-                for iexp, icoeffs, ienv in zip(shell.exps, shell.coeffs, env_tmp):
-                    ienv[:] = icoeffs * LIBCINT.CINTgto_norm(shell.angmom, iexp)
-                ioff += shell.coeffs.size
-                # Increment contracted GTO
-                ibas += 1
+                inorms = np.asarray(list(LIBCINT.CINTgto_norm(shell.angmom, iexp) for iexp in shell.exps))
+                for icoeffs in shell.coeffs.T:
+                    bas[ibas, 6] = ioff
+                    env[ioff:ioff + icoeffs.size] = icoeffs * inorms
+                    ioff += icoeffs.size
+                    # Reserved/unused in `libcint`
+                    # bas[ibas, 7] = 0
+                    # Increment contracted GTO
+                    ibas += 1
                 # Save basis function offsets
                 offsets.append(num_angmom(shell))
 
