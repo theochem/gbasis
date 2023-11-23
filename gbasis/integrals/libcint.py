@@ -20,7 +20,7 @@ __all__ = [
 ]
 
 
-ELEMENTS = [
+ELEMENTS = (
     "\0", "H",  "He", "Li", "Be", "B",  "C",  "N",  "O",  "F",  "Ne", "Na",
     "Mg", "Al", "Si", "P",  "S",  "Cl", "Ar", "K",  "Ca", "Sc", "Ti", "V",
     "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br",
@@ -31,11 +31,11 @@ ELEMENTS = [
     "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U",  "Np", "Pu", "Am",
     "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh",
     "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og",
-]
+)
 r"""
-List of the elements.
+Tuple of all 118 elements.
 
-This list has a placeholder element (the null character) at index zero
+This tuple has a placeholder element (the null character) at index zero
 so that the index of each (real) element matches its atomic number.
 
 """
@@ -228,7 +228,7 @@ class CBasis:
         if _coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
         elif _coord_type == "cartesian":
-            num_angmom = lambda x: x.norm_cont.shape[1]#attrgetter("num_cart")
+            num_angmom = attrgetter("num_cart")
         else:
             raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")

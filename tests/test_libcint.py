@@ -17,39 +17,40 @@ from gbasis.parsers import make_contractions, parse_nwchem
 from utils import find_datafile
 
 
-CASES = [
-    ("UGBS", "He", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("UGBS", "C", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("UGBS", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("UGBS", "Be,C", np.asarray([[0., 0., 0.], [1., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("STO6G", "He", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("STO6G", "C", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("STO6G", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("STO6G", "Be,C", np.asarray([[0., 0., 0.], [1., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("631G", "He", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("631G", "C", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("631G", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("631G", "Be,C", np.asarray([[0., 0., 0.], [1., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("ANORCC", "He", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("ANORCC", "C", np.asarray([[0., 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("ANORCC", "H,He", np.asarray([[0., 0., 0.], [0.8, 0., 0.]]) / 0.5291772083, "cartesian"),
-    ("ANORCC", "Be,C", np.asarray([[0., 0., 0.], [1., 0., 0.]]) / 0.5291772083, "cartesian"),
+TEST_BASIS_SETS = [
+    pytest.param("data_sto6g.nwchem",  id="STO-6G"),
+    pytest.param("data_631g.nwchem",   id="6-31G"),
+    pytest.param("data_ugbs.nwchem",   id="UGBS"),
+    # pytest.param("data_anorcc.nwchem", id="ANO-RCC"),
 ]
-r"""
-Test systems for gbasis.integrals.libcint.
-
-"""
 
 
-@pytest.mark.parametrize("basis, atsyms, atcoords, coord_type", CASES)
+TEST_SYSTEMS = [
+    pytest.param(["He"],      np.asarray([[0., 0., 0.]]),                id="He"),
+    pytest.param(["C"],       np.asarray([[0., 0., 0.]]),                id="C"),
+    pytest.param(["H", "He"], np.asarray([[0., 0., 0.], [0.8, 0., 0.]]), id="H,He"),
+    pytest.param(["Be", "C"], np.asarray([[0., 0., 0.], [1.0, 0., 0.]]), id="Be,C"),
+]
+
+
+TEST_COORD_TYPES = [
+    "cartesian",
+    "spherical",
+]
+
+
+@pytest.mark.parametrize("coord_type",      TEST_COORD_TYPES)
+@pytest.mark.parametrize("atsyms,atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis",           TEST_BASIS_SETS)
 def test_cbasis_overlap(basis, atsyms, atcoords, coord_type):
     r"""
     Test gbasis.integrals.libcint.CBasis overlap integrals
     against the GBasis Python overlap integrals.
 
     """
-    atsyms = [sym.strip() for sym in atsyms.split(",")]
-    basis_dict = parse_nwchem(find_datafile(f"data_{basis.lower()}.nwchem"))
+    atcoords /= 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
 
     py_basis = make_contractions(basis_dict, atsyms, atcoords)
     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
@@ -63,15 +64,18 @@ def test_cbasis_overlap(basis, atsyms, atcoords, coord_type):
     npt.assert_allclose(lc_olp, py_olp, atol=1e-7, rtol=0)
 
 
-@pytest.mark.parametrize("basis, atsyms, atcoords, coord_type", CASES)
+@pytest.mark.parametrize("coord_type",      TEST_COORD_TYPES)
+@pytest.mark.parametrize("atsyms,atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis",           TEST_BASIS_SETS)
 def test_cbasis_kinetic(basis, atsyms, atcoords, coord_type):
     r"""
     Test gbasis.integrals.libcint.CBasis kinetic energy integrals
     against the GBasis Python kinetic energy integrals.
 
     """
-    atsyms = [sym.strip() for sym in atsyms.split(",")]
-    basis_dict = parse_nwchem(find_datafile(f"data_{basis.lower()}.nwchem"))
+    atcoords /= 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
 
     py_basis = make_contractions(basis_dict, atsyms, atcoords)
     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
@@ -85,15 +89,18 @@ def test_cbasis_kinetic(basis, atsyms, atcoords, coord_type):
     npt.assert_allclose(lc_kin, py_kin, atol=1e-7, rtol=0)
 
 
-@pytest.mark.parametrize("basis, atsyms, atcoords, coord_type", CASES)
+@pytest.mark.parametrize("coord_type",      TEST_COORD_TYPES)
+@pytest.mark.parametrize("atsyms,atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis",           TEST_BASIS_SETS)
 def test_cbasis_nuclear(basis, atsyms, atcoords, coord_type):
     r"""
     Test gbasis.integrals.libcint.CBasis nuclear electron attraction integrals
     against the GBasis Python nuclear electron attraction integrals.
 
     """
-    atsyms = [sym.strip() for sym in atsyms.split(",")]
-    basis_dict = parse_nwchem(find_datafile(f"data_{basis.lower()}.nwchem"))
+    atcoords /= 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
 
     py_basis = make_contractions(basis_dict, atsyms, atcoords)
     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
@@ -109,7 +116,9 @@ def test_cbasis_nuclear(basis, atsyms, atcoords, coord_type):
     npt.assert_allclose(lc_nuc, py_nuc, atol=1e-7, rtol=0)
 
 
-@pytest.mark.parametrize("basis, atsyms, atcoords, coord_type", CASES)
+@pytest.mark.parametrize("coord_type",      TEST_COORD_TYPES)
+@pytest.mark.parametrize("atsyms,atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis",           TEST_BASIS_SETS)
 def test_cbasis_eri(basis, atsyms, atcoords, coord_type):
     r"""
     Test gbasis.integrals.libcint.CBasis electron repulsion integrals
