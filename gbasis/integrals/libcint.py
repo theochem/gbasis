@@ -5,11 +5,11 @@ Python C-API bindings for ``libcint`` GTO integrals library.
 
 from ctypes import CDLL, cdll, c_int, c_double, c_void_p
 
-from ctypes.util import find_library
-
 from operator import attrgetter, itemgetter
 
-from numpy.ctypeslib import load_library, ndpointer
+from pathlib import Path
+
+from numpy.ctypeslib import ndpointer
 
 import numpy as np
 
@@ -47,7 +47,7 @@ class _LibCInt:
 
     """
 
-    _libcint: CDLL = cdll.LoadLibrary(find_library('cint'))
+    _libcint: CDLL = cdll.LoadLibrary((Path(__file__).parent / "lib" / "libcint.so"))
     r"""
     ``libcint`` shared object library.
 
