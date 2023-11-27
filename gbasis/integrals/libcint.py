@@ -3,6 +3,8 @@ Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
 
+from copy import deepcopy
+
 from ctypes import CDLL, cdll, c_int, c_double, c_void_p
 
 from operator import attrgetter, itemgetter
@@ -226,6 +228,8 @@ class CBasis:
         # Set coord type
         _coord_type = coord_type.lower()
         if _coord_type == "spherical":
+            # Reorder spherical components
+            basis = [reorder_sph_libcint(shell) for shell in basis]
             num_angmom = attrgetter("num_sph")
         elif _coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
@@ -257,7 +261,7 @@ class CBasis:
         for _, contractions in basis:
             nbas += len(contractions)
             for shell in contractions:
-                nbfn += num_angmom(shell) * shell.coeffs.shape[1]
+                nbfn += num_angmom(shell) * shell.num_seg_cont
                 nexp += shell.exps.size
                 ncof += shell.coeffs.size
 
@@ -484,3 +488,14 @@ r"""
 LIBCINT C library handle and binding generator.
 
 """
+
+
+# Utilities
+
+def reorder_sph_libcint(shell):
+    r"""Reorder the spherical components of the shell to fit Libcint's convention."""
+    # Don't overwrite the original shell passed into CBasis
+    # shell = deepcopy(shell)
+    # Set the new convention based on the value of `angmom`
+    # shell.angmom_components_sph = (..., ..., ...)
+    return shell
