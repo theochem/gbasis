@@ -3,8 +3,6 @@ Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
 
-from copy import deepcopy
-
 from ctypes import CDLL, cdll, c_int, c_double, c_void_p
 
 from operator import attrgetter, itemgetter
@@ -20,6 +18,20 @@ __all__ = [
     "LIBCINT",
     "CBasis",
 ]
+
+
+CART_CONVENTIONS = tuple(list(range(((i + 1) * (i + 2)) // 2)) for i in range(7))
+
+
+SPH_CONVENTIONS = (
+    [0],
+    [2, 0, 1],
+    [4, 3, 2, 0, 1],
+    [0, 1, 2, 3, 4, 5, 6], # TODO
+    [0, 1, 2, 3, 4, 5, 6, 7, 8], # TODO
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], # TODO
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], # TODO
+)
 
 
 ELEMENTS = (
@@ -112,7 +124,7 @@ class _LibCInt:
                 cfunc.argtypes = [
                     c_int,
                     ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                    ]
+                ]
                 cfunc.restype = c_int
 
             elif attr == 'CINTgto_norm':
@@ -123,7 +135,7 @@ class _LibCInt:
                 cfunc.argtypes = [
                     ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
                     c_int,
-                    ]
+                ]
                 cfunc.restype = c_int
 
             elif attr.startswith('CINTshells'):
@@ -131,7 +143,7 @@ class _LibCInt:
                     ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
                     ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
                     c_int,
-                    ]
+                ]
 
             elif attr.startswith('cint1e') and not attr.endswith('optimizer'):
                 cfunc.argtypes = [
@@ -151,7 +163,7 @@ class _LibCInt:
                     ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                     # opt (not used; put ``None`` as this argument)
                     c_void_p,
-                    ]
+                ]
                 cfunc.restype = c_int
 
             elif attr.startswith('cint2e') and not attr.endswith('optimizer'):
@@ -172,7 +184,7 @@ class _LibCInt:
                     ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                     # opt (not used; put ``None`` as this argument)
                     c_void_p,
-                    ]
+                ]
                 cfunc.restype = c_int
 
             else:
@@ -226,13 +238,13 @@ class CBasis:
 
         """
         # Set coord type
-        _coord_type = coord_type.lower()
-        if _coord_type == "spherical":
-            # Reorder spherical components
-            basis = [reorder_sph_libcint(shell) for shell in basis]
+        coord_type = coord_type.lower()
+        if coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-        elif _coord_type == "cartesian":
+            convs = SPH_CONVENTIONS
+        elif coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
+            convs = CART_CONVENTIONS
         else:
             raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
@@ -324,6 +336,9 @@ class CBasis:
             # Icrement atomic center
             iatm += 1
 
+        # Save coord type
+        self.coord_type = coord_type
+
         # Save inputs to `libcint` functions
         self.natm = natm
         self.nbas = nbas
@@ -340,13 +355,13 @@ class CBasis:
         # Make individual integral evaluation methods via `make_intNe` macros:
 
         # Kinetic energy integral
-        self.kin = self.make_int1e(LIBCINT["cint1e_kin_cart" if _coord_type == "cartesian" else "cint1e_kin_sph"])
+        self.kin = self.make_int1e(LIBCINT["cint1e_kin_cart" if coord_type == "cartesian" else "cint1e_kin_sph"])
         # Nuclear-electron attraction integral
-        self.nuc = self.make_int1e(LIBCINT["cint1e_nuc_cart" if _coord_type == "cartesian" else "cint1e_nuc_sph"])
+        self.nuc = self.make_int1e(LIBCINT["cint1e_nuc_cart" if coord_type == "cartesian" else "cint1e_nuc_sph"])
         # Overlap integral
-        self.olp = self.make_int1e(LIBCINT["cint1e_ovlp_cart" if _coord_type == "cartesian" else "cint1e_ovlp_sph"])
+        self.olp = self.make_int1e(LIBCINT["cint1e_ovlp_cart" if coord_type == "cartesian" else "cint1e_ovlp_sph"])
         # Electron repulsion integral
-        self.eri = self.make_int2e(LIBCINT["cint2e_cart" if _coord_type == "cartesian" else "cint2e_sph"])
+        self.eri = self.make_int2e(LIBCINT["cint2e_cart" if coord_type == "cartesian" else "cint2e_sph"])
 
     def make_int1e(self, func):
         r"""
@@ -367,20 +382,22 @@ class CBasis:
             out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
             # Evaluate the integral function over all shells
             ipos = 0
-            for ibas in range(self.nbas):
-                shls[0] = ibas
-                p_off = self.offsets[ibas]
+            for ishl in range(self.nbas):
+                i_conv = self.convs[self.bas[ishl, 1]]
+                shls[0] = ishl
+                p_off = self.offsets[ishl]
                 jpos = 0
-                for jbas in range(ibas + 1):
-                    shls[1] = jbas
-                    q_off = self.offsets[jbas]
+                for jshl in range(ishl + 1):
+                    j_conv = self.convs[self.bas[jshl, 1]]
+                    shls[1] = jshl
+                    q_off = self.offsets[jshl]
                     # Call the C function to fill `buf`
                     func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                     # Fill `out` array
                     for p in range(p_off):
-                        i_off = p + ipos
+                        i_off = i_conv[p] + ipos
                         for q in range(q_off):
-                            j_off = q + jpos
+                            j_off = j_conv[q] + jpos
                             val = buf[p * q_off + q]
                             out[i_off, j_off] = val
                             out[j_off, i_off] = val
@@ -421,21 +438,25 @@ class CBasis:
             out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
             # Evaluate the integral function over all shells
             ipos = 0
-            for ibas in range(self.nbas):
-                shls[0] = ibas
-                p_off = self.offsets[ibas]
+            for ishl in range(self.nbas):
+                i_conv = self.convs[self.bas[ishl, 1]]
+                shls[0] = ishl
+                p_off = self.offsets[ishl]
                 jpos = 0
-                for jbas in range(ibas + 1):
-                    ij = ((ibas + 1) * ibas) // 2 + jbas
-                    shls[1] = jbas
-                    q_off = self.offsets[jbas]
+                for jshl in range(ishl + 1):
+                    ij = ((ishl + 1) * ishl) // 2 + jshl
+                    j_conv = self.convs[self.bas[jshl, 1]]
+                    shls[1] = jshl
+                    q_off = self.offsets[jshl]
                     kpos = 0
                     for kshl in range(self.nbas):
+                        k_conv = self.convs[self.bas[kshl, 1]]
                         shls[2] = kshl
                         r_off = self.offsets[kshl]
                         lpos = 0
                         for lshl in range(kshl + 1):
                             kl = ((kshl + 1) * kshl) // 2 + lshl
+                            l_conv = self.convs[self.bas[lshl, 1]]
                             shls[3] = lshl
                             s_off = self.offsets[lshl]
                             if ij < kl:
@@ -445,13 +466,13 @@ class CBasis:
                             func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                             # Fill `out` array
                             for p in range(p_off):
-                                i_off = p + ipos
+                                i_off = i_conv[p] + ipos
                                 for q in range(q_off):
-                                    j_off = q + jpos
+                                    j_off = j_conv[q] + jpos
                                     for r in range(r_off):
-                                        k_off = r + kpos
+                                        k_off = k_conv[r] + kpos
                                         for s in range(s_off):
-                                            l_off = s + lpos
+                                            l_off = l_conv[s] + lpos
                                             val = buf[p * (q_off * r_off * s_off) +
                                                       q * (r_off * s_off) +
                                                       r * (s_off) +
@@ -488,14 +509,3 @@ r"""
 LIBCINT C library handle and binding generator.
 
 """
-
-
-# Utilities
-
-def reorder_sph_libcint(shell):
-    r"""Reorder the spherical components of the shell to fit Libcint's convention."""
-    # Don't overwrite the original shell passed into CBasis
-    # shell = deepcopy(shell)
-    # Set the new convention based on the value of `angmom`
-    # shell.angmom_components_sph = (..., ..., ...)
-    return shell
