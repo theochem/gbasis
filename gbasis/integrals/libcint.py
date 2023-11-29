@@ -5,6 +5,8 @@ Python C-API bindings for ``libcint`` GTO integrals library.
 
 from ctypes import CDLL, cdll, c_int, c_double, c_void_p
 
+from itertools import chain
+
 from operator import attrgetter, itemgetter
 
 from pathlib import Path
@@ -20,18 +22,21 @@ __all__ = [
 ]
 
 
-CART_CONVENTIONS = tuple(list(range(((i + 1) * (i + 2)) // 2)) for i in range(7))
+CART_CONVENTIONS = tuple(tuple(range(((i + 1) * (i + 2)) // 2)) for i in range(7))
+r"""
+Ordering conventions for cartesian subshells.
+
+"""
 
 
-SPH_CONVENTIONS = (
-    [0],
-    [2, 0, 1],
-    [4, 3, 2, 0, 1],
-    [0, 1, 2, 3, 4, 5, 6], # TODO
-    [0, 1, 2, 3, 4, 5, 6, 7, 8], # TODO
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], # TODO
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], # TODO
-)
+# NOTE: This might not capture the correct ordering of d orbitals according to the
+# Libcint Programmer's Reference. It's hard to tell since they describe their
+# spherical subshells in terms of {x,y,z}. Will test once ordering works.
+SPH_CONVENTIONS = tuple(tuple(chain(range(2 * i, i, -1), range(0, i + 1))) for i in range(7))
+r"""
+Ordering conventions for spherical subshells.
+
+"""
 
 
 ELEMENTS = (
@@ -352,16 +357,17 @@ class CBasis:
         self.max_off = max(offsets)
 
 
-        # Make individual integral evaluation methods via `make_intNe` macros:
-
-        # Kinetic energy integral
-        self.kin = self.make_int1e(LIBCINT["cint1e_kin_cart" if coord_type == "cartesian" else "cint1e_kin_sph"])
-        # Nuclear-electron attraction integral
-        self.nuc = self.make_int1e(LIBCINT["cint1e_nuc_cart" if coord_type == "cartesian" else "cint1e_nuc_sph"])
-        # Overlap integral
-        self.olp = self.make_int1e(LIBCINT["cint1e_ovlp_cart" if coord_type == "cartesian" else "cint1e_ovlp_sph"])
-        # Electron repulsion integral
-        self.eri = self.make_int2e(LIBCINT["cint2e_cart" if coord_type == "cartesian" else "cint2e_sph"])
+        # Save integral functiond
+        if coord_type == "cartesian":
+            self.kin = self.make_int1e(LIBCINT.cint1e_kin_cart)
+            self.nuc = self.make_int1e(LIBCINT.cint1e_nuc_cart)
+            self.olp = self.make_int1e(LIBCINT.cint1e_ovlp_cart)
+            self.eri = self.make_int2e(LIBCINT.cint2e_cart)
+        else:
+            self.kin = self.make_int1e(LIBCINT.cint1e_kin_sph)
+            self.nuc = self.make_int1e(LIBCINT.cint1e_nuc_sph)
+            self.olp = self.make_int1e(LIBCINT.cint1e_ovlp_sph)
+            self.eri = self.make_int2e(LIBCINT.cint2e_sph)
 
     def make_int1e(self, func):
         r"""
