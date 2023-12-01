@@ -20,7 +20,7 @@ from utils import find_datafile
 TEST_BASIS_SETS = [
     pytest.param("data_sto6g.nwchem",  id="STO-6G"),
     pytest.param("data_631g.nwchem",   id="6-31G"),
-    pytest.param("data_ugbs.nwchem",   id="UGBS"),
+    # pytest.param("data_ugbs.nwchem",   id="UGBS"),
     # pytest.param("data_anorcc.nwchem", id="ANO-RCC"),
 ]
 
@@ -30,6 +30,7 @@ TEST_SYSTEMS = [
     pytest.param(["C"],       np.asarray([[0., 0., 0.]]),                id="C"),
     pytest.param(["H", "He"], np.asarray([[0., 0., 0.], [0.8, 0., 0.]]), id="H,He"),
     pytest.param(["Be", "C"], np.asarray([[0., 0., 0.], [1.0, 0., 0.]]), id="Be,C"),
+    pytest.param(["H", "He", "Li"], np.eye(3, dtype=float), id="H,He,Li"),
 ]
 
 

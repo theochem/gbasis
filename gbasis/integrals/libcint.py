@@ -22,23 +22,6 @@ __all__ = [
 ]
 
 
-CART_CONVENTIONS = tuple(tuple(range(((i + 1) * (i + 2)) // 2)) for i in range(7))
-r"""
-Ordering conventions for cartesian subshells.
-
-"""
-
-
-# NOTE: This might not capture the correct ordering of d orbitals according to the
-# Libcint Programmer's Reference. It's hard to tell since they describe their
-# spherical subshells in terms of {x,y,z}. Will test once ordering works.
-SPH_CONVENTIONS = tuple(tuple(chain(range(2 * i, i, -1), range(0, i + 1))) for i in range(7))
-r"""
-Ordering conventions for spherical subshells.
-
-"""
-
-
 ELEMENTS = (
     "\0", "H",  "He", "Li", "Be", "B",  "C",  "N",  "O",  "F",  "Ne", "Na",
     "Mg", "Al", "Si", "P",  "S",  "Cl", "Ar", "K",  "Ca", "Sc", "Ti", "V",
@@ -246,10 +229,8 @@ class CBasis:
         coord_type = coord_type.lower()
         if coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-            convs = SPH_CONVENTIONS
         elif coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
-            convs = CART_CONVENTIONS
         else:
             raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
@@ -257,30 +238,16 @@ class CBasis:
         # Process `atnums`
         atnums = [ELEMENTS.index(elem) for elem in atnums]
 
-        # Organize basis by atomic center
-        basis_by_center = {icenter: [] for icenter in set((shell.icenter for shell in basis))}
-        for shell in basis:
-            basis_by_center[shell.icenter].append(shell)
-        basis = sorted(basis_by_center.items(), key=itemgetter(0))
-
-        # Organize basis by atomic center
-        atm_basis = {center: [] for center in set((shell.icenter for shell in basis))}
-        for shell in basis:
-            atm_basis[shell.icenter].append(shell)
-        basis = list(atm_basis.items())
-
-        # Set up counts of atomic centers/shells/gbfs/exps/coeffs
-        natm = len(basis)
-        nbas = 0
+        # Get counts of atoms/shells/bfns/exps/coeffs
+        natm = len(atnums)
+        nbas = len(basis)
         nbfn = 0
         nexp = 0
-        ncof = 0
-        for _, contractions in basis:
-            nbas += len(contractions)
-            for shell in contractions:
-                nbfn += num_angmom(shell) * shell.num_seg_cont
-                nexp += shell.exps.size
-                ncof += shell.coeffs.size
+        ncoe = 0
+        for shell in basis:
+            nbfn += num_angmom(shell) * shell.num_seg_cont
+            nexp += shell.exps.size
+            ncoe += shell.coeffs.size
 
         # Allocate and fill C input arrays
         iatm = 0
@@ -288,10 +255,11 @@ class CBasis:
         ioff = 20
         atm = np.zeros((natm, 6), dtype=c_int)
         bas = np.zeros((nbas, 8), dtype=c_int)
-        env = np.zeros(20 + natm * 4 + nexp + ncof, dtype=c_double)
+        env = np.zeros(20 + natm * 4 + nexp + ncoe, dtype=c_double)
         offsets = np.zeros(nbas, dtype=c_int)
-        # Go to next atomic center's contractions
-        for atnum, atcoord, (_, contractions) in zip(atnums, atcoords, basis):
+
+        # Fill `atm` array
+        for iatm, (atnum, atcoord) in enumerate(zip(atnums, atcoords)):
             # Nuclear charge of `iatm` atom
             atm[iatm, 0] = atnum
             # `env` offset to save xyz coordinates
@@ -308,38 +276,35 @@ class CBasis:
             ioff += 1
             # Reserved/unused in `libcint`
             atm[iatm, 4:6] = 0
-            # Go to next shell
-            for shell in contractions:
-                # Save basis function offsets
-                offsets[ibas] = num_angmom(shell)
-                # Index of corresponding atom
-                bas[ibas, 0] = iatm
-                # Angular momentum
-                bas[ibas, 1] = shell.angmom
-                # Number of primitive GTOs in shell
-                bas[ibas, 2] = shell.coeffs.shape[0]
-                # Number of contracted GTOs in shell
-                bas[ibas, 3] = shell.coeffs.shape[1]
-                # Kappa for spinor GTO; unused here
-                bas[ibas, 4] = 0
-                # `env` offset to save exponents of primitive GTOs
-                bas[ibas, 5] = ioff
-                # Save exponents; increment ioff
-                env[ioff:ioff + shell.exps.size] = shell.exps
-                ioff += shell.exps.size
-                # Save (normalized) coefficients; increment ioff
-                bas[ibas, 6] = ioff
-                env_mat = env[ioff:ioff + shell.coeffs.size].reshape(shell.coeffs.shape, order="F")
-                env_mat[:, :] = shell.coeffs
-                for exp, env_row in zip(shell.exps, env_mat):
-                    env_row *= LIBCINT.CINTgto_norm(shell.angmom, exp)
-                ioff += shell.coeffs.size
-                # Reserved/unused in `libcint`
-                bas[ibas, 7] = 0
-                # Increment contracted GTO
-                ibas += 1
-            # Icrement atomic center
-            iatm += 1
+
+        # Fill `bas` array
+        for ibas, shell in enumerate(basis):
+            # Save basis function offsets
+            offsets[ibas] = num_angmom(shell)
+            # Index of corresponding atom
+            bas[ibas, 0] = shell.icenter
+            # Angular momentum
+            bas[ibas, 1] = shell.angmom
+            # Number of primitive GTOs in shell
+            bas[ibas, 2] = shell.coeffs.shape[0]
+            # Number of contracted GTOs in shell
+            bas[ibas, 3] = shell.coeffs.shape[1]
+            # Kappa for spinor GTO; unused here
+            bas[ibas, 4] = 0
+            # `env` offset to save exponents of primitive GTOs
+            bas[ibas, 5] = ioff
+            # Save exponents; increment ioff
+            env[ioff:ioff + shell.exps.size] = shell.exps
+            ioff += shell.exps.size
+            # Save (normalized) coefficients; increment ioff
+            bas[ibas, 6] = ioff
+            env_mat = env[ioff:ioff + shell.coeffs.size].reshape(shell.coeffs.shape, order="F")
+            env_mat[:, :] = shell.coeffs
+            for exp, env_row in zip(shell.exps, env_mat):
+                env_row *= LIBCINT.CINTgto_norm(shell.angmom, exp)
+            ioff += shell.coeffs.size
+            # Reserved/unused in `libcint`
+            bas[ibas, 7] = 0
 
         # Save coord type
         self.coord_type = coord_type
@@ -355,7 +320,6 @@ class CBasis:
         # Save basis function offsets
         self.offsets = offsets
         self.max_off = max(offsets)
-
 
         # Save integral functiond
         if coord_type == "cartesian":
@@ -389,21 +353,19 @@ class CBasis:
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
-                i_conv = self.convs[self.bas[ishl, 1]]
                 shls[0] = ishl
                 p_off = self.offsets[ishl]
                 jpos = 0
                 for jshl in range(ishl + 1):
-                    j_conv = self.convs[self.bas[jshl, 1]]
                     shls[1] = jshl
                     q_off = self.offsets[jshl]
                     # Call the C function to fill `buf`
                     func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                     # Fill `out` array
                     for p in range(p_off):
-                        i_off = i_conv[p] + ipos
+                        i_off = p + ipos
                         for q in range(q_off):
-                            j_off = j_conv[q] + jpos
+                            j_off = q + jpos
                             val = buf[p * q_off + q]
                             out[i_off, j_off] = val
                             out[j_off, i_off] = val
@@ -445,24 +407,20 @@ class CBasis:
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
-                i_conv = self.convs[self.bas[ishl, 1]]
                 shls[0] = ishl
                 p_off = self.offsets[ishl]
                 jpos = 0
                 for jshl in range(ishl + 1):
                     ij = ((ishl + 1) * ishl) // 2 + jshl
-                    j_conv = self.convs[self.bas[jshl, 1]]
                     shls[1] = jshl
                     q_off = self.offsets[jshl]
                     kpos = 0
                     for kshl in range(self.nbas):
-                        k_conv = self.convs[self.bas[kshl, 1]]
                         shls[2] = kshl
                         r_off = self.offsets[kshl]
                         lpos = 0
                         for lshl in range(kshl + 1):
                             kl = ((kshl + 1) * kshl) // 2 + lshl
-                            l_conv = self.convs[self.bas[lshl, 1]]
                             shls[3] = lshl
                             s_off = self.offsets[lshl]
                             if ij < kl:
@@ -472,13 +430,13 @@ class CBasis:
                             func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                             # Fill `out` array
                             for p in range(p_off):
-                                i_off = i_conv[p] + ipos
+                                i_off = p + ipos
                                 for q in range(q_off):
-                                    j_off = j_conv[q] + jpos
+                                    j_off = q + jpos
                                     for r in range(r_off):
-                                        k_off = k_conv[r] + kpos
+                                        k_off = r + kpos
                                         for s in range(s_off):
-                                            l_off = l_conv[s] + lpos
+                                            l_off = s + lpos
                                             val = buf[p * (q_off * r_off * s_off) +
                                                       q * (r_off * s_off) +
                                                       r * (s_off) +
