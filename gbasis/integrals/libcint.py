@@ -11,8 +11,6 @@ from operator import attrgetter
 
 from pathlib import Path
 
-from numpy.ctypeslib import ndpointer
-
 import numpy as np
 
 from scipy.special import gamma
@@ -43,6 +41,22 @@ This tuple has a placeholder element (the null character) at index zero
 so that the index of each (real) element matches its atomic number.
 
 """
+
+
+def ndptr(*args, **kwargs):
+    r"""
+    Wrapped `numpy.ctypeslib.ndpointer` that accepts null pointers.
+
+    Null pointers are passed via `None` in Python.
+
+    """
+    base = np.ctypeslib.ndpointer(*args, **kwargs)
+
+    def from_param(cls, obj):
+
+        return obj if obj is None else base.from_param(obj)
+
+    return type(base.__name__, (base,), {'from_param': classmethod(from_param)})
 
 
 class _LibCInt:
@@ -106,74 +120,45 @@ class _LibCInt:
             # Make the bound C function
             cfunc = getattr(self._libcint, attr)
 
-            if attr == 'CINTlen_cart':
-                cfunc.argtypes = [c_int]
-                cfunc.restype = c_int
-
-            elif attr == 'CINTlen_spinor':
+            if attr.startswith('int') and not attr.endswith('optimizer'):
                 cfunc.argtypes = [
-                    c_int,
-                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                ]
-                cfunc.restype = c_int
-
-            elif attr == 'CINTgto_norm':
-                cfunc.argtypes = [c_int, c_double]
-                cfunc.restype = c_double
-
-            elif attr.startswith('CINTcgto') or attr.startswith('CINTtot'):
-                cfunc.argtypes = [
-                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                    c_int,
-                ]
-                cfunc.restype = c_int
-
-            elif attr.startswith('CINTshells'):
-                cfunc.argtypes = [
-                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
-                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
-                    c_int,
-                ]
-
-            elif attr.startswith('cint1e') and not attr.endswith('optimizer'):
-                cfunc.argtypes = [
-                    # buf
-                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    # out
+                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    # dims
+                    ndptr(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS')),
                     # shls
-                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    ndptr(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
                     # atm
-                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
                     # natm
                     c_int,
                     # bas
-                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
                     # nbas
                     c_int,
                     # env
-                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
-                    # opt (not used; put ``None`` as this argument)
-                    c_void_p,
+                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # opt
+                    ndptr(dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # cache
+                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                 ]
                 cfunc.restype = c_int
 
-            elif attr.startswith('cint2e') and not attr.endswith('optimizer'):
+            elif attr.startswith('int') and attr.endswith('optimizer'):
                 cfunc.argtypes = [
-                    # buf
-                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
-                    # shls
-                    ndpointer(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
+                    # opt
+                    ndptr(dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
                     # atm
-                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
                     # natm
                     c_int,
                     # bas
-                    ndpointer(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
                     # nbas
                     c_int,
                     # env
-                    ndpointer(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
-                    # opt (not used; put ``None`` as this argument)
-                    c_void_p,
+                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                 ]
                 cfunc.restype = c_int
 
@@ -343,15 +328,15 @@ class CBasis:
 
         # Save integral functions
         if coord_type == "cartesian":
-            self.kin = self.make_int1e(LIBCINT.cint1e_kin_cart)
-            self.nuc = self.make_int1e(LIBCINT.cint1e_nuc_cart)
-            self.olp = self.make_int1e(LIBCINT.cint1e_ovlp_cart)
-            self.eri = self.make_int2e(LIBCINT.cint2e_cart)
+            self.kin = self.make_int1e(LIBCINT.int1e_kin_cart)
+            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart)
+            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart)
+            self.eri = self.make_int2e(LIBCINT.int2e_cart)
         else:
-            self.kin = self.make_int1e(LIBCINT.cint1e_kin_sph)
-            self.nuc = self.make_int1e(LIBCINT.cint1e_nuc_sph)
-            self.olp = self.make_int1e(LIBCINT.cint1e_ovlp_sph)
-            self.eri = self.make_int2e(LIBCINT.cint2e_sph)
+            self.kin = self.make_int1e(LIBCINT.int1e_kin_sph)
+            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph)
+            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph)
+            self.eri = self.make_int2e(LIBCINT.int2e_sph)
 
     def make_int1e(self, func):
         r"""
@@ -380,7 +365,7 @@ class CBasis:
                     shls[1] = jshl
                     q_off = self.mults[jshl]
                     # Call the C function to fill `buf`
-                    func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
+                    func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None, None)
                     # Fill `out` array
                     for p in range(p_off):
                         i_off = p + ipos
@@ -447,7 +432,7 @@ class CBasis:
                                 lpos += s_off
                                 continue
                             # Call the C function to fill `buf`
-                            func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
+                            func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None, None)
                             # Fill `out` array
                             for p in range(p_off):
                                 i_off = p + ipos
@@ -486,16 +471,27 @@ class CBasis:
         return int2e
 
 
+INV_SQRT_PI = 0.56418958354775628694807945156077
+
+
 def normalized_coeffs_sph(shell):
     r"""
     Normalize the spherical GeneralizedContractionShell coefficients.
 
     """
     l = shell.angmom
-    n = (2 ** (2 * l + 3)) * gamma(l + 2) * ((2 * shell.exps) ** (l + 1.5))
-    n /= gamma(2 * l + 3) * (np.pi ** 0.5)
+    n = (INV_SQRT_PI * (2 ** (3 * l + 4.5))) * (gamma(l + 2) / gamma(2 * l + 3))
+    n *= np.power(shell.exps, l + 1.5)
     n **= 0.5
     c = shell.coeffs.copy()
     for ni, ci in zip(n, c):
         ci *= ni
     return c
+
+
+def normalized_coeffs_cart(shell):
+    r"""
+    Normalize the cartesian GeneralizedContractionShell coefficients.
+
+    """
+    return shell.coeffs
