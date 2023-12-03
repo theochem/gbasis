@@ -43,18 +43,21 @@ so that the index of each (real) element matches its atomic number.
 """
 
 
-def ndptr(*args, **kwargs):
+def ndptr(enable_null=False, **kwargs):
     r"""
     Wrapped `numpy.ctypeslib.ndpointer` that accepts null pointers.
 
     Null pointers are passed via `None` in Python.
 
     """
-    base = np.ctypeslib.ndpointer(*args, **kwargs)
-
     def from_param(cls, obj):
 
         return obj if obj is None else base.from_param(obj)
+
+    base = np.ctypeslib.ndpointer(**kwargs)
+
+    if not enable_null:
+        return base
 
     return type(base.__name__, (base,), {'from_param': classmethod(from_param)})
 
@@ -123,9 +126,9 @@ class _LibCInt:
             if attr.startswith('int') and not attr.endswith('optimizer'):
                 cfunc.argtypes = [
                     # out
-                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    ndptr(enable_null=True, dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
                     # dims
-                    ndptr(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS')),
+                    ndptr(enable_null=True, dtype=c_int, ndim=1, flags=('C_CONTIGUOUS')),
                     # shls
                     ndptr(dtype=c_int, ndim=1, flags=('C_CONTIGUOUS',)),
                     # atm
@@ -139,9 +142,9 @@ class _LibCInt:
                     # env
                     ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                     # opt
-                    ndptr(dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
+                    ndptr(enable_null=True, dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
                     # cache
-                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
+                    ndptr(enable_null=True, dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                 ]
                 cfunc.restype = c_int
 
@@ -160,7 +163,6 @@ class _LibCInt:
                     # env
                     ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                 ]
-                cfunc.restype = c_int
 
             else:
                 raise NotImplementedError('there is no ``gbasis`` API for this function')
