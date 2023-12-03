@@ -7,13 +7,15 @@ from ctypes import CDLL, cdll, c_int, c_double, c_void_p
 
 from itertools import chain
 
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
 from pathlib import Path
 
 from numpy.ctypeslib import ndpointer
 
 import numpy as np
+
+from scipy.special import gamma
 
 
 __all__ = [
@@ -204,6 +206,15 @@ class _LibCInt:
         return self.__getattr__(item)
 
 
+# Singleton LibCInt class instance
+
+LIBCINT = _LibCInt()
+r"""
+LIBCINT C library handle and binding generator.
+
+"""
+
+
 class CBasis:
     r"""
     ``libcint`` basis class.
@@ -229,8 +240,10 @@ class CBasis:
         coord_type = coord_type.lower()
         if coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
+            normalized_coeffs = normalized_coeffs_sph
         elif coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
+            normalized_coeffs = normalized_coeffs_cart
         else:
             raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
@@ -240,71 +253,78 @@ class CBasis:
 
         # Get counts of atoms/shells/bfns/exps/coeffs
         natm = len(atnums)
-        nbas = len(basis)
+        nbas = 0
         nbfn = 0
-        nexp = 0
-        ncoe = 0
+        nenv = 20 + 4 * natm
+        mults = []
         for shell in basis:
+            mults.extend([num_angmom(shell)] * shell.num_seg_cont)
+            nbas += shell.num_seg_cont
             nbfn += num_angmom(shell) * shell.num_seg_cont
-            nexp += shell.exps.size
-            ncoe += shell.coeffs.size
+            nenv += shell.exps.size + shell.coeffs.size
+        mults = np.asarray(mults, dtype=c_int)
 
         # Allocate and fill C input arrays
-        iatm = 0
-        ibas = 0
-        ioff = 20
+        ienv = 20
         atm = np.zeros((natm, 6), dtype=c_int)
         bas = np.zeros((nbas, 8), dtype=c_int)
-        env = np.zeros(20 + natm * 4 + nexp + ncoe, dtype=c_double)
-        offsets = np.zeros(nbas, dtype=c_int)
+        env = np.zeros((nenv,), dtype=c_double)
 
         # Fill `atm` array
-        for iatm, (atnum, atcoord) in enumerate(zip(atnums, atcoords)):
-            # Nuclear charge of `iatm` atom
-            atm[iatm, 0] = atnum
+        for atm_row, atnum, atcoord in zip(atm, atnums, atcoords):
+            # Nuclear charge of i'th atom
+            atm_row[0] = atnum
             # `env` offset to save xyz coordinates
-            atm[iatm, 1] = ioff
-            # Save xyz coordinates; increment ioff
-            env[ioff:ioff + 3] = atcoord
-            ioff += 3
-            # Nuclear model of `iatm`; unused here
-            atm[iatm, 2] = 0
+            atm_row[1] = ienv
+            # Save xyz coordinates; increment ienv
+            env[ienv:ienv + 3] = atcoord
+            ienv += 3
+            # Nuclear model of i'th atm; unused here
+            atm_row[2] = 0
             # `env` offset to save nuclear model zeta parameter; unused here
-            atm[iatm, 3] = 0
-            # Save zeta parameter; increment ioff
-            env[ioff:ioff + 1] = 0
-            ioff += 1
+            atm_row[3] = ienv
+            # Save zeta parameter; increment ienv
+            env[ienv:ienv + 1] = 0
+            ienv += 1
             # Reserved/unused in `libcint`
-            atm[iatm, 4:6] = 0
+            atm_row[4:6] = 0
 
         # Fill `bas` array
-        for ibas, shell in enumerate(basis):
-            # Save basis function offsets
-            offsets[ibas] = num_angmom(shell)
-            # Index of corresponding atom
-            bas[ibas, 0] = shell.icenter
-            # Angular momentum
-            bas[ibas, 1] = shell.angmom
-            # Number of primitive GTOs in shell
-            bas[ibas, 2] = shell.coeffs.shape[0]
-            # Number of contracted GTOs in shell
-            bas[ibas, 3] = shell.coeffs.shape[1]
-            # Kappa for spinor GTO; unused here
-            bas[ibas, 4] = 0
-            # `env` offset to save exponents of primitive GTOs
-            bas[ibas, 5] = ioff
-            # Save exponents; increment ioff
-            env[ioff:ioff + shell.exps.size] = shell.exps
-            ioff += shell.exps.size
-            # Save (normalized) coefficients; increment ioff
-            bas[ibas, 6] = ioff
-            env_mat = env[ioff:ioff + shell.coeffs.size].reshape(shell.coeffs.shape, order="F")
-            env_mat[:, :] = shell.coeffs
-            for exp, env_row in zip(shell.exps, env_mat):
-                env_row *= LIBCINT.CINTgto_norm(shell.angmom, exp)
-            ioff += shell.coeffs.size
-            # Reserved/unused in `libcint`
-            bas[ibas, 7] = 0
+        ibas = 0
+        for shell in basis:
+            # Get angular momentum of shell and # of primitive bfns
+            nl = num_angmom(shell)
+            nprim = shell.coeffs.shape[0]
+            # Save exponents; increment ienv
+            iexp = ienv
+            ienv += shell.exps.size
+            env[iexp:ienv] = shell.exps
+            # Save coefficients; increment ienv
+            icoef = ienv
+            ienv += shell.coeffs.size
+            env[icoef:ienv] = normalized_coeffs(shell).reshape(-1, order="F")
+            # Unpack generalized contractions
+            for iprim in range(icoef, icoef + shell.coeffs.size, nprim):
+                # Basis function mult
+                mults[ibas] = nl
+                # Index of corresponding atom
+                bas[ibas, 0] = shell.icenter
+                # Angular momentum
+                bas[ibas, 1] = shell.angmom
+                # Number of primitive GTOs in shell
+                bas[ibas, 2] = nprim
+                # Number of contracted GTOs in shell
+                bas[ibas, 3] = 1
+                # Kappa for spinor GTO; unused here
+                bas[ibas, 4] = 0
+                # `env` offset to save exponents of primitive GTOs
+                bas[ibas, 5] = iexp
+                # `env` offset to save coefficients of segmented contractions
+                bas[ibas, 6] = iprim
+                # Reserved/unused in `libcint`
+                bas[ibas, 7] = 0
+                # Go to next basis function
+                ibas += 1
 
         # Save coord type
         self.coord_type = coord_type
@@ -317,11 +337,11 @@ class CBasis:
         self.bas = bas
         self.env = env
 
-        # Save basis function offsets
-        self.offsets = offsets
-        self.max_off = max(offsets)
+        # Save basis function mults
+        self.mults = mults
+        self.max_mult = max(mults)
 
-        # Save integral functiond
+        # Save integral functions
         if coord_type == "cartesian":
             self.kin = self.make_int1e(LIBCINT.cint1e_kin_cart)
             self.nuc = self.make_int1e(LIBCINT.cint1e_nuc_cart)
@@ -347,18 +367,18 @@ class CBasis:
         def int1e():
             # Make temporary arrays
             shls = np.zeros(2, dtype=c_int)
-            buf = np.zeros(self.max_off ** 2, dtype=c_double)
+            buf = np.zeros(self.max_mult ** 2, dtype=c_double)
             # Make output array
             out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
                 shls[0] = ishl
-                p_off = self.offsets[ishl]
+                p_off = self.mults[ishl]
                 jpos = 0
                 for jshl in range(ishl + 1):
                     shls[1] = jshl
-                    q_off = self.offsets[jshl]
+                    q_off = self.mults[jshl]
                     # Call the C function to fill `buf`
                     func(buf, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None)
                     # Fill `out` array
@@ -401,28 +421,28 @@ class CBasis:
                 raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
             # Make temporary arrays
             shls = np.zeros(4, dtype=c_int)
-            buf = np.zeros(self.max_off ** 4, dtype=c_double)
+            buf = np.zeros(self.max_mult ** 4, dtype=c_double)
             # Make output array
             out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
                 shls[0] = ishl
-                p_off = self.offsets[ishl]
+                p_off = self.mults[ishl]
                 jpos = 0
                 for jshl in range(ishl + 1):
                     ij = ((ishl + 1) * ishl) // 2 + jshl
                     shls[1] = jshl
-                    q_off = self.offsets[jshl]
+                    q_off = self.mults[jshl]
                     kpos = 0
                     for kshl in range(self.nbas):
                         shls[2] = kshl
-                        r_off = self.offsets[kshl]
+                        r_off = self.mults[kshl]
                         lpos = 0
                         for lshl in range(kshl + 1):
                             kl = ((kshl + 1) * kshl) // 2 + lshl
                             shls[3] = lshl
-                            s_off = self.offsets[lshl]
+                            s_off = self.mults[lshl]
                             if ij < kl:
                                 lpos += s_off
                                 continue
@@ -466,10 +486,16 @@ class CBasis:
         return int2e
 
 
-# Singleton LibCInt class instance
+def normalized_coeffs_sph(shell):
+    r"""
+    Normalize the spherical GeneralizedContractionShell coefficients.
 
-LIBCINT = _LibCInt()
-r"""
-LIBCINT C library handle and binding generator.
-
-"""
+    """
+    l = shell.angmom
+    n = (2 ** (2 * l + 3)) * gamma(l + 2) * ((2 * shell.exps) ** (l + 1.5))
+    n /= gamma(2 * l + 3) * (np.pi ** 0.5)
+    n **= 0.5
+    c = shell.coeffs.copy()
+    for ni, ci in zip(n, c):
+        ci *= ni
+    return c

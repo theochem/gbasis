@@ -21,16 +21,17 @@ TEST_BASIS_SETS = [
     pytest.param("data_sto6g.nwchem",  id="STO-6G"),
     pytest.param("data_631g.nwchem",   id="6-31G"),
     # pytest.param("data_ugbs.nwchem",   id="UGBS"),
+    pytest.param("data_ccpvdz.nwchem", id="cc-pVDZ"),
     # pytest.param("data_anorcc.nwchem", id="ANO-RCC"),
 ]
 
 
 TEST_SYSTEMS = [
-    pytest.param(["He"],      np.asarray([[0., 0., 0.]]),                id="He"),
-    pytest.param(["C"],       np.asarray([[0., 0., 0.]]),                id="C"),
-    pytest.param(["H", "He"], np.asarray([[0., 0., 0.], [0.8, 0., 0.]]), id="H,He"),
-    pytest.param(["Be", "C"], np.asarray([[0., 0., 0.], [1.0, 0., 0.]]), id="Be,C"),
-    pytest.param(["H", "He", "Li"], np.eye(3, dtype=float), id="H,He,Li"),
+    pytest.param(["He"],            np.asarray([[0., 0., 0.]]),                id="He"),
+    pytest.param(["C"],             np.asarray([[0., 0., 0.]]),                id="C"),
+    pytest.param(["H", "He"],       np.asarray([[0., 0., 0.], [0.8, 0., 0.]]), id="H,He"),
+    pytest.param(["Be", "C"],       np.asarray([[0., 0., 0.], [1.0, 0., 0.]]), id="Be,C"),
+    pytest.param(["H", "He", "Li"], np.eye(3, dtype=float),                    id="H,He,Li"),
 ]
 
 
@@ -76,29 +77,29 @@ def test_cbasis(basis, atsyms, atcoords, coord_type, integral):
 
     if integral == "olp":
         py_int = overlap_integral(py_basis, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 2)
         lc_int = lc_basis.olp()
-        npt.assert_array_equal(lc_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 2)
 
     elif integral == "kin":
         py_int = kinetic_energy_integral(py_basis, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 2)
         lc_int = lc_basis.kin()
-        npt.assert_array_equal(lc_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 2)
 
     elif integral == "nuc":
         py_int = nuclear_electron_attraction_integral(py_basis, atcoords, atnums, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 2)
         lc_int = lc_basis.nuc()
-        npt.assert_array_equal(lc_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 2)
 
     elif integral == "eri":
         py_int = electron_repulsion_integral(py_basis, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 4)
         lc_int = lc_basis.eri()
-        npt.assert_array_equal(lc_int.shape, lc_basis.nbfn)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 4)
 
     else:
         raise ValueError("Invalid integral name '{integral}' passed")
 
-    npt.assert_allclose(lc_int, py_int, atol=1e-7, rtol=0)
+    npt.assert_allclose(lc_int, py_int, atol=1e-7, rtol=1e-7)

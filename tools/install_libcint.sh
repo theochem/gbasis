@@ -27,9 +27,7 @@ lc_cmake_opts=
 lc_cmake_opts+=' -DWITH_FORTRAN=0'
 lc_cmake_opts+=' -DWITH_CINT2_INTERFACE=1'
 lc_cmake_opts+=' -DWITH_RANGE_COULOMB=1'
-lc_cmake_opts+=' -DWITH_F12=1'
 lc_cmake_opts+=' -DPYPZPX=1'
-lc_cmake_opts+=' -DKEEP_GOING=1'
 
 # Ensure build directory exists and enter it
 mkdir -p "${gbasis_dir}/build"
