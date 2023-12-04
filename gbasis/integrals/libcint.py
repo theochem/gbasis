@@ -11,6 +11,8 @@ from operator import attrgetter
 
 from pathlib import Path
 
+import re
+
 import numpy as np
 
 from scipy.special import gamma
@@ -43,11 +45,18 @@ so that the index of each (real) element matches its atomic number.
 """
 
 
+INTEGRAL_REGEX = re.compile(r'^(?!.*optimizer$)int[12]e.+')
+r"""
+Regex for matching ``libcint`` integral functions.
+
+"""
+
+
 def ndptr(enable_null=False, **kwargs):
     r"""
-    Wrapped `numpy.ctypeslib.ndpointer` that accepts null pointers.
+    Wrapped ``numpy.ctypeslib.ndpointer`` that accepts null pointers.
 
-    Null pointers are passed via `None` in Python.
+    Null pointers are passed via ``None`` in Python.
 
     """
     def from_param(cls, obj):
@@ -114,17 +123,15 @@ class _LibCInt:
 
         """
         try:
-
             # Retrieve previously-cached function
             cfunc = self._cache[attr]
 
         except KeyError:
-
-            # Make the bound C function
-            cfunc = getattr(self._libcint, attr)
-
-            if attr.startswith('int') and not attr.endswith('optimizer'):
-                cfunc.argtypes = [
+            # Check that the attr matches the regex
+            if INTEGRAL_REGEX.match(attr):
+                # Make the bound C function
+                cfunc = getattr(self._libcint, attr)
+                cfunc.argtypes = (
                     # out
                     ndptr(enable_null=True, dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
                     # dims
@@ -145,27 +152,11 @@ class _LibCInt:
                     ndptr(enable_null=True, dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
                     # cache
                     ndptr(enable_null=True, dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
-                ]
+                )
                 cfunc.restype = c_int
 
-            elif attr.startswith('int') and attr.endswith('optimizer'):
-                cfunc.argtypes = [
-                    # opt
-                    ndptr(dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
-                    # atm
-                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
-                    # natm
-                    c_int,
-                    # bas
-                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
-                    # nbas
-                    c_int,
-                    # env
-                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
-                ]
-
             else:
-                raise NotImplementedError('there is no ``gbasis`` API for this function')
+                raise ValueError(f'there is no ``gbasis`` API for the function {attr}')
 
             # Cache the C function
             self._cache[attr] = cfunc
@@ -177,7 +168,7 @@ class _LibCInt:
         r"""
         Helper for returning function pointers from ``libcint`` with proper signatures.
 
-        This is the same as `__getattr__` and exists only for convenience.
+        This is the same as ``__getattr__`` and exists only for convenience.
 
         Parameters
         ----------
@@ -232,7 +223,7 @@ class CBasis:
             num_angmom = attrgetter("num_cart")
             normalized_coeffs = normalized_coeffs_cart
         else:
-            raise ValueError("`coord_type` parameter must be 'spherical' or 'cartesian'; "
+            raise ValueError("``coord_type`` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
 
         # Process `atnums`
@@ -405,7 +396,7 @@ class CBasis:
             elif notation == "chemist":
                 physicist = False
             else:
-                raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
+                raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
             # Make temporary arrays
             shls = np.zeros(4, dtype=c_int)
             buf = np.zeros(self.max_mult ** 4, dtype=c_double)
