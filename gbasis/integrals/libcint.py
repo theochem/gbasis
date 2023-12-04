@@ -323,17 +323,45 @@ class CBasis:
 
         # Save integral functions
         if coord_type == "cartesian":
-            self.kin = self.make_int1e(LIBCINT.int1e_kin_cart)
-            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart)
-            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart)
-            self.eri = self.make_int2e(LIBCINT.int2e_cart)
+            # Integrals
+            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart, comp=1)
+            self.kin = self.make_int1e(LIBCINT.int1e_kin_cart, comp=1)
+            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart, comp=1)
+            self.eri = self.make_int2e(LIBCINT.int2e_cart, comp=1)
+            # Gradients
+            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, comp=3)
+            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, comp=3)
+            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, comp=3)
+            self.olp_d = self.make_int1e(LIBCINT.int1e_ovlpip_cart, comp=3)
+            self.kin_d = self.make_int1e(LIBCINT.int1e_kinip_cart, comp=3)
+            # Hessians
+            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, comp=9)
+            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, comp=9)
+            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, comp=9)
+            self.d_olp_d = self.make_int1e(LIBCINT.int1e_ipovlpip_cart, comp=9)
+            self.d_nuc_d = self.make_int1e(LIBCINT.int1e_ipnucip_cart, comp=9)
+            self.d_kin_d = self.make_int1e(LIBCINT.int1e_ipkinip_cart, comp=9)
         else:
-            self.kin = self.make_int1e(LIBCINT.int1e_kin_sph)
-            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph)
-            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph)
-            self.eri = self.make_int2e(LIBCINT.int2e_sph)
+            # Integrals
+            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph, comp=1)
+            self.kin = self.make_int1e(LIBCINT.int1e_kin_sph, comp=1)
+            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph, comp=1)
+            self.eri = self.make_int2e(LIBCINT.int2e_sph, comp=1)
+            # Gradients
+            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, comp=3)
+            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, comp=3)
+            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, comp=3)
+            self.olp_d = self.make_int1e(LIBCINT.int1e_ovlpip_sph, comp=3)
+            self.kin_d = self.make_int1e(LIBCINT.int1e_kinip_sph, comp=3)
+            # Hessians
+            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, comp=9)
+            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, comp=9)
+            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, comp=9)
+            self.d_olp_d = self.make_int1e(LIBCINT.int1e_ipovlpip_sph, comp=9)
+            self.d_nuc_d = self.make_int1e(LIBCINT.int1e_ipnucip_sph, comp=9)
+            self.d_kin_d = self.make_int1e(LIBCINT.int1e_ipkinip_sph, comp=9)
 
-    def make_int1e(self, func):
+    def make_int1e(self, func, comp=1):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -341,15 +369,22 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
+        comp : int, default=1
+            Number of components in each integral element.
+            E.g., for normal integrals, ``comp=1``, while for nuclear gradients,
+            ``comp=3``, and for nuclear Hessians, ``comp=9``, etc.
 
         """
+        out_shape = (self.nbfn, self.nbfn, comp)
+        buf_shape = comp * self.max_mult ** 2
+        comp_is_1 = comp == 1
         # Make instance-bound integral method
         def int1e():
-            # Make temporary arrays
-            shls = np.zeros(2, dtype=c_int)
-            buf = np.zeros(self.max_mult ** 2, dtype=c_double)
             # Make output array
-            out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
+            out = np.zeros(out_shape, dtype=c_double)
+            # Make temporary arrays
+            buf = np.zeros(buf_shape, dtype=c_double)
+            shls = np.zeros(2, dtype=c_int)
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
@@ -366,7 +401,8 @@ class CBasis:
                         i_off = p + ipos
                         for q in range(q_off):
                             j_off = q + jpos
-                            val = buf[q * p_off + p]
+                            buf_off = comp * (q * p_off + p)
+                            val = buf[buf_off:buf_off + comp]
                             out[i_off, j_off] = val
                             out[j_off, i_off] = val
                     # Reset `buf`
@@ -376,12 +412,12 @@ class CBasis:
                 # Iterate `ipos`
                 ipos += p_off
             # Return integrals in `out` array
-            return out
+            return out.squeeze(axis=2) if comp_is_1 else out
 
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func):
+    def make_int2e(self, func, comp=1):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -389,8 +425,15 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
+        comp : int, default=1
+            Number of components in each integral element.
+            E.g., for normal integrals, ``comp=1``, while for nuclear gradients,
+            ``comp=3``, and for nuclear Hessians, ``comp=9``, etc.
 
         """
+        out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn, comp)
+        buf_shape = comp * self.max_mult ** 4
+        comp_is_1 = comp == 1
         # Make instance-bound integral method
         def int2e(notation="physicist"):
             if notation == "physicist":
@@ -399,11 +442,11 @@ class CBasis:
                 physicist = False
             else:
                 raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
-            # Make temporary arrays
-            shls = np.zeros(4, dtype=c_int)
-            buf = np.zeros(self.max_mult ** 4, dtype=c_double)
             # Make output array
-            out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
+            out = np.zeros(out_shape, dtype=c_double)
+            # Make temporary arrays
+            buf = np.zeros(buf_shape, dtype=c_double)
+            shls = np.zeros(4, dtype=c_int)
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
@@ -437,10 +480,11 @@ class CBasis:
                                         k_off = r + kpos
                                         for s in range(s_off):
                                             l_off = s + lpos
-                                            val = buf[s * (r_off * q_off * p_off) +
-                                                      r * (q_off * p_off) +
-                                                      q * (p_off) +
-                                                      p]
+                                            buf_off = comp * (s * (r_off * q_off * p_off) +
+                                                              r * (q_off * p_off) +
+                                                              q * (p_off) +
+                                                              p)
+                                            val = buf[buf_off:buf_off + comp]
                                             out[i_off, j_off, k_off, l_off] = val
                                             out[i_off, j_off, l_off, k_off] = val
                                             out[j_off, i_off, k_off, l_off] = val
@@ -460,6 +504,8 @@ class CBasis:
                 # Iterate `ipos`
                 ipos += p_off
             # Return integrals in `out` array
+            if comp_is_1:
+                out = out.squeeze(axis=4)
             return out.transpose(0, 2, 1, 3) if physicist else out
 
         # Return instance-bound integral method
@@ -484,9 +530,27 @@ def normalized_coeffs_sph(shell):
     return c
 
 
+PI_TO_THREE_HALVES = 5.5683279968317078452848179821188
+
+
 def normalized_coeffs_cart(shell):
     r"""
     Normalize the cartesian GeneralizedContractionShell coefficients.
 
     """
-    return shell.coeffs
+    l = shell.angmom
+    c = shell.coeffs.copy()
+    d = PI_TO_THREE_HALVES * factorial2(2 * l - 1)
+    n = np.power(2 * shell.exps, l + 1.5) / d
+    n **= 0.5
+    for ni, ci in zip(n, c):
+        ci *= ni
+    n = d * 2 ** -l * sum(
+        ci * cj * (ei + ej) ** (-l - 1.5)
+        for ei, ci in zip(shell.exps, c)
+        for ej, cj in zip(shell.exps, c)
+    )
+    n **= -0.5
+    for ni, ci in zip(n, c):
+        ci *= ni
+    return c

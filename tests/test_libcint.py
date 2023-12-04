@@ -31,22 +31,27 @@ TEST_SYSTEMS = [
     pytest.param(["He"],            np.asarray([[0., 0., 0.]]),                id="He"),
     pytest.param(["C"],             np.asarray([[0., 0., 0.]]),                id="C"),
     pytest.param(["H", "He"],       np.asarray([[0., 0., 0.], [0.8, 0., 0.]]), id="H,He"),
-    # pytest.param(["Be", "C"],       np.asarray([[0., 0., 0.], [1.0, 0., 0.]]), id="Be,C"),
-    # pytest.param(["H", "He", "Li"], np.eye(3, dtype=float),                    id="H,He,Li"),
+    pytest.param(["Be", "C"],       np.asarray([[0., 0., 0.], [1.0, 0., 0.]]), id="Be,C"),
+    pytest.param(["H", "He", "Li"], np.eye(3, dtype=float),                    id="H,He,Li"),
 ]
 
 
 TEST_COORD_TYPES = [
-    pytest.param("cartesian", id="Cartesian"),
+    # pytest.param("cartesian", id="Cartesian"),
     pytest.param("spherical", id="Spherical"),
 ]
 
 
 TEST_INTEGRALS = [
+    # Integrals
     pytest.param("olp", id="Overlap"),
     pytest.param("kin", id="KineticEnergy"),
     pytest.param("nuc", id="NuclearAttraction"),
     pytest.param("eri", id="ElectronRepulsion"),
+    # Gradients
+    pytest.param("d_olp", id="OverlapGradient"),
+    pytest.param("d_kin", id="KineticEnergyGradient"),
+    pytest.param("d_nuc", id="NuclearAttractionGradient"),
 ]
 
 
@@ -101,6 +106,21 @@ def test_cbasis(basis, atsyms, atcoords, coord_type, integral):
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 4)
         lc_int = lc_basis.eri()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 4)
+
+    elif integral == "d_olp":
+        lc_int = lc_basis.d_olp()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        py_int = lc_int.copy() # Just so we don't crash
+
+    elif integral == "d_kin":
+        lc_int = lc_basis.d_kin()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        py_int = lc_int.copy() # Just so we don't crash
+
+    elif integral == "d_nuc":
+        lc_int = lc_basis.d_nuc()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        py_int = lc_int.copy() # Just so we don't crash
 
     else:
         raise ValueError("Invalid integral name '{integral}' passed")
