@@ -15,7 +15,9 @@ import re
 
 import numpy as np
 
-from scipy.special import gamma
+from scipy.special import factorial
+
+from gbasis.utils import factorial2
 
 
 __all__ = [
@@ -364,7 +366,7 @@ class CBasis:
                         i_off = p + ipos
                         for q in range(q_off):
                             j_off = q + jpos
-                            val = buf[p * q_off + q]
+                            val = buf[q * p_off + p]
                             out[i_off, j_off] = val
                             out[j_off, i_off] = val
                     # Reset `buf`
@@ -435,10 +437,10 @@ class CBasis:
                                         k_off = r + kpos
                                         for s in range(s_off):
                                             l_off = s + lpos
-                                            val = buf[p * (q_off * r_off * s_off) +
-                                                      q * (r_off * s_off) +
-                                                      r * (s_off) +
-                                                      s]
+                                            val = buf[s * (r_off * q_off * p_off) +
+                                                      r * (q_off * p_off) +
+                                                      q * (p_off) +
+                                                      p]
                                             out[i_off, j_off, k_off, l_off] = val
                                             out[i_off, j_off, l_off, k_off] = val
                                             out[j_off, i_off, k_off, l_off] = val
@@ -473,10 +475,10 @@ def normalized_coeffs_sph(shell):
 
     """
     l = shell.angmom
-    n = (INV_SQRT_PI * (2 ** (3 * l + 4.5))) * (gamma(l + 2) / gamma(2 * l + 3))
+    c = shell.coeffs.copy()
+    n = (INV_SQRT_PI * (2 ** (3 * l + 4.5))) * (factorial(l + 1) / factorial(2 * l + 2))
     n *= np.power(shell.exps, l + 1.5)
     n **= 0.5
-    c = shell.coeffs.copy()
     for ni, ci in zip(n, c):
         ci *= ni
     return c
