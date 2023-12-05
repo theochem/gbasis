@@ -328,6 +328,12 @@ class CBasis:
             self.kin = self.make_int1e(LIBCINT.int1e_kin_cart, comp=(1,))
             self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart, comp=(1,))
             self.eri = self.make_int2e(LIBCINT.int2e_cart, comp=(1,))
+            self.moment1 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
+            self.moment2 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
+            self.moment3 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
+            self.moment4 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
+            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_cart, comp=(1,), origin=True)
+            self.pntchrg = self.make_int1e(LIBCINT.int1e_rinv_cart, comp=(1,), point_charge=True)
             # Gradients
             self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, comp=(self.natm, 3))
             self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, comp=(self.natm, 3))
@@ -347,6 +353,12 @@ class CBasis:
             self.kin = self.make_int1e(LIBCINT.int1e_kin_sph, comp=(1,))
             self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph, comp=(1,))
             self.eri = self.make_int2e(LIBCINT.int2e_sph, comp=(1,))
+            self.moment1 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
+            self.moment2 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
+            self.moment3 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
+            self.moment4 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
+            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_sph, comp=(1,), origin=True)
+            self.pntchrg = self.make_int1e(LIBCINT.int1e_rinv_sph, comp=(1,), point_charge=True)
             # Gradients
             self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, comp=(self.natm, 3))
             self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, comp=(self.natm, 3))
@@ -361,7 +373,7 @@ class CBasis:
             self.d_nuc_d = self.make_int1e(LIBCINT.int1e_ipnucip_sph, comp=(self.natm, 3, self.natm, 3))
             self.d_kin_d = self.make_int1e(LIBCINT.int1e_ipkinip_sph, comp=(self.natm, 3, self.natm, 3))
 
-    def make_int1e(self, func, comp=(1,)):
+    def make_int1e(self, func, comp=(1,), origin=False, point_charge=False):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -369,10 +381,14 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
-        comp : tuple, default=1
+        comp : tuple, default=(1,)
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
             ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
+        origin : bool, default=False
+            Whether to provide the origin ``R_C`` of ``(r - R_C)`` in dipole and GIAO operators.
+        point_charge : bool, default=False
+            Whether to provide the origin ``R_O`` in ``1 / |r - R_O|``.
 
         """
         # Handle multi-component integral values
@@ -382,8 +398,22 @@ class CBasis:
             comp = (1,)
         out_shape = (self.nbfn, self.nbfn, prod_comp)
         buf_shape = prod_comp * self.max_mult ** 2
+
+        # Handle keyword components (rename, so as to not be shadowed in the returned function)
+        make_origin = origin
+        make_point_charge = point_charge
+
         # Make instance-bound integral method
-        def int1e():
+        def int1e(origin=None, point_charge=None):
+            # Handle keyword arguments
+            if origin is not None:
+                self.env[1:4] = origin
+            elif make_origin:
+                raise ValueError("``origin`` parameter was not provided")
+            if point_charge is not None:
+                self.env[4:7] = point_charge
+            elif make_point_charge:
+                raise ValueError("``point_charge`` parameter was not provided")
             # Make output array
             out = np.zeros(out_shape, dtype=c_double)
             # Make temporary arrays
@@ -421,7 +451,7 @@ class CBasis:
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, comp=1):
+    def make_int2e(self, func, comp=(1,), origin=False, point_charge=False):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -429,10 +459,14 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
-        comp : tuple, default=1
+        comp : tuple, default=(1,)
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
             ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
+        origin : bool, default=False
+            Whether to provide the origin ``R_C`` of ``(r - R_C)`` in dipole and GIAO operators.
+        point_charge : bool, default=False
+            Whether to provide the origin ``R_O`` in ``1 / |r - R_O|``.
 
         """
         # Handle multi-component integral values
@@ -442,14 +476,29 @@ class CBasis:
             comp = (1,)
         out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn, prod_comp)
         buf_shape = prod_comp * self.max_mult ** 4
+
+        # Handle keyword components (rename, so as to not be shadowed in the returned function)
+        make_origin = origin
+        make_point_charge = point_charge
+
         # Make instance-bound integral method
-        def int2e(notation="physicist"):
+        def int2e(origin=None, point_charge=None, notation="physicist"):
+            # Handle ``notation`` argument
             if notation == "physicist":
                 physicist = True
             elif notation == "chemist":
                 physicist = False
             else:
                 raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
+            # Handle keyword arguments
+            if origin is not None:
+                self.env[1:4] = origin
+            elif make_origin:
+                raise ValueError("``origin`` parameter was not provided")
+            if point_charge is not None:
+                self.env[4:7] = point_charge
+            elif make_point_charge:
+                raise ValueError("``point_charge`` parameter was not provided")
             # Make output array
             out = np.zeros(out_shape, dtype=c_double)
             # Make temporary arrays
