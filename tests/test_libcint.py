@@ -109,17 +109,17 @@ def test_cbasis(basis, atsyms, atcoords, coord_type, integral):
 
     elif integral == "d_olp":
         lc_int = lc_basis.d_olp()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
         py_int = lc_int.copy() # Just so we don't crash
 
     elif integral == "d_kin":
         lc_int = lc_basis.d_kin()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
         py_int = lc_int.copy() # Just so we don't crash
 
     elif integral == "d_nuc":
         lc_int = lc_basis.d_nuc()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
         py_int = lc_int.copy() # Just so we don't crash
 
     else:
