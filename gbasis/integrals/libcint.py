@@ -328,52 +328,30 @@ class CBasis:
             self.kin = self.make_int1e(LIBCINT.int1e_kin_cart, comp=(1,))
             self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart, comp=(1,))
             self.eri = self.make_int2e(LIBCINT.int2e_cart, comp=(1,))
-            self.moment1 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
-            self.moment2 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
-            self.moment3 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
-            self.moment4 = self.make_int1e(LIBCINT.int1e_r_cart, comp=(1,))
-            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_cart, comp=(1,), origin=True)
-            self.pntchrg = self.make_int1e(LIBCINT.int1e_rinv_cart, comp=(1,), point_charge=True)
             # Gradients
             self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, comp=(self.natm, 3))
             self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, comp=(self.natm, 3))
             self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, comp=(self.natm, 3))
-            self.olp_d = self.make_int1e(LIBCINT.int1e_ovlpip_cart, comp=(self.natm, 3))
-            self.kin_d = self.make_int1e(LIBCINT.int1e_kinip_cart, comp=(self.natm, 3))
             # Hessians
             self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, comp=(self.natm, 3, self.natm, 3))
             self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, comp=(self.natm, 3, self.natm, 3))
             self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, comp=(self.natm, 3, self.natm, 3))
-            self.d_olp_d = self.make_int1e(LIBCINT.int1e_ipovlpip_cart, comp=(self.natm, 3, self.natm, 3))
-            self.d_nuc_d = self.make_int1e(LIBCINT.int1e_ipnucip_cart, comp=(self.natm, 3, self.natm, 3))
-            self.d_kin_d = self.make_int1e(LIBCINT.int1e_ipkinip_cart, comp=(self.natm, 3, self.natm, 3))
         else:
             # Integrals
             self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph, comp=(1,))
             self.kin = self.make_int1e(LIBCINT.int1e_kin_sph, comp=(1,))
             self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph, comp=(1,))
             self.eri = self.make_int2e(LIBCINT.int2e_sph, comp=(1,))
-            self.moment1 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
-            self.moment2 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
-            self.moment3 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
-            self.moment4 = self.make_int1e(LIBCINT.int1e_r_sph, comp=(1,))
-            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_sph, comp=(1,), origin=True)
-            self.pntchrg = self.make_int1e(LIBCINT.int1e_rinv_sph, comp=(1,), point_charge=True)
             # Gradients
             self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, comp=(self.natm, 3))
             self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, comp=(self.natm, 3))
             self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, comp=(self.natm, 3))
-            self.olp_d = self.make_int1e(LIBCINT.int1e_ovlpip_sph, comp=(self.natm, 3))
-            self.kin_d = self.make_int1e(LIBCINT.int1e_kinip_sph, comp=(self.natm, 3))
             # Hessians
             self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, comp=(self.natm, 3, self.natm, 3))
             self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, comp=(self.natm, 3, self.natm, 3))
             self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, comp=(self.natm, 3, self.natm, 3))
-            self.d_olp_d = self.make_int1e(LIBCINT.int1e_ipovlpip_sph, comp=(self.natm, 3, self.natm, 3))
-            self.d_nuc_d = self.make_int1e(LIBCINT.int1e_ipnucip_sph, comp=(self.natm, 3, self.natm, 3))
-            self.d_kin_d = self.make_int1e(LIBCINT.int1e_ipkinip_sph, comp=(self.natm, 3, self.natm, 3))
 
-    def make_int1e(self, func, comp=(1,), origin=False, point_charge=False):
+    def make_int1e(self, func, comp=(1,)):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -385,10 +363,6 @@ class CBasis:
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
             ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
-        origin : bool, default=False
-            Whether to provide the origin ``R_C`` of ``(r - R_C)`` in dipole and GIAO operators.
-        point_charge : bool, default=False
-            Whether to provide the origin ``R_O`` in ``1 / |r - R_O|``.
 
         """
         # Handle multi-component integral values
@@ -399,21 +373,8 @@ class CBasis:
         out_shape = (self.nbfn, self.nbfn, prod_comp)
         buf_shape = prod_comp * self.max_mult ** 2
 
-        # Handle keyword components (rename, so as to not be shadowed in the returned function)
-        make_origin = origin
-        make_point_charge = point_charge
-
         # Make instance-bound integral method
-        def int1e(origin=None, point_charge=None):
-            # Handle keyword arguments
-            if origin is not None:
-                self.env[1:4] = origin
-            elif make_origin:
-                raise ValueError("``origin`` parameter was not provided")
-            if point_charge is not None:
-                self.env[4:7] = point_charge
-            elif make_point_charge:
-                raise ValueError("``point_charge`` parameter was not provided")
+        def int1e():
             # Make output array
             out = np.zeros(out_shape, dtype=c_double)
             # Make temporary arrays
@@ -451,7 +412,7 @@ class CBasis:
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, comp=(1,), origin=False, point_charge=False):
+    def make_int2e(self, func, comp=(1,)):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -463,10 +424,6 @@ class CBasis:
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
             ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
-        origin : bool, default=False
-            Whether to provide the origin ``R_C`` of ``(r - R_C)`` in dipole and GIAO operators.
-        point_charge : bool, default=False
-            Whether to provide the origin ``R_O`` in ``1 / |r - R_O|``.
 
         """
         # Handle multi-component integral values
@@ -477,12 +434,8 @@ class CBasis:
         out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn, prod_comp)
         buf_shape = prod_comp * self.max_mult ** 4
 
-        # Handle keyword components (rename, so as to not be shadowed in the returned function)
-        make_origin = origin
-        make_point_charge = point_charge
-
         # Make instance-bound integral method
-        def int2e(origin=None, point_charge=None, notation="physicist"):
+        def int2e(notation="physicist"):
             # Handle ``notation`` argument
             if notation == "physicist":
                 physicist = True
@@ -490,15 +443,6 @@ class CBasis:
                 physicist = False
             else:
                 raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
-            # Handle keyword arguments
-            if origin is not None:
-                self.env[1:4] = origin
-            elif make_origin:
-                raise ValueError("``origin`` parameter was not provided")
-            if point_charge is not None:
-                self.env[4:7] = point_charge
-            elif make_point_charge:
-                raise ValueError("``point_charge`` parameter was not provided")
             # Make output array
             out = np.zeros(out_shape, dtype=c_double)
             # Make temporary arrays
@@ -570,6 +514,47 @@ class CBasis:
 
         # Return instance-bound integral method
         return int2e
+
+    def pntchrg(self, point_coords, point_charges):
+        r"""Point charge integral."""
+        # Make output array
+        ncharge = len(point_charges)
+        out = np.zeros((self.nbfn, self.nbfn, ncharge), dtype=c_double)
+        # Make temporary arrays
+        buf = np.zeros(self.max_mult ** 2, dtype=c_double)
+        shls = np.zeros(2, dtype=c_int)
+        # Evaluate the integral function over all shells
+        func = LIBCINT["int1e_rinv_cart" if self.coord_type == "cartesian" else "int1e_rinv_sph"]
+        for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
+            # Set R_O of 1/|r - R_O|
+            self.env[4:7] = coord
+            ipos = 0
+            for ishl in range(self.nbas):
+                shls[0] = ishl
+                p_off = self.mults[ishl]
+                jpos = 0
+                for jshl in range(ishl + 1):
+                    shls[1] = jshl
+                    q_off = self.mults[jshl]
+                    # Call the C function to fill `buf`
+                    func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None, None)
+                    # Fill `out` array
+                    for p in range(p_off):
+                        i_off = p + ipos
+                        for q in range(q_off):
+                            j_off = q + jpos
+                            val = buf[q * p_off + p] * -charge
+                            out[i_off, j_off, icharge] = val
+                            if i_off != j_off:
+                                out[j_off, i_off, icharge] = val
+                    # Reset `buf`
+                    buf[:] = 0
+                    # Iterate `jpos`
+                    jpos += q_off
+                # Iterate `ipos`
+                ipos += p_off
+        # Return integrals in `out` array
+        return out
 
 
 INV_SQRT_PI = 0.56418958354775628694807945156077

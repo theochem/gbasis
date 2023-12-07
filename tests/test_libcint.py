@@ -5,10 +5,14 @@ import pytest
 import numpy as np
 import numpy.testing as npt
 
-from gbasis.integrals.overlap import overlap_integral
-from gbasis.integrals.kinetic_energy import kinetic_energy_integral
-from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attraction_integral
+from gbasis.integrals.angular_momentum import angular_momentum_integral
 from gbasis.integrals.electron_repulsion import electron_repulsion_integral
+from gbasis.integrals.kinetic_energy import kinetic_energy_integral
+from gbasis.integrals.moment import moment_integral
+from gbasis.integrals.momentum import momentum_integral
+from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attraction_integral
+from gbasis.integrals.overlap import overlap_integral
+from gbasis.integrals.point_charge import point_charge_integral
 
 from gbasis.integrals.libcint import ELEMENTS, LIBCINT, CBasis
 
@@ -43,15 +47,25 @@ TEST_COORD_TYPES = [
 
 
 TEST_INTEGRALS = [
-    # Integrals
     pytest.param("olp", id="Overlap"),
     pytest.param("kin", id="KineticEnergy"),
     pytest.param("nuc", id="NuclearAttraction"),
     pytest.param("eri", id="ElectronRepulsion"),
-    # Gradients
-    pytest.param("d_olp", id="OverlapGradient"),
-    pytest.param("d_kin", id="KineticEnergyGradient"),
-    pytest.param("d_nuc", id="NuclearAttractionGradient"),
+    pytest.param("pntchrg", id="PointCharge"),
+]
+
+
+TEST_GRADIENTS = [
+    pytest.param("d_olp", id="Overlap"),
+    pytest.param("d_kin", id="KineticEnergy"),
+    pytest.param("d_nuc", id="NuclearAttraction"),
+]
+
+
+TEST_HESSIANS = [
+    pytest.param("d2_olp", id="Overlap"),
+    pytest.param("d2_kin", id="KineticEnergy"),
+    pytest.param("d2_nuc", id="NuclearAttraction"),
 ]
 
 
@@ -59,7 +73,7 @@ TEST_INTEGRALS = [
 @pytest.mark.parametrize("coord_type",       TEST_COORD_TYPES)
 @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
 @pytest.mark.parametrize("basis",            TEST_BASIS_SETS)
-def test_cbasis(basis, atsyms, atcoords, coord_type, integral):
+def test_integral(basis, atsyms, atcoords, coord_type, integral):
     r"""
     Test gbasis.integrals.libcint.CBasis integrals
     against the GBasis Python integrals.
@@ -85,49 +99,118 @@ def test_cbasis(basis, atsyms, atcoords, coord_type, integral):
 
     if integral == "olp":
         py_int = overlap_integral(py_basis, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 2)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.olp()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 2)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "kin":
         py_int = kinetic_energy_integral(py_basis, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 2)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.kin()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 2)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "nuc":
         py_int = nuclear_electron_attraction_integral(py_basis, atcoords, atnums, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 2)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.nuc()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 2)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "eri":
         py_int = electron_repulsion_integral(py_basis, coord_type=coord_type)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn,) * 4)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.eri()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn,) * 4)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn))
 
-    elif integral == "d_olp":
-        lc_int = lc_basis.d_olp()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
-        py_int = lc_int.copy() # Just so we don't crash
-
-    elif integral == "d_kin":
-        lc_int = lc_basis.d_kin()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
-        py_int = lc_int.copy() # Just so we don't crash
-
-    elif integral == "d_nuc":
-        lc_int = lc_basis.d_nuc()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
-        py_int = lc_int.copy() # Just so we don't crash
+    elif integral == "pntchrg":
+        charge_coords = np.asarray([[2., 2., 2.], [-3., -3., -3.], [-1., 2., -3.]])
+        charges = np.asarray([1., 0.666, -3.1415926])
+        for i in range(1, len(charges) + 1):
+            py_int = point_charge_integral(py_basis, charge_coords[:i], charges[:i], coord_type=coord_type)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+            lc_int = lc_basis.pntchrg(charge_coords[:i], charges[:i])
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
 
     else:
         raise ValueError("Invalid integral name '{integral}' passed")
 
-    diff = np.bitwise_not(np.isclose(lc_int, py_int, atol=atol, rtol=rtol).reshape(-1))
-    if np.any(diff):
-        with np.printoptions(threshold=1000):
-            print(f"\nGBASIS\n{py_int.reshape(-1)[diff]}\nLIBCINT\n{lc_int.reshape(-1)[diff]}")
-
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+
+# @pytest.mark.parametrize("gradient",         TEST_GRADIENTS)
+# @pytest.mark.parametrize("coord_type",       TEST_COORD_TYPES)
+# @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+# @pytest.mark.parametrize("basis",            TEST_BASIS_SETS)
+# def test_gradient(basis, atsyms, atcoords, coord_type, gradient):
+#     r"""
+#     Test gbasis.integrals.libcint.CBasis gradients against ???.
+#
+#     """
+#
+#     atol, rtol = 1e-4, 1e-4
+#
+#     atcoords = atcoords / 0.5291772083
+#
+#     atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+#
+#     basis_dict = parse_nwchem(find_datafile(basis))
+#
+#     py_basis = make_contractions(basis_dict, atsyms, atcoords)
+#
+#     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+#
+#     if gradient == "d_olp":
+#         lc_int = lc_basis.d_olp()
+#         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
+#
+#     elif gradient == "d_kin":
+#         lc_int = lc_basis.d_kin()
+#         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
+#
+#     elif gradient == "d_nuc":
+#         lc_int = lc_basis.d_nuc()
+#         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
+#
+#     else:
+#         raise ValueError("Invalid gradient name '{integral}' passed")
+#
+#     # npt.assert_allclose(lc_grad, py_grad, atol=atol, rtol=rtol)
+
+
+# @pytest.mark.parametrize("hessian",          TEST_HESSIANS)
+# @pytest.mark.parametrize("coord_type",       TEST_COORD_TYPES)
+# @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+# @pytest.mark.parametrize("basis",            TEST_BASIS_SETS)
+# def test_hessian(basis, atsyms, atcoords, coord_type, hessian):
+#     r"""
+#     Test gbasis.integrals.libcint.CBasis Hessians against ???.
+#
+#     """
+#
+#     atol, rtol = 1e-4, 1e-4
+#
+#     atcoords = atcoords / 0.5291772083
+#
+#     atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+#
+#     basis_dict = parse_nwchem(find_datafile(basis))
+#
+#     py_basis = make_contractions(basis_dict, atsyms, atcoords)
+#
+#     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+#
+#     if hessian == "d2_olp":
+#         lc_int = lc_basis.d2_olp()
+#         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3, lc_basis.natm, 3))
+#
+#     elif hessian == "d2_kin":
+#         lc_int = lc_basis.d2_kin()
+#         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3, lc_basis.natm, 3))
+#
+#     elif hessian == "d2_nuc":
+#         lc_int = lc_basis.d2_nuc()
+#         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3, lc_basis.natm, 3))
+#
+#     else:
+#         raise ValueError("Invalid gradient name '{integral}' passed")
+#
+#     # npt.assert_allclose(lc_grad, py_grad, atol=atol, rtol=rtol)
