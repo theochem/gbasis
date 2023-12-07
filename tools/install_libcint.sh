@@ -10,6 +10,18 @@ echo ''
 echo '          https://theochem.github.io/gbasis/PLACEHOLDER/'
 echo ''
 
+# Check that a Common Lisp program is installed
+if command -v sbcl > /dev/null; then
+    lisp_program='sbcl --script'
+elif command -v clisp > /dev/null; then
+    lisp_program='clisp'
+else
+    echo 'ERROR: This script requires a Common Lisp interpreter.'
+    echo '       Please install either sbcl or clisp and try again.'
+    echo ''
+    exit 1
+fi
+
 # Terminate script if any command fails
 set -e
 
@@ -38,6 +50,13 @@ cd "${gbasis_dir}/build"
 # Clone Libcint Git repo and enter it
 git clone http://github.com/sunqm/libcint.git
 cd libcint
+
+# Auto-generate integrals
+cd scripts
+python ../../../tools/auto_intor_modify.py auto_intor.cl
+${lisp_program} auto_intor.cl
+mv *.c ../src/autocode
+cd ..
 
 # Setup Libcint build
 mkdir build
