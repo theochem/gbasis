@@ -324,10 +324,11 @@ class CBasis:
         # Save integral functions
         if coord_type == "cartesian":
             # Integrals
-            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart, comp=(1,))
-            self.kin = self.make_int1e(LIBCINT.int1e_kin_cart, comp=(1,))
-            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart, comp=(1,))
-            self.eri = self.make_int2e(LIBCINT.int2e_cart, comp=(1,))
+            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart)
+            self.kin = self.make_int1e(LIBCINT.int1e_kin_cart)
+            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart)
+            self.mom = self.make_int1e(LIBCINT.int1e_mom_cart, comp=(3,), imag=True)
+            self.eri = self.make_int2e(LIBCINT.int2e_cart)
             # Gradients
             self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, comp=(self.natm, 3))
             self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, comp=(self.natm, 3))
@@ -338,10 +339,11 @@ class CBasis:
             self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, comp=(self.natm, 3, self.natm, 3))
         else:
             # Integrals
-            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph, comp=(1,))
-            self.kin = self.make_int1e(LIBCINT.int1e_kin_sph, comp=(1,))
-            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph, comp=(1,))
-            self.eri = self.make_int2e(LIBCINT.int2e_sph, comp=(1,))
+            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph)
+            self.kin = self.make_int1e(LIBCINT.int1e_kin_sph)
+            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph)
+            self.mom = self.make_int1e(LIBCINT.int1e_mom_sph, comp=(3,), imag=True)
+            self.eri = self.make_int2e(LIBCINT.int2e_sph)
             # Gradients
             self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, comp=(self.natm, 3))
             self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, comp=(self.natm, 3))
@@ -351,7 +353,7 @@ class CBasis:
             self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, comp=(self.natm, 3, self.natm, 3))
             self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, comp=(self.natm, 3, self.natm, 3))
 
-    def make_int1e(self, func, comp=(1,)):
+    def make_int1e(self, func, comp=(1,), imag=False):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -363,6 +365,8 @@ class CBasis:
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
             ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
+        imag : bool, default=False
+            Whether the components in each integral element are complex.
 
         """
         # Handle multi-component integral values
@@ -370,6 +374,8 @@ class CBasis:
         comp_is_1 = prod_comp == 1
         if comp_is_1:
             comp = (1,)
+        if imag:
+            prod_comp *= 2
         out_shape = (self.nbfn, self.nbfn, prod_comp)
         buf_shape = prod_comp * self.max_mult ** 2
 
@@ -406,13 +412,18 @@ class CBasis:
                     jpos += q_off
                 # Iterate `ipos`
                 ipos += p_off
+
+            # Cast `out` to complex if `imag` is set
+            if imag:
+                out = out.view(np.complex_)
+
             # Return integrals in `out` array
             return out.squeeze(axis=2) if comp_is_1 else out.reshape(self.nbfn, self.nbfn, *comp)
 
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, comp=(1,)):
+    def make_int2e(self, func, comp=(1,), imag=False):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -424,6 +435,8 @@ class CBasis:
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
             ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
+        imag : bool, default=False
+            Whether the components in each integral element are complex.
 
         """
         # Handle multi-component integral values
@@ -431,6 +444,8 @@ class CBasis:
         comp_is_1 = prod_comp == 1
         if comp_is_1:
             comp = (1,)
+        if imag:
+            prod_comp *= 2
         out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn, prod_comp)
         buf_shape = prod_comp * self.max_mult ** 4
 
@@ -504,6 +519,11 @@ class CBasis:
                     jpos += q_off
                 # Iterate `ipos`
                 ipos += p_off
+
+            # Cast `out` to complex if `imag` is set
+            if imag:
+                out = out.view(np.complex_)
+
             # Return integrals in `out` array
             if physicist:
                 out = out.transpose(0, 2, 1, 3, 4)
