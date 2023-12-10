@@ -335,13 +335,13 @@ class CBasis:
             self.moment4 = self.make_int1e(LIBCINT.int1e_rrrr_cart, components=(3,), is_complex=True, origin=True)
             self.eri = self.make_int2e(LIBCINT.int2e_cart)
             # Gradients
-            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, components=(self.natm, 3))
-            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, components=(self.natm, 3))
-            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, components=(self.natm, 3))
+            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, components=(3,))
+            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, components=(3))
+            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, components=(3,))
             # Hessians
-            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, components=(self.natm, 3, self.natm, 3))
-            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, components=(self.natm, 3, self.natm, 3))
-            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, components=(self.natm, 3, self.natm, 3))
+            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, components=(3, 3))
+            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, components=(3, 3))
+            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, components=(3, 3))
         else:
             # Integrals
             self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph)
@@ -355,13 +355,13 @@ class CBasis:
             self.moment4 = self.make_int1e(LIBCINT.int1e_rrrr_sph, components=(3,), is_complex=True, origin=True)
             self.eri = self.make_int2e(LIBCINT.int2e_sph)
             # Gradients
-            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, components=(self.natm, 3))
-            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, components=(self.natm, 3))
-            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, components=(self.natm, 3))
+            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, components=(3,))
+            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, components=(3))
+            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, components=(3,))
             # Hessians
-            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, components=(self.natm, 3, self.natm, 3))
-            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, components=(self.natm, 3, self.natm, 3))
-            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, components=(self.natm, 3, self.natm, 3))
+            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, components=(3, 3))
+            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, components=(3, 3))
+            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, components=(3, 3))
 
     def make_int1e(self, func, components=tuple(), is_complex=False, origin=False, inv_origin=False):
         r"""
