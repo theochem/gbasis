@@ -327,33 +327,43 @@ class CBasis:
             self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart)
             self.kin = self.make_int1e(LIBCINT.int1e_kin_cart)
             self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart)
-            self.mom = self.make_int1e(LIBCINT.int1e_mom_cart, comp=(3,), imag=True)
+            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_cart, components=(3,), is_complex=True, origin=True)
+            self.mom = self.make_int1e(LIBCINT.int1e_mom_cart, components=(3,), is_complex=True, origin=True)
+            self.moment1 = self.make_int1e(LIBCINT.int1e_r_cart, components=(3,), is_complex=True, origin=True)
+            self.moment2 = self.make_int1e(LIBCINT.int1e_rr_cart, components=(3,), is_complex=True, origin=True)
+            self.moment3 = self.make_int1e(LIBCINT.int1e_rrr_cart, components=(3,), is_complex=True, origin=True)
+            self.moment4 = self.make_int1e(LIBCINT.int1e_rrrr_cart, components=(3,), is_complex=True, origin=True)
             self.eri = self.make_int2e(LIBCINT.int2e_cart)
             # Gradients
-            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, comp=(self.natm, 3))
-            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, comp=(self.natm, 3))
-            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, comp=(self.natm, 3))
+            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, components=(self.natm, 3))
+            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, components=(self.natm, 3))
+            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, components=(self.natm, 3))
             # Hessians
-            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, comp=(self.natm, 3, self.natm, 3))
-            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, comp=(self.natm, 3, self.natm, 3))
-            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, comp=(self.natm, 3, self.natm, 3))
+            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, components=(self.natm, 3, self.natm, 3))
+            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, components=(self.natm, 3, self.natm, 3))
+            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, components=(self.natm, 3, self.natm, 3))
         else:
             # Integrals
             self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph)
             self.kin = self.make_int1e(LIBCINT.int1e_kin_sph)
             self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph)
-            self.mom = self.make_int1e(LIBCINT.int1e_mom_sph, comp=(3,), imag=True)
+            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_sph, components=(3,), is_complex=True, origin=True)
+            self.mom = self.make_int1e(LIBCINT.int1e_mom_sph, components=(3,), is_complex=True, origin=True)
+            self.moment1 = self.make_int1e(LIBCINT.int1e_r_sph, components=(3,), is_complex=True, origin=True)
+            self.moment2 = self.make_int1e(LIBCINT.int1e_rr_sph, components=(3,), is_complex=True, origin=True)
+            self.moment3 = self.make_int1e(LIBCINT.int1e_rrr_sph, components=(3,), is_complex=True, origin=True)
+            self.moment4 = self.make_int1e(LIBCINT.int1e_rrrr_sph, components=(3,), is_complex=True, origin=True)
             self.eri = self.make_int2e(LIBCINT.int2e_sph)
             # Gradients
-            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, comp=(self.natm, 3))
-            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, comp=(self.natm, 3))
-            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, comp=(self.natm, 3))
+            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, components=(self.natm, 3))
+            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, components=(self.natm, 3))
+            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, components=(self.natm, 3))
             # Hessians
-            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, comp=(self.natm, 3, self.natm, 3))
-            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, comp=(self.natm, 3, self.natm, 3))
-            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, comp=(self.natm, 3, self.natm, 3))
+            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, components=(self.natm, 3, self.natm, 3))
+            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, components=(self.natm, 3, self.natm, 3))
+            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, components=(self.natm, 3, self.natm, 3))
 
-    def make_int1e(self, func, comp=(1,), imag=False):
+    def make_int1e(self, func, components=tuple(), is_complex=False, origin=False, inv_origin=False):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -361,31 +371,66 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
-        comp : tuple, default=(1,)
+        components : tuple, default=()
             Shape of components in each integral element.
-            E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
-            ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
-        imag : bool, default=False
+            E.g., for normal integrals, ``comp=()``, while for nuclear gradients,
+            ``components=(Natm, 3)``, and for nuclear Hessians, ``components=(Natm, Natm, 3, 3)``, etc.
+        is_complex : bool, default=False
             Whether the components in each integral element are complex.
+        origin : bool, default=False
+            Whether you must specify an origin ``R`` for the integral computation.
+        inv_origin : bool, default=False
+            Whether you must specify an origin ``1 / |r - R|`` for the integral computation.
 
         """
         # Handle multi-component integral values
-        prod_comp = np.prod(comp)
-        comp_is_1 = prod_comp == 1
-        if comp_is_1:
-            comp = (1,)
-        if imag:
-            prod_comp *= 2
-        out_shape = (self.nbfn, self.nbfn, prod_comp)
+        if len(components) == 0:
+            components = (1,)
+            no_comp = True
+        else:
+            no_comp = False
+        if is_complex:
+            components += (2,)
+        prod_comp = np.prod(components, dtype=int)
+        out_shape = (self.nbfn, self.nbfn) + components
         buf_shape = prod_comp * self.max_mult ** 2
 
+        # Handle [inv_]origin argument (prevent shadowing)
+        has_origin_arg = bool(origin)
+        has_inv_origin_arg = bool(inv_origin)
+
         # Make instance-bound integral method
-        def int1e():
+        def int1e(notation="physicist", origin=None, inv_origin=None):
+
+            # Handle ``notation`` argument
+            if notation not in ("physicist", "chemist"):
+                raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
+
+            # Handle origin argument
+            if has_origin_arg:
+                if origin is None:
+                    raise ValueError("``origin`` must be specified")
+                else:
+                    self.env[1:4] = origin
+            elif origin is not None:
+                raise ValueError("``origin`` must not be specified")
+
+            # Handle inv_origin argument
+            if has_inv_origin_arg:
+                if inv_origin is None:
+                    raise ValueError("``inv_origin`` must be specified")
+                else:
+                    self.env[4:7] = inv_origin
+            elif inv_origin is not None:
+                raise ValueError("``inv_origin`` must not be specified")
+
             # Make output array
             out = np.zeros(out_shape, dtype=c_double)
+
             # Make temporary arrays
             buf = np.zeros(buf_shape, dtype=c_double)
             shls = np.zeros(2, dtype=c_int)
+
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
@@ -403,7 +448,7 @@ class CBasis:
                         for q in range(q_off):
                             j_off = q + jpos
                             buf_off = prod_comp * (q * p_off + p)
-                            val = buf[buf_off:buf_off + prod_comp]
+                            val = buf[buf_off:buf_off + prod_comp].reshape(*components, order="F")
                             out[i_off, j_off] = val
                             out[j_off, i_off] = val
                     # Reset `buf`
@@ -413,17 +458,21 @@ class CBasis:
                 # Iterate `ipos`
                 ipos += p_off
 
-            # Cast `out` to complex if `imag` is set
-            if imag:
-                out = out.view(np.complex_)
+            # Cast `out` to complex if `is_complex` is set
+            if is_complex:
+                out = out.reshape(*out.shape[:-2], out.shape[-2] * 2).view(np.complex_)
+
+            # Remove useless axis in `out` if no `components` was given
+            if no_comp:
+                out = out.squeeze(axis=-1)
 
             # Return integrals in `out` array
-            return out.squeeze(axis=2) if comp_is_1 else out.reshape(self.nbfn, self.nbfn, *comp)
+            return out
 
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, comp=(1,), imag=False):
+    def make_int2e(self, func, components=tuple(), is_complex=False, origin=False, inv_origin=False):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -431,26 +480,37 @@ class CBasis:
         ----------
         func : callable
             ``libcint`` function.
-        comp : tuple, default=(1,)
+        components : tuple, default=()
             Shape of components in each integral element.
-            E.g., for normal integrals, ``comp=(1,)``, while for nuclear gradients,
-            ``comp=(Natm, 3)``, and for nuclear Hessians, ``comp=(Natm, Natm, 3, 3)``, etc.
-        imag : bool, default=False
+            E.g., for normal integrals, ``components=(1,)``, while for nuclear gradients,
+            ``components=(Natm, 3)``, and for nuclear Hessians, ``components=(Natm, Natm, 3, 3)``, etc.
+        is_complex : bool, default=False
             Whether the components in each integral element are complex.
+        origin : bool, default=False
+            Whether you must specify an origin ``R`` for the integral computation.
+        inv_origin : bool, default=False
+            Whether you must specify an origin ``1 / |r - R|`` for the integral computation.
 
         """
         # Handle multi-component integral values
-        prod_comp = np.prod(comp)
-        comp_is_1 = prod_comp == 1
-        if comp_is_1:
-            comp = (1,)
-        if imag:
-            prod_comp *= 2
-        out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn, prod_comp)
+        if len(components) == 0:
+            components = (1,)
+            no_comp = True
+        else:
+            no_comp = False
+        if is_complex:
+            components += (2,)
+        prod_comp = np.prod(components, dtype=int)
+        out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn) + components
         buf_shape = prod_comp * self.max_mult ** 4
 
+        # Handle [inv_]origin argument (prevent shadowing)
+        has_origin_arg = bool(origin)
+        has_inv_origin_arg = bool(inv_origin)
+
         # Make instance-bound integral method
-        def int2e(notation="physicist"):
+        def int2e(notation="physicist", origin=None, inv_origin=None):
+
             # Handle ``notation`` argument
             if notation == "physicist":
                 physicist = True
@@ -458,11 +518,31 @@ class CBasis:
                 physicist = False
             else:
                 raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
+
+            # Handle origin argument
+            if has_origin_arg:
+                if origin is None:
+                    raise ValueError("``origin`` must be specified")
+                else:
+                    self.env[1:4] = origin
+            elif origin is not None:
+                raise ValueError("``origin`` must not be specified")
+
+            # Handle inv_origin argument
+            if has_inv_origin_arg:
+                if inv_origin is None:
+                    raise ValueError("``inv_origin`` must be specified")
+                else:
+                    self.env[4:7] = inv_origin
+            elif inv_origin is not None:
+                raise ValueError("``inv_origin`` must not be specified")
+
             # Make output array
             out = np.zeros(out_shape, dtype=c_double)
             # Make temporary arrays
             buf = np.zeros(buf_shape, dtype=c_double)
             shls = np.zeros(4, dtype=c_int)
+
             # Evaluate the integral function over all shells
             ipos = 0
             for ishl in range(self.nbas):
@@ -500,7 +580,7 @@ class CBasis:
                                                                    r * (q_off * p_off) +
                                                                    q * (p_off) +
                                                                    p)
-                                            val = buf[buf_off:buf_off + prod_comp]
+                                            val = buf[buf_off:buf_off + prod_comp].reshape(*components)
                                             out[i_off, j_off, k_off, l_off] = val
                                             out[i_off, j_off, l_off, k_off] = val
                                             out[j_off, i_off, k_off, l_off] = val
@@ -520,17 +600,20 @@ class CBasis:
                 # Iterate `ipos`
                 ipos += p_off
 
-            # Cast `out` to complex if `imag` is set
-            if imag:
-                out = out.view(np.complex_)
+            # Cast `out` to complex if `is_complex` is set
+            if is_complex:
+                out = out.reshape(*out.shape[:-2], out.shape[-2] * 2).view(np.complex_)
+
+            # Remove useless axis in `out` if no `components` was given
+            if no_comp:
+                out = out.squeeze(axis=-1)
+
+            # Transpose integrals in `out` array to proper notation
+            if physicist:
+                out = out.transpose(0, 2, 1, 3)
 
             # Return integrals in `out` array
-            if physicist:
-                out = out.transpose(0, 2, 1, 3, 4)
-            if comp_is_1:
-                return out.squeeze(axis=4)
-            else:
-                return out.reshape(self.nbfn, self.nbfn, self.nbfn, self.nbfn, *comp)
+            return out
 
         # Return instance-bound integral method
         return int2e

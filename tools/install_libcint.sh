@@ -3,7 +3,7 @@
 # Notice for user
 echo ''
 echo '    NOTE: If this script has been run previously, and it failed, please ensure'
-echo '          the `build/libcint` directory is removed before running it again.'
+echo '          the `build/libcint/build` directory is removed before running it again.'
 echo ''
 echo '    See the GBasis documentation for help:'
 echo ''
@@ -30,7 +30,7 @@ gbasis_dir=$(cd "$(dirname "$(dirname "${0}")")" && pwd)
 
 # Cleanup function; runs on failure or exit
 cleanup() {
-    rm -rf "${gbasis_dir}/build/libcint"
+    rm -rf "${gbasis_dir}/build/libcint/build"
 }
 trap cleanup EXIT
 
@@ -48,8 +48,11 @@ mkdir -p "${gbasis_dir}/build"
 cd "${gbasis_dir}/build"
 
 # Clone Libcint Git repo and enter it
-git clone http://github.com/sunqm/libcint.git
+if [ ! -e "${gbasis_dir}/build/libcint" ]; then
+    git clone http://github.com/sunqm/libcint.git
+fi
 cd libcint
+git checkout .
 
 # Auto-generate integrals
 cd scripts

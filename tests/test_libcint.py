@@ -50,6 +50,7 @@ TEST_INTEGRALS = [
     pytest.param("olp", id="Overlap"),
     pytest.param("kin", id="KineticEnergy"),
     pytest.param("nuc", id="NuclearAttraction"),
+    pytest.param("amom", id="AngularMomentum"),
     pytest.param("mom", id="Momentum"),
     pytest.param("eri", id="ElectronRepulsion"),
     pytest.param("pntchrg", id="PointCharge"),
@@ -116,10 +117,16 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         lc_int = lc_basis.nuc()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
+    elif integral == "amom":
+        py_int = angular_momentum_integral(py_basis, coord_type=coord_type)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        lc_int = lc_basis.amom(origin=np.zeros(3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+
     elif integral == "mom":
         py_int = momentum_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        lc_int = lc_basis.mom()
+        lc_int = lc_basis.mom(origin=np.zeros(3))
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
     elif integral == "eri":
