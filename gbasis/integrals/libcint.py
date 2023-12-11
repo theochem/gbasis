@@ -3,7 +3,9 @@ Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
 
-from ctypes import CDLL, cdll, c_int, c_double, c_void_p
+from contextlib import contextmanager
+
+from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double, c_void_p
 
 from itertools import chain
 
@@ -54,6 +56,13 @@ Regex for matching ``libcint`` integral functions.
 """
 
 
+OPTIMIZER_REGEX = re.compile(r'^(?=.*optimizer$)int[12]e.+')
+r"""
+Regex for matching ``libcint`` optimizer functions.
+
+"""
+
+
 def ndptr(enable_null=False, **kwargs):
     r"""
     Wrapped ``numpy.ctypeslib.ndpointer`` that accepts null pointers.
@@ -71,6 +80,27 @@ def ndptr(enable_null=False, **kwargs):
         return base
 
     return type(base.__name__, (base,), {'from_param': classmethod(from_param)})
+
+
+class PairData(Structure):
+    r"""``libcint`` ``PairData`` class."""
+    _fields_ = [
+        ("rij", c_double * 3),
+        ("eij", c_double),
+        ("cceij", c_double),
+    ]
+
+
+class CINTOpt(Structure):
+    r"""``libcint`` ``CINTOpt`` class."""
+    _fields_ = [
+        ("index_xyz_array", POINTER(POINTER(c_int))),
+        ("non0ctr", POINTER(POINTER(c_int))),
+        ("sortedidx", POINTER(POINTER(c_int))),
+        ("nbas", c_int),
+        ("log_max_coeff", POINTER(POINTER(c_double))),
+        ("pairdata", POINTER(POINTER(PairData))),
+    ]
 
 
 class _LibCInt:
@@ -104,7 +134,14 @@ class _LibCInt:
         Singleton class inializer.
 
         """
-        self._cache = dict()
+        # Make the bound C functions we'll always need here
+        cfunc = self._libcint.CINTdel_optimizer
+        cfunc.argtypes = (POINTER(POINTER(CINTOpt)),)
+
+        # Set up the cache
+        self._cache = {
+            "CINTdel_optimizer": cfunc,
+        }
 
     def __getattr__(self, attr):
         r"""
@@ -135,7 +172,7 @@ class _LibCInt:
                 cfunc = getattr(self._libcint, attr)
                 cfunc.argtypes = (
                     # out
-                    ndptr(enable_null=True, dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
+                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS', 'WRITEABLE')),
                     # dims
                     ndptr(enable_null=True, dtype=c_int, ndim=1, flags=('C_CONTIGUOUS')),
                     # shls
@@ -151,11 +188,29 @@ class _LibCInt:
                     # env
                     ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                     # opt
-                    ndptr(enable_null=True, dtype=c_void_p, ndim=1, flags=('C_CONTIGUOUS',)),
+                    POINTER(CINTOpt),
                     # cache
                     ndptr(enable_null=True, dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
                 )
                 cfunc.restype = c_int
+
+            elif OPTIMIZER_REGEX.match(attr):
+                # Make the bound C function
+                cfunc = getattr(self._libcint, attr)
+                cfunc.argtypes = (
+                    # opt
+                    POINTER(POINTER(CINTOpt)),
+                    # atm
+                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    # natm
+                    c_int,
+                    # bas
+                    ndptr(dtype=c_int, ndim=2, flags=('C_CONTIGUOUS',)),
+                    # nbas
+                    c_int,
+                    # env
+                    ndptr(dtype=c_double, ndim=1, flags=('C_CONTIGUOUS',)),
+                )
 
             else:
                 raise ValueError(f'there is no ``gbasis`` API for the function {attr}')
@@ -321,60 +376,60 @@ class CBasis:
         self.mults = mults
         self.max_mult = max(mults)
 
-        # Save integral functions
-        if coord_type == "cartesian":
-            # Integrals
-            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_cart)
-            self.kin = self.make_int1e(LIBCINT.int1e_kin_cart)
-            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_cart)
-            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_cart, components=(3,), is_complex=True, origin=True)
-            self.mom = self.make_int1e(LIBCINT.int1e_mom_cart, components=(3,), is_complex=True, origin=True)
-            self.moment1 = self.make_int1e(LIBCINT.int1e_r_cart, components=(3,), is_complex=True, origin=True)
-            self.moment2 = self.make_int1e(LIBCINT.int1e_rr_cart, components=(3,), is_complex=True, origin=True)
-            self.moment3 = self.make_int1e(LIBCINT.int1e_rrr_cart, components=(3,), is_complex=True, origin=True)
-            self.moment4 = self.make_int1e(LIBCINT.int1e_rrrr_cart, components=(3,), is_complex=True, origin=True)
-            self.eri = self.make_int2e(LIBCINT.int2e_cart)
-            # Gradients
-            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_cart, components=(3,))
-            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_cart, components=(3))
-            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_cart, components=(3,))
-            self.d_eri = self.make_int2e(LIBCINT.int2e_ip1_cart, components=(3,))
-            # Hessians
-            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_cart, components=(3, 3))
-            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_cart, components=(3, 3))
-            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_cart, components=(3, 3))
-            self.d2_eri = self.make_int2e(LIBCINT.int2e_ipip1_cart, components=(3, 3))
-        else:
-            # Integrals
-            self.olp = self.make_int1e(LIBCINT.int1e_ovlp_sph)
-            self.kin = self.make_int1e(LIBCINT.int1e_kin_sph)
-            self.nuc = self.make_int1e(LIBCINT.int1e_nuc_sph)
-            self.amom = self.make_int1e(LIBCINT.int1e_giao_irjxp_sph, components=(3,), is_complex=True, origin=True)
-            self.mom = self.make_int1e(LIBCINT.int1e_mom_sph, components=(3,), is_complex=True, origin=True)
-            self.moment1 = self.make_int1e(LIBCINT.int1e_r_sph, components=(3,), is_complex=True, origin=True)
-            self.moment2 = self.make_int1e(LIBCINT.int1e_rr_sph, components=(3,), is_complex=True, origin=True)
-            self.moment3 = self.make_int1e(LIBCINT.int1e_rrr_sph, components=(3,), is_complex=True, origin=True)
-            self.moment4 = self.make_int1e(LIBCINT.int1e_rrrr_sph, components=(3,), is_complex=True, origin=True)
-            self.eri = self.make_int2e(LIBCINT.int2e_sph)
-            # Gradients
-            self.d_olp = self.make_int1e(LIBCINT.int1e_ipovlp_sph, components=(3,))
-            self.d_nuc = self.make_int1e(LIBCINT.int1e_ipnuc_sph, components=(3,))
-            self.d_kin = self.make_int1e(LIBCINT.int1e_ipkin_sph, components=(3,))
-            self.d_eri = self.make_int2e(LIBCINT.int2e_ip1_sph, components=(3,))
-            # Hessians
-            self.d2_olp = self.make_int1e(LIBCINT.int1e_ipipovlp_sph, components=(3, 3))
-            self.d2_nuc = self.make_int1e(LIBCINT.int1e_ipipnuc_sph, components=(3, 3))
-            self.d2_kin = self.make_int1e(LIBCINT.int1e_ipipkin_sph, components=(3, 3))
-            self.d2_eri = self.make_int2e(LIBCINT.int2e_ipip1_sph, components=(3, 3))
+        # Integrals
+        self.olp = self.make_int1e("int1e_ovlp")
+        self.kin = self.make_int1e("int1e_kin")
+        self.nuc = self.make_int1e("int1e_nuc")
+        self.amom = self.make_int1e("int1e_giao_irjxp", components=(3,), is_complex=True, origin=True)
+        self.mom = self.make_int1e("int1e_mom", components=(3,), is_complex=True, origin=True)
+        self.moment1 = self.make_int1e("int1e_r", components=(3,), is_complex=True, origin=True)
+        self.moment2 = self.make_int1e("int1e_rr", components=(3,), is_complex=True, origin=True)
+        self.moment3 = self.make_int1e("int1e_rrr", components=(3,), is_complex=True, origin=True)
+        self.moment4 = self.make_int1e("int1e_rrrr", components=(3,), is_complex=True, origin=True)
+        self.eri = self.make_int2e("int2e")
+        # Gradients
+        self.d_olp = self.make_int1e("int1e_ipovlp", components=(3,))
+        self.d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
+        self.d_kin = self.make_int1e("int1e_ipkin", components=(3,))
+        self.d_eri = self.make_int2e("int2e_ip1", components=(3,))
+        # Hessians
+        self.d2_olp = self.make_int1e("int1e_ipipovlp", components=(3, 3))
+        self.d2_nuc = self.make_int1e("int1e_ipipnuc", components=(3, 3))
+        self.d2_kin = self.make_int1e("int1e_ipipkin", components=(3, 3))
+        self.d2_eri = self.make_int2e("int2e_ipip1", components=(3, 3))
 
-    def make_int1e(self, func, components=tuple(), is_complex=False, origin=False, inv_origin=False):
+    @contextmanager
+    def optimizer(self, opt_func):
+        r"""
+        Create an optimizer in a memory-safe manner.
+
+        Parameters
+        ----------
+        opt_init_func : callable
+            A ``libcint`` optimizer C function.
+
+        Yields
+        ------
+        opt : pointer(pointer(CINTOpt))
+            An initialized optimizer pointer.
+
+        """
+        # Initialize optimizer
+        opt = POINTER(CINTOpt)()
+        opt_func(byref(opt), self.atm, self.natm, self.bas, self.nbas, self.env)
+        # Return optimizer for use in calling function
+        yield opt
+        # Free optimizer from memory (always called)
+        LIBCINT.CINTdel_optimizer(byref(opt))
+
+    def make_int1e(self, func_name, components=tuple(), is_complex=False, origin=False, inv_origin=False):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
         Parameters
         ----------
-        func : callable
-            ``libcint`` function.
+        func_name : str
+            ``libcint`` function name.
         components : tuple, default=()
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=()``, while for nuclear gradients,
@@ -387,6 +442,10 @@ class CBasis:
             Whether you must specify an origin ``1 / |r - R|`` for the integral computation.
 
         """
+        # Get C functions
+        func = LIBCINT[func_name + ("_cart" if self.coord_type == "cartesian" else "_sph")]
+        opt_func = LIBCINT[func_name + "_optimizer"]
+
         # Handle multi-component integral values
         if len(components) == 0:
             components = (1,)
@@ -436,31 +495,32 @@ class CBasis:
             shls = np.zeros(2, dtype=c_int)
 
             # Evaluate the integral function over all shells
-            ipos = 0
-            for ishl in range(self.nbas):
-                shls[0] = ishl
-                p_off = self.mults[ishl]
-                jpos = 0
-                for jshl in range(ishl + 1):
-                    shls[1] = jshl
-                    q_off = self.mults[jshl]
-                    # Call the C function to fill `buf`
-                    func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None, None)
-                    # Fill `out` array
-                    for p in range(p_off):
-                        i_off = p + ipos
-                        for q in range(q_off):
-                            j_off = q + jpos
-                            buf_off = prod_comp * (q * p_off + p)
-                            val = buf[buf_off:buf_off + prod_comp].reshape(*components, order="F")
-                            out[i_off, j_off] = val
-                            out[j_off, i_off] = val
-                    # Reset `buf`
-                    buf[:] = 0
-                    # Iterate `jpos`
-                    jpos += q_off
-                # Iterate `ipos`
-                ipos += p_off
+            with self.optimizer(opt_func) as opt:
+                ipos = 0
+                for ishl in range(self.nbas):
+                    shls[0] = ishl
+                    p_off = self.mults[ishl]
+                    jpos = 0
+                    for jshl in range(ishl + 1):
+                        shls[1] = jshl
+                        q_off = self.mults[jshl]
+                        # Call the C function to fill `buf`
+                        func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
+                        # Fill `out` array
+                        for p in range(p_off):
+                            i_off = p + ipos
+                            for q in range(q_off):
+                                j_off = q + jpos
+                                buf_off = prod_comp * (q * p_off + p)
+                                val = buf[buf_off:buf_off + prod_comp].reshape(*components, order="F")
+                                out[i_off, j_off] = val
+                                out[j_off, i_off] = val
+                        # Reset `buf`
+                        buf[:] = 0
+                        # Iterate `jpos`
+                        jpos += q_off
+                    # Iterate `ipos`
+                    ipos += p_off
 
             # Cast `out` to complex if `is_complex` is set
             if is_complex:
@@ -476,14 +536,14 @@ class CBasis:
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func, components=tuple(), is_complex=False, origin=False, inv_origin=False):
+    def make_int2e(self, func_name, components=tuple(), is_complex=False, origin=False, inv_origin=False):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
         Parameters
         ----------
-        func : callable
-            ``libcint`` function.
+        func_name : str
+            ``libcint`` function name.
         components : tuple, default=()
             Shape of components in each integral element.
             E.g., for normal integrals, ``components=(1,)``, while for nuclear gradients,
@@ -496,6 +556,10 @@ class CBasis:
             Whether you must specify an origin ``1 / |r - R|`` for the integral computation.
 
         """
+        # Get C functions
+        func = LIBCINT[func_name + ("_cart" if self.coord_type == "cartesian" else "_sph")]
+        opt_func = LIBCINT[func_name + "_optimizer"]
+
         # Handle multi-component integral values
         if len(components) == 0:
             components = (1,)
@@ -548,61 +612,62 @@ class CBasis:
             shls = np.zeros(4, dtype=c_int)
 
             # Evaluate the integral function over all shells
-            ipos = 0
-            for ishl in range(self.nbas):
-                shls[0] = ishl
-                p_off = self.mults[ishl]
-                jpos = 0
-                for jshl in range(ishl + 1):
-                    ij = ((ishl + 1) * ishl) // 2 + jshl
-                    shls[1] = jshl
-                    q_off = self.mults[jshl]
-                    kpos = 0
-                    for kshl in range(self.nbas):
-                        shls[2] = kshl
-                        r_off = self.mults[kshl]
-                        lpos = 0
-                        for lshl in range(kshl + 1):
-                            kl = ((kshl + 1) * kshl) // 2 + lshl
-                            shls[3] = lshl
-                            s_off = self.mults[lshl]
-                            if ij < kl:
+            with self.optimizer(opt_func) as opt:
+                ipos = 0
+                for ishl in range(self.nbas):
+                    shls[0] = ishl
+                    p_off = self.mults[ishl]
+                    jpos = 0
+                    for jshl in range(ishl + 1):
+                        ij = ((ishl + 1) * ishl) // 2 + jshl
+                        shls[1] = jshl
+                        q_off = self.mults[jshl]
+                        kpos = 0
+                        for kshl in range(self.nbas):
+                            shls[2] = kshl
+                            r_off = self.mults[kshl]
+                            lpos = 0
+                            for lshl in range(kshl + 1):
+                                kl = ((kshl + 1) * kshl) // 2 + lshl
+                                shls[3] = lshl
+                                s_off = self.mults[lshl]
+                                if ij < kl:
+                                    lpos += s_off
+                                    continue
+                                # Call the C function to fill `buf`
+                                func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
+                                # Fill `out` array
+                                for p in range(p_off):
+                                    i_off = p + ipos
+                                    for q in range(q_off):
+                                        j_off = q + jpos
+                                        for r in range(r_off):
+                                            k_off = r + kpos
+                                            for s in range(s_off):
+                                                l_off = s + lpos
+                                                buf_off = prod_comp * (s * (r_off * q_off * p_off) +
+                                                                       r * (q_off * p_off) +
+                                                                       q * (p_off) +
+                                                                       p)
+                                                val = buf[buf_off:buf_off + prod_comp].reshape(*components)
+                                                out[i_off, j_off, k_off, l_off] = val
+                                                out[i_off, j_off, l_off, k_off] = val
+                                                out[j_off, i_off, k_off, l_off] = val
+                                                out[j_off, i_off, l_off, k_off] = val
+                                                out[k_off, l_off, i_off, j_off] = val
+                                                out[k_off, l_off, j_off, i_off] = val
+                                                out[l_off, k_off, i_off, j_off] = val
+                                                out[l_off, k_off, j_off, i_off] = val
+                                # Reset `buf`
+                                buf[:] = 0
+                                # Iterate `lpos`
                                 lpos += s_off
-                                continue
-                            # Call the C function to fill `buf`
-                            func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None, None)
-                            # Fill `out` array
-                            for p in range(p_off):
-                                i_off = p + ipos
-                                for q in range(q_off):
-                                    j_off = q + jpos
-                                    for r in range(r_off):
-                                        k_off = r + kpos
-                                        for s in range(s_off):
-                                            l_off = s + lpos
-                                            buf_off = prod_comp * (s * (r_off * q_off * p_off) +
-                                                                   r * (q_off * p_off) +
-                                                                   q * (p_off) +
-                                                                   p)
-                                            val = buf[buf_off:buf_off + prod_comp].reshape(*components)
-                                            out[i_off, j_off, k_off, l_off] = val
-                                            out[i_off, j_off, l_off, k_off] = val
-                                            out[j_off, i_off, k_off, l_off] = val
-                                            out[j_off, i_off, l_off, k_off] = val
-                                            out[k_off, l_off, i_off, j_off] = val
-                                            out[k_off, l_off, j_off, i_off] = val
-                                            out[l_off, k_off, i_off, j_off] = val
-                                            out[l_off, k_off, j_off, i_off] = val
-                            # Reset `buf`
-                            buf[:] = 0
-                            # Iterate `lpos`
-                            lpos += s_off
-                        # Iterate `kpos`
-                        kpos += r_off
-                    # Iterate `jpos`
-                    jpos += q_off
-                # Iterate `ipos`
-                ipos += p_off
+                            # Iterate `kpos`
+                            kpos += r_off
+                        # Iterate `jpos`
+                        jpos += q_off
+                    # Iterate `ipos`
+                    ipos += p_off
 
             # Cast `out` to complex if `is_complex` is set
             if is_complex:
