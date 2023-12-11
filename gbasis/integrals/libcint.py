@@ -697,34 +697,36 @@ class CBasis:
         shls = np.zeros(2, dtype=c_int)
         # Evaluate the integral function over all shells
         func = LIBCINT["int1e_rinv_cart" if self.coord_type == "cartesian" else "int1e_rinv_sph"]
+        opt_func = LIBCINT["int1e_rinv_optimizer"]
         for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
             # Set R_O of 1/|r - R_O|
             self.env[4:7] = coord
-            ipos = 0
-            for ishl in range(self.nbas):
-                shls[0] = ishl
-                p_off = self.mults[ishl]
-                jpos = 0
-                for jshl in range(ishl + 1):
-                    shls[1] = jshl
-                    q_off = self.mults[jshl]
-                    # Call the C function to fill `buf`
-                    func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, None, None)
-                    # Fill `out` array
-                    for p in range(p_off):
-                        i_off = p + ipos
-                        for q in range(q_off):
-                            j_off = q + jpos
-                            val = buf[q * p_off + p] * -charge
-                            out[i_off, j_off, icharge] = val
-                            if i_off != j_off:
-                                out[j_off, i_off, icharge] = val
-                    # Reset `buf`
-                    buf[:] = 0
-                    # Iterate `jpos`
-                    jpos += q_off
-                # Iterate `ipos`
-                ipos += p_off
+            with self.optimizer(opt_func) as opt:
+                ipos = 0
+                for ishl in range(self.nbas):
+                    shls[0] = ishl
+                    p_off = self.mults[ishl]
+                    jpos = 0
+                    for jshl in range(ishl + 1):
+                        shls[1] = jshl
+                        q_off = self.mults[jshl]
+                        # Call the C function to fill `buf`
+                        func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
+                        # Fill `out` array
+                        for p in range(p_off):
+                            i_off = p + ipos
+                            for q in range(q_off):
+                                j_off = q + jpos
+                                val = buf[q * p_off + p] * -charge
+                                out[i_off, j_off, icharge] = val
+                                if i_off != j_off:
+                                    out[j_off, i_off, icharge] = val
+                        # Reset `buf`
+                        buf[:] = 0
+                        # Iterate `jpos`
+                        jpos += q_off
+                    # Iterate `ipos`
+                    ipos += p_off
         # Return integrals in `out` array
         return out
 
