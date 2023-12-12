@@ -739,17 +739,12 @@ def normalized_coeffs_sph(shell):
     Normalize the spherical GeneralizedContractionShell coefficients.
 
     """
-    l = shell.angmom
-    c = shell.coeffs.copy()
-    n = (INV_SQRT_PI * (2 ** (3 * l + 4.5))) * (factorial(l + 1) / factorial(2 * l + 2))
-    n *= np.power(shell.exps, l + 1.5)
-    n **= 0.5
-    for ni, ci in zip(n, c):
-        ci *= ni
-    return c
-
-
-PI_TO_THREE_HALVES = 5.5683279968317078452848179821188
+    n = np.sqrt(
+        (INV_SQRT_PI * (2 ** (3 * shell.angmom + 4.5))) * \
+        (factorial(shell.angmom + 1) / factorial(2 * shell.angmom + 2)) * \
+        np.power(shell.exps, shell.angmom + 1.5)
+    )
+    return np.einsum("i,ij->ij", n, shell.coeffs)
 
 
 def normalized_coeffs_cart(shell):
@@ -757,19 +752,9 @@ def normalized_coeffs_cart(shell):
     Normalize the cartesian GeneralizedContractionShell coefficients.
 
     """
-    l = shell.angmom
-    c = shell.coeffs.copy()
-    d = PI_TO_THREE_HALVES * factorial2(2 * l - 1)
-    n = np.power(2 * shell.exps, l + 1.5) / d
-    n **= 0.5
-    for ni, ci in zip(n, c):
-        ci *= ni
-    n = d * 2 ** -l * sum(
-        ci * cj * (ei + ej) ** (-l - 1.5)
-        for ei, ci in zip(shell.exps, c)
-        for ej, cj in zip(shell.exps, c)
+    n = np.power(
+        np.prod(factorial2(2 * shell.angmom_components_cart - 1), axis=1) / \
+        factorial2(2 * shell.angmom - 1),
+        0.5,
     )
-    n **= -0.5
-    for ni, ci in zip(n, c):
-        ci *= ni
-    return c
+    return np.einsum("ij,k,jk->ij", normalized_coeffs_sph(shell), n, shell.norm_cont)

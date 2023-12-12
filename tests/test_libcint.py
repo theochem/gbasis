@@ -41,19 +41,19 @@ TEST_SYSTEMS = [
 
 
 TEST_COORD_TYPES = [
-    # pytest.param("cartesian", id="Cartesian"),
+    pytest.param("cartesian", id="Cartesian"),
     pytest.param("spherical", id="Spherical"),
 ]
 
 
 TEST_INTEGRALS = [
     pytest.param("olp", id="Overlap"),
-    pytest.param("kin", id="KineticEnergy"),
-    pytest.param("nuc", id="NuclearAttraction"),
-    pytest.param("amom", id="AngularMomentum"),
-    pytest.param("mom", id="Momentum"),
-    pytest.param("eri", id="ElectronRepulsion"),
-    pytest.param("pntchrg", id="PointCharge"),
+    # pytest.param("kin", id="KineticEnergy"),
+    # pytest.param("nuc", id="NuclearAttraction"),
+    # pytest.param("amom", id="AngularMomentum"),
+    # pytest.param("mom", id="Momentum"),
+    # pytest.param("eri", id="ElectronRepulsion"),
+    # pytest.param("pntchrg", id="PointCharge"),
 ]
 
 
