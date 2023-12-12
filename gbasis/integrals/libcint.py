@@ -49,6 +49,20 @@ so that the index of each (real) element matches its atomic number.
 """
 
 
+# CART_CONVENTIONS = tuple(tuple(range(((i + 1) * (i + 2)) // 2)) for i in range(7))
+# r"""
+# Ordering conventions for cartesian subshells.
+#
+# """
+
+
+# SPH_CONVENTIONS = tuple(tuple(range(2 * i + 1)) for i in range(7))
+# r"""
+# Ordering conventions for spherical subshells.
+#
+# """
+
+
 INTEGRAL_REGEX = re.compile(r'^(?!.*optimizer$)int[12]e.+')
 r"""
 Regex for matching ``libcint`` integral functions.
@@ -275,10 +289,10 @@ class CBasis:
         coord_type = coord_type.lower()
         if coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-            normalized_coeffs = normalized_coeffs_sph
+            # normalized_coeffs = normalized_coeffs_sph
         elif coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
-            normalized_coeffs = normalized_coeffs_cart
+            # normalized_coeffs = normalized_coeffs_cart
         else:
             raise ValueError("``coord_type`` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
@@ -446,6 +460,9 @@ class CBasis:
         func = LIBCINT[func_name + ("_cart" if self.coord_type == "cartesian" else "_sph")]
         opt_func = LIBCINT[func_name + "_optimizer"]
 
+        # Get ordering convention
+        # convs = CART_CONVENTIONS if self.coord_type == "cartesian" else SPH_CONVENTIONS
+
         # Handle multi-component integral values
         if len(components) == 0:
             components = (1,)
@@ -499,17 +516,21 @@ class CBasis:
                 ipos = 0
                 for ishl in range(self.nbas):
                     shls[0] = ishl
+                    # p_conv = convs[self.bas[ishl, 1]]
                     p_off = self.mults[ishl]
                     jpos = 0
                     for jshl in range(ishl + 1):
                         shls[1] = jshl
+                        # q_conv = convs[self.bas[jshl, 1]]
                         q_off = self.mults[jshl]
                         # Call the C function to fill `buf`
                         func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
                         # Fill `out` array
                         for p in range(p_off):
+                        # for p in p_conv:
                             i_off = p + ipos
                             for q in range(q_off):
+                            # for q in q_conv:
                                 j_off = q + jpos
                                 buf_off = prod_comp * (q * p_off + p)
                                 val = buf[buf_off:buf_off + prod_comp].reshape(*components, order="F")
@@ -559,6 +580,9 @@ class CBasis:
         # Get C functions
         func = LIBCINT[func_name + ("_cart" if self.coord_type == "cartesian" else "_sph")]
         opt_func = LIBCINT[func_name + "_optimizer"]
+
+        # Get ordering convention
+        # convs = CART_CONVENTIONS if self.coord_type == "cartesian" else SPH_CONVENTIONS
 
         # Handle multi-component integral values
         if len(components) == 0:
@@ -616,20 +640,24 @@ class CBasis:
                 ipos = 0
                 for ishl in range(self.nbas):
                     shls[0] = ishl
+                    # p_conv = convs[self.bas[ishl, 1]]
                     p_off = self.mults[ishl]
                     jpos = 0
                     for jshl in range(ishl + 1):
                         ij = ((ishl + 1) * ishl) // 2 + jshl
                         shls[1] = jshl
+                        # q_conv = convs[self.bas[jshl, 1]]
                         q_off = self.mults[jshl]
                         kpos = 0
                         for kshl in range(self.nbas):
                             shls[2] = kshl
+                            # r_conv = convs[self.bas[kshl, 1]]
                             r_off = self.mults[kshl]
                             lpos = 0
                             for lshl in range(kshl + 1):
                                 kl = ((kshl + 1) * kshl) // 2 + lshl
                                 shls[3] = lshl
+                                # s_conv = convs[self.bas[lshl, 1]]
                                 s_off = self.mults[lshl]
                                 if ij < kl:
                                     lpos += s_off
@@ -638,12 +666,16 @@ class CBasis:
                                 func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
                                 # Fill `out` array
                                 for p in range(p_off):
+                                # for p in p_conv:
                                     i_off = p + ipos
                                     for q in range(q_off):
+                                    # for q in q_conv:
                                         j_off = q + jpos
                                         for r in range(r_off):
+                                        # for r in r_conv:
                                             k_off = r + kpos
                                             for s in range(s_off):
+                                            # for s in s_conv:
                                                 l_off = s + lpos
                                                 buf_off = prod_comp * (s * (r_off * q_off * p_off) +
                                                                        r * (q_off * p_off) +
@@ -734,9 +766,10 @@ class CBasis:
 INV_SQRT_PI = 0.56418958354775628694807945156077
 
 
-def normalized_coeffs_sph(shell):
+# def normalized_coeffs_sph(shell):
+def normalized_coeffs(shell):
     r"""
-    Normalize the spherical GeneralizedContractionShell coefficients.
+    Normalize (the radial part of) the spherical GeneralizedContractionShell coefficients.
 
     """
     n = np.sqrt(
@@ -744,17 +777,18 @@ def normalized_coeffs_sph(shell):
         (factorial(shell.angmom + 1) / factorial(2 * shell.angmom + 2)) * \
         np.power(shell.exps, shell.angmom + 1.5)
     )
-    return np.einsum("i,ij->ij", n, shell.coeffs)
+    return np.einsum("k,km->km", n, shell.coeffs)
 
 
-def normalized_coeffs_cart(shell):
-    r"""
-    Normalize the cartesian GeneralizedContractionShell coefficients.
-
-    """
-    n = np.power(
-        np.prod(factorial2(2 * shell.angmom_components_cart - 1), axis=1) / \
-        factorial2(2 * shell.angmom - 1),
-        0.5,
-    )
-    return np.einsum("ij,k,jk->ij", normalized_coeffs_sph(shell), n, shell.norm_cont)
+# def normalized_coeffs_cart(shell):
+#     r"""
+#     Normalize the cartesian GeneralizedContractionShell coefficients.
+#
+#     """
+#     return normalized_coeffs_sph(shell)
+#     # n = np.power(
+#     #     np.prod(factorial2(2 * shell.angmom_components_cart - 1), axis=1) / \
+#     #     factorial2(2 * shell.angmom - 1),
+#     #     0.5,
+#     # )
+#     # return np.dot(normalized_coeffs_sph(shell), shell.norm_cont).dot(n)
