@@ -5,7 +5,7 @@ old = '(gen-cint "intor1.c"'
 
 
 new = f'{old}\n'
-new += '  \'("int1e_mom" (#C(-1 0) \\| p))'
+new += '  \'("int1e_p" ( \\| p))'
 
 
 with open(sys.argv[1], 'r') as f:

@@ -50,8 +50,8 @@ TEST_INTEGRALS = [
     pytest.param("olp", id="Overlap"),
     pytest.param("kin", id="KineticEnergy"),
     pytest.param("nuc", id="NuclearAttraction"),
+    pytest.param("mom", id="Momentum"),
     # pytest.param("amom", id="AngularMomentum"),
-    # pytest.param("mom", id="Momentum"),
     pytest.param("eri", id="ElectronRepulsion"),
     pytest.param("pntchrg", id="PointCharge"),
 ]
@@ -103,17 +103,6 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         py_int = overlap_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.olp()
-        # print()
-        # diff = np.isclose(py_int, lc_int, atol=atol, rtol=rtol)
-        # for row in diff.astype(int):
-        #     print("".join(map(str, row)))
-        # with np.printoptions(linewidth=2**32, threshold=2**32):
-        #     print("GBASIS")
-        #     for row in py_int[:6]:
-        #         print(row)
-        #     print("LIBCINT")
-        #     for row in lc_int:
-        #         print(row)
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "kin":

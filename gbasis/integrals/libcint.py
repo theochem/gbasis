@@ -394,8 +394,8 @@ class CBasis:
         self.olp = self.make_int1e("int1e_ovlp")
         self.kin = self.make_int1e("int1e_kin")
         self.nuc = self.make_int1e("int1e_nuc")
-        self.amom = self.make_int1e("int1e_giao_irjxp", components=(3,), is_complex=True, origin=True)
-        self.mom = self.make_int1e("int1e_mom", components=(3,), is_complex=True, origin=True)
+        self.amom = self.make_int1e("int1e_giao_irjxp", components=(3,), constant=-1j, is_complex=True, origin=True)
+        self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True)
         self.moment1 = self.make_int1e("int1e_r", components=(3,), is_complex=True, origin=True)
         self.moment2 = self.make_int1e("int1e_rr", components=(3,), is_complex=True, origin=True)
         self.moment3 = self.make_int1e("int1e_rrr", components=(3,), is_complex=True, origin=True)
@@ -436,7 +436,7 @@ class CBasis:
         # Free optimizer from memory (always called)
         LIBCINT.CINTdel_optimizer(byref(opt))
 
-    def make_int1e(self, func_name, components=tuple(), is_complex=False, origin=False, inv_origin=False):
+    def make_int1e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False):
         r"""
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
 
@@ -448,8 +448,11 @@ class CBasis:
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=()``, while for nuclear gradients,
             ``components=(Natm, 3)``, and for nuclear Hessians, ``components=(Natm, Natm, 3, 3)``, etc.
+        constant : (float | complex), default=1.
+            A constant by which to multiply the whole integral array.
         is_complex : bool, default=False
-            Whether the components in each integral element are complex.
+            Whether the components in each integral element are complex. Not required if only
+            multiplying by a complex constant using the ``constant`` keyword argument..
         origin : bool, default=False
             Whether you must specify an origin ``R`` for the integral computation.
         inv_origin : bool, default=False
@@ -505,7 +508,7 @@ class CBasis:
                 raise ValueError("``inv_origin`` must not be specified")
 
             # Make output array
-            out = np.zeros(out_shape, dtype=c_double)
+            out = np.zeros(out_shape, dtype=c_double, order="F")
 
             # Make temporary arrays
             buf = np.zeros(buf_shape, dtype=c_double)
@@ -526,16 +529,15 @@ class CBasis:
                         # Call the C function to fill `buf`
                         func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
                         # Fill `out` array
-                        for p in range(p_off):
+                        buf_array = buf[:p_off * q_off * prod_comp].reshape(p_off, q_off, *components, order="F")
                         # for p in p_conv:
+                        for p in range(p_off):
                             i_off = p + ipos
-                            for q in range(q_off):
                             # for q in q_conv:
+                            for q in range(q_off):
                                 j_off = q + jpos
-                                buf_off = prod_comp * (q * p_off + p)
-                                val = buf[buf_off:buf_off + prod_comp].reshape(*components, order="F")
-                                out[i_off, j_off] = val
-                                out[j_off, i_off] = val
+                                out[i_off, j_off] = buf_array[p, q]
+                                out[j_off, i_off] = buf_array[p, q]
                         # Reset `buf`
                         buf[:] = 0
                         # Iterate `jpos`
@@ -545,11 +547,15 @@ class CBasis:
 
             # Cast `out` to complex if `is_complex` is set
             if is_complex:
-                out = out.reshape(*out.shape[:-2], out.shape[-2] * 2).view(np.complex_)
+                out = out.reshape(*out.shape[:-2], -1).view(np.complex_)
 
             # Remove useless axis in `out` if no `components` was given
             if no_comp:
                 out = out.squeeze(axis=-1)
+
+            # Multiply by constant
+            if constant is not None:
+                out *= constant
 
             # Return integrals in `out` array
             return out
@@ -557,7 +563,7 @@ class CBasis:
         # Return instance-bound integral method
         return int1e
 
-    def make_int2e(self, func_name, components=tuple(), is_complex=False, origin=False, inv_origin=False):
+    def make_int2e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False):
         r"""
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
 
@@ -569,8 +575,11 @@ class CBasis:
             Shape of components in each integral element.
             E.g., for normal integrals, ``components=(1,)``, while for nuclear gradients,
             ``components=(Natm, 3)``, and for nuclear Hessians, ``components=(Natm, Natm, 3, 3)``, etc.
+        constant : (float | complex), default=1.
+            A constant by which to multiply the whole integral array.
         is_complex : bool, default=False
-            Whether the components in each integral element are complex.
+            Whether the components in each integral element are complex. Not required if only
+            multiplying by a complex constant using the ``constant`` keyword argument..
         origin : bool, default=False
             Whether you must specify an origin ``R`` for the integral computation.
         inv_origin : bool, default=False
@@ -630,7 +639,8 @@ class CBasis:
                 raise ValueError("``inv_origin`` must not be specified")
 
             # Make output array
-            out = np.zeros(out_shape, dtype=c_double)
+            out = np.zeros(out_shape, dtype=c_double, order="F")
+
             # Make temporary arrays
             buf = np.zeros(buf_shape, dtype=c_double)
             shls = np.zeros(4, dtype=c_int)
@@ -665,6 +675,7 @@ class CBasis:
                                 # Call the C function to fill `buf`
                                 func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
                                 # Fill `out` array
+                                buf_array = buf[:p_off * q_off * r_off * s_off * prod_comp].reshape(p_off, q_off, r_off, s_off, *components, order="F")
                                 for p in range(p_off):
                                 # for p in p_conv:
                                     i_off = p + ipos
@@ -677,19 +688,14 @@ class CBasis:
                                             for s in range(s_off):
                                             # for s in s_conv:
                                                 l_off = s + lpos
-                                                buf_off = prod_comp * (s * (r_off * q_off * p_off) +
-                                                                       r * (q_off * p_off) +
-                                                                       q * (p_off) +
-                                                                       p)
-                                                val = buf[buf_off:buf_off + prod_comp].reshape(*components)
-                                                out[i_off, j_off, k_off, l_off] = val
-                                                out[i_off, j_off, l_off, k_off] = val
-                                                out[j_off, i_off, k_off, l_off] = val
-                                                out[j_off, i_off, l_off, k_off] = val
-                                                out[k_off, l_off, i_off, j_off] = val
-                                                out[k_off, l_off, j_off, i_off] = val
-                                                out[l_off, k_off, i_off, j_off] = val
-                                                out[l_off, k_off, j_off, i_off] = val
+                                                out[i_off, j_off, k_off, l_off] = buf_array[p, q, r, s]
+                                                out[i_off, j_off, l_off, k_off] = buf_array[p, q, r, s]
+                                                out[j_off, i_off, k_off, l_off] = buf_array[p, q, r, s]
+                                                out[j_off, i_off, l_off, k_off] = buf_array[p, q, r, s]
+                                                out[k_off, l_off, i_off, j_off] = buf_array[p, q, r, s]
+                                                out[k_off, l_off, j_off, i_off] = buf_array[p, q, r, s]
+                                                out[l_off, k_off, i_off, j_off] = buf_array[p, q, r, s]
+                                                out[l_off, k_off, j_off, i_off] = buf_array[p, q, r, s]
                                 # Reset `buf`
                                 buf[:] = 0
                                 # Iterate `lpos`
@@ -708,6 +714,10 @@ class CBasis:
             # Remove useless axis in `out` if no `components` was given
             if no_comp:
                 out = out.squeeze(axis=-1)
+
+            # Multiply by constant
+            if constant is not None:
+                out *= constant
 
             # Transpose integrals in `out` array to proper notation
             if physicist:
