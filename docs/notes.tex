@@ -674,13 +674,13 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.eval import evaluate_basis
 
-output = evaluate_basis(basis, grid_3d, coord_type="spherical")
+output = evaluate_basis(basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.eval import evaluate_basis
 
-output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao, coord_type="spherical")
+output = evaluate_basis(basis, grid_3d, transform=transform_mo_ao)
 \end{lstlisting}
 \end{itemize}
 
@@ -705,14 +705,14 @@ Suppose the following derivative of the contraction is desired:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 
-output = evaluate_deriv_basis(basis, grid_3d, np.array([1, 2, 0]), coord_type="spherical")
+output = evaluate_deriv_basis(basis, grid_3d, np.array([1, 2, 0]))
 \end{lstlisting}
 \item To evaluate the derivatives of the molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 
 output = evaluate_deriv_basis(
-    basis, grid_3d, np.array([1, 2, 0]), transform=transform_mo_ao, coord_type="spherical"
+    basis, grid_3d, np.array([1, 2, 0]), transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -733,14 +733,14 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density
 
-output = evaluate_density(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_density(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the density using density matrix expressed with respect to
   molecular orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density
 
-output = evaluate_density(one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical")
+output = evaluate_density(one_dm, basis, grid_3d, transform=transform_mo_ao)
 \end{lstlisting}
 \end{itemize}
 \subsubsection{Arbitrary derivatives of density}
@@ -770,7 +770,7 @@ Suppose the following derivative of the density is desired:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_deriv_density
 
-output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the derivative of the density using density matrix expressed
   with respect to molecular orbitals,
@@ -778,7 +778,7 @@ output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d, coo
 from gbasis.evals.density import evaluate_deriv_density
 
 output = evaluate_deriv_density(
-    np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -800,7 +800,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density_gradient
 
-output = evaluate_density_gradient(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_density_gradient(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the gradient of the density using density matrix expressed
   with respect to molecular orbitals,
@@ -808,7 +808,7 @@ output = evaluate_density_gradient(one_dm, basis, grid_3d, coord_type="spherical
 from gbasis.evals.density import evaluate_density_gradient
 
 output = evaluate_density_gradient(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -828,7 +828,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density_laplacian
 
-output = evaluate_density_laplacian(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_density_laplacian(one_dm, basis, grid_3d)
 \end{lstlisting}
   where
 \item To evaluate the laplacian of the density using density matrix expressed
@@ -837,7 +837,7 @@ output = evaluate_density_laplacian(one_dm, basis, grid_3d, coord_type="spherica
 from gbasis.evals.density import evaluate_density_laplacian
 
 output = evaluate_density_laplacian(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -865,7 +865,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density_hessian
 
-output = evaluate_density_hessian(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_density_hessian(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the Hessian of the density using density matrix expressed
   with respect to molecular orbitals,
@@ -873,7 +873,7 @@ output = evaluate_density_hessian(one_dm, basis, grid_3d, coord_type="spherical"
 from gbasis.evals.density import evaluate_density_hessian
 
 output = evaluate_density_hessian(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -956,14 +956,14 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.stress_tensor import evaluate_stress_tensor
 
-output = evaluate_stress_tensor(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_stress_tensor(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the stress tensor ($\alpha=0.5$ and $\beta=1$)
   using density matrix expressed with respect to atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.stress_tensor import evaluate_stress_tensor
 
-output = evaluate_stress_tensor(one_dm, basis, grid_3d, alpha=0.5, beta=1, coord_type="spherical")
+output = evaluate_stress_tensor(one_dm, basis, grid_3d, alpha=0.5, beta=1)
 \end{lstlisting}
 \item To evaluate the stress tensor ($\alpha=1$ and $\beta=0$)
   using density matrix expressed with respect to molecular orbitals,
@@ -971,7 +971,7 @@ output = evaluate_stress_tensor(one_dm, basis, grid_3d, alpha=0.5, beta=1, coord
 from gbasis.evals.stress_tensor import evaluate_stress_tensor
 
 output = evaluate_stress_tensor(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1035,14 +1035,14 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.stress_tensor import evaluate_ehrenfest_force
 
-output = evaluate_ehrenfest_force(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_ehrenfest_force(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the Ehrenfest force ($\alpha=0.5$ and $\beta=1$)
   using density matrix expressed with respect to atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.stress_tensor import evaluate_ehrenfest_force
 
-output = evaluate_ehrenfest_force(one_dm, basis, grid_3d, alpha=0.5, beta=1, coord_type="spherical")
+output = evaluate_ehrenfest_force(one_dm, basis, grid_3d, alpha=0.5, beta=1)
 \end{lstlisting}
 \item To evaluate the Ehrenfest force ($\alpha=1$ and $\beta=0$)
   using density matrix expressed with respect to molecular orbitals,
@@ -1050,7 +1050,7 @@ output = evaluate_ehrenfest_force(one_dm, basis, grid_3d, alpha=0.5, beta=1, coo
 from gbasis.evals.stress_tensor import evaluate_ehrenfest_force
 
 output = evaluate_ehrenfest_force(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1091,7 +1091,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.stress_tensor import evaluate_ehrenfest_hessian
 
-output = evaluate_ehrenfest_hessian(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_ehrenfest_hessian(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the Ehrenfest Hessian ($\alpha=0.5$ and $\beta=1$)
   using density matrix expressed with respect to atomic orbitals,
@@ -1099,7 +1099,7 @@ output = evaluate_ehrenfest_hessian(one_dm, basis, grid_3d, coord_type="spherica
 from gbasis.evals.stress_tensor import evaluate_ehrenfest_hessian
 
 output = evaluate_ehrenfest_hessian(
-    one_dm, basis, grid_3d, alpha=0.5, beta=1, coord_type="spherical"
+    one_dm, basis, grid_3d, alpha=0.5, beta=1
 )
 \end{lstlisting}
 \item To evaluate the Ehrenfest Hessian ($\alpha=1$ and $\beta=0$)
@@ -1108,7 +1108,7 @@ output = evaluate_ehrenfest_hessian(
 from gbasis.evals.stress_tensor import evaluate_ehrenfest_hessian
 
 output = evaluate_ehrenfest_hessian(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1134,7 +1134,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_posdef_kinetic_energy_density
 
-output = evaluate_posdef_kinetic_energy_density(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_posdef_kinetic_energy_density(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the positive-definite kinetic energy density using density
   matrix expressed with respect to molecular orbitals,
@@ -1142,7 +1142,7 @@ output = evaluate_posdef_kinetic_energy_density(one_dm, basis, grid_3d, coord_ty
 from gbasis.evals.density import evaluate_posdef_kinetic_energy_density
 
 output = evaluate_posdef_kinetic_energy_density(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1158,16 +1158,14 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_general_kinetic_energy_density
 
-output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d, coord_type="spherical")
+output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d)
 \end{lstlisting}
 \item To evaluate the general form of the kinetic energy density ($\alpha=0.5$)
   using density matrix expressed with respect to atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_general_kinetic_energy_density
 
-output = evaluate_general_kinetic_energy_density(
-    one_dm, basis, grid_3d, alpha=0.5, coord_type="spherical"
-)
+output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d, alpha=0.5)
 \end{lstlisting}
 \item To evaluate the general form of the kinetic energy density ($\alpha=1$)
   using density matrix expressed with respect to molecular orbitals,
@@ -1175,7 +1173,7 @@ output = evaluate_general_kinetic_energy_density(
 from gbasis.evals.density import evaluate_general_kinetic_energy_density
 
 output = evaluate_general_kinetic_energy_density(
-    one_dm, basis, grid_3d, transform=transform_mo_ao, coord_type="spherical"
+    one_dm, basis, grid_3d, transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1193,13 +1191,13 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.overlap import overlap_integral
 
-output = overlap_integral(basis, coord_type="spherical")
+output = overlap_integral(basis)
 \end{lstlisting}
 \item To compute the overlap of a set of molecular orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.overlap import overlap_integral
 
-output = overlap_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+output = overlap_integral(basis, transform=transform_mo_ao)
 \end{lstlisting}
 \end{itemize}
 \subsubsection{Overlap integral between two different basis sets}
@@ -1215,9 +1213,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.overlap_asymm import overlap_integral_asymmetric
 
-output = overlap_integral_asymmetric(
-    basis_one, basis_two, coord_type_one="spherical", coord_type_two="spherical"
-)
+output = overlap_integral_asymmetric(basis_one, basis_two)
 \end{lstlisting}
 \item To compute the overlap between a set of molecular orbitals and a set of
   atomic orbitals
@@ -1225,11 +1221,7 @@ output = overlap_integral_asymmetric(
 from gbasis.integrals.overlap_asymm import overlap_integral_asymmetric
 
 output = overlap_integral_asymmetric(
-    basis_one,
-    basis_two,
-    transform_one=transform_ao_mo,
-    coord_type_one="spherical",
-    coord_type_two="spherical",
+    basis_one, basis_two, transform_one=transform_ao_mo
 )
 \end{lstlisting}
 \end{itemize}
@@ -1254,7 +1246,7 @@ Suppose the integral of the following moments is desired:
 from gbasis.integrals.moment import moment_integral
 
 output = moment_integral(
-    basis, np.array([1.5, 2.5, 3.5]), np.array([[2, 3, 1], [1, 2, 3]]), coord_type="spherical"
+    basis, np.array([1.5, 2.5, 3.5]), np.array([[2, 3, 1], [1, 2, 3]])
 )
 \end{lstlisting}
 \item To compute the overlap of a set of molecular orbitals
@@ -1265,8 +1257,7 @@ output = moment_integral(
     basis,
     np.array([1.5, 2.5, 3.5]),
     np.array([[2, 3, 1], [1, 2, 3]]),
-    transform=transform_mo_ao,
-    coord_type="spherical",
+    transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1301,13 +1292,13 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.kinetic_energy import kinetic_energy_integral
 
-output = kinetic_energy_integral(basis, coord_type="spherical")
+output = kinetic_energy_integral(basis)
 \end{lstlisting}
 \item To compute the kinetic energy integral of a set of molecular orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.kinetic_energy import kinetic_energy_integral
 
-output = kinetic_energy_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+output = kinetic_energy_integral(basis, transform=transform_mo_ao)
 \end{lstlisting}
 \end{itemize}
 \subsubsection{Momentum integral}
@@ -1331,13 +1322,13 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.momentum import momentum_integral
 
-output = momentum_integral(basis, coord_type="spherical")
+output = momentum_integral(basis)
 \end{lstlisting}
 \item To compute the momentum integral of a set of molecular orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.momentum import momentum_integral
 
-output = momentum_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+output = momentum_integral(basis, transform=transform_mo_ao)
 \end{lstlisting}
 \end{itemize}
 \subsubsection{Angular momentum integral}
@@ -1364,13 +1355,13 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.angular_momentum import angular_momentum_integral
 
-output = angular_momentum_integral(basis, coord_type="spherical")
+output = angular_momentum_integral(basis)
 \end{lstlisting}
 \item To compute the angular momentum integral of a set of molecular orbitals
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.angular_momentum import angular_momentum_integral
 
-output = angular_momentum_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+output = angular_momentum_integral(basis, transform=transform_mo_ao)
 \end{lstlisting}
 \end{itemize}
 \subsection{Integral for interaction with point-charge}
@@ -1389,7 +1380,7 @@ at $(3, 4, 6)$
 from gbasis.integrals.point_charge import point_charge_integral
 
 output = point_charge_integral(
-    basis, np.array([[0, 1, 2], [3, 4, 6]]), np.array([-3, 5]), coord_type="spherical"
+    basis, np.array([[0, 1, 2], [3, 4, 6]]), np.array([-3, 5])
 )
 \end{lstlisting}
 \item To compute the integral for interaction between these point-charges and
@@ -1401,8 +1392,7 @@ output = point_charge_integral(
     basis,
     np.array([[0, 1, 2], [3, 4, 6]]),
     np.array([-3, 5]),
-    transform=transform_mo_ao,
-    coord_type="spherical",
+    transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1423,7 +1413,7 @@ Suppose there are two nuclei: He at $(0, 1, 2)$ and Al at $(3, 4, 6)$
 from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attraction_integral
 
 output = nuclear_electron_attraction_integral(
-    basis, np.array([[0, 1, 2], [3, 4, 6]]), np.array([2, 13]), coord_type="spherical"
+    basis, np.array([[0, 1, 2], [3, 4, 6]]), np.array([2, 13])
 )
 \end{lstlisting}
 \item To compute the nuclear-electron attraction integral of the set of molecular
@@ -1435,8 +1425,7 @@ output = nuclear_electron_attraction_integral(
     basis,
     np.array([[0, 1, 2], [3, 4, 6]]),
     np.array([2, 13]),
-    transform=transform_mo_ao,
-    coord_type="spherical",
+    transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1469,8 +1458,7 @@ output = electrostatic_potential(
     one_dm,
     np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
     np.array([[0, 1, 2], [3, 4, 6]]),
-    np.array([2, 13]),
-    coord_type="spherical",
+    np.array([2, 13])
 )
 \end{lstlisting}
 \item To compute the electrostatic potential using density matrix expressed with
@@ -1484,8 +1472,7 @@ output = electrostatic_potential(
     np.array([[0.5, 1.5, 2.5], [2.5, 3.5, 5.5]]),
     np.array([[0, 1, 2], [3, 4, 6]]),
     np.array([2, 13]),
-    transform=transform_mo_ao,
-    coord_type="spherical"
+    transform=transform_mo_ao
 )
 \end{lstlisting}
 \end{itemize}
@@ -1515,14 +1502,14 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.electron_repulsion import electron_repulsion_integral
 
-output = electron_repulsion_integral(basis, coord_type="spherical")
+output = electron_repulsion_integral(basis)
 \end{lstlisting}
 \item To compute the electron repulsion integral of a set of molecular orbitals in
   Physicists' notation
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.integrals.electron_repulsion import electron_repulsion_integral
 
-output = electron_repulsion_integral(basis, transform=transform_mo_ao, coord_type="spherical")
+output = electron_repulsion_integral(basis, transform=transform_mo_ao)
 \end{lstlisting}
 \item To compute the electron repulsion integral of a set of molecular orbitals in
   Chemists' notation
@@ -1530,7 +1517,7 @@ output = electron_repulsion_integral(basis, transform=transform_mo_ao, coord_typ
 from gbasis.integrals.electron_repulsion import electron_repulsion_integral
 
 output = electron_repulsion_integral(
-    basis, transform=transform_mo_ao, coord_type="spherical", notation="chemist"
+    basis, transform=transform_mo_ao, notation="chemist"
 )
 \end{lstlisting}
 \end{itemize}
