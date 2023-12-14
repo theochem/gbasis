@@ -409,7 +409,9 @@ basis = make_contractions(all_basis_dict, atoms, coords, coord_type="cartesian")
 \item To treat first shell of generalized contractions to be Cartesian and
   second shell to be spherical
   \begin{lstlisting}[xleftmargin=-25pt]
-basis = make_contractions(all_basis_dict, ["H", "H"], coords, coord_type=["cartesian", "spherical"])
+basis = make_contractions(
+    all_basis_dict, ["H", "H"], coords, coord_type=["cartesian", "spherical"]
+)
 \end{lstlisting}
 %  In this case, the basis set must consist of exactly two shells of
 %  generalized contractions. Otherwise, an error will be raised.
