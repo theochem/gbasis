@@ -46,6 +46,17 @@ git clone https://github.com/theochem/gbasis.git
 cd gbasis
 pip install --user -e .[dev,iodata]
 ```
+To use `gbasis.integrals.libcint`, the user must run the following script to build
+and install `libcint` into the `gbasis/integrals` directory,
+```bash
+tools/install_libcint.sh
+```
+This script depends on the following packages:
+* CMake
+* Git
+* Python 3
+* a C compiler (gcc or clang are recommended)
+* a Common Lisp interpreter (sbcl or clisp are recommended)
 Note that `iodata` must be installed separately. `cython` is a dependency of `iodata`.
 
 To test the installation,

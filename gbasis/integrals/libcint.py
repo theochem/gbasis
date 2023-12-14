@@ -49,20 +49,6 @@ so that the index of each (real) element matches its atomic number.
 """
 
 
-# CART_CONVENTIONS = tuple(tuple(range(((i + 1) * (i + 2)) // 2)) for i in range(7))
-# r"""
-# Ordering conventions for cartesian subshells.
-#
-# """
-
-
-# SPH_CONVENTIONS = tuple(tuple(range(2 * i + 1)) for i in range(7))
-# r"""
-# Ordering conventions for spherical subshells.
-#
-# """
-
-
 INTEGRAL_REGEX = re.compile(r'^(?!.*optimizer$)int[12]e.+')
 r"""
 Regex for matching ``libcint`` integral functions.
@@ -394,7 +380,7 @@ class CBasis:
         self.nuc = self.make_int1e("int1e_nuc")
         self.eri = self.make_int2e("int2e")
         self.rinv = self.make_int1e("int1e_rinv", inv_origin=True)
-        self.amom = self.make_int1e("int1e_giao_irjxp", components=(3,), constant=-1j, is_complex=True, origin=True)
+        self.amom = self.make_int1e("int1e_rxp", components=(3,), constant=1, is_complex=True, origin=True)
         self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True)
         self.moment1 = self.make_int1e("int1e_r", components=(3,), is_complex=True, origin=True)
         self.moment2 = self.make_int1e("int1e_rr", components=(3,), is_complex=True, origin=True)
