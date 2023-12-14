@@ -57,6 +57,7 @@ This script depends on the following packages:
 * Python 3
 * a C compiler (gcc or clang are recommended)
 * a Common Lisp interpreter (sbcl or clisp are recommended)
+
 Note that `iodata` must be installed separately. `cython` is a dependency of `iodata`.
 
 To test the installation,
