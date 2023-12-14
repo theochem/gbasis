@@ -289,10 +289,8 @@ class CBasis:
         coord_type = coord_type.lower()
         if coord_type == "spherical":
             num_angmom = attrgetter("num_sph")
-            # normalized_coeffs = normalized_coeffs_sph
         elif coord_type == "cartesian":
             num_angmom = attrgetter("num_cart")
-            # normalized_coeffs = normalized_coeffs_cart
         else:
             raise ValueError("``coord_type`` parameter must be 'spherical' or 'cartesian'; "
                              f"the provided value, '{coord_type}', is invalid")
@@ -394,18 +392,20 @@ class CBasis:
         self.olp = self.make_int1e("int1e_ovlp")
         self.kin = self.make_int1e("int1e_kin")
         self.nuc = self.make_int1e("int1e_nuc")
+        self.eri = self.make_int2e("int2e")
+        self.rinv = self.make_int1e("int1e_rinv", inv_origin=True)
         self.amom = self.make_int1e("int1e_giao_irjxp", components=(3,), constant=-1j, is_complex=True, origin=True)
         self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True)
         self.moment1 = self.make_int1e("int1e_r", components=(3,), is_complex=True, origin=True)
         self.moment2 = self.make_int1e("int1e_rr", components=(3,), is_complex=True, origin=True)
         self.moment3 = self.make_int1e("int1e_rrr", components=(3,), is_complex=True, origin=True)
         self.moment4 = self.make_int1e("int1e_rrrr", components=(3,), is_complex=True, origin=True)
-        self.eri = self.make_int2e("int2e")
         # Gradients
         self.d_olp = self.make_int1e("int1e_ipovlp", components=(3,))
-        self.d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
         self.d_kin = self.make_int1e("int1e_ipkin", components=(3,))
+        self.d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
         self.d_eri = self.make_int2e("int2e_ip1", components=(3,))
+        self.d_rinv = self.make_int1e("int1e_iprinv", components=(3,), inv_origin=True)
         # Hessians
         self.d2_olp = self.make_int1e("int1e_ipipovlp", components=(3, 3))
         self.d2_nuc = self.make_int1e("int1e_ipipnuc", components=(3, 3))
@@ -732,73 +732,27 @@ class CBasis:
     def pntchrg(self, point_coords, point_charges):
         r"""Point charge integral."""
         # Make output array
-        ncharge = len(point_charges)
-        out = np.zeros((self.nbfn, self.nbfn, ncharge), dtype=c_double)
-        # Make temporary arrays
-        buf = np.zeros(self.max_mult ** 2, dtype=c_double)
-        shls = np.zeros(2, dtype=c_int)
-        # Evaluate the integral function over all shells
-        func = LIBCINT["int1e_rinv_cart" if self.coord_type == "cartesian" else "int1e_rinv_sph"]
-        opt_func = LIBCINT["int1e_rinv_optimizer"]
+        out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order="F")
+        # Compute 1/|r - r_{inv}| for each charge
         for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
-            # Set R_O of 1/|r - R_O|
-            self.env[4:7] = coord
-            with self.optimizer(opt_func) as opt:
-                ipos = 0
-                for ishl in range(self.nbas):
-                    shls[0] = ishl
-                    p_off = self.mults[ishl]
-                    jpos = 0
-                    for jshl in range(ishl + 1):
-                        shls[1] = jshl
-                        q_off = self.mults[jshl]
-                        # Call the C function to fill `buf`
-                        func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
-                        # Fill `out` array
-                        for p in range(p_off):
-                            i_off = p + ipos
-                            for q in range(q_off):
-                                j_off = q + jpos
-                                val = buf[q * p_off + p] * -charge
-                                out[i_off, j_off, icharge] = val
-                                if i_off != j_off:
-                                    out[j_off, i_off, icharge] = val
-                        # Reset `buf`
-                        buf[:] = 0
-                        # Iterate `jpos`
-                        jpos += q_off
-                    # Iterate `ipos`
-                    ipos += p_off
+            val = self.rinv(inv_origin=coord)
+            val *= -charge
+            out[:, :, icharge] = val
         # Return integrals in `out` array
         return out
 
 
-INV_SQRT_PI = 0.56418958354775628694807945156077
-
-
-# def normalized_coeffs_sph(shell):
 def normalized_coeffs(shell):
     r"""
     Normalize (the radial part of) the spherical GeneralizedContractionShell coefficients.
 
     """
-    n = np.sqrt(
-        (INV_SQRT_PI * (2 ** (3 * shell.angmom + 4.5))) * \
-        (factorial(shell.angmom + 1) / factorial(2 * shell.angmom + 2)) * \
-        np.power(shell.exps, shell.angmom + 1.5)
+    return np.einsum(
+        "km,k->km",
+        shell.coeffs,
+        np.sqrt(
+            ((np.pi ** -0.5) * (2 ** (3 * shell.angmom + 4.5))) * \
+            (factorial(shell.angmom + 1) / factorial(2 * shell.angmom + 2)) * \
+            (np.power(shell.exps, shell.angmom + 1.5))
+        ),
     )
-    return np.einsum("k,km->km", n, shell.coeffs)
-
-
-# def normalized_coeffs_cart(shell):
-#     r"""
-#     Normalize the cartesian GeneralizedContractionShell coefficients.
-#
-#     """
-#     return normalized_coeffs_sph(shell)
-#     # n = np.power(
-#     #     np.prod(factorial2(2 * shell.angmom_components_cart - 1), axis=1) / \
-#     #     factorial2(2 * shell.angmom - 1),
-#     #     0.5,
-#     # )
-#     # return np.dot(normalized_coeffs_sph(shell), shell.norm_cont).dot(n)
