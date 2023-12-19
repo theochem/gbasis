@@ -374,6 +374,9 @@ class CBasis:
         self.mults = mults
         self.max_mult = max(mults)
 
+        # Set inverse sqrt of overlap integral (temporarily, for __init__)
+        self._olp_minhalf = np.ones(nbfn)
+
         # Integrals
         self.olp = self.make_int1e("int1e_ovlp")
         self.kin = self.make_int1e("int1e_kin")
@@ -397,6 +400,11 @@ class CBasis:
         self.d2_nuc = self.make_int1e("int1e_ipipnuc", components=(3, 3))
         self.d2_kin = self.make_int1e("int1e_ipipkin", components=(3, 3))
         self.d2_eri = self.make_int2e("int2e_ipip1", components=(3, 3))
+
+        # Set proper value for inverse sqrt of overlap integral
+        # for cartesian basis sets
+        if coord_type == "cartesian":
+            self._olp_minhalf = 1 / np.sqrt(np.diag(self.olp()))
 
     @contextmanager
     def optimizer(self, opt_func):
@@ -449,11 +457,9 @@ class CBasis:
         func = LIBCINT[func_name + ("_cart" if self.coord_type == "cartesian" else "_sph")]
         opt_func = LIBCINT[func_name + "_optimizer"]
 
-        # Get ordering convention
-        # convs = CART_CONVENTIONS if self.coord_type == "cartesian" else SPH_CONVENTIONS
-
         # Handle multi-component integral values
-        if len(components) == 0:
+        n_components = len(components)
+        if n_components == 0:
             components = (1,)
             no_comp = True
         else:
@@ -467,6 +473,10 @@ class CBasis:
         # Handle [inv_]origin argument (prevent shadowing)
         has_origin_arg = bool(origin)
         has_inv_origin_arg = bool(inv_origin)
+
+        # Make einsum string for normalization
+        norm_einsum = f"a,b,ab{'cdefghijklmnopqrstuvwxyz'[:n_components]}->" \
+            + f"ab{'cdefghijklmnopqrstuvwxyz'[:n_components]}"
 
         # Make instance-bound integral method
         def int1e(notation="physicist", origin=None, inv_origin=None):
@@ -543,8 +553,11 @@ class CBasis:
             if constant is not None:
                 out *= constant
 
-            # Return integrals in `out` array
-            return out
+            # Return normalized integrals
+            if self.coord_type == "cartesian":
+                return np.einsum(norm_einsum, self._olp_minhalf, self._olp_minhalf, out)
+            else:
+                return out
 
         # Return instance-bound integral method
         return int1e
@@ -576,11 +589,9 @@ class CBasis:
         func = LIBCINT[func_name + ("_cart" if self.coord_type == "cartesian" else "_sph")]
         opt_func = LIBCINT[func_name + "_optimizer"]
 
-        # Get ordering convention
-        # convs = CART_CONVENTIONS if self.coord_type == "cartesian" else SPH_CONVENTIONS
-
         # Handle multi-component integral values
-        if len(components) == 0:
+        n_components = len(components)
+        if n_components == 0:
             components = (1,)
             no_comp = True
         else:
@@ -594,6 +605,10 @@ class CBasis:
         # Handle [inv_]origin argument (prevent shadowing)
         has_origin_arg = bool(origin)
         has_inv_origin_arg = bool(inv_origin)
+
+        # Make einsum string for normalization
+        norm_einsum = f"a,b,c,d,abcd{'efghijklmnopqrstuvwxyz'[:n_components]}->" + \
+            f"abcd{'efghijklmnopqrstuvwxyz'[:n_components]}"
 
         # Make instance-bound integral method
         def int2e(notation="physicist", origin=None, inv_origin=None):
@@ -709,8 +724,15 @@ class CBasis:
             if physicist:
                 out = out.transpose(0, 2, 1, 3)
 
-            # Return integrals in `out` array
-            return out
+            # Return normalized integrals
+            if self.coord_type == "cartesian":
+                return np.einsum(
+                    norm_einsum,
+                    self._olp_minhalf, self._olp_minhalf, self._olp_minhalf, self._olp_minhalf,
+                    out,
+                )
+            else:
+                return out
 
         # Return instance-bound integral method
         return int2e
@@ -733,12 +755,19 @@ def normalized_coeffs(shell):
     Normalize (the radial part of) the spherical GeneralizedContractionShell coefficients.
 
     """
-    return np.einsum(
-        "km,k->km",
-        shell.coeffs,
-        np.sqrt(
-            ((np.pi ** -0.5) * (2 ** (3 * shell.angmom + 4.5))) * \
-            (factorial(shell.angmom + 1) / factorial(2 * shell.angmom + 2)) * \
-            (np.power(shell.exps, shell.angmom + 1.5))
-        ),
-    )
+    def gaussian_int(l, a):
+        return 0.5 * factorial(0.5 * l - 0.5) * a ** (-0.5 * l - 0.5)
+
+    def gto_norm(l, a):
+        return 1 / np.sqrt(gaussian_int(2 * l + 2, 2 * a))
+
+    cs = np.einsum("km,k->km", shell.coeffs, gto_norm(shell.angmom, shell.exps))
+
+    es = gaussian_int(2 * shell.angmom + 2, shell.exps[:, np.newaxis] + shell.exps[np.newaxis, :])
+    ss = 1 / np.sqrt(np.einsum("km,kl,lm->m", cs, es, cs))
+    cs = np.einsum("km,m->km", cs, ss);
+
+    return cs
+
+
+
