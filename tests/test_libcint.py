@@ -54,20 +54,7 @@ TEST_INTEGRALS = [
     pytest.param("amom", id="AngularMomentum"),
     pytest.param("eri", id="ElectronRepulsion"),
     pytest.param("pntchrg", id="PointCharge"),
-]
-
-
-TEST_GRADIENTS = [
-    pytest.param("d_olp", id="Overlap"),
-    pytest.param("d_kin", id="KineticEnergy"),
-    pytest.param("d_nuc", id="NuclearAttraction"),
-]
-
-
-TEST_HESSIANS = [
-    pytest.param("d2_olp", id="Overlap"),
-    pytest.param("d2_kin", id="KineticEnergy"),
-    pytest.param("d2_nuc", id="NuclearAttraction"),
+    pytest.param("moment", id="Moment"),
 ]
 
 
@@ -143,6 +130,23 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
             lc_int = lc_basis.pntchrg(charge_coords[:i], charges[:i])
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+
+    elif integral == "moment":
+        origin = np.zeros(3)
+        orders = np.asarray([[0, 0, 0],
+                             [1, 0, 0],
+                             [0, 1, 0],
+                             [0, 0, 1],
+                             [2, 0, 0],
+                             [0, 2, 0],
+                             [0, 0, 2],
+                             [1, 1, 0],
+                             [1, 0, 1],
+                             [0, 1, 1]])
+        py_int = moment_integral(py_basis, origin, orders, coord_type=coord_type)
+        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+        lc_int = lc_basis.moment(orders, origin=origin)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
 
     else:
         raise ValueError("Invalid integral name '{integral}' passed")

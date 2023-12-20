@@ -382,32 +382,41 @@ class CBasis:
         self.kin = self.make_int1e("int1e_kin")
         self.nuc = self.make_int1e("int1e_nuc")
         self.eri = self.make_int2e("int2e")
+
         self.rinv = self.make_int1e("int1e_rinv", inv_origin=True)
+
         self.amom = self.make_int1e("int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True)
+
         self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True)
+
+        # not sure if these r,rr,rrr,rrrr integrals are complex or not
         self.r = self.make_int1e("int1e_r", components=(3,), is_complex=True, origin=True)
         self.rr = self.make_int1e("int1e_rr", components=(3,), is_complex=True, origin=True)
         self.rrr = self.make_int1e("int1e_rrr", components=(3,), is_complex=True, origin=True)
         self.rrrr = self.make_int1e("int1e_rrrr", components=(3,), is_complex=True, origin=True)
-        self.x = self.make_int1e("int1e_x", is_complex=True, origin=True)
-        self.xx = self.make_int1e("int1e_xx", is_complex=True, origin=True)
-        self.xxx = self.make_int1e("int1e_xxx", is_complex=True, origin=True)
-        self.xxxx = self.make_int1e("int1e_xxxx", is_complex=True, origin=True)
-        self.y = self.make_int1e("int1e_y", is_complex=True, origin=True)
-        self.yy = self.make_int1e("int1e_yy", is_complex=True, origin=True)
-        self.yyy = self.make_int1e("int1e_yyy", is_complex=True, origin=True)
-        self.yyyy = self.make_int1e("int1e_yyyy", is_complex=True, origin=True)
-        self.z = self.make_int1e("int1e_z", is_complex=True, origin=True)
-        self.zz = self.make_int1e("int1e_zz", is_complex=True, origin=True)
-        self.zzz = self.make_int1e("int1e_zzz", is_complex=True, origin=True)
-        self.zzzz = self.make_int1e("int1e_zzzz", is_complex=True, origin=True)
-        # Gradients
+
+        self.x = self.make_int1e("int1e_x", origin=True)
+        self.xx = self.make_int1e("int1e_xx", origin=True)
+        self.xxx = self.make_int1e("int1e_xxx", origin=True)
+        self.xxxx = self.make_int1e("int1e_xxxx", origin=True)
+
+        self.y = self.make_int1e("int1e_y", origin=True)
+        self.yy = self.make_int1e("int1e_yy", origin=True)
+        self.yyy = self.make_int1e("int1e_yyy", origin=True)
+        self.yyyy = self.make_int1e("int1e_yyyy", origin=True)
+
+        self.z = self.make_int1e("int1e_z", origin=True)
+        self.zz = self.make_int1e("int1e_zz", origin=True)
+        self.zzz = self.make_int1e("int1e_zzz", origin=True)
+        self.zzzz = self.make_int1e("int1e_zzzz", origin=True)
+
         self.d_olp = self.make_int1e("int1e_ipovlp", components=(3,))
         self.d_kin = self.make_int1e("int1e_ipkin", components=(3,))
         self.d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
         self.d_eri = self.make_int2e("int2e_ip1", components=(3,))
+
         self.d_rinv = self.make_int1e("int1e_iprinv", components=(3,), inv_origin=True)
-        # Hessians
+
         self.d2_olp = self.make_int1e("int1e_ipipovlp", components=(3, 3))
         self.d2_nuc = self.make_int1e("int1e_ipipnuc", components=(3, 3))
         self.d2_kin = self.make_int1e("int1e_ipipkin", components=(3, 3))
@@ -759,6 +768,44 @@ class CBasis:
             val *= -charge
             out[:, :, icharge] = val
         # Return integrals in `out` array
+        return out
+
+    def moment(self, orders, origin=None):
+
+        n = len(orders)
+
+        xs = list(set([elem[0] for elem in orders]))
+        ys = list(set([elem[1] for elem in orders]))
+        zs = list(set([elem[2] for elem in orders]))
+
+        if np.greater([xs, ys, zs], 4).any():
+            raise ValueError
+
+        x_comps = [0]
+        x_comps.append(self.x(origin=origin) if 1 in xs else 0)
+        x_comps.append(self.xx(origin=origin) if 2 in xs else 0)
+        x_comps.append(self.xxx(origin=origin) if 3 in xs else 0)
+        x_comps.append(self.xxxx(origin=origin) if 4 in xs else 0)
+
+        y_comps = [0]
+        y_comps.append(self.y(origin=origin) if 1 in ys else 0)
+        y_comps.append(self.yy(origin=origin) if 2 in ys else 0)
+        y_comps.append(self.yyy(origin=origin) if 3 in ys else 0)
+        y_comps.append(self.yyyy(origin=origin) if 4 in ys else 0)
+
+        z_comps = [0]
+        z_comps.append(self.z(origin=origin) if 1 in zs else 0)
+        z_comps.append(self.zz(origin=origin) if 2 in zs else 0)
+        z_comps.append(self.zzz(origin=origin) if 3 in zs else 0)
+        z_comps.append(self.zzzz(origin=origin) if 4 in zs else 0)
+
+        out = np.zeros((self.nbfn, self.nbfn, n), dtype=np.float64)
+
+        for i, (x, y, z) in enumerate(orders):
+            out[:, :, i] += x_comps[x]
+            out[:, :, i] += y_comps[y]
+            out[:, :, i] += z_comps[z]
+
         return out
 
 
