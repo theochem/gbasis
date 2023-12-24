@@ -175,45 +175,21 @@ def test_evaluate_basis_pyscf():
     pyscf_eval_cart = gto.eval_gto(mol, "GTOval_cart", grid_3d)
 
     # s orbitals
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian")[:6], pyscf_eval_cart.T[:6]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian")[46:53], pyscf_eval_cart.T[46:53]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[:6], pyscf_eval_sph.T[:6]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[40:47], pyscf_eval_sph.T[40:47]
-    )
+    assert np.allclose(evaluate_basis(basis, grid_3d)[:6], pyscf_eval_cart.T[:6])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[46:53], pyscf_eval_cart.T[46:53])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[:6], pyscf_eval_sph.T[:6])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[40:47], pyscf_eval_sph.T[40:47])
     # p orbitals
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian")[6:18], pyscf_eval_cart.T[6:18]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian")[53:65], pyscf_eval_cart.T[53:65]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[6:18], pyscf_eval_sph.T[6:18]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[47:59], pyscf_eval_sph.T[47:59]
-    )
+    assert np.allclose(evaluate_basis(basis, grid_3d)[6:18], pyscf_eval_cart.T[6:18])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[53:65], pyscf_eval_cart.T[53:65])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[6:18], pyscf_eval_sph.T[6:18])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[47:59], pyscf_eval_sph.T[47:59])
     # d orbitals are off by some constant for the cartesian case
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[18:33], pyscf_eval_sph.T[18:33]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[59:74], pyscf_eval_sph.T[59:74]
-    )
+    assert np.allclose(evaluate_basis(basis, grid_3d)[18:33], pyscf_eval_sph.T[18:33])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[59:74], pyscf_eval_sph.T[59:74])
     # f orbitals are off by some constant for the cartesian case
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[33:40], pyscf_eval_sph.T[33:40]
-    )
-    assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="spherical")[74:88], pyscf_eval_sph.T[74:88]
-    )
+    assert np.allclose(evaluate_basis(basis, grid_3d)[33:40], pyscf_eval_sph.T[33:40])
+    assert np.allclose(evaluate_basis(basis, grid_3d)[74:88], pyscf_eval_sph.T[74:88])
 
 
 @pytest.mark.xfail
