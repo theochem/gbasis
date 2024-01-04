@@ -88,7 +88,38 @@ def eval_contractions(coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, 
     norm = norm.T[:, :, np.newaxis]
     return np.tensordot(prim_coeffs, norm * zeroth_part, (0, 0)).flatten()
 
-def eval_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm):
+def eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norm):
+    """
+    Return the derivative of a Cartesian contraction with respect to nuclear coordinate.
+
+    FixMe: this funciton works correctly only when M=1, L=1. 
+
+    Parameters
+    ----------
+    coords : np.ndarray(N, 3)
+        Points in space where the derivative of the Gaussian primitive is evaluated.
+        Coordinates must be given as a two dimensional array.
+    center : np.ndarray(3,)
+        Center of the Gaussian primitive.
+    angmom_comps : np.ndarray(L, 3)
+        Components of the angular momentum, :math:`(a_x, a_y, a_z)`.
+        Angular momentum components must be given as a two dimensional array, even if only one
+        set of components is given.
+    alphas : np.ndarray(K,)
+        Values of the (square root of the) precisions of the primitives.
+    prim_coeffs : np.ndarray(K, M)
+        Contraction coefficients of the primitives.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    norm : np.ndarray(L, K)
+        Normalization constants for the primitives in each contraction.
+
+    Returns
+    -------
+    derivative : np.ndarray(N, 3)
+        Evaluation of the derivative at each given coordinate.
+    """
     R_x, R_y, R_z = center
     
     # evaluating derivatives along each axis of the atomic coordinate
@@ -96,35 +127,11 @@ def eval_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm):
     g_y = grad(eval_contractions, 2)
     g_z = grad(eval_contractions, 3)
 
+
+
+    # vectorizing derivatives to evaluate them at each coordinate efficiently
     grad_x = np.apply_along_axis(g_x, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
     grad_y = np.apply_along_axis(g_y, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
     grad_z = np.apply_along_axis(g_z, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)    
 
     return np.vstack([grad_x, grad_y, grad_z]).T
-
-
-coords = np.random.rand(10, 3)
-center = np.random.rand(3)
-R_x, R_y, R_z = center
-angmom_comps = np.random.randint(0, 2, (1, 3))
-alphas = np.random.rand(1)
-
-prim_coeffs = np.random.rand(2, 1)
-norm = np.ones((1, 2))
-
-output = np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
-print(output)
-
-gradient = eval_deriv(coords, 1, center, angmom_comps, alphas, prim_coeffs, norm)
-print(gradient, gradient.shape)
-
-dx = 1e-5
-grad_numerical_x = (np.apply_along_axis(eval_contractions, 1, coords, R_x+dx, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm) -\
-                    np.apply_along_axis(eval_contractions, 1, coords, R_x-dx, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm))/(2*dx)
-grad_numerical_y = (np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y+dx, R_z, angmom_comps, alphas, prim_coeffs, norm) -\
-                    np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y-dx, R_z, angmom_comps, alphas, prim_coeffs, norm))/(2*dx)
-grad_numerical_z = (np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y, R_z+dx, angmom_comps, alphas, prim_coeffs, norm) -\
-                    np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y, R_z-dx, angmom_comps, alphas, prim_coeffs, norm))/(2*dx)
-
-grad_numerical = np.hstack([grad_numerical_x, grad_numerical_y, grad_numerical_z])
-print(np.allclose(gradient, grad_numerical))
