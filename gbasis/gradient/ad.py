@@ -20,18 +20,18 @@ def eval_contractions(coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, 
         Negative orders are treated as zero orders.
     center : np.ndarray(3,)
         Center of the Gaussian primitive.
-    angmom_comps : np.ndarray(L, 3)
+    angmom_comps : np.ndarray(1, 3)
         Components of the angular momentum, :math:`(a_x, a_y, a_z)`.
         Angular momentum components must be given as a two dimensional array, even if only one
         set of components is given.
     alphas : np.ndarray(K,)
         Values of the (square root of the) precisions of the primitives.
-    prim_coeffs : np.ndarray(K, M)
+    prim_coeffs : np.ndarray(K, 1)
         Contraction coefficients of the primitives.
         The coefficients always correspond to generalized contractions, i.e. two-dimensional array
         where the first index corresponds to the primitive and the second index corresponds to the
         contraction (with the same exponents and angular momentum).
-    norm : np.ndarray(L, K)
+    norm : np.ndarray(1, K)
         Normalization constants for the primitives in each contraction.
 
     Returns
@@ -71,6 +71,8 @@ def eval_contractions(coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, 
     # NOTE: `order` is still assumed to be a one dimensional
     center = np.array([R_x, R_y, R_z])
     center = center[np.newaxis, np.newaxis, :, np.newaxis, np.newaxis]
+
+    angmom_comps = angmom_comps.reshape(1, 3)
     angmom_comps = angmom_comps.T[np.newaxis, np.newaxis, :, :, np.newaxis] #this line
     # NOTE: if `angmom_comps` is two-dimensional (3, L), has shape (1, 1, 3, L). If it is one
     # dimensional (3, ) then it has shape (1, 1, 3)
@@ -85,10 +87,12 @@ def eval_contractions(coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, 
     zeroth_part = np.prod(coords ** angmom_comps * gauss, axis=(0, 2))
     # NOTE: `zeroth_part` now has axis 0 for primitives, axis 1 for angular momentum vector, and
     # axis 2 for coordinate
+
+    norm = norm.reshape(1, -1)
     norm = norm.T[:, :, np.newaxis]
     return np.tensordot(prim_coeffs, norm * zeroth_part, (0, 0)).flatten()
 
-def eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norm):
+def _eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norm):
     """
     Return the derivative of a Cartesian contraction with respect to nuclear coordinate.
 
@@ -135,3 +139,51 @@ def eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norm):
     grad_z = np.apply_along_axis(g_z, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)    
 
     return np.vstack([grad_x, grad_y, grad_z]).T
+
+def eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norms):
+    """
+    Return the derivative of a Cartesian contraction with respect to nuclear coordinate.
+    
+    Parameters
+    ----------
+    coords : np.ndarray(N, 3)
+        Points in space where the derivative of the Gaussian primitive is evaluated.
+        Coordinates must be given as a two dimensional array.
+    center : np.ndarray(3,)
+        Center of the Gaussian primitive.
+    angmom_comps : np.ndarray(L, 3)
+        Components of the angular momentum, :math:`(a_x, a_y, a_z)`.
+        Angular momentum components must be given as a two dimensional array, even if only one
+        set of components is given.
+    alphas : np.ndarray(K,)
+        Values of the (square root of the) precisions of the primitives.
+    prim_coeffs : np.ndarray(K, M)
+        Contraction coefficients of the primitives.
+        The coefficients always correspond to generalized contractions, i.e. two-dimensional array
+        where the first index corresponds to the primitive and the second index corresponds to the
+        contraction (with the same exponents and angular momentum).
+    norms : np.ndarray(L, K)
+        Normalization constants for the primitives in each contraction.
+
+    Returns
+    -------
+    derivative : np.ndarray(N, 3)
+        Evaluation of the derivative at each given coordinate.
+    """
+    R_x, R_y, R_z = center
+    M, L, N = prim_coeffs.shape[1], angmom_comps.shape[0], coords.shape[0]
+    output = np.zeros((M, L, N, 3))
+
+    for m in range(M):
+        prim_coeff = prim_coeffs[:, m]
+
+        angular_output = np.zeros((L, N, 3))
+        for l in range(L):
+            angmom_comp = angmom_comps[l]
+            norm = norms[l]      
+
+            derivative = _eval_nuc_deriv(coords, center, angmom_comp, alphas, prim_coeff, norm)
+            print(derivative.shape)
+            angular_output[l] = derivative
+        output[m] = angular_output
+    return output
