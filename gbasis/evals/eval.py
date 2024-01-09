@@ -140,12 +140,12 @@ def evaluate_basis(basis, points, transform=None):
         `N` is the number of coordinates at which the contractions are evaluated.
 
     """
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return Eval(basis).construct_array_lincomb(transform, coord_type, points=points)
-    if all(type == "cartesian" for type in coord_type):
+    if all(ct == "cartesian" for ct in coord_type):
         return Eval(basis).construct_array_cartesian(points=points)
-    if all(type == "spherical" for type in coord_type):
+    if all(ct == "spherical" for ct in coord_type):
         return Eval(basis).construct_array_spherical(points=points)
     return Eval(basis).construct_array_mix(coord_type, points=points)

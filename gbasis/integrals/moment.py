@@ -194,17 +194,17 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None):
     order.
 
     """
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return Moment(basis).construct_array_lincomb(
             transform, coord_type, moment_coord=moment_coord, moment_orders=moment_orders
         )
-    if all(type == "cartesian" for type in coord_type):
+    if all(ct == "cartesian" for ct in coord_type):
         return Moment(basis).construct_array_cartesian(
             moment_coord=moment_coord, moment_orders=moment_orders
         )
-    if all(type == "spherical" for type in coord_type):
+    if all(ct == "spherical" for ct in coord_type):
         return Moment(basis).construct_array_spherical(
             moment_coord=moment_coord, moment_orders=moment_orders
         )

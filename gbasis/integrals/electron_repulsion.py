@@ -238,13 +238,13 @@ def electron_repulsion_integral(
     if notation not in ["physicist", "chemist"]:
         raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
 
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         array = ElectronRepulsionIntegral(basis).construct_array_lincomb(transform, coord_type)
-    elif all(type == "cartesian" for type in coord_type):
+    elif all(ct == "cartesian" for ct in coord_type):
         array = ElectronRepulsionIntegral(basis).construct_array_cartesian()
-    elif all(type == "spherical" for type in coord_type):
+    elif all(ct == "spherical" for ct in coord_type):
         array = ElectronRepulsionIntegral(basis).construct_array_spherical()
     else:
         array = ElectronRepulsionIntegral(basis).construct_array_mix(coord_type)

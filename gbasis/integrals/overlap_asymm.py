@@ -98,8 +98,8 @@ def overlap_integral_asymmetric(
         `K_orbs_2` is the number of basis functions in the `basis_two`.
 
     """
-    coord_type_one = [type for type in [shell.coord_type for shell in basis_one]]
-    coord_type_two = [type for type in [shell.coord_type for shell in basis_two]]
+    coord_type_one = [ct for ct in [shell.coord_type for shell in basis_one]]
+    coord_type_two = [ct for ct in [shell.coord_type for shell in basis_two]]
 
     return OverlapAsymmetric(basis_one, basis_two).construct_array_lincomb(
         transform_one, transform_two, coord_type_one, coord_type_two

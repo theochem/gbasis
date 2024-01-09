@@ -178,12 +178,12 @@ def angular_momentum_integral(basis, transform=None):
         Dimension 2 corresponds to the direction of the angular momentum :math:`(x, y, z)`.
 
     """
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return AngularMomentumIntegral(basis).construct_array_lincomb(transform, coord_type)
-    if all(type == "cartesian" for type in coord_type):
+    if all(ct == "cartesian" for ct in coord_type):
         return AngularMomentumIntegral(basis).construct_array_cartesian()
-    if all(type == "spherical" for type in coord_type):
+    if all(ct == "spherical" for ct in coord_type):
         return AngularMomentumIntegral(basis).construct_array_spherical()
     return AngularMomentumIntegral(basis).construct_array_mix(coord_type)

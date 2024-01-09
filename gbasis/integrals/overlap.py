@@ -129,12 +129,12 @@ def overlap_integral(basis, transform=None):
         number of basis functions in the basis set.
 
     """
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return Overlap(basis).construct_array_lincomb(transform, coord_type)
-    if all(type == "cartesian" for type in coord_type):
+    if all(ct == "cartesian" for ct in coord_type):
         return Overlap(basis).construct_array_cartesian()
-    if all(type == "spherical" for type in coord_type):
+    if all(ct == "spherical" for ct in coord_type):
         return Overlap(basis).construct_array_spherical()
     return Overlap(basis).construct_array_mix(coord_type)

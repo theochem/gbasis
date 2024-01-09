@@ -93,15 +93,15 @@ def electrostatic_potential(
     if threshold_dist < 0:
         raise ValueError("`threshold_dist` must be greater than or equal to zero.")
 
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
-    if all(type == "cartesian" for type in coord_type):
+    if all(ct == "cartesian" for ct in coord_type):
         if sum(cont.num_cart * cont.num_seg_cont for cont in basis) != one_density_matrix.shape[0]:
             raise ValueError(
                 "`one_density_matrix` does not have number of rows/columns that is equal to the "
                 "total number of Cartesian contractions (atomic orbitals)."
             )
-    elif all(type == "spherical" for type in coord_type):
+    elif all(ct == "spherical" for ct in coord_type):
         if sum(cont.num_sph * cont.num_seg_cont for cont in basis) != one_density_matrix.shape[0]:
             raise ValueError(
                 "`one_density_matrix` does not have number of rows/columns that is equal to the "

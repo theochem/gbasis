@@ -297,17 +297,17 @@ def point_charge_integral(
         `N` is the number of coordinates at which the contractions are evaluated.
 
     """
-    coord_type = [type for type in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return PointChargeIntegral(basis).construct_array_lincomb(
             transform, coord_type, points_coords=points_coords, points_charge=points_charge
         )
-    if all(type == "cartesian" for type in coord_type):
+    if all(ct == "cartesian" for ct in coord_type):
         return PointChargeIntegral(basis).construct_array_cartesian(
             points_coords=points_coords, points_charge=points_charge
         )
-    if all(type == "spherical" for type in coord_type):
+    if all(ct == "spherical" for ct in coord_type):
         return PointChargeIntegral(basis).construct_array_spherical(
             points_coords=points_coords, points_charge=points_charge
         )
