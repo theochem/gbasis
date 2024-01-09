@@ -138,13 +138,19 @@ def from_iodata(mol):
     return basis
 
 
-def from_pyscf(mol):
+def from_pyscf(mol, coord_types="spherical"):
     """Return basis set stored within the `Mole` instance in `pyscf`.
 
     Parameters
     ----------
     mol : pyscf.gto.mole.Mole
         `Mole` object in `pyscf`.
+    coord_types : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+        Types of the coordinate system for the contractions.
+        If "cartesian", then all of the contractions are treated as Cartesian contractions.
+        If "spherical", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        coordinate type of each `PyscfShell` instance.
 
     Returns
     -------
@@ -183,6 +189,7 @@ def from_pyscf(mol):
             return super().angmom_components_sph
 
     basis = []
+    len_coord_types = len(coord_types)
     for atom, coord in mol._atom:
         basis_info = mol._basis[atom]
 
@@ -194,6 +201,22 @@ def from_pyscf(mol):
 
             coeffs = exps_coeffs[:, 1:]
 
-            basis.append(PyscfShell(angmom, np.array(coord), np.array(coeffs), np.array(exps)))
+            if type(coord_types) == str:
+            # if coord_types given as a single string, assign the specified type to all contractions for all atoms
+                if coord_types == "spherical":
+                    basis.append(PyscfShell(angmom, np.array(coord), np.array(coeffs), np.array(exps), 'p'))
+                elif coord_types == "cartesian":
+                    basis.append(PyscfShell(angmom, np.array(coord), np.array(coeffs), np.array(exps), 'c'))
+                else:
+                    raise ValueError("If coord_types is a string, it must be either 'spherical' or 'cartesian'.")
+            elif type(coord_types) == list:
+                # if coord_types given as a list, assign the specified type to each atom's contractions individually
+                if len_coord_types == mol.nbas:
+                    basis.append(PyscfShell(angmom, np.array(coord), np.array(coeffs), np.array(exps), coord_types.pop(0)))
+                else:
+                    raise ValueError(
+                        "If coord_types is a list, it must be the same length as the total number of contractions.")
+            else:
+                raise TypeError("coord_types must be a string or list of strings.")
 
     return tuple(basis)
