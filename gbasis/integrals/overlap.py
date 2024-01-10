@@ -21,7 +21,8 @@ class Overlap(BaseTwoIndexSymmetric):
     __init__(self, contractions)
         Initialize.
     construct_array_contraction(contractions_one, contractions_two) :
-    np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+        **np.ndarray(M_1, L_cart_1, M_2, L_cart_2)**
+
         Return the overlap associated with a `GeneralizedContractionShell` instance.
         `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.

@@ -69,6 +69,7 @@ class GeneralizedContractionShell:
         Coordinate of the center of the contractions.
     angmom : int
         Angular momentum of the contractions.
+
         .. math::
 
             \ell = \sum_i (\vec{a})_i = a_x + a_y + a_z
@@ -121,6 +122,7 @@ class GeneralizedContractionShell:
         ----------
         angmom : int
             Angular momentum of the set of contractions.
+
             .. math::
 
                 \sum_i \vec{a} = a_x + a_y + a_z

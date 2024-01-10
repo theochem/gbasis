@@ -27,7 +27,8 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
     __init__(self, contractions)
         Initialize.
     construct_array_contraction(self, cont1, cont2, cont3, cont4, **kwargs) :
-    np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4, ...)
+        **np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, ...)**
+
         Return the array associated with a `GeneralizedContractionShell` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
@@ -52,12 +53,14 @@ class BaseFourIndexSymmetric(BaseGaussianRelatedArray):
         Return the array associated with spherical Gaussians (atomic orbitals).
         `K_sph` is the total number of spherical contractions within the instance.
     construct_array_mix(self, coord_types, **kwargs) :
-    np.ndarray(K_cont, K_cont, K_cont, K_cont, ...)
+        **np.ndarray(K_cont, K_cont, K_cont, K_cont, ...)**
+
         Return the array associated with all of the contraction in the given coordinate
         system.
         `K_cont` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform, coord_type) :
-    np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, ...)
+        **np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, ...)**
+
         Return the array associated with linear combinations of contractions in the given coordinate
         system.
         `K_orbs` is the number of basis functions produced after the linear combinations.

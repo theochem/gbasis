@@ -10,6 +10,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
     r"""General class for calculating one-electron integrals for interaction with a point charge.
 
     One electron integrals are assumed to have the following form:
+
     .. math::
 
         \int \phi_a(\mathbf{r}) \phi_b(\mathbf{r}) g(|\mathbf{r} - \mathbf{R}_C|, Z) d\mathbf{r}
@@ -36,8 +37,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         Boys function used to evaluate the one-electron integral.
         `M` is the number of orders that will be evaluated.
         `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
-    construct_array_contraction(self, contractions_one, contractions_two, points_coords,
-                                points_charge)
+    construct_array_contraction(self, contractions_one, contractions_two, points_coords, points_charge)
         Return the point charge integrals for the given `GeneralizedContractionShell` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
@@ -79,6 +79,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             `M` is the number of orders that will be evaluated.
         weighted_dist : np.ndarray(1, N, K_b, K_a)
             Weighted interatomic distances.
+
             .. math::
 
                 \frac{\alpha_i \beta_j}{\alpha_i + \beta_j} * ||R_{PC}||^2
