@@ -167,7 +167,7 @@ def eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norms):
 
     Returns
     -------
-    derivative : np.ndarray(N, 3)
+    derivative : np.ndarray(M, L, N, 3)
         Evaluation of the derivative at each given coordinate.
     """
     R_x, R_y, R_z = center
