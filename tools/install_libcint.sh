@@ -65,5 +65,5 @@ cd build
 cmake "-DCMAKE_INSTALL_PREFIX=${gbasis_dir}/gbasis/integrals" ${lc_cmake_opts} ..
 
 # Compile and install Libcint
-cmake --build .
-cmake --install .
+make # cmake --build .
+make install # cmake --install .
