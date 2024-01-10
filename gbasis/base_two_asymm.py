@@ -421,9 +421,13 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
             If `coord_type` is not a list/tuple of the strings 'cartesian' or 'spherical'.
 
         """
-        if all(type_one == "cartesian" for type_one in coord_type_one) and all(type_two == "cartesian" for type_two in coord_type_two):
+        if all(ct_one == "cartesian" for ct_one in coord_type_one) and all(
+            ct_two == "cartesian" for ct_two in coord_type_two
+        ):
             array = self.construct_array_cartesian(**kwargs)
-        elif all(type_one == "spherical" for type_one in coord_type_one) and all(type_two == "spherical" for type_two in coord_type_two):
+        elif all(ct_one == "spherical" for ct_one in coord_type_one) and all(
+            ct_two == "spherical" for ct_two in coord_type_two
+        ):
             array = self.construct_array_spherical(**kwargs)
         else:
             if coord_type_one in ["cartesian", "spherical"]:

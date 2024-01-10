@@ -391,9 +391,9 @@ class BaseTwoIndexSymmetric(BaseGaussianRelatedArray):
             If `coord_type` is not a list/tuple of the strings 'cartesian' or 'spherical'.
 
         """
-        if all(type == "cartesian" for type in coord_type):
+        if all(ct == "cartesian" for ct in coord_type):
             array = self.construct_array_cartesian(**kwargs)
-        elif all(type == "spherical" for type in coord_type):
+        elif all(ct == "spherical" for ct in coord_type):
             array = self.construct_array_spherical(**kwargs)
         elif isinstance(coord_type, (list, tuple)):
             array = self.construct_array_mix(coord_type, **kwargs)
