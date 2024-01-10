@@ -39,5 +39,11 @@ jobs:
           emoji: true
           job-summary: true
           click-to-expand: true
-          custom-arguments: "--cov=gbasis"
+          custom-arguments: "--junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=gbasis"
           report-title: 'Test Report'
+
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
