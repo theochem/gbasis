@@ -64,4 +64,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./website/_build/html
           publish_branch: gh-pages
-          # cname: selector.qcdevs.org
+          cname: gbasis.qcdevs.org
