@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Libcint version to patch and install
+LIBCINT_VERSION=v6.1.0
+
 # Notice for user
 echo ''
 echo '    NOTE: If this script has been run previously, and it failed, please ensure'
@@ -47,7 +50,7 @@ cd "${gbasis_dir}/build"
 
 # Clone Libcint Git repo and enter it
 if [ ! -e "${gbasis_dir}/build/libcint" ]; then
-    git clone http://github.com/sunqm/libcint.git
+    git clone --branch ${LIBCINT_VERSION} --depth 1 https://github.com/sunqm/libcint.git
 fi
 cd libcint
 git checkout .
