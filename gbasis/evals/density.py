@@ -99,7 +99,8 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, coord_ty
 
     """
     orb_eval = evaluate_basis(basis, points, transform=transform, coord_type=coord_type)
-    return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
+    # Fix: # 117; to avoid small negative density values, the array is clipped
+    return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval).clip(min=0.0)
 
 
 def evaluate_deriv_reduced_density_matrix(
@@ -510,7 +511,8 @@ def evaluate_posdef_kinetic_energy_density(
             transform=transform,
             coord_type=coord_type,
         )
-    return 0.5 * output
+    # Fix: #117; to avoid small negative values, the array is clipped
+    return (0.5 * output).clip(min=0.0)
 
 
 # TODO: test against a reference
