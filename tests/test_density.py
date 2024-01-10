@@ -25,12 +25,15 @@ def test_evaluate_density_using_evaluated_orbs():
         evaluate_density_using_evaluated_orbs(density_mat, orb_eval),
         np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval),
     )
+    assert(evaluate_density_using_evaluated_orbs(density_mat, orb_eval) >= 0)
+
     density_mat = np.array([[1.0, 2.0], [2.0, 3.0]])
     orb_eval = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
     assert np.allclose(
         evaluate_density_using_evaluated_orbs(density_mat, orb_eval),
         np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval),
     )
+    assert(evaluate_density_using_evaluated_orbs(density_mat, orb_eval).all() >= 0)
 
     with pytest.raises(TypeError):
         orb_eval = [[1.0, 2.0], [1.0, 2.0]]
@@ -74,6 +77,7 @@ def test_evaluate_density():
         evaluate_density(density, basis, points, transform),
         np.einsum("ij,ik,jk->k", density, evaluate_orbs, evaluate_orbs),
     )
+    assert(evaluate_density(density, basis, points, transform).all() >= 0)
 
 
 def test_evaluate_deriv_density():
@@ -295,6 +299,7 @@ def test_evaluate_density_horton():
     assert np.allclose(
         evaluate_density(np.identity(88), basis, grid_3d, np.identity(88)), horton_density
     )
+    assert(evaluate_density(np.identity(88), basis, grid_3d, np.identity(88)).all() >= 0)
 
 
 def test_evaluate_density_gradient_horton():
@@ -399,7 +404,7 @@ def test_evaluate_posdef_kinetic_energy_density():
         evaluate_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88)),
         horton_density_kinetic_density,
     )
-
+    assert(evaluate_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88)).all() >= 0)
 
 def test_evaluate_general_kinetic_energy_density_horton():
     """Test evaluate_general_kinetic_energy_density against results from HORTON.
