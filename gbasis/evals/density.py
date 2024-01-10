@@ -511,7 +511,8 @@ def evaluate_posdef_kinetic_energy_density(
             transform=transform,
             coord_type=coord_type,
         )
-    return 0.5 * output
+    # Fix: #117; to avoid small negative values, the array is clipped
+    return (0.5 * output).clip(min=0.0)
 
 
 # TODO: test against a reference
