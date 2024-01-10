@@ -5,7 +5,7 @@ Please note we have a [Code of Conduct](https://qcdevs.org/guidelines/QCDevsCode
 
 ## Do you have a question?
 
-* Check if the question has been asked by searching on GitHub under  [Issues: Question](https://github.com/theochem/gbasis/issues?utf8=%E2%9C%93&q=is%3Aissue+%5BQUESTION%5D+). 
+* Check if the question has been asked by searching on GitHub under  [Issues: Question](https://github.com/theochem/gbasis/issues?utf8=%E2%9C%93&q=is%3Aissue+%5BQUESTION%5D+).
 
 * If you're unable to find a similar question, [open a new one](https://github.com/theochem/gbasis/issues/new/choose) under Question.
 
@@ -13,13 +13,13 @@ Please note we have a [Code of Conduct](https://qcdevs.org/guidelines/QCDevsCode
 
 ## Did you find a bug?
 
-* **Ensure that the bug was not already reported** by searching on GitHub under [Issues: Bugs](https://github.com/theochem/gbasis/labels/bug). 
+* **Ensure that the bug was not already reported** by searching on GitHub under [Issues: Bugs](https://github.com/theochem/gbasis/labels/bug).
 
 * If you're unable to find an open issue addressing the problem, [open a new one](https://github.com/theochem/gbasis/issues/new/choose) under Bug Report. Be sure to include a **title and clear description**, as much relevant information as possible, and a **code sample** or an **executable test case** demonstrating the expected behavior that is not occurring.
 
 ## Are you requesting a feature?
 
-* **Ensure that the feature is not already requested** by searching on GitHub under [Issues: Features](https://github.com/theochem/gbasis/labels/enhancement). 
+* **Ensure that the feature is not already requested** by searching on GitHub under [Issues: Features](https://github.com/theochem/gbasis/labels/enhancement).
 
 * If you're unable to find an open issue for the feature, [open a new one](https://github.com/theochem/gbasis/issues/new/choose) under Feature Request. Be sure to include a **title and clear description**, as much relevant information as possible, and describe the desired behaviour.
 
@@ -41,7 +41,7 @@ Feel free to make a pull request (see [Pull Request Guideline](#pull-request-gui
 
 * Rebase your changes to the latest master.
 
-* Ensure that all of the contributed code is unit tested (code is tested in bite size pieces rather than at the end), passes coverage (every part of the code is tested), and follows the styleguide. To check, install tox (`pip install --user tox`) and run `tox -e qa` from the project home directory. 
+* Ensure that all of the contributed code is unit tested (code is tested in bite size pieces rather than at the end), passes coverage (every part of the code is tested), and follows the styleguide. To check, install tox (`pip install --user tox`) and run `tox -e qa` from the project home directory.
 
 * Update the README.md if necessary (e.g. new feature is added).
 
