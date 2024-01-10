@@ -17,13 +17,13 @@ from utils import find_datafile, HortonContractions
 def test_construct_array_contraction():
     """Test integrals.electron_repulsion.ElectronRepulsionIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
-    cont_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]))
+    cont_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]), 'spherical')
     coord_two = np.array([1.5, 2, 3])
-    cont_two = GeneralizedContractionShell(0, coord_two, np.array([3.0]), np.array([0.2]))
+    cont_two = GeneralizedContractionShell(0, coord_two, np.array([3.0]), np.array([0.2]), 'spherical')
     coord_three = np.array([2.5, 3, 4])
-    cont_three = GeneralizedContractionShell(0, coord_three, np.array([3.0]), np.array([0.2]))
+    cont_three = GeneralizedContractionShell(0, coord_three, np.array([3.0]), np.array([0.2]), 'spherical')
     coord_four = np.array([3.5, 4, 5])
-    cont_four = GeneralizedContractionShell(0, coord_four, np.array([3.0]), np.array([0.2]))
+    cont_four = GeneralizedContractionShell(0, coord_four, np.array([3.0]), np.array([0.2]), 'spherical')
 
     with pytest.raises(TypeError):
         ElectronRepulsionIntegral.construct_array_contraction(None, cont_two, cont_three, cont_four)
@@ -123,10 +123,10 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
     basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs[:, 0], i.exps, i.coord_type) for i in basis[:8]]
     basis[0] = HortonContractions(
-        basis[0].angmom, basis[0].coord, basis[0].coeffs[3:], basis[0].exps[3:]
+        basis[0].angmom, basis[0].coord, basis[0].coeffs[3:], basis[0].exps[3:], basis[0].coord_type
     )
     basis[4] = HortonContractions(
-        basis[4].angmom, basis[4].coord, basis[4].coeffs[4:], basis[4].exps[4:]
+        basis[4].angmom, basis[4].coord, basis[4].coeffs[4:], basis[4].exps[4:], basis[4].coord_type
     )
     basis.pop(3)
     basis.pop(2)
@@ -194,7 +194,7 @@ def test_electron_repulsion_mix():
 def test_electron_repulsion_lincomb():
     """Test gbasis.integrals.electron_repulsion.electron_repulsion_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), "spherical")
 
     erep_obj = ElectronRepulsionIntegral(basis)
     transform = np.random.rand(3, 5)

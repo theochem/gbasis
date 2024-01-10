@@ -101,7 +101,7 @@ def test_nuclear_electron_attraction_mix():
 def test_nuclear_electron_attraction_lincomb():
     """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]),)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)

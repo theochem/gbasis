@@ -12,7 +12,7 @@ from utils import find_datafile, HortonContractions
 def test_evaluate_construct_array_contraction():
     """Test gbasis.evals.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
     )
     answer = np.array(
         [
@@ -141,7 +141,7 @@ def test_evaluate_basis_horton():
     """Test gbasis.evals.eval.evaluate_basis against horton results."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0], [0.8, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
     cartesian_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, 'cartesian') for i in basis]
     spherical_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, 'spherical') for i in basis]
 

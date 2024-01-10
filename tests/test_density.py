@@ -63,7 +63,7 @@ def test_evaluate_density_using_evaluated_orbs():
 def test_evaluate_density():
     """Test gbasis.evals.density.evaluate_density."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     transform = np.random.rand(14, 18)
     density = np.random.rand(14, 14)
     density += density.T
@@ -79,7 +79,7 @@ def test_evaluate_density():
 def test_evaluate_deriv_density():
     """Test gbasis.evals.density.evaluate_deriv_density."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     transform = np.random.rand(14, 18)
     density = np.random.rand(14, 14)
     density += density.T
@@ -223,7 +223,7 @@ def test_evaluate_deriv_density():
 def test_evaluate_density_gradient():
     """Test gbasis.evals.density.evaluate_density_gradient."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     transform = np.random.rand(14, 18)
     density = np.random.rand(14, 14)
     density += density.T
@@ -283,8 +283,8 @@ def test_evaluate_density_horton():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_density = np.load(find_datafile("data_horton_hhe_sph_density.npy"))
 
@@ -306,8 +306,8 @@ def test_evaluate_density_gradient_horton():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_density_gradient = np.load(find_datafile("data_horton_hhe_sph_density_gradient.npy"))
 
@@ -330,8 +330,8 @@ def test_evaluate_hessian_deriv_horton():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_density_hessian = np.zeros((10 ** 3, 3, 3))
     horton_density_hessian[:, [0, 0, 0, 1, 1, 2], [0, 1, 2, 1, 2, 2]] = np.load(
@@ -360,8 +360,8 @@ def test_evaluate_laplacian_deriv_horton():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_density_laplacian = np.load(find_datafile("data_horton_hhe_sph_density_laplacian.npy"))
 
@@ -384,8 +384,8 @@ def test_evaluate_posdef_kinetic_energy_density():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_density_kinetic_density = np.load(
         find_datafile("data_horton_hhe_sph_posdef_kinetic_density.npy")
@@ -412,8 +412,8 @@ def test_evaluate_general_kinetic_energy_density_horton():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     points = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_density_kinetic_density = np.load(
         find_datafile("data_horton_hhe_sph_posdef_kinetic_density.npy")
@@ -435,7 +435,7 @@ def test_evaluate_general_kinetic_energy_density():
     """Test density.evaluate_general_kinetic_energy_density."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0]])
-    basis = make_contractions(basis_dict, ["H"], points)
+    basis = make_contractions(basis_dict, ["H"], points, 'spherical')
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):

@@ -33,9 +33,9 @@ def test_boys_func():
 def test_construct_array_contraction():
     """Test gbasis.integrals.point_charge.PointChargeIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
-    test_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]))
+    test_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]), 'spherical')
     coord_two = np.array([1.5, 2, 3])
-    test_two = GeneralizedContractionShell(0, coord_two, np.array([3.0]), np.array([0.2]))
+    test_two = GeneralizedContractionShell(0, coord_two, np.array([3.0]), np.array([0.2]), 'spherical')
     coord = np.array([[0, 0, 0]])
     charge = np.array([1])
     coord_wac = (0.1 * coord_one + 0.2 * coord_two) / (0.1 + 0.2)
@@ -70,10 +70,10 @@ def test_construct_array_contraction():
     )
 
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0]), np.array([0.1])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0]), np.array([0.1]), 'spherical'
     )
     test_two = GeneralizedContractionShell(
-        0, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.2])
+        0, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.2]), 'spherical'
     )
     v_000_000 = [
         2
@@ -97,10 +97,10 @@ def test_construct_array_contraction():
     )
 
     test_one = GeneralizedContractionShell(
-        0, np.array([0.5, 1, 1.5]), np.array([1.0]), np.array([0.1])
+        0, np.array([0.5, 1, 1.5]), np.array([1.0]), np.array([0.1]), 'spherical'
     )
     test_two = GeneralizedContractionShell(
-        1, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.2])
+        1, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.2]), 'spherical'
     )
     assert np.allclose(
         PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge).ravel(),

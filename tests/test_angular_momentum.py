@@ -14,10 +14,10 @@ from utils import find_datafile
 def test_angular_momentum_construct_array_contraction():
     """Test integrals.angular_momentum.angular_momentumIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02])
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), 'spherical'
     )
 
     # copied the code it is testing

@@ -124,7 +124,7 @@ def test_from_pyscf():
     test = from_pyscf(mol)
 
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[1, 2, 3]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[1, 2, 3]]), 'spherical')
 
     with pytest.raises(ValueError):
 
