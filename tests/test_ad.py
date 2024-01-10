@@ -15,10 +15,9 @@ def test_eval_nuc_deriv():
 
     prim_coeffs = np.random.rand(2, 1)
     norm = np.ones((1, 2))
+    orders = np.array([1, 1, 1])
 
-    output = np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
-
-    gradient = _eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norm)
+    gradient = _eval_nuc_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, norm)
 
     dx = 1e-5
     grad_numerical_x = (np.apply_along_axis(eval_contractions, 1, coords, R_x+dx, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm) -\
@@ -44,11 +43,23 @@ def test_eval_nuc_deriv_full():
     prim_coeffs = np.random.rand(4, 5)
     norms = np.ones((2, 4))
 
-    output = eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norms)
+    orders = np.array([1, 1, 1])
+    output = eval_nuc_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, norms)
 
     for i in range(3):
         dx = np.zeros(3)
         dx[i] = 1e-5
         grad_numerical = (_eval_deriv_contractions(coords, np.array([0, 0, 0]), center+dx, angmom_comps, alphas, prim_coeffs, norms) -\
             _eval_deriv_contractions(coords, np.array([0, 0, 0]), center-dx, angmom_comps, alphas, prim_coeffs, norms))/(2*dx[i])
-    print(np.allclose(output[:, :, :, i], grad_numerical))
+        np.allclose(output[:, :, :, i], grad_numerical)
+
+    # testing second order derivative
+    orders = np.array([2, 2, 2])
+    output = eval_nuc_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, norms)
+    for i in range(3):
+        dx = np.zeros(3)
+        dx[i] = 1e-5
+        grad_numerical = (_eval_deriv_contractions(coords, np.array([0, 0, 0]), center+dx, angmom_comps, alphas, prim_coeffs, norms) +\
+            _eval_deriv_contractions(coords, np.array([0, 0, 0]), center-dx, angmom_comps, alphas, prim_coeffs, norms) -\
+            2*_eval_deriv_contractions(coords, np.array([0, 0, 0]), center, angmom_comps, alphas, prim_coeffs, norms))/(dx[i]**2)
+        np.allclose(output[:, :, :, i], grad_numerical)
