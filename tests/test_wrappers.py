@@ -105,7 +105,7 @@ def test_from_iodata():
 
     with pytest.raises(ValueError):
         basis[2].angmom = 10
-        basis[2].angmom_components_sph
+        _ = basis[2].angmom_components_sph
 
     with pytest.raises(ValueError):
         mol.obasis.primitive_normalization = "L1"

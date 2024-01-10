@@ -206,7 +206,7 @@ def test_kinetic_energy_integral_lincomb():
 
 
 def test_kinetic_energy_integral_horton_anorcc_hhe():
-    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -227,7 +227,7 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
 
 
 def test_kinetic_energy_integral_horton_anorcc_bec():
-    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON.
 
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 

@@ -8,7 +8,7 @@ from gbasis.parsers import make_contractions, parse_nwchem
 
 
 def test_overlap_integral_asymmetric_horton_anorcc_hhe():
-    """Test gbasis.integrals.overlap_asymm.overlap_integral_asymmetric against HORTON's overlap matrix.
+    """Test gbasis.integrals.overlap_asymm.overlap_integral_asymmetric against HORTON overlap mat.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 

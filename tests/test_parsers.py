@@ -763,7 +763,7 @@ def test_make_contractions():
     """Test gbasis.contractions.make_contractions."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     with pytest.raises(TypeError):
-        make_contractions(basis_dict, {"H", "H"}, np.array([[0, 0, 0], [1, 1, 1]]))
+        make_contractions(basis_dict, {"H", "C"}, np.array([[0, 0, 0], [1, 1, 1]]))
     with pytest.raises(TypeError):
         make_contractions(basis_dict, [0, 0], np.array([[0, 0, 0], [1, 1, 1]]))
 

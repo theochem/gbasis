@@ -34,6 +34,7 @@ def skip_init(class_obj):
     return NoInitClass()
 
 
+# ruff: noqa: B006
 def disable_abstract(abclass, dict_overwrite={}):
     """Return a class that is a copy of the given abstract class without its abstract methods.
 

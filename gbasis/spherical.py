@@ -46,7 +46,8 @@ def expansion_coeff(angmom, mag, i, j, k):
         C^{angmom,mag,i,j,k} = -1^{i + k - \text{shift_factor}} * (1/4)^i * {angmom \choose i}
         * {(angmom - i) \choose (|mag| + i)} * {i \choose j} * {|mag| \choose 2 * k},
 
-    where :math:`shift_factor = 0` if :math:`mag >= 0` and :math:`shift_factor = 1/2` if :math:`mag < 0`    .
+    where :math:`shift_factor = 0` if :math:`mag >= 0` and :math:`shift_factor = 1/2`
+    if :math:`mag < 0`.
 
     Parameters
     ----------
@@ -123,7 +124,8 @@ def harmonic_norm(angmom, mag):
     Calculate the normalization constant of a real solid harmonic.
 
     .. math::
-        N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! / 2^{\delta_0^m}},
+        N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! /
+        2^{\delta_0^m}},
 
     where :math: `del{0, m}` is the Kronecker delta of 0 and m.
 

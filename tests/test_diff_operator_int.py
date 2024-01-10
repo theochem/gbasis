@@ -314,7 +314,7 @@ def test_compute_differential_operator_integrals_multiarray():
     for i, order_diff in enumerate(orders_diff):
         for j, angmom_a in enumerate(angmoms_a):
             for k, angmom_b in enumerate(angmoms_b):
-                _compute_differential_operator_integrals(
+                assert _compute_differential_operator_integrals(
                     np.array([order_diff]),
                     coord_a,
                     np.array([angmom_a]),

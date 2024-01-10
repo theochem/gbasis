@@ -164,7 +164,8 @@ def evaluate_ehrenfest_force(
             - (1 - 2\alpha)
             \sum_i
             \left.
-              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
+            \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r},
+            \mathbf{r})
             \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
             &+ \frac{1}{2} \beta
             \left.

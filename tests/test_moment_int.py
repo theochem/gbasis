@@ -799,7 +799,7 @@ def test_compute_multipole_moment_integrals_multiarray():
     for i, order_moment in enumerate(orders_moment):
         for j, angmom_a in enumerate(angmoms_a):
             for k, angmom_b in enumerate(angmoms_b):
-                _compute_multipole_moment_integrals(
+                assert _compute_multipole_moment_integrals(
                     coord_moment,
                     np.array([order_moment]),
                     coord_a,
