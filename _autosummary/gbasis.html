@@ -1,0 +1,2163 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>gbasis package &#8212; Ayers Lab</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/gbasis';</script>
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="gbasis.evals package" href="gbasis.evals.html" />
+    <link rel="prev" title="Getting started" href="../tutorial.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <header>
+  
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
+  
+  </header>
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Ayers Lab - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Ayers Lab - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to GBasis’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Getting started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">gbasis package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html">gbasis.evals package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html">gbasis.integrals package</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis/issues/new?title=Issue%20on%20page%20%2F_autosummary/gbasis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/_autosummary/gbasis.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>gbasis package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base">gbasis.base module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_four_symm">gbasis.base_four_symm module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_one">gbasis.base_one module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_two_asymm">gbasis.base_two_asymm module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_two_symm">gbasis.base_two_symm module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.contractions">gbasis.contractions module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.parsers">gbasis.parsers module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.spherical">gbasis.spherical module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.utils">gbasis.utils module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.wrappers">gbasis.wrappers module</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-gbasis">
+<span id="gbasis-package"></span><h1>gbasis package<a class="headerlink" href="#module-gbasis" title="Permalink to this heading">#</a></h1>
+<p>Module for evaluating, differentiating, and integrating Gaussian functions.</p>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gbasis.evals.html">gbasis.evals package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html#module-gbasis.evals.density">gbasis.evals.density module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html#module-gbasis.evals.electrostatic_potential">gbasis.evals.electrostatic_potential module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html#module-gbasis.evals.eval">gbasis.evals.eval module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html#module-gbasis.evals.eval_deriv">gbasis.evals.eval_deriv module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.evals.html#module-gbasis.evals.stress_tensor">gbasis.evals.stress_tensor module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gbasis.integrals.html">gbasis.integrals package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.angular_momentum">gbasis.integrals.angular_momentum module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.electron_repulsion">gbasis.integrals.electron_repulsion module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.kinetic_energy">gbasis.integrals.kinetic_energy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.moment">gbasis.integrals.moment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.momentum">gbasis.integrals.momentum module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.nuclear_electron_attraction">gbasis.integrals.nuclear_electron_attraction module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.overlap">gbasis.integrals.overlap module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.overlap_asymm">gbasis.integrals.overlap_asymm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.point_charge">gbasis.integrals.point_charge module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="module-gbasis.base">
+<span id="gbasis-base-module"></span><h2>gbasis.base module<a class="headerlink" href="#module-gbasis.base" title="Permalink to this heading">#</a></h2>
+<p>Base class for arrays that depend on one or more contracted Gaussians.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.base.BaseGaussianRelatedArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.base.</span></span><span class="sig-name descname"><span class="pre">BaseGaussianRelatedArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base.BaseGaussianRelatedArray" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base class for constructing arrays associated with contracted Gaussians.</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with each index of the array.
+Each tuple of <cite>GeneralizedContractionShell</cite> corresponds to an index of the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>__init__(self, <a href="#id1"><span class="problematic" id="id2">*</span></a>axes_contractions)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(self, <a href="#id3"><span class="problematic" id="id4">*</span></a>contraction, <a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs)<span class="classifier">np.ndarray</span></dt><dd><p>Return the array associated with a <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>construct_array_cartesian(self, <a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs)<span class="classifier">np.ndarray</span></dt><dd><p>Return the array associated with Cartesian Gaussians.</p>
+</dd>
+<dt>construct_array_spherical(self, <a href="#id9"><span class="problematic" id="id10">**</span></a>kwargs)<span class="classifier">np.ndarray</span></dt><dd><p>Return the array associated with spherical Gaussians (atomic orbitals).</p>
+</dd>
+<dt>construct_array_lincomb(self, <a href="#id11"><span class="problematic" id="id12">*</span></a>transform, coord_types, <a href="#id13"><span class="problematic" id="id14">**</span></a>kwargs)<span class="classifier">np.ndarray</span></dt><dd><p>Return the array associated with linear combinations of contractions in the given coordinate
+system.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base.BaseGaussianRelatedArray.construct_array_cartesian">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base.BaseGaussianRelatedArray.construct_array_cartesian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with the given set of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the given set of contracted Cartesian Gaussians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base.BaseGaussianRelatedArray.construct_array_contraction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base.BaseGaussianRelatedArray.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a contracted Cartesian Gaussian.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
+array.
+Note that multiple instances may be needed to construct the array.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_contraction<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the given instance(s) of <cite>GeneralizedContractionShell</cite>.</p>
+</dd>
+</dl>
+<p>The next level of classes will be divided by number of indices associated with
+<cite>GeneralizedContractionShell</cite>. Then this method’s parameters will likely be different from
+it’s children. This means that using this method’s API blindly (by simply copying and
+pasting) will not be suitable for all its children. Here, we allow arbitrary number of
+<cite>contractions</cite> to indicate that its children may have different number of <cite>contractions</cite> in
+its parameters. However, in actual implementations, the number of <cite>contractions</cite> will likely
+be fixed, in which case, an arbitrary number of <cite>contractions</cite> should not be accepted.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base.BaseGaussianRelatedArray.construct_array_lincomb">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_lincomb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base.BaseGaussianRelatedArray.construct_array_lincomb" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with linear combinations of contractions.</p>
+<dl class="simple">
+<dt>transform<span class="classifier">np.ndarray</span></dt><dd><p>Transformation matrix that will be used for linearly combining the spherical
+contractions.
+Note that multiple instances may be needed to construct the array.</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.</p>
+</dd>
+</dl>
+<p>The next level of classes will be divided by number of indices associated with
+<cite>GeneralizedContractionShell</cite>. Then this method’s parameters will likely be different from
+it’s children. This means that using this method’s API blindly (by simply copying and
+pasting) will not be suitable for all its children. Here, we allow arbitrary number of
+<cite>transform</cite> to indicate that its children may have different number of <cite>transform</cite> in
+its parameters. However, in actual implementations, the number of <cite>transform</cite> will likely
+be fixed, in which case, an arbitrary number of <cite>transform</cite> should not be accepted.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base.BaseGaussianRelatedArray.construct_array_mix">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base.BaseGaussianRelatedArray.construct_array_mix" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of Gaussians of the given coordinate systems.</p>
+<dl class="simple">
+<dt>coord_types<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each <cite>GeneralizedContractionShell</cite>.
+Each entry must be one of “cartesian” or “spherical”.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base.BaseGaussianRelatedArray.construct_array_spherical">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base.BaseGaussianRelatedArray.construct_array_spherical" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with spherical Gaussians (atomic orbitals).</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gbasis.base_four_symm">
+<span id="gbasis-base-four-symm-module"></span><h2>gbasis.base_four_symm module<a class="headerlink" href="#module-gbasis.base_four_symm" title="Permalink to this heading">#</a></h2>
+<p>Base class for arrays that depend on four contracted Gaussians.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.base_four_symm.</span></span><span class="sig-name descname"><span class="pre">BaseFourIndexSymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gbasis.base.BaseGaussianRelatedArray" title="gbasis.base.BaseGaussianRelatedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussianRelatedArray</span></code></a></p>
+<p>Base class for constructing arrays associated with four contracted Gaussian.</p>
+<p>The first four axes of the returned array are associated with the given set of contracted
+Gaussian (or a linear combination of a set of Gaussians).</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Sets of contractions associated with each axis of the array.</p>
+</dd>
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first four indices of the array.
+Property of <cite>BaseFourIndexSymmetric</cite>.</p>
+</dd>
+</dl>
+<dl>
+<dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(self, cont1, cont2, cont3, cont4, <a href="#id15"><span class="problematic" id="id16">**</span></a>kwargs) :</dt><dd><p><strong>np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, …)</strong></p>
+<p>Return the array associated with a <cite>GeneralizedContractionShell</cite> instances.
+<cite>M_1</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the first index.
+<cite>L_cart_1</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the first index.
+<cite>M_2</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the second index.
+<cite>L_cart_2</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the second index.
+<cite>M_3</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the third index.
+<cite>L_cart_3</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the third index.
+<cite>M_4</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the fourth index.
+<cite>L_cart_4</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the fourth index.</p>
+</dd>
+<dt>construct_array_cartesian(self, <a href="#id17"><span class="problematic" id="id18">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cart, K_cart, K_cart, K_cart, …)</span></dt><dd><p>Return the array associated with Cartesian Gaussians.
+<cite>K_cart</cite> is the total number of Cartesian contractions within the instance.</p>
+</dd>
+<dt>construct_array_spherical(self, <a href="#id19"><span class="problematic" id="id20">**</span></a>kwargs)<span class="classifier">np.ndarray(K_sph, K_sph, K_sph, K_sph, …)</span></dt><dd><p>Return the array associated with spherical Gaussians (atomic orbitals).
+<cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
+</dd>
+<dt>construct_array_mix(self, coord_types, <a href="#id21"><span class="problematic" id="id22">**</span></a>kwargs) :</dt><dd><p><strong>np.ndarray(K_cont, K_cont, K_cont, K_cont, …)</strong></p>
+<p>Return the array associated with all of the contraction in the given coordinate
+system.
+<cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
+</dd>
+<dt>construct_array_lincomb(self, transform, coord_type) :</dt><dd><p><strong>np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, …)</strong></p>
+<p>Return the array associated with linear combinations of contractions in the given coordinate
+system.
+<cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_cartesian">
+<span class="sig-name descname"><span class="pre">construct_array_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_cartesian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with the given set(s) of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cart, K_cart, K_cart, K_cart, …)</span></dt><dd><p>Array associated with the given set of contracted Cartesian Gaussians.
+Dimensions 0, 1, 2, and 3 of the array are associated with the contracted Cartesian
+Gaussians. <cite>K_cart</cite> is the total number of Cartesian contractions within the
+instance.</p>
+</dd>
+</dl>
+<p>The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
+set of contractions, are transposed in the process of constructing the whole array.
+It is assumed that the array returned from <cite>construct_array_contraction</cite> is symmetric with
+respect to the swapping of the axes 0 and 1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_contraction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cont1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cont2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cont3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cont4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>cont1<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Generalized contracted (Cartesian) shell associated with the first index of the array.</p>
+</dd>
+<dt>cont2<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Generalized contracted (Cartesian) shell associated with the second index of the array.</p>
+</dd>
+<dt>cont3<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Generalized contracted (Cartesian) shell associated with the three index of the array.</p>
+</dd>
+<dt>cont4<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Generalized contracted (Cartesian) shell associated with the four index of the array.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_cont<span class="classifier">np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4, …)</span></dt><dd><p>Return the array associated with a <cite>GeneralizedContractionShell</cite> instances.
+Dimension 0 corresponds to the segmented contraction within <cite>cont_one</cite>. <cite>M_1</cite> is
+the number of segmented contractions with the same exponents (and angular momentum)
+associated with the first index.
+Dimension 1 corresponds to the angular momentum vector of the <cite>cont_one</cite>.
+<cite>L_cart_1</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the first index.
+Dimension 2 corresponds to the segmented contraction within <cite>cont_two</cite>.
+<cite>M_2</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the second index.
+Dimension 3 corresponds to the angular momentum vector of the <cite>cont_two</cite>.
+<cite>L_cart_2</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the second index.
+Dimension 4 corresponds to the segmented contraction within <cite>cont_three</cite>.
+<cite>M_3</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the third index.
+Dimension 5 corresponds to the angular momentum vector of the <cite>cont_three</cite>.
+<cite>L_cart_3</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the third index.
+Dimension 6 corresponds to the segmented contraction within <cite>cont_four</cite>.
+<cite>M_4</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the fourth index.
+Dimension 7 corresponds to the angular momentum vector of the <cite>cont_four</cite>.
+<cite>L_cart_4</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the fourth index.</p>
+</dd>
+</dl>
+<p>The next level of classes will be the construction of specific arrays given a set of
+contracted Cartesian Gaussians. The keyword arguments will be different depending on its
+functionality. You should use explicit keyword arguments when defining this function, rather
+than the arbitrary number of keywords (as is done here).</p>
+<p>The methods <cite>construct_array_cartesian</cite>, <cite>construct_array_spherical</cite>, and
+<cite>construct_array_lincomb</cite> depend on this function to produce an array with dimensions 0, 1
+corresponding to the contraction (within a generalized contraction) and angular momentum
+vector of <cite>cont_one</cite>, dimensions 2, 3 corresponding to the contraction
+(within a generalized contraction) and angular momentum vector of <cite>cont_two</cite>, and so
+on for <cite>cont_three</cite> and <cite>cont_four</cite>. These other methods <strong>will</strong> fail with little warning
+if the shape of the output is different.
+Even if all of <cite>cont1</cite>, <cite>cont2</cite>, <cite>cont3</cite>, and <cite>cont4</cite> are segmented contractions,
+dimensions 0, 2, 4, and 6 must correspond to the contraction. In other words, the shape must
+still be (1, L_1, 1, L_2, 1, L_3, 1, L_4).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_lincomb">
+<span class="sig-name descname"><span class="pre">construct_array_lincomb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_lincomb" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with linear combinations of contractions.</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j} T_{i_1 j} \sum_{k} T_{i_2 k} M_{jklm...} = M^{trans}_{i_1 i_2 lm...}\]</div>
+<dl class="simple">
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from contractions in the given coordinate system (e.g. AO) to
+linear combinations of contractions (e.g. MO).
+Transformation is applied to the left.
+Rows correspond to the linear combinations (i.e. MO) and the columns correspond to the
+contractions (i.e. AO).</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
+then pass it down to <cite>construct_array_contraction</cite>. See <cite>construct_array_contraction</cite>
+for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs, …)</span></dt><dd><p>Array whose first four indices are associated with the linear combinations of the
+contractions.
+Dimensions 0, 1, 2 and 3 of the array correspond to the linear combination of contracted
+spherical Gaussians. <cite>K_orbs</cite> is the number of basis functions produced after the
+linear combinations.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not one of “cartesian”, “spherical”, or a list/tuple of these
+strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_mix">
+<span class="sig-name descname"><span class="pre">construct_array_mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_mix" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of Gaussians of the given coordinate systems.</p>
+<dl class="simple">
+<dt>coord_types<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each <cite>GeneralizedContractionShell</cite>.
+Each entry must be one of “cartesian” or “spherical”.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cont, K_cont, K_cont, K_cont, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.
+Dimensions 0, 1, 2 and 3 of the array are associated with two contractions in the given
+coordinate system. <cite>K_cont</cite> is the total number of contractions within the
+instance.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_types</cite> is not a list/tuple.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>coord_types</cite> has an entry that is not “cartesian” or “spherical”.
+If <cite>coord_types</cite> has different number of entries as the number of
+<cite>GeneralizedContractionShell</cite> (<cite>contractions</cite>) in instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_spherical">
+<span class="sig-name descname"><span class="pre">construct_array_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric.construct_array_spherical" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with four contracted spherical Gaussians (atomic orbitals).</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_sph, K_sph, K_sph, K_sph, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set(s) of contracted
+Cartesian Gaussians.
+Dimensions 0, 1, 2 and 3 of the array are associated with four contracted spherical
+Gaussians (atomic orbitals). <cite>K_sph</cite> is the total number of spherical contractions
+within the instance.</p>
+</dd>
+</dl>
+<p>The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
+set of contractions, are transposed in the process of constructing the whole array.
+It is assumed that the array returned from <cite>construct_array_contraction</cite> is symmetric with
+respect to the swapping of the axes 0 and 1.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.base_four_symm.BaseFourIndexSymmetric.contractions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contractions</span></span><a class="headerlink" href="#gbasis.base_four_symm.BaseFourIndexSymmetric.contractions" title="Permalink to this definition">#</a></dt>
+<dd><p>Contractions that are associated with the first four indices of the array.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Generalized contraction shell that is associated with the first four indices of the
+array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gbasis.base_one">
+<span id="gbasis-base-one-module"></span><h2>gbasis.base_one module<a class="headerlink" href="#module-gbasis.base_one" title="Permalink to this heading">#</a></h2>
+<p>Base class for arrays that depend on one contracted Gaussian.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.base_one.</span></span><span class="sig-name descname"><span class="pre">BaseOneIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gbasis.base.BaseGaussianRelatedArray" title="gbasis.base.BaseGaussianRelatedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussianRelatedArray</span></code></a></p>
+<p>Base class for constructing arrays associated with one contracted Gaussian.</p>
+<p>The first dimension (axis 0) of the returned array is associated with a contracted Gaussian (or
+a linear combination of a set of Gaussians).</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with each index of the array.
+Each tuple of <cite>GeneralizedContractionShell</cite> corresponds to an index of the array.</p>
+</dd>
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first index of the array.
+Property of <cite>BaseOneIndex</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(self, contraction)<span class="classifier">np.ndarray(M, L_cart, …)</span></dt><dd><p>Return the array associated with a <cite>GeneralizedContractionShell</cite> instance.
+<cite>M</cite> is the number of segmented contractions with the same exponents (and angular
+momentum).
+<cite>L_cart</cite> is the number of Cartesian contractions for the given angular momentum.</p>
+</dd>
+<dt>construct_array_cartesian(self)<span class="classifier">np.ndarray(K_cart, …)</span></dt><dd><p>Return the array associated with Cartesian Gaussians.
+<cite>K_cart</cite> is the total number of Cartesian contractions within the instance.</p>
+</dd>
+<dt>construct_array_spherical(self)<span class="classifier">np.ndarray(K_sph, …)</span></dt><dd><p>Return the array associated with spherical Gaussians (atomic orbitals).
+<cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
+</dd>
+<dt>construct_array_mix(self, coord_types, <a href="#id23"><span class="problematic" id="id24">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, …)</span></dt><dd><p>Return the array associated with all of the contraction in the given coordinate system.
+<cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
+</dd>
+<dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, …)</span></dt><dd><p>Return the array associated with linear combinations of contractions in the given coordinate
+system.
+<cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex.construct_array_cartesian">
+<span class="sig-name descname"><span class="pre">construct_array_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex.construct_array_cartesian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with the given set of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cart, …)</span></dt><dd><p>Array associated with the given set of contracted Cartesian Gaussians.
+Dimension 0 is associated with the contracted Cartesian Gaussian. <cite>K_cart</cite> is the
+total number of Cartesian contractions within the instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex.construct_array_contraction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
+array.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_contraction<span class="classifier">np.ndarray(M, L_cart, …)</span></dt><dd><p>Array associated with the given instance(s) of <cite>GeneralizedContractionShell</cite>.
+Dimension 0 corresponds to segmented contractions within the given generalized
+contraction (same exponents and angular momentum, but different coefficients). <cite>M</cite> is
+the number of segmented contractions with the same exponents (and angular momentum).
+Dimension 1 corresponds to angular momentum vector. <cite>L_cart</cite> is the number of Cartesian
+contractions for the given angular momentum.</p>
+</dd>
+</dl>
+<p>The next level of classes will be the construction of specific arrays given a set of
+contracted Cartesian Gaussians. The keyword arguments will be different depending on its
+functionality. You should use explicit keyword arguments when defining this function, rather
+than the arbitrary number of keywords (as is done here).</p>
+<p>The methods <cite>construct_array_cartesian</cite>, <cite>construct_array_spherical</cite>, and
+<cite>construct_array_lincomb</cite> depend on this function to produce an array with dimension 0
+corresponding to the contraction (within a generalized contraction) and dimension 1
+corresponding to the angular momentum vector. These other methods <strong>will</strong> fail with little
+warning if the shape of the output is different. Even if there is only one contraction (i.e.
+segmented contraction), the first index must correspond to the contraction. In other words,
+the shape must still be (1, L, N).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex.construct_array_lincomb">
+<span class="sig-name descname"><span class="pre">construct_array_lincomb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex.construct_array_lincomb" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with linear combinations of contractions.</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j} T_{i j} M_{jklm...} = M^{trans}_{iklm...}\]</div>
+<dl class="simple">
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from contractions in the given coordinate system (e.g. AO) to
+linear combinations of contractions (e.g. MO).
+Transformation is applied to the left.
+Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
+contractions (i.e. AO).</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each GeneralizedContractionShell instance.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
+then pass it down to <cite>construct_array_contraction</cite>. See <cite>construct_array_contraction</cite>
+for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_orbs, …)</span></dt><dd><p>Array whose first index is associated with the linear combinations of the contractions.
+<cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not one of “cartesian”, “spherical”, or a list/tuple of these
+strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex.construct_array_mix">
+<span class="sig-name descname"><span class="pre">construct_array_mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex.construct_array_mix" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with all of the contractions in the given coordinate system.</p>
+<dl class="simple">
+<dt>coord_types<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each GeneralizedContractionShell.
+Each entry must be one of “cartesian” or “spherical”.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cont, …)</span></dt><dd><p>Array associated with the spherical contrations of the basis set.
+Dimension 0 is associated with each spherical contraction in the basis set.
+<cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_types</cite> is not a list/tuple.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>coord_types</cite> has an entry that is not “cartesian” or “spherical”.
+If <cite>coord_types</cite> has different number of entries as the number of
+<cite>GeneralizedContractionShell</cite> (<cite>contractions</cite>) in instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex.construct_array_spherical">
+<span class="sig-name descname"><span class="pre">construct_array_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex.construct_array_spherical" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with contracted spherical Gaussians (atomic orbitals).</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_sph, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.
+Dimension 0 is associated with the contracted spherical Gaussian. <cite>K_sph</cite> is the
+total number of Cartesian contractions within the instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.base_one.BaseOneIndex.contractions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contractions</span></span><a class="headerlink" href="#gbasis.base_one.BaseOneIndex.contractions" title="Permalink to this definition">#</a></dt>
+<dd><p>Contractions that are associated with the first index of the array.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first index of the array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gbasis.base_two_asymm">
+<span id="gbasis-base-two-asymm-module"></span><h2>gbasis.base_two_asymm module<a class="headerlink" href="#module-gbasis.base_two_asymm" title="Permalink to this heading">#</a></h2>
+<p>Base class for arrays that depend on two contracted Gaussians.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.base_two_asymm.</span></span><span class="sig-name descname"><span class="pre">BaseTwoIndexAsymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gbasis.base.BaseGaussianRelatedArray" title="gbasis.base.BaseGaussianRelatedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussianRelatedArray</span></code></a></p>
+<p>Base class for constructing arrays with two indices associated with two sets of contractions.</p>
+<p>The first index of the returned array is associated with the first set of contracted Gaussians
+(or some linear combination of them). The second index of the returned array is associated with
+the second set of contracted Gaussians (or some linear combination of them).</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Sets of contractions associated with each axis of the array.</p>
+</dd>
+<dt>contractions_one<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first index of the array.
+Property of <cite>BaseTwoIndexAsymmetric</cite>.</p>
+</dd>
+<dt>contractions_two<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the second index of the array.
+Property of <cite>BaseTwoIndexAsymmetric</cite>.</p>
+</dd>
+</dl>
+<dl>
+<dt>__init__(self, contractions_one, contractions_two)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(self, contractions_one, contractions_two, <a href="#id25"><span class="problematic" id="id26">**</span></a>kwargs) :</dt><dd><p><strong>np.ndarray(M_1, L_cart_1, M_2, L_cart_2, …)</strong></p>
+<p>Return the array associated with a <cite>GeneralizedContractionShell</cite> instance.
+<cite>M_1</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the first index.
+<cite>L_cart_1</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the first index.
+<cite>M_2</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the second index.
+<cite>L_cart_2</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the second index.</p>
+</dd>
+<dt>construct_array_cartesian(self, <a href="#id27"><span class="problematic" id="id28">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cart_1, K_cart_2, …)</span></dt><dd><p>Return the array associated with Cartesian Gaussians.
+<cite>K_cart_1</cite> is the total number of Cartesian contractions within <cite>contractions_one</cite>.
+<cite>K_cart_2</cite> is the total number of Cartesian contractions within <cite>contractions_two</cite>.</p>
+</dd>
+<dt>construct_array_spherical(self, <a href="#id29"><span class="problematic" id="id30">**</span></a>kwargs)<span class="classifier">np.ndarray(K_sph_1, K_sph_2, …)</span></dt><dd><p>Return the array associated with spherical Gaussians (atomic orbitals).
+<cite>K_sph_1</cite> is the total number of spherical contractions within <cite>contractions_one</cite>.
+<cite>K_sph_2</cite> is the total number of spherical contractions within <cite>contractions_two</cite>.</p>
+</dd>
+<dt>construct_array_lincomb(self, transform_one, transform_two, coord_type, <a href="#id31"><span class="problematic" id="id32">**</span></a>kwargs) :</dt><dd><p><strong>np.ndarray(K_orbs_1, K_orbs_2, …)</strong></p>
+<p>Return the array associated with linear combinations of contractions in the given coordinate
+system.
+<cite>K_orbs_1</cite> is the number of basis functions produced by linear combinations of the
+spherical contractions associated with <cite>contractions_one</cite>.
+<cite>K_orbs_2</cite> is the number of basis functions produced by linear combinations of the
+spherical contractions associated with <cite>contractions_two</cite>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_cartesian">
+<span class="sig-name descname"><span class="pre">construct_array_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_cartesian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with the given set(s) of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cart_1, K_cart_2, …)</span></dt><dd><p>Array associated with the given set of contracted Cartesian Gaussians.
+Dimension 0 corresponds to the Cartesian contraction within <cite>contractions_one</cite>.
+<cite>K_cart_1</cite> is the total number of Cartesian contractions within
+<cite>contractions_one</cite>.
+Dimension 1 corresponds to the Cartesian contraction within <cite>contractions_two</cite>.
+<cite>K_cart_2</cite> is the total number of Cartesian contractions within
+<cite>contractions_two</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_contraction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with two sets of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
+the array.</p>
+</dd>
+<dt>contractions_two<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the second index of
+the array.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_contraction<span class="classifier">np.ndarray(M_1, L_cart_1, M_2, L_cart_2, …)</span></dt><dd><p>Array associated with the given instance(s) of GeneralizedContractionShell.
+Dimension 0 corresponds to the segmented contraction within <cite>contractions_one</cite>.
+<cite>M_1</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the first index.
+Dimension 1 corresponds to the angular momentum vector of the <cite>contractions_one</cite>.
+<cite>L_cart_1</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the first index.
+Dimension 2 corresponds to the segmented contraction within <cite>contractions_two</cite>.
+<cite>M_2</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the second index.
+Dimension 3 corresponds to the angular momentum vector of the <cite>contractions_two</cite>.
+<cite>L_cart_2</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the second index.</p>
+</dd>
+</dl>
+<p>The next level of classes will be the construction of specific arrays given a set of
+contracted Cartesian Gaussians. The keyword arguments will be different depending on its
+functionality. You should use explicit keyword arguments when defining this function, rather
+than the arbitrary number of keywords (as is done here).</p>
+<p>The methods <cite>construct_array_cartesian</cite>, <cite>construct_array_spherical</cite>, and
+<cite>construct_array_lincomb</cite> depend on this function to produce an array with dimensions 0, 1
+corresponding to the contraction (within a generalized contraction) and the angular momentum
+vector of <cite>contractions_one</cite>, and dimensions 2, 3 corresponding to the contraction (within a
+generalized contraction) and the angular momentum vector of <cite>contractions_two</cite>.
+These other methods <strong>will</strong> fail with little warning if the shape of the output is
+different. Even if both <cite>contractions_one</cite> and <cite>contractions_two</cite> are segmented
+contractions, the first and third indices must correspond to the contraction. In other
+words, the shape must still be (1, L_1, 1, L_2).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_lincomb">
+<span class="sig-name descname"><span class="pre">construct_array_lincomb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type_two</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_lincomb" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with linear combinations of contractions.</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j} T^{one}_{i_1 j} \sum_{k} T^{two}_{i_2 k} M_{jklm...}
+= M^{trans}_{i_1 i_2 lm...}\]</div>
+<dl class="simple">
+<dt>transform_one<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the linear combinations of spherical Gaussians (LCAO’s) associated
+with the first index.
+If None, then transformation is skipped.</p>
+</dd>
+<dt>transform_two<span class="classifier">np.ndarray</span></dt><dd><p>Array associated with the linear combinations of spherical Gaussians (LCAO’s) associated
+with the second index.
+If None, then transformation is skipped.</p>
+</dd>
+<dt>coord_type_one<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions associated with the first index.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>coord_type_two<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions associated with the second index.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
+then pass it down to <cite>construct_array_contraction</cite>. See <cite>construct_array_contraction</cite>
+for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_orbs_1, K_orbs_2, …)</span></dt><dd><p>Array associated with the linear combinations of given two sets of contractions.
+Dimension 0 corresponds to the linear combination of contractions with the first set of
+contractions, <cite>contractions_one</cite>. <cite>K_orbs_1</cite> is the number of basis functions
+produced by linear combination of the spherical contractions associated with
+<cite>contractions_one</cite>.
+Dimension 1 corresponds to the linear combination of contractions associated with the
+second set of contractions, <cite>contractions_two</cite>. <cite>K_orbs_2</cite> is the number of basis
+functions produced by linear combinations of the spherical contractions associated with
+<cite>contractions_two</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_type_one</cite> and <cite>coord_type_two</cite> are not one of “cartesian”, “spherical”, or a
+list/tuple of these strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_mix">
+<span class="sig-name descname"><span class="pre">construct_array_mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_types_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_types_two</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_mix" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of Gaussians of the given coordinate systems.</p>
+<dl class="simple">
+<dt>coord_types_one<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for <cite>GeneralizedContractionShell</cite> associated with the
+first index of the array.
+Each entry must be one of “cartesian” or “spherical”.</p>
+</dd>
+<dt>coord_types_two<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for GeneralizedContractionShell associated with the
+second index of the array.
+Each entry must be one of “cartesian” or “spherical”.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cont, K_cont, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.
+First two indices of the array are associated with two contractions in the given
+coordinate system. <cite>K_cont</cite> is the total number of contractions within the
+instance.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_types_one</cite> is not a list/tuple.
+If <cite>coord_types_two</cite> is not a list/tuple.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>coord_types_one</cite> has an entry that is not “cartesian” or “spherical”.
+If <cite>coord_types_one</cite> has different number of entries as the number of
+<cite>GeneralizedContractionShell</cite> (<cite>contractions</cite>) in instance.
+If <cite>coord_types_two</cite> has an entry that is not “cartesian” or “spherical”.
+If <cite>coord_types_two</cite> has different number of entries as the number of
+<cite>GeneralizedContractionShell</cite> (<cite>contractions</cite>) in instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_spherical">
+<span class="sig-name descname"><span class="pre">construct_array_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.construct_array_spherical" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with two contracted spherical Gaussians (atomic orbitals).</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_sph_1, K_sph_2, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set(s) of contracted
+Cartesian Gaussians.
+Dimension 0 corresponds to the Cartesian contraction within <cite>contractions_one</cite>.
+<cite>K_sph_1</cite> is the total number of Cartesian contractions within <cite>contractions_one</cite>.
+Dimension 1 corresponds to the Cartesian contraction within <cite>contractions_two</cite>.
+<cite>K_sph_2</cite> is the total number of Cartesian contractions within <cite>contractions_two</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.contractions_one">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contractions_one</span></span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.contractions_one" title="Permalink to this definition">#</a></dt>
+<dd><p>Contractions that are associated with the first index of the array.</p>
+<dl class="simple">
+<dt>contractions_one<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first index of the array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.base_two_asymm.BaseTwoIndexAsymmetric.contractions_two">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contractions_two</span></span><a class="headerlink" href="#gbasis.base_two_asymm.BaseTwoIndexAsymmetric.contractions_two" title="Permalink to this definition">#</a></dt>
+<dd><p>Contractions that are associated with the second index of the array.</p>
+<dl class="simple">
+<dt>contractions_two<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the second index of the array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gbasis.base_two_symm">
+<span id="gbasis-base-two-symm-module"></span><h2>gbasis.base_two_symm module<a class="headerlink" href="#module-gbasis.base_two_symm" title="Permalink to this heading">#</a></h2>
+<p>Base class for arrays that depend on two contracted Gaussians.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.base_two_symm.</span></span><span class="sig-name descname"><span class="pre">BaseTwoIndexSymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gbasis.base.BaseGaussianRelatedArray" title="gbasis.base.BaseGaussianRelatedArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussianRelatedArray</span></code></a></p>
+<p>Base class for constructing arrays associated with two contracted Gaussian.</p>
+<p>The first two axes of the returned array is associated with the given set of contracted Gaussian
+(or a linear combination of a set of Gaussians).</p>
+<dl class="simple">
+<dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Sets of contractions associated with each axis of the array.</p>
+</dd>
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first and second indices of the array.
+Property of <cite>BaseTwoIndexSymmetric</cite>.</p>
+</dd>
+</dl>
+<dl>
+<dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
+</dd>
+<dt>construct_array_contraction(self, contraction, <a href="#id33"><span class="problematic" id="id34">**</span></a>kwargs) :</dt><dd><p><strong>np.ndarray(M_1, L_cart_1, M_2, L_cart_2, …)</strong></p>
+<p>Return the array associated with a <cite>GeneralizedContractionShell</cite> instance.
+<cite>M_1</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the first index.
+<cite>L_cart_1</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the first index.
+<cite>M_2</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the second index.
+<cite>L_cart_2</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the second index.</p>
+</dd>
+<dt>construct_array_cartesian(self, <a href="#id35"><span class="problematic" id="id36">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cart, K_cart, …)</span></dt><dd><p>Return the array associated with Cartesian Gaussians.
+<cite>K_cart</cite> is the total number of Cartesian contractions within the instance.</p>
+</dd>
+<dt>construct_array_spherical(self, <a href="#id37"><span class="problematic" id="id38">**</span></a>kwargs)<span class="classifier">np.ndarray(K_sph, K_sph, …)</span></dt><dd><p>Return the array associated with spherical Gaussians (atomic orbitals).
+<cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
+</dd>
+<dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, K_orbs, …)</span></dt><dd><p>Return the array associated with linear combinations of contractions in the given coordinate
+system.
+<cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_cartesian">
+<span class="sig-name descname"><span class="pre">construct_array_cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_cartesian" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with the given set(s) of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cart, K_cart, …)</span></dt><dd><p>Array associated with the given set of contracted Cartesian Gaussians.
+Dimensions 0 and 1 of the array are associated with the contracted Cartesian Gaussians.
+<cite>K_cart</cite> is the total number of Cartesian contractions within the instance.</p>
+</dd>
+</dl>
+<p>The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
+set of contractions, are transposed in the process of constructing the whole array.
+It is assumed that the array returned from <cite>construct_array_contraction</cite> is symmetric with
+respect to the swapping of the first two axes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_contraction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of contracted Cartesian Gaussians.</p>
+<dl class="simple">
+<dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
+the array.</p>
+</dd>
+<dt>contractions_two<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the second index of
+the array.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array_contraction<span class="classifier">np.ndarray(M_1, L_cart_1, M_2, L_cart_2, …)</span></dt><dd><p>Array associated with the given instances of GeneralizedContractionShell.
+Dimension 0 corresponds to the segmented contraction within <cite>contractions_one</cite>.
+<cite>M_1</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the first index.
+Dimension 1 corresponds to the angular momentum vector of the <cite>contractions_one</cite>.
+<cite>L_cart_1</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the first index.
+Dimension 2 corresponds to the segmented contraction within <cite>contractions_two</cite>.
+<cite>M_2</cite> is the number of segmented contractions with the same exponents (and angular
+momentum) associated with the second index.
+Dimension 3 corresponds to the angular momentum vector of the <cite>contractions_two</cite>.
+<cite>L_cart_2</cite> is the number of Cartesian contractions for the given angular momentum
+associated with the second index.</p>
+</dd>
+</dl>
+<p>The next level of classes will be the construction of specific arrays given a set of
+contracted Cartesian Gaussians. The keyword arguments will be different depending on its
+functionality. You should use explicit keyword arguments when defining this function, rather
+than the arbitrary number of keywords (as is done here).</p>
+<p>The methods <cite>construct_array_cartesian</cite>, <cite>construct_array_spherical</cite>, and
+<cite>construct_array_lincomb</cite> depend on this function to produce an array with dimensions 0, 1
+corresponding to the contraction (within a generalized contraction) and the angular momentum
+vector of <cite>contractions_one</cite>, and dimensions 2, 3 corresponding to the contraction (within a
+generalized contraction) and the angular momentum vector of <cite>contractions_two</cite>,.
+These other methods <strong>will</strong> fail with little warning if the shape of
+the output is different. Even if both <cite>contractions_one</cite> and <cite>contractions_two</cite> are
+segmented contractions, the dimensions 0 and 2 must correspond to the contraction.
+In other words, the shape must still be (1, L_1, 1, L_2).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_lincomb">
+<span class="sig-name descname"><span class="pre">construct_array_lincomb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_lincomb" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with linear combinations of contractions.</p>
+<div class="math notranslate nohighlight">
+\[\sum_{j} T_{i_1 j} \sum_{k} T_{i_2 k} M_{jklm...} = M^{trans}_{i_1 i_2 lm...}\]</div>
+<dl class="simple">
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from contractions in the given coordinate system (e.g. AO) to
+linear combinations of contractions (e.g. MO).
+Transformation is applied to the left.
+Rows correspond to the linear combinations (i.e. MO) and the columns correspond to the
+contractions (i.e. AO).</p>
+</dd>
+<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian”, then all of the contractions are treated as Cartesian contractions.
+If “spherical”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
+then pass it down to <cite>construct_array_contraction</cite>. See <cite>construct_array_contraction</cite>
+for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_orbs, K_orbs, …)</span></dt><dd><p>Array whose first two indices are associated with the linear combinations of the
+contractions.
+Dimensions 0 and 1 correspond to the linear combination of contracted spherical
+Gaussians. <cite>K_orbs</cite> is the number of basis functions produced after the linear
+combinations.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not one of “cartesian”, “spherical”, or a list/tuple of these
+strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_mix">
+<span class="sig-name descname"><span class="pre">construct_array_mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_mix" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with a set of Gaussians of the given coordinate systems.</p>
+<dl class="simple">
+<dt>coord_types<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each <cite>GeneralizedContractionShell</cite>.
+Each entry must be one of “cartesian” or “spherical”.</p>
+</dd>
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_cont, K_cont, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set of contracted
+Cartesian Gaussians.
+Dimensions 0 and 1 are associated with two contractions in the given coordinate system.
+<cite>K_cont</cite> is the total number of contractions within the instance.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>coord_types</cite> is not a list/tuple.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>coord_types</cite> has an entry that is not “cartesian” or “spherical”.
+If <cite>coord_types</cite> has different number of entries as the number of
+<cite>GeneralizedContractionShell</cite> (<cite>contractions</cite>) in instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_spherical">
+<span class="sig-name descname"><span class="pre">construct_array_spherical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric.construct_array_spherical" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the array associated with two contracted spherical Gaussians (atomic orbitals).</p>
+<dl class="simple">
+<dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
+These keyword arguments are passed entirely to <cite>construct_array_contraction</cite>. See
+<cite>construct_array_contraction</cite> for details on the keyword arguments.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>array<span class="classifier">np.ndarray(K_sph, K_sph, …)</span></dt><dd><p>Array associated with the atomic orbitals associated with the given set(s) of contracted
+Cartesian Gaussians.
+Dimensions 0 and 1 are associated with two contracted spherical Gaussians (atomic
+orbitals). <cite>K_sph</cite> is the total number of spherical contractions within the
+instance.</p>
+</dd>
+</dl>
+<p>The blocks along the diagonal, i.e. blocks where the first two axes belong to the same
+set of contractions, are transposed in the process of constructing the whole array.
+It is assumed that the array returned from <cite>construct_array_contraction</cite> is symmetric with
+respect to the swapping of the first two axes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.base_two_symm.BaseTwoIndexSymmetric.contractions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contractions</span></span><a class="headerlink" href="#gbasis.base_two_symm.BaseTwoIndexSymmetric.contractions" title="Permalink to this definition">#</a></dt>
+<dd><p>Contractions that are associated with the first two indices of the array.</p>
+<dl class="simple">
+<dt>contractions<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions that are associated with the first two indices of the array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gbasis.contractions">
+<span id="gbasis-contractions-module"></span><h2>gbasis.contractions module<a class="headerlink" href="#module-gbasis.contractions" title="Permalink to this heading">#</a></h2>
+<p>Data class for contractions of Gaussian-type primitives.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data class for generalized contractions.</p>
+<p>Generalized contractions are defined to be a set of contractions that have the same angular
+momentum, center, and the same set of exponents. To avoid confusion with the term
+“contraction”, we add “shell” to indicate that this instance refers to a collection of
+contractions.</p>
+<p>A Cartesian <strong>primitive</strong>, <span class="math notranslate nohighlight">\(g_i\)</span>, is</p>
+<div class="math notranslate nohighlight">
+\[g_i (\mathbf{r} | \vec{a}, \vec{R}_A) =
+N_g (\alpha, \vec{a})
+(x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}
+\exp{-\alpha_i |\vec{r} - \vec{R}_A|^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, az)\)</span> is the angular momentum components in Cartesian
+coordinates, <span class="math notranslate nohighlight">\(\vec{R}_A\)</span> is the coordinate of the center <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(N_g\)</span> is the
+normalization constant of the primitive, and <span class="math notranslate nohighlight">\(\alpha_i\)</span> is the exponent of the primitive.</p>
+<p>A <strong>Cartesian contraction</strong> is a linear combination of Cartesian primitives:</p>
+<div class="math notranslate nohighlight">
+\[\phi_{\vec{a}, \vec{R}_A} (\mathbf{r}) =
+N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_i g_i (\vec{r} | \vec{a}, \vec{R}_A)\]</div>
+<p>where <span class="math notranslate nohighlight">\(d_i\)</span> is the contraction coefficient of the primitive and <span class="math notranslate nohighlight">\(N_{\phi}\)</span> is the
+normalization constant of the contraction.</p>
+<p>Note that the Cartesian contraction depends on the angular momentum components in the Cartesian
+coordinate, <span class="math notranslate nohighlight">\(\vec{a}\)</span>. At a given angular momentum, <span class="math notranslate nohighlight">\(\ell\)</span>, we have
+<span class="math notranslate nohighlight">\(\frac{(\ell + 1) (\ell + 2)}{2}\)</span> different components. We can linearly transform these
+contractions to obtain the <span class="math notranslate nohighlight">\(2 \ell + 1\)</span> <strong>spherical contractions</strong>. Since we can convert
+the contractions in one coordinate system to another, we use the term <strong>contraction</strong> to
+describe both cases, unless otherwise stated.</p>
+<p>In order to obtain the spherical contractions for a given angular momentum, we need all of the
+contractions at that angular momentum (each with a different combination of angular momentum
+components. We will denote the collection of these contractions as a <strong>segmented contraction
+shell</strong>. Note that contractions within segmented contraction shell all have the same angular
+momentum, center, and the same set of exponents and contraction coefficients.</p>
+<p>Some basis sets, e.g. ANO-RCC, group together multiple segmented contractions that only
+differ by the contraction coefficients and angular momentums. Here, we denote a collection of
+contractions with the same angular momentum, center, and the same set of exponents as a
+<strong>generalized contraction shell</strong>. Note that <strong>we do not support generalized contractions with
+different angular momentum</strong>.</p>
+<p>We can think of a generalized contraction shell as a union of segmented contraction shells with
+the same angular momentum, center, and the same set of exponents. Now, the contraction
+coefficients depend on the specific segmented contraction shell, <span class="math notranslate nohighlight">\(j\)</span>, to which the
+contraction belongs:</p>
+<div class="math notranslate nohighlight">
+\[\phi_{j, \vec{a}, \vec{R}_A} (\mathbf{r}) =
+N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)\]</div>
+<dl>
+<dt>coord<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Coordinate of the center of the contractions.</p>
+</dd>
+<dt>angmom<span class="classifier">int</span></dt><dd><p>Angular momentum of the contractions.</p>
+<div class="math notranslate nohighlight">
+\[\ell = \sum_i (\vec{a})_i = a_x + a_y + a_z\]</div>
+</dd>
+<dt>angmom_components_cart<span class="classifier">np.ndarray(L, 3)</span></dt><dd><p>The x, y, and z components of the angular momentum vectors
+(<span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, a_z)\)</span> where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
+<cite>L</cite> is the number of Cartesian contracted Gaussian functions for the given angular
+momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell + 2) / 2\)</span>.
+Property of <cite>GeneralizedContractionShell</cite>.</p>
+</dd>
+<dt>angmom_components_sph<span class="classifier">tuple of int</span></dt><dd><p>Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
+transforming the contractions from the Cartesian to spherical coordinate system.
+Property of <cite>GeneralizedContractionShell</cite>.</p>
+</dd>
+<dt>charge<span class="classifier">float</span></dt><dd><p>Charge at the center of the Gaussian primitives.</p>
+</dd>
+<dt>exps<span class="classifier">np.ndarray(K,)</span></dt><dd><p>Exponents of the primitives, <span class="math notranslate nohighlight">\(\{\alpha_i\}_{i=1}^K\)</span>.</p>
+</dd>
+<dt>coeffs<span class="classifier">np.ndarray(K, M)</span></dt><dd><p>Contraction coefficients, <span class="math notranslate nohighlight">\(\{d_{ij}\}\)</span>, of the primitives.
+First axis corresponds to the primitive and the second axis corresponds to the segmented
+contraction shell.</p>
+</dd>
+<dt>norm_cont<span class="classifier">np.ndarray(M, L)</span></dt><dd><p>Normalization constants of the Cartesian contractions of different angular momentum
+components and segmented contraction shells.</p>
+</dd>
+<dt>norm_prim_cart<span class="classifier">np.ndarray(L, K)</span></dt><dd><p>The normalization constants of the Cartesian Gaussian primitives.
+<cite>L</cite> is the number of contracted Cartesian Gaussian functions for the given angular
+momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell + 2) / 2\)</span>.
+Property of <cite>GeneralizedContractionShell</cite>.</p>
+</dd>
+<dt>num_cart<span class="classifier">int</span></dt><dd><p>Number of Cartesian contractions of angular momentum, <span class="math notranslate nohighlight">\(\ell\)</span>.
+Property of <cite>GeneralizedContractionShell</cite>.</p>
+</dd>
+<dt>num_sph<span class="classifier">int</span></dt><dd><p>Number of spherical contractions of angular momentum, <span class="math notranslate nohighlight">\(\ell\)</span>.
+Property of <cite>GeneralizedContractionShell</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>assign_norm_contr(self)</dt><dd><p>Assign normalization constants for the contractions.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.angmom">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angmom</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.angmom" title="Permalink to this definition">#</a></dt>
+<dd><p>Angular momentum of the contractions.</p>
+<dl>
+<dt>angmom<span class="classifier">int</span></dt><dd><p>Angular momentum of the set of contractions.</p>
+<p><span class="math notranslate nohighlight">\(\sum_i (\vec{a})_i = a_x + a_y + a_z\)</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.angmom_components_cart">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angmom_components_cart</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.angmom_components_cart" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the components of the angular momentum vectors for the given angular momentum.</p>
+<dl class="simple">
+<dt>angmom_components_cart<span class="classifier">np.ndarray(L, 3)</span></dt><dd><p>The x, y, and z components of the angular momentum vectors
+(<span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, a_z)\)</span> where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
+<cite>L</cite> is the number of Cartesian contracted Gaussian functions for the given
+angular momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell + 2) / 2\)</span></p>
+</dd>
+</dl>
+<p>In <cite>HORTON2</cite>, <span class="math notranslate nohighlight">\((a_x, a_y, a_z)\)</span> is represented by a string of X, Y, and Z characters,
+such that <span class="math notranslate nohighlight">\(a_x\)</span> <cite>X</cite> characters, <span class="math notranslate nohighlight">\(a_y\)</span> <cite>Y</cite> characters, and <span class="math notranslate nohighlight">\(a_z\)</span> <cite>Z</cite>
+characters appear. For example, <cite>(2, 1, 1)</cite> corresponds to <cite>XXYZ</cite></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.angmom_components_sph">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angmom_components_sph</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.angmom_components_sph" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the ordering of the magnetic quantum numbers for the given angular momentum.</p>
+<p>We define spherical components as regular solid harmonics <span class="math notranslate nohighlight">\(R_{\ell, m}\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[\begin{align}
+    R_{\ell, m} &amp;= C_{\ell, m}, \quad &amp;m = 0 ... \ell
+    R_{\ell, -m} &amp;= S_{\ell, m}, \quad &amp;m = 1 ... \ell
+\end{align}\]</div>
+<p>where <span class="math notranslate nohighlight">\(C_{\ell, m}\)</span> and <span class="math notranslate nohighlight">\(S_{\ell, m}\)</span> are Cosine- and Sine-like real
+regular solid harmonics (respectively).</p>
+<p>We will use these definitions to represent pure (spherical) functions as strings of the form
+<cite>c{m}</cite> and <cite>s{m}</cite>. By this definition, for pure f functions, the ordering by magnetic
+quantum number [0, 1, -1, 2, -2, 3, -3] corresponds to
+[‘c0’, ‘c1’, ‘s1’, ‘c2’, ‘s2’, ‘c3’, ‘s3’].</p>
+<p>Some quantum chemistry codes use different conventions that cause compatibility issues. For
+these conventions, it may be necessary to change the sign of specific pure functions,
+denoted by a minus sign, e.g. -c3. A primary example is for Molden files written by ORCA;
+these files use the conventions [‘c0’, ‘c1’, ‘s1’, ‘c2’, ‘s2’, ‘-c3’, ‘-s3’].</p>
+<dl class="simple">
+<dt>angmom_components_sph<span class="classifier">tuple of str</span></dt><dd><p>Tuple of strings representing the cosine- and sine-like real regular solid harmonics
+representing the magnetic quantum numbers of the contractions specifying the ordering
+after transforming the contractions from the Cartesian to spherical coordinate system.</p>
+</dd>
+</dl>
+<p>Our default ordering is from -m to m, e.g. for <span class="math notranslate nohighlight">\(\ell = 2\)</span>,
+[‘s2’, ‘s1’, ‘c0’, ‘c1’, ‘c2’].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.assign_norm_cont">
+<span class="sig-name descname"><span class="pre">assign_norm_cont</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.assign_norm_cont" title="Permalink to this definition">#</a></dt>
+<dd><p>Store the normalization constants of the contractions.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int \phi_i(\mathbf{r}) \phi_i(\mathbf{r}) d\mathbf{r} &amp;= N\\
+\frac{1}{N} \int \phi_i(\mathbf{r}) \phi_i(\mathbf{r}) d\mathbf{r} &amp;= 1\\
+\int \left(\frac{1}{\sqrt{N}} \phi_i(\mathbf{r})\right)
+\left(\frac{1}{\sqrt{N}} \phi_i(\mathbf{r})\right) d\mathbf{r} &amp;= 1\\\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N\)</span> is the norm of contraction <span class="math notranslate nohighlight">\(\phi_i\)</span>.</p>
+<p>Since the <cite>overlap</cite> module also depends on this (<cite>contractions</cite>) module, if the <cite>overlap</cite>
+module is imported at the start of this module, there is a circular import error. Therefore,
+the overlap module must be imported within this method.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.coeffs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coeffs</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.coeffs" title="Permalink to this definition">#</a></dt>
+<dd><p>Contraction coefficients of the Gaussian primitives.</p>
+<dl class="simple">
+<dt>coeffs<span class="classifier">np.ndarray(K, M)</span></dt><dd><p>Contraction coefficients, <span class="math notranslate nohighlight">\(\{d_{ij}\}\)</span>, of the primitives.
+Dimension 0 corresponds to the primitive and the dimension 1 corresponds to the
+segmented contraction shell.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.coord">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coord</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.coord" title="Permalink to this definition">#</a></dt>
+<dd><p>Coordinate of the center of the contractions.</p>
+<dl class="simple">
+<dt>coord<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Coordinate of the center of the contractions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.exps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exps</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.exps" title="Permalink to this definition">#</a></dt>
+<dd><p>Exponents of the Gaussian primitives.</p>
+<dl class="simple">
+<dt>exps<span class="classifier">np.ndarray(K,)</span></dt><dd><p>Exponents of the primitives, <span class="math notranslate nohighlight">\(\{\alpha_i\}_{i=1}^K\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.norm_prim_cart">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">norm_prim_cart</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.norm_prim_cart" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the normalization constants of the Cartesian Gaussian primitives.</p>
+<p>For a Cartesian primitive with exponent <span class="math notranslate nohighlight">\(\alpha_i\)</span>, the normalization constant is:</p>
+<div class="math notranslate nohighlight">
+\[N(\alpha_i, \vec{a}) = \sqrt {
+\left(\frac{2\alpha_i}{\pi}\right)^\frac{3}{2}
+\frac{(4\alpha_i)^{a_x + a_y + a_z}}{(2a_x - 1)!! (2a_y - 1)!! (2a_z - 1)!!}}\]</div>
+<dl class="simple">
+<dt>norm_prim_cart<span class="classifier">np.ndarray(L, K)</span></dt><dd><p>The normalization constants of the Cartesian Gaussian primitives.
+<cite>L</cite> is the number of contracted Cartesian Gaussian functions for the given angular
+momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell + 2) / 2\)</span>
+<cite>K</cite> is the number of exponents (i.e. primitives).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.num_cart">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_cart</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.num_cart" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the number of Cartesian contractions of the given angular momentum.</p>
+<div class="math notranslate nohighlight">
+\[\frac{(\ell + 1)(\ell + 2)}{2}\]</div>
+<dl class="simple">
+<dt>num_cart<span class="classifier">int</span></dt><dd><p>Number of Cartesian contractions of angular momentum, <cite>angmom</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.num_seg_cont">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_seg_cont</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.num_seg_cont" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the number of segmented contractions.</p>
+<dl class="simple">
+<dt>num_seg_cont<span class="classifier">int</span></dt><dd><p>Number of segmented contractions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.num_sph">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_sph</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.num_sph" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the number of spherical contractions of the given angular momentum.</p>
+<div class="math notranslate nohighlight">
+\[1 + 2\ell\]</div>
+<dl class="simple">
+<dt>num_sph<span class="classifier">int</span></dt><dd><p>Number of spherical contractions of angular momentum, <cite>angmom</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gbasis.parsers">
+<span id="gbasis-parsers-module"></span><h2>gbasis.parsers module<a class="headerlink" href="#module-gbasis.parsers" title="Permalink to this heading">#</a></h2>
+<p>Parsers for reading basis set files.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.parsers.make_contractions">
+<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">make_contractions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.make_contractions" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the contractions that correspond to the given atoms for the given basis.</p>
+<dl class="simple">
+<dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Output of the parsers from gbasis.parsers.</p>
+</dd>
+<dt>atoms<span class="classifier">N-list/tuple of str</span></dt><dd><p>Atoms at which the contractions are centered.</p>
+</dd>
+<dt>coords<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Coordinates of each atom.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>basis<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions for each atom.
+Contractions are ordered in the same order as in the values of <cite>basis_dict</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>atoms</cite> is not a list or tuple of strings.
+If <cite>coords</cite> is not a two-dimensional <cite>numpy</cite> array with 3 columns.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the length of atoms is not equal to the number of rows of <cite>coords</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.parsers.parse_gbs">
+<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_gbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gbs_basis_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.parse_gbs" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse Gaussian94 basis set file.</p>
+<dl class="simple">
+<dt>gbs_basis_file<span class="classifier">str</span></dt><dd><p>Path to the Gaussian94 basis set file.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Dictionary of the element to the list of angular momentum, exponents, and contraction
+coefficients associated with each contraction at the given atom.</p>
+</dd>
+</dl>
+<p>Angular momentum symbol is hard-coded into this function. This means that if the selected basis
+set has an angular momentum greater than “k”, an error will be raised.</p>
+<p>Since Gaussian94 basis format does not explicitly state which contractions are generalized, we
+infer that subsequent contractions belong to the same generalized shell if they have the same
+exponents and angular momentum. If two contractions are not one after another or if they are
+associated with more than one angular momentum, they are treated to be segmented contractions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.parsers.parse_nwchem">
+<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_nwchem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nwchem_basis_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.parse_nwchem" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse nwchem basis set file.</p>
+<dl class="simple">
+<dt>nwchem_basis_file<span class="classifier">str</span></dt><dd><p>Path to the nwchem basis set file.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Dictionary of the element to the list of angular momentum, exponents, and contraction
+coefficients associated with each contraction at the given atom.</p>
+</dd>
+</dl>
+<p>Angular momentum symbol is hard-coded into this function. This means that if the selected basis
+set has an angular momentum greater than “k”, an error will be raised.</p>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.spherical">
+<span id="gbasis-spherical-module"></span><h2>gbasis.spherical module<a class="headerlink" href="#module-gbasis.spherical" title="Permalink to this heading">#</a></h2>
+<p>Convert from Cartesian Gaussians to spherical Gaussians.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.spherical.expansion_coeff">
+<span class="sig-prename descclassname"><span class="pre">gbasis.spherical.</span></span><span class="sig-name descname"><span class="pre">expansion_coeff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.spherical.expansion_coeff" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the real solid harmonic expansion coefficient.</p>
+<div class="math notranslate nohighlight">
+\[C^{angmom,mag,i,j,k} = -1^{i + k - \text{shift_factor}} * (1/4)^i * {angmom \choose i}
+* {(angmom - i) \choose (|mag| + i)} * {i \choose j} * {|mag| \choose 2 * k},\]</div>
+<p>where <span class="math notranslate nohighlight">\(shift_factor = 0\)</span> if <span class="math notranslate nohighlight">\(mag &gt;= 0\)</span> and <span class="math notranslate nohighlight">\(shift_factor = 1/2\)</span> if <span class="math notranslate nohighlight">\(mag &lt; 0\)</span>    .</p>
+<dl class="simple">
+<dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the Gaussian primitive(s).</p>
+</dd>
+<dt>mag<span class="classifier">int</span></dt><dd><p>The magnetic quantum number(s) of the Gaussian primitive(s).</p>
+</dd>
+<dt>i, j<span class="classifier">int</span></dt><dd><p>The generator indices for the expansion coefficient.</p>
+</dd>
+<dt>k<span class="classifier">float</span></dt><dd><p>The generator indices for the expansion coefficient.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>coeff<span class="classifier">float</span></dt><dd><p>The real solid harmonic expansion coefficient.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
+If <cite>mag</cite> is not an integer.
+If <cite>i</cite> is not an integer.
+If <cite>j</cite> is not an integer.
+If <cite>k</cite> is not a float.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>angmom</cite> is negative.
+If <cite>mag</cite> has a greater magnitude than angmom.
+If <a href="#id39"><span class="problematic" id="id40">`</span></a>k is not either an integer (mag &gt;= 0) or a half integer (mag &lt; 0).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.spherical.generate_transformation">
+<span class="sig-prename descclassname"><span class="pre">gbasis.spherical.</span></span><span class="sig-name descname"><span class="pre">generate_transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cartesian_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spherical_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_from</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.spherical.generate_transformation" title="Permalink to this definition">#</a></dt>
+<dd><p>Generate the transformation matrix for a given shell.</p>
+<p>The Cartesian contractions are ordered as given in <cite>cartesian_order</cite>. The spherical contractions
+are ordered as given in <cite>spherical_order</cite>.</p>
+<dl class="simple">
+<dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum <span class="math notranslate nohighlight">\(\ell\)</span> of the basis function(s).</p>
+</dd>
+<dt>cartesian_order<span class="classifier">np.ndarray((angmom + 1) * (angmom + 2) / 2, 3)</span></dt><dd><p>The x, y, and z components of the angular momentum for each primitive,
+(<span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, a_z)\)</span>, where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
+The order in which the contractions are given defines the order in which
+they will appear in the transformation matrix.</p>
+</dd>
+<dt>spherical_order<span class="classifier">(2 * angmom + 1)-tuple/list of int</span></dt><dd><p>Order of the spherical contractions that are produced by the transformation matrix.
+Given in cosine- and sine-like pure function notation. See
+GeneralizedContractionShell.angmom_conventions_sph for details.</p>
+</dd>
+<dt>apply_from<span class="classifier">str</span></dt><dd><p>The side on which the transformation matrix is applied. One of {“left”, “right”}.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>transform<span class="classifier">np.ndarray((angmom + 1)*(angmom + 2) / 2, 2 * angmom + 1)</span></dt><dd><p>The transformation matrix from Cartesian primitives to spherical primitives.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
+If <cite>cartesian_order</cite> is not an array.
+If each member of <cite>cartesian_order</cite> is not a tuple.
+If <cite>spherical_order</cite> is not a list/tuple of strings</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>angmom</cite> is negative.
+If <cite>cartesian_order</cite> does not have <cite>shape</cite> <span class="math notranslate nohighlight">\((\ell, 3)\)</span>.
+If the Cartesian components of any contractions do not sum to <cite>angmom</cite>.
+If <cite>apply_from</cite> is not one of “left” or “right”.
+If <cite>spherical_order</cite> contains elements not of the form c{m}, s{m}, -c{m}, or -s{m}, m &lt; L.
+If <cite>spherical_order</cite> does not contain exactly <span class="math notranslate nohighlight">\(2 * \ell + 1\)</span> elements.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.spherical.harmonic_norm">
+<span class="sig-prename descclassname"><span class="pre">gbasis.spherical.</span></span><span class="sig-name descname"><span class="pre">harmonic_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.spherical.harmonic_norm" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the normalization constant of a real solid harmonic.</p>
+<div class="math notranslate nohighlight">
+\[N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! / 2^{\delta_0^m}},\]</div>
+<p>where :math: <cite>del{0, m}</cite> is the Kronecker delta of 0 and m.</p>
+<dl class="simple">
+<dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the basis function(s).</p>
+</dd>
+<dt>mag<span class="classifier">int</span></dt><dd><p>The magnetic quantum number(s) of the basis function(s).</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>norm<span class="classifier">float</span></dt><dd><p>The normalization constant of the real solid harmonic.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
+If <cite>mag</cite> is not an integer.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>angmom</cite> is negative.
+If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.spherical.real_solid_harmonic">
+<span class="sig-prename descclassname"><span class="pre">gbasis.spherical.</span></span><span class="sig-name descname"><span class="pre">real_solid_harmonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.spherical.real_solid_harmonic" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate a real solid harmonic.</p>
+<div class="math notranslate nohighlight">
+\[S_{angmom,mag} = N^{S}_{angmom,mag} \sum_{i=0}^{(angmom-|{mag}|)/2} \sum_{j=0}^i
+\sum_k={shift_factor}^{[(|{mag}|-1)/2] + 0.5} C^{angmom,m_i,j,k} x^a_x y^a_y z^a_z,\]</div>
+<p>where <span class="math notranslate nohighlight">\(a_x = 2t + |mag| - 2(u + v)\)</span>, <span class="math notranslate nohighlight">\(a_y = 2(u + v)\)</span>,
+and <span class="math notranslate nohighlight">\(a_z = angmom - 2t - |mag|\)</span>.</p>
+<dl class="simple">
+<dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the basis function(s).</p>
+</dd>
+<dt>mag<span class="classifier">int</span></dt><dd><p>The magnetic quantum number(s) of the basis function(s).</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>harmonic<span class="classifier">dict</span></dt><dd><p>The Cartesian components of a Gaussian primitive, linked to the associated coefficient.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
+If <cite>mag</cite> is not an integer.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>angmom</cite> is negative.
+If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.spherical.shift_factor">
+<span class="sig-prename descclassname"><span class="pre">gbasis.spherical.</span></span><span class="sig-name descname"><span class="pre">shift_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.spherical.shift_factor" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the shift factor for solid harmonics.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathrm{shift\_factor} = \begin{cases}
+0 &amp; \mathrm{mag} \geq 0\\
+\frac{1}{2} &amp; \mathrm{mag} &lt; 0 \end{cases}\end{split}\]</div>
+<dl class="simple">
+<dt>mag<span class="classifier">int</span></dt><dd><p>The magnetic quantum number of the basis function.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>shift_factor<span class="classifier">float</span></dt><dd><p>The shift factor for calculating solid harmonics.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>TypeError</dt><dd><p>If <cite>mag</cite> is not an integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.utils">
+<span id="gbasis-utils-module"></span><h2>gbasis.utils module<a class="headerlink" href="#module-gbasis.utils" title="Permalink to this heading">#</a></h2>
+<p>Utility functions for gbasis.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.utils.factorial2">
+<span class="sig-prename descclassname"><span class="pre">gbasis.utils.</span></span><span class="sig-name descname"><span class="pre">factorial2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.utils.factorial2" title="Permalink to this definition">#</a></dt>
+<dd><p>Wrap scipy.special.factorial2 to return 1.0 when the input is not positive.</p>
+<p>This is a temporary workaround to address issue #129, while we wait for Scipy’s update.
+To learn more, see <a class="github reference external" href="https://github.com/scipy/scipy/issues/18409">scipy/scipy#18409</a>.</p>
+<dl class="simple">
+<dt>n<span class="classifier">int or np.ndarray</span></dt><dd><p>Values to calculate n!! for. If n &lt;= 0, the return value is 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gbasis.wrappers">
+<span id="gbasis-wrappers-module"></span><h2>gbasis.wrappers module<a class="headerlink" href="#module-gbasis.wrappers" title="Permalink to this heading">#</a></h2>
+<p>Module for interfacing to other quantum chemistry packages.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.wrappers.from_iodata">
+<span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_iodata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_iodata" title="Permalink to this definition">#</a></dt>
+<dd><p>Return basis set stored within the <cite>IOData</cite> instance in <cite>iodata</cite>.</p>
+<dl class="simple">
+<dt>mol<span class="classifier">iodata.iodata.IOData</span></dt><dd><p><cite>IOData</cite> instance from <cite>iodata</cite> module.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Basis set object used within the <cite>gbasis</cite> module.
+<cite>GeneralizedContractionShell</cite> corresponds to the <cite>Shell</cite> object within <cite>iodata.basis</cite>.</p>
+</dd>
+<dt>coord_types<span class="classifier">list of str</span></dt><dd><p>A list of strings, each on being either <code class="docutils literal notranslate"><span class="pre">&quot;cartesian&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&quot;spherical&quot;</span></code>, which needs to be passed into integral and eval
+functions. This part of the basis set is not stored in the <code class="docutils literal notranslate"><span class="pre">basis</span></code>
+return value. Users need to keep track of this in a separate variable.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>NotImplementedError</dt><dd><p>If any contractions in the given <cite>IOData</cite> instance is spherical.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <cite>mol</cite> is not an <cite>iodata.iodata.IOData</cite> instance.
+If the primitive normalization scheme of the shells in <cite>IOData</cite> instance is not “L2”.</p>
+</dd>
+</dl>
+<p>The version of the module <cite>iodata</cite> must be greater than 0.1.7.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.wrappers.from_pyscf">
+<span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_pyscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_pyscf" title="Permalink to this definition">#</a></dt>
+<dd><p>Return basis set stored within the <cite>Mole</cite> instance in <cite>pyscf</cite>.</p>
+<dl class="simple">
+<dt>mol<span class="classifier">pyscf.gto.mole.Mole</span></dt><dd><p><cite>Mole</cite> object in <cite>pyscf</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Contractions for each atom.
+Contractions are ordered by the atom first, then the contractions as ordered in <cite>pyscf</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>ValueError</dt><dd><p>If <cite>mol</cite> is not a <cite>pyscf.gto.mole.Mole</cite> instance.</p>
+</dd>
+</dl>
+<p>This function touches the internal components of <cite>pyscf</cite>, which may or may not be documented.
+This function will break as soon as the internal components change. If so, please raise an issue
+at <a class="github reference external" href="https://github.com/theochem/gbasis">theochem/gbasis</a>. It is supported for, at least, <cite>pyscf</cite> version 1.6.1.</p>
+</dd></dl>
+
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/gbasis",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./_autosummary"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../tutorial.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Getting started</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="gbasis.evals.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">gbasis.evals package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base">gbasis.base module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_four_symm">gbasis.base_four_symm module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_one">gbasis.base_one module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_two_asymm">gbasis.base_two_asymm module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.base_two_symm">gbasis.base_two_symm module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.contractions">gbasis.contractions module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.parsers">gbasis.parsers module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.spherical">gbasis.spherical module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.utils">gbasis.utils module</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.wrappers">gbasis.wrappers module</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Dev Community with the support of Digital Research Alliance of Canada and The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
