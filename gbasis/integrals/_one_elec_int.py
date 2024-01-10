@@ -118,9 +118,9 @@ def _compute_one_elec_integrals(
         (2 * np.pi / exps_sum.squeeze(axis=1))
         * boys_func(
             np.arange(m_max)[:, None, None, None],
-            (exps_sum.squeeze(axis=1) * np.sum(rel_coord_point ** 2, axis=1))[:, None, :, :],
+            (exps_sum.squeeze(axis=1) * np.sum(rel_coord_point**2, axis=1))[:, None, :, :],
         )
-        * np.exp(-harm_mean.squeeze(axis=1) * (rel_dist ** 2).sum(axis=1))
+        * np.exp(-harm_mean.squeeze(axis=1) * (rel_dist**2).sum(axis=1))
     )
 
     # Vertical recursion for the first index

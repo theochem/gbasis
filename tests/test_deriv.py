@@ -97,12 +97,12 @@ def test_evaluate_prim():
     # angular momentum 1
     assert np.allclose(
         evaluate_prim(np.array([2.0, 0, 0]), np.array([0, 0, 0]), np.array([1, 0, 0]), 1),
-        2 * np.exp(-(2 ** 2)),
+        2 * np.exp(-(2**2)),
     )
     # other angular momentum
     assert np.allclose(
         evaluate_prim(np.array([2.0, 0, 0]), np.array([0, 3, 4]), np.array([2, 1, 3]), 1),
-        4 * 3 * 4 ** 3 * np.exp(-(2 ** 2 + 3 ** 2 + 4 ** 2)),
+        4 * 3 * 4**3 * np.exp(-(2**2 + 3**2 + 4**2)),
     )
 
 
@@ -205,7 +205,7 @@ def test_evaluate_contractions():
             np.array([1.0]),
             np.array([[1.0]]),
         ),
-        2 * np.exp(-(2 ** 2)),
+        2 * np.exp(-(2**2)),
     )
     # other angular momentum
     assert np.allclose(
@@ -218,7 +218,7 @@ def test_evaluate_contractions():
             np.array([1.0]),
             np.array([[1.0]]),
         ),
-        4 * 3 * 4 ** 3 * np.exp(-(2 ** 2 + 3 ** 2 + 4 ** 2)),
+        4 * 3 * 4**3 * np.exp(-(2**2 + 3**2 + 4**2)),
     )
     # contraction
     assert np.allclose(
@@ -231,8 +231,8 @@ def test_evaluate_contractions():
             np.array([3, 4]),
             np.array([[1.0, 1.0]]),
         ),
-        3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
-        + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2))),
+        3 * (2**2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2**2 + 3**2 + 4**2)))
+        + 4 * (2**2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2**2 + 3**2 + 4**2))),
     )
     # contraction + multiple angular momentums
     assert np.allclose(
@@ -247,12 +247,12 @@ def test_evaluate_contractions():
         ),
         [
             [
-                3 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
-                + 4 * (2 ** 2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+                3 * (2**2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.1 * (2**2 + 3**2 + 4**2)))
+                + 4 * (2**2 * (-3) ** 1 * (-4) ** 3 * np.exp(-0.001 * (2**2 + 3**2 + 4**2)))
             ],
             [
-                3 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.1 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
-                + 4 * (2 ** 1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.001 * (2 ** 2 + 3 ** 2 + 4 ** 2)))
+                3 * (2**1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.1 * (2**2 + 3**2 + 4**2)))
+                + 4 * (2**1 * (-3) ** 3 * (-4) ** 4 * np.exp(-0.001 * (2**2 + 3**2 + 4**2)))
             ],
         ],
     )

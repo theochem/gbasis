@@ -59,7 +59,7 @@ def test_construct_array_contraction():
             2
             * np.pi
             / (0.1 + 0.2)
-            * boys_helgaker(0, (0.1 + 0.2) * np.sum(coord_wac ** 2))
+            * boys_helgaker(0, (0.1 + 0.2) * np.sum(coord_wac**2))
             * np.exp(-0.1 * 0.2 / (0.1 + 0.2) * np.sum((coord_one - coord_two) ** 2))
             * (2 * 0.1 / np.pi) ** (3 / 4)
             * (2 * 0.2 / np.pi) ** (3 / 4)
@@ -79,7 +79,7 @@ def test_construct_array_contraction():
         2
         * np.pi
         / (0.1 + 0.2)
-        * boys_helgaker(i, (0.1 + 0.2) * np.sum(coord_wac ** 2))
+        * boys_helgaker(i, (0.1 + 0.2) * np.sum(coord_wac**2))
         * np.exp(-0.1 * 0.2 / (0.1 + 0.2) * np.sum((coord_one - coord_two) ** 2))
         for i in range(2)
     ]

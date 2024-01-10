@@ -333,7 +333,7 @@ def test_evaluate_hessian_deriv_horton():
     basis = make_contractions(basis_dict, ["H", "He"], points)
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
-    horton_density_hessian = np.zeros((10 ** 3, 3, 3))
+    horton_density_hessian = np.zeros((10**3, 3, 3))
     horton_density_hessian[:, [0, 0, 0, 1, 1, 2], [0, 1, 2, 1, 2, 2]] = np.load(
         find_datafile("data_horton_hhe_sph_density_hessian.npy")
     )

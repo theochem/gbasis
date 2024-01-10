@@ -46,9 +46,9 @@ def answer_prim(coord_type, i, j, k):
     z_pc = (0.1 * 0.6 + 0.2 * 2) / 0.3 - 2.0
 
     output = {}
-    output[("x", 0, 0, 0)] = np.sqrt(np.pi / 0.3) * np.exp(-0.02 / 0.3 * 0.8 ** 2)
-    output[("y", 0, 0, 0)] = np.sqrt(np.pi / 0.3) * np.exp(-0.02 / 0.3 * 1.1 ** 2)
-    output[("z", 0, 0, 0)] = np.sqrt(np.pi / 0.3) * np.exp(-0.02 / 0.3 * 1.4 ** 2)
+    output[("x", 0, 0, 0)] = np.sqrt(np.pi / 0.3) * np.exp(-0.02 / 0.3 * 0.8**2)
+    output[("y", 0, 0, 0)] = np.sqrt(np.pi / 0.3) * np.exp(-0.02 / 0.3 * 1.1**2)
+    output[("z", 0, 0, 0)] = np.sqrt(np.pi / 0.3) * np.exp(-0.02 / 0.3 * 1.4**2)
     output[("x", 0, 1, 0)] = x_pb * output[("x", 0, 0, 0)]
     output[("y", 0, 1, 0)] = y_pb * output[("y", 0, 0, 0)]
     output[("z", 0, 1, 0)] = z_pb * output[("z", 0, 0, 0)]
@@ -454,7 +454,7 @@ def test_compute_multipole_moment_integrals_contraction_norm():
             coeffs_a,
             np.array([[1.0]]),
         ),
-        norm_a ** -2,
+        norm_a**-2,
     )
     assert np.allclose(
         _compute_multipole_moment_integrals(
@@ -500,7 +500,7 @@ def test_compute_multipole_moment_integrals_contraction_norm():
             coeffs_a,
             np.array([[1.0]]),
         ),
-        norm_a ** -2,
+        norm_a**-2,
     )
     assert np.allclose(
         _compute_multipole_moment_integrals(

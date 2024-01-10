@@ -110,6 +110,7 @@ def test_from_iodata():
         mol.obasis.primitive_normalization = "L1"
         basis, coord_types = from_iodata(mol)
 
+
 def test_from_pyscf():
     """Test gbasis.wrapper.from_pyscf."""
     pytest.importorskip("pyscf")
