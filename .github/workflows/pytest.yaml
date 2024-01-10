@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies for testing
         run: |
           pip install --upgrade pip
-          pip install pytest pytest-md pytest-emoji
+          pip install pytest pytest-md pytest-emoji pytest-cov
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
@@ -39,4 +39,5 @@ jobs:
           emoji: true
           job-summary: true
           click-to-expand: true
+          custom-arguments: "--cov=gbasis"
           report-title: 'Test Report'
