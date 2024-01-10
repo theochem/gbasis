@@ -176,11 +176,11 @@ def make_contractions(basis_dict, atoms, coords, coord_types='spherical'):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
+    coord_type : {"cartesian"/"c", list/tuple of "cartesian"/"c" or "spherical"/"p", "spherical"/"p"}
         Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
+        If "cartesian" or "c", then all of the contractions are treated as Cartesian contractions.
+        If "spherical" or "p", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
@@ -214,12 +214,12 @@ def make_contractions(basis_dict, atoms, coords, coord_types='spherical'):
         for angmom, exps, coeffs in basis_dict[atom]:
             if type(coord_types) == str:
                 # if coord_types given as a single string, assign the specified type to all contractions for all atoms
-                if coord_types == "spherical":
+                if coord_types == "spherical" or coord_types == "p":
                     basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, 'p'))
-                elif coord_types == "cartesian":
+                elif coord_types == "cartesian" or coord_types == "c":
                     basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, 'c'))
                 else:
-                    raise ValueError("If coord_types is a string, it must be either 'spherical' or 'cartesian'.")
+                    raise ValueError("If coord_types is a string, it must be either 'spherical'/'p' or 'cartesian'/'c'.")
             elif type(coord_types) == list:
                 # if coord_types given as a list, assign the specified type to each atom's contractions individually
                 if len_coord_types == sum([len(basis_dict[i]) for i in atoms]):
