@@ -14,37 +14,39 @@ def evaluate_stress_tensor(
     r"""Return the stress tensor evaluated at the given coordinates.
 
     Stress tensor is defined here as:
-    .. math::
 
-        \boldsymbol{\sigma}_{ij}(\mathbf{r}_n | \alpha, \beta)
-        =&
-        -\frac{1}{2} \alpha
-        \left(
-            \frac{\partial^2}{\partial r_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
-            + \frac{\partial^2}{\partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r}')
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        & +\frac{1}{2} (1 - \alpha)
-        \left(
-            \frac{\partial^2}{\partial r_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
-            + \frac{\partial^2}{\partial r'_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        & - \frac{1}{2} \delta_{ij} \beta
-        \left.
-            \nabla^2 \rho(\mathbf{r})
-        \right_{\mathbf{r}=\mathbf{r}_n}\\
-        =&
-        - \alpha
-        \left.
-            \frac{\partial^2}{\partial r_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-        + (1 - \alpha)
-        \left.
-            \frac{\partial^2}{\partial r_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-        - \frac{1}{2} \delta_{ij} \beta
-        \left.
-            \nabla^2 \rho(\mathbf{r})
-        \right_{\mathbf{r}=\mathbf{r}_n}\\
+    .. math::
+        \begin{align}
+            \boldsymbol{\sigma}_{ij}(\mathbf{r}_n | \alpha, \beta)
+            =&
+            -\frac{1}{2} \alpha
+            \left(
+                \frac{\partial^2}{\partial r_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
+                + \frac{\partial^2}{\partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r}')
+            \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            & +\frac{1}{2} (1 - \alpha)
+            \left(
+                \frac{\partial^2}{\partial r_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
+                + \frac{\partial^2}{\partial r'_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
+            \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            & - \frac{1}{2} \delta_{ij} \beta
+            \left.
+                \nabla^2 \rho(\mathbf{r})
+            \right)\\
+            =&
+            - \alpha
+            \left.
+                \frac{\partial^2}{\partial r_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
+            \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
+            + (1 - \alpha)
+            \left.
+                \frac{\partial^2}{\partial r_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
+            \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
+            - \frac{1}{2} \delta_{ij} \beta
+            \left.
+                \nabla^2 \rho(\mathbf{r})
+            \right)\\
+        \end{align}
 
     Parameters
     ----------
@@ -142,35 +144,37 @@ def evaluate_ehrenfest_force(
     r"""Return the Ehrenfest force.
 
     Ehrenfest force is the negative of the divergence of the stress tensor:
-    .. math::
 
-        F_{j}(\mathbf{r}_n | \alpha, \beta)
-        =&- \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
-        =&
-        \alpha
-        \sum_i
-        \left.
-          \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &- (1 - \alpha)
-        \sum_i
-        \left.
-          \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
-        - (1 - 2\alpha)
-        \sum_i
-        \left.
-          \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &+ \frac{1}{2} \beta
-        \left.
-          \left(
-            \frac{\partial^3}{\partial r_j \partial x^2}
-            + \frac{\partial^3}{\partial r_j \partial y^2}
-            + \frac{\partial^3}{\partial r_j \partial z^2}
-          \right)
-          \rho(\mathbf{r}_n)
-        \right|_{\mathbf{r}=\mathbf{r}_n}\\
+    .. math::
+        \begin{align}
+            F_{j}(\mathbf{r}_n | \alpha, \beta)
+            =&- \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
+            =&
+            \alpha
+            \sum_i
+            \left.
+              \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
+            \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            &- (1 - \alpha)
+            \sum_i
+            \left.
+              \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
+            \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}
+            - (1 - 2\alpha)
+            \sum_i
+            \left.
+              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
+            \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            &+ \frac{1}{2} \beta
+            \left.
+              \left(
+                \frac{\partial^3}{\partial r_j \partial x^2}
+                + \frac{\partial^3}{\partial r_j \partial y^2}
+                + \frac{\partial^3}{\partial r_j \partial z^2}
+              \right)
+              \rho(\mathbf{r}_n)
+            \right|_{\mathbf{r}=\mathbf{r}_n}\\
+        \end{align}
 
     Parameters
     ----------
@@ -284,45 +288,47 @@ def evaluate_ehrenfest_hessian(
     r"""Return the Ehrenfest Hessian.
 
     Ehrenfest Hessian is the gradient of the Ehrenfest force:
-    .. math::
 
-        H_{jk}(\mathbf{r}_n | \alpha, \beta)
-        =&
-        - \frac{\partial}{\partial r_k} F_j(\mathbf{r}_n | \alpha, \beta)\\
-        =&
-        \alpha
-        \sum_i
-        \left(
-            \frac{\partial^4}{\partial r^2_i \partial r_k \partial r'_j}
-            \gamma(\mathbf{r}, \mathbf{r}')
-            +\frac{\partial^4}{\partial r^2_i \partial r'_j \partial r'_k}
-            \gamma(\mathbf{r}, \mathbf{r}')
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &- (1 - \alpha)
-        \sum_i
-        \left(
-            \frac{\partial^4}{\partial r^2_i \partial r_j \partial r_k}
-            \gamma(\mathbf{r}, \mathbf{r})
-            + \frac{\partial^4}{\partial r^2_i \partial r_j \partial r'_k}
-            \gamma(\mathbf{r}, \mathbf{r})
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &- (1 - 2\alpha)
-        \sum_i
-        \left(
-            \frac{\partial^4}{\partial r_i \partial r_j \partial r_k \partial r'_i}
-            \gamma(\mathbf{r}, \mathbf{r})
-            + \frac{\partial^4}{\partial r_i \partial r_j \partial r'_i \partial r'_k}
-            \gamma(\mathbf{r}, \mathbf{r})
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
-        &+ \frac{1}{2} \beta
-        \left.
+    .. math::
+        \begin{align}
+            H_{jk}(\mathbf{r}_n | \alpha, \beta)
+            =&
+            - \frac{\partial}{\partial r_k} F_j(\mathbf{r}_n | \alpha, \beta)\\
+            =&
+            \alpha
+            \sum_i
             \left(
-                \frac{\partial^4}{\partial r_j \partial r_k \partial x^2}
-                + \frac{\partial^4}{\partial r_j \partial r_k \partial y^2}
-                + \frac{\partial^4}{\partial r_j \partial r_k \partial z^2}
-            \right)
-            \rho(\mathbf{r}_n)
-        \right|_{\mathbf{r}=\mathbf{r}_n}\\
+                \frac{\partial^4}{\partial r^2_i \partial r_k \partial r'_j}
+                \gamma(\mathbf{r}, \mathbf{r}')
+                +\frac{\partial^4}{\partial r^2_i \partial r'_j \partial r'_k}
+                \gamma(\mathbf{r}, \mathbf{r}')
+            \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            &- (1 - \alpha)
+            \sum_i
+            \left(
+                \frac{\partial^4}{\partial r^2_i \partial r_j \partial r_k}
+                \gamma(\mathbf{r}, \mathbf{r})
+                + \frac{\partial^4}{\partial r^2_i \partial r_j \partial r'_k}
+                \gamma(\mathbf{r}, \mathbf{r})
+            \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            &- (1 - 2\alpha)
+            \sum_i
+            \left(
+                \frac{\partial^4}{\partial r_i \partial r_j \partial r_k \partial r'_i}
+                \gamma(\mathbf{r}, \mathbf{r})
+                + \frac{\partial^4}{\partial r_i \partial r_j \partial r'_i \partial r'_k}
+                \gamma(\mathbf{r}, \mathbf{r})
+            \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+            &+ \frac{1}{2} \beta
+            \left.
+                \left(
+                    \frac{\partial^4}{\partial r_j \partial r_k \partial x^2}
+                    + \frac{\partial^4}{\partial r_j \partial r_k \partial y^2}
+                    + \frac{\partial^4}{\partial r_j \partial r_k \partial z^2}
+                \right)
+                \rho(\mathbf{r}_n)
+            \right|_{\mathbf{r}=\mathbf{r}_n}\\
+        \end{align}
 
     Parameters
     ----------

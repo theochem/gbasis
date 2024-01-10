@@ -28,7 +28,8 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
     __init__(self, contractions)
         Initialize.
     construct_array_contraction(self, cont1, cont2, cont3, cont4) :
-    np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4)
+        **np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4)**
+
         Return the electron-electron repulsion integrals associated with a
         `GeneralizedContractionShell` instances.
         :math:`M_1` is the number of segmented contractions with the same exponents (and angular
@@ -63,7 +64,8 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         :math:`K_cont` is the total number of contractions within the given basis set.
         Note that the integrals are in Chemists' notation.
     construct_array_lincomb(self, transform, coord_type) :
-    np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs)
+        **np.ndarray(K_orbs, K_orbs, K_orbs, K_orbs)**
+
         Return the electron-electron repulsion integrals associated with linear combinations of
         contractions in the given coordinate system.
         :math:`K_orbs` is the number of basis functions produced after the linear combinations.

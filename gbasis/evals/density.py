@@ -114,7 +114,7 @@ def evaluate_deriv_reduced_density_matrix(
 ):
     r"""Return the derivative of the first-order reduced density matrix at the given points.
 
-    ..math::
+    .. math::
 
         \left.
         \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
@@ -454,7 +454,7 @@ def evaluate_posdef_kinetic_energy_density(
 ):
     r"""Return evaluations of positive definite kinetic energy density at the given points.
 
-    ..math::
+    .. math::
 
         t_+ (\mathbf{r}_n)
         &= \frac{1}{2} \left.

@@ -42,10 +42,10 @@ def expansion_coeff(angmom, mag, i, j, k):
 
     .. math::
 
-        C^angmom,mag_i,j,k = -1^{i + k - shift_factor} * (1/4)^i * {angmom \choose i}
-        * {(angmom - i) \choose (\abs{mag} + i)} * {i \choose j} * {\abs{mag} \choose 2 * k},
+        C^{angmom,mag,i,j,k} = -1^{i + k - \text{shift_factor}} * (1/4)^i * {angmom \choose i}
+        * {(angmom - i) \choose (|mag| + i)} * {i \choose j} * {|mag| \choose 2 * k},
 
-    where shift_factor = 0 if mag >= 0 and shift_factor = 1/2 if mag < 0.
+    where :math:`shift_factor = 0` if :math:`mag >= 0` and :math:`shift_factor = 1/2` if :math:`mag < 0`    .
 
     Parameters
     ----------
@@ -118,13 +118,13 @@ def expansion_coeff(angmom, mag, i, j, k):
 
 
 def harmonic_norm(angmom, mag):
-    """Calculate the normalization constant of a real solid harmonic.
+    r"""
+    Calculate the normalization constant of a real solid harmonic.
 
-        .. math::
+    .. math::
+        N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! / 2^{\delta_0^m}},
 
-            `N^S_angmom,m = 1/(2^abs{m} * angmom!) * sqrt{2 * (angmom + abs{m})!
-            * (angmom - abs{m})! / 2^del{0, m})}`,
-            where :math: `del{0, m}` is the Kronecker delta of 0 and m.
+    where :math: `del{0, m}` is the Kronecker delta of 0 and m.
 
     Parameters
     ----------
@@ -167,12 +167,11 @@ def real_solid_harmonic(angmom, mag):
     r"""Calculate a real solid harmonic.
 
     .. math::
+        S_{angmom,mag} = N^{S}_{angmom,mag} \sum_{i=0}^{(angmom-|{mag}|)/2} \sum_{j=0}^i
+        \sum_k={shift_factor}^{[(|{mag}|-1)/2] + 0.5} C^{angmom,m_i,j,k} x^a_x y^a_y z^a_z,
 
-        S_angmom,mag = N^S_angmom,mag \sum_i=0^[(angmom-abs{mag})/2] \sum_j=0^i
-        \sum_k=shift_factor^([(abs{mag}-1)/2] + 0.5) C^angmom,m_i,j,k * x^a_x * y^a_y * z^a_z,
-
-    where :math:`a_x = 2t + abs{mag} - 2(u + v)`, :math:`a_y = 2(u + v)`,
-    and :math:`a_z = angmom - 2t - abs{mag}`.
+    where :math:`a_x = 2t + |mag| - 2(u + v)`, :math:`a_y = 2(u + v)`,
+    and :math:`a_z = angmom - 2t - |mag|`.
 
     Parameters
     ----------
