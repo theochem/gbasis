@@ -71,7 +71,6 @@ class GeneralizedContractionShell:
         Angular momentum of the contractions.
 
         .. math::
-
             \ell = \sum_i (\vec{a})_i = a_x + a_y + a_z
 
     angmom_components_cart : np.ndarray(L, 3)
@@ -123,9 +122,7 @@ class GeneralizedContractionShell:
         angmom : int
             Angular momentum of the set of contractions.
 
-            .. math::
-
-                \sum_i \vec{a} = a_x + a_y + a_z
+            :math:`\sum_i \vec{a} = a_x + a_y + a_z`
 
         coord : np.ndarray(3,)
             Coordinate of the center of the contractions.
@@ -190,9 +187,8 @@ class GeneralizedContractionShell:
         -------
         angmom : int
             Angular momentum of the set of contractions.
-            .. math::
 
-                \sum_i (\vec{a})_i = a_x + a_y + a_z
+            :math:`\sum_i (\vec{a})_i = a_x + a_y + a_z`
 
         """
         return self._angmom
@@ -205,9 +201,8 @@ class GeneralizedContractionShell:
         ----------
         angmom : int
             Angular momentum of the set of contractions.
-            .. math::
 
-                \sum_i (\vec{a})_i = a_x + a_y + a_z
+            :math:`\sum_i (\vec{a})_i = a_x + a_y + a_z`
 
         Raises
         ------
@@ -350,13 +345,16 @@ class GeneralizedContractionShell:
 
     @property
     def angmom_components_sph(self):
-        r"""Return the ordering of the magnetic quantum numbers for the given angular momentum.
+        r"""
+        Return the ordering of the magnetic quantum numbers for the given angular momentum.
 
         We define spherical components as regular solid harmonics :math:`R_{\ell, m}` such that
-            .. math::
-                R_{\ell, m} = C_{\ell, m}, m = 0 ... \ell
 
-                R_{\ell, -m} = S_{\ell, m}, m = 1 ... \ell
+        .. math::
+            \begin{align}
+                R_{\ell, m} &= C_{\ell, m}, \quad &m = 0 ... \ell
+                R_{\ell, -m} &= S_{\ell, m}, \quad &m = 1 ... \ell
+            \end{align}
 
         where :math:`C_{\ell, m}` and :math:`S_{\ell, m}` are Cosine- and Sine-like real
         regular solid harmonics (respectively).
