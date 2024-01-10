@@ -1,12 +1,13 @@
 """Test gbasis.integrals._two_elec_int."""
+import numpy as np
+import pytest
+from scipy.special import hyp1f1  # pylint: disable=E0611
+
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
 )
 from gbasis.utils import factorial2
-import numpy as np
-import pytest
-from scipy.special import hyp1f1  # pylint: disable=E0611
 
 
 def boys_func(order, weighted_dist):

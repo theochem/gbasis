@@ -1,6 +1,9 @@
 """Test gbasis.spherical."""
 import itertools as it
 
+import numpy as np
+import pytest
+
 from gbasis.spherical import (
     expansion_coeff,
     generate_transformation,
@@ -8,8 +11,6 @@ from gbasis.spherical import (
     real_solid_harmonic,
     shift_factor,
 )
-import numpy as np
-import pytest
 
 
 def test_shift_factor():

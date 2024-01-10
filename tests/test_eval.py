@@ -1,12 +1,13 @@
 """Test gbasis.evals.eval."""
+import numpy as np
+import pytest
+from utils import HortonContractions, find_datafile
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval import Eval, evaluate_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.utils import factorial2
-import numpy as np
-import pytest
-from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_construct_array_contraction():
@@ -152,6 +153,7 @@ def test_evaluate_basis_pyscf():
     pytest.importorskip("pyscf")
 
     from pyscf import gto
+
     from gbasis.wrappers import from_pyscf
 
     mol = gto.Mole()
@@ -218,6 +220,7 @@ def test_evaluate_basis_pyscf_cart_norm():
     pytest.importorskip("pyscf")
 
     from pyscf import gto
+
     from gbasis.wrappers import from_pyscf
 
     mol = gto.Mole()

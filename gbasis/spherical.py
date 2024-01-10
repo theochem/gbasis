@@ -4,6 +4,7 @@ from collections import defaultdict
 
 import numpy as np
 from scipy.special import comb, factorial
+
 from gbasis.utils import factorial2
 
 
@@ -301,8 +302,8 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         # Strip out "-" from the ordering to make sure the right components are there
         and {x.replace("-", "") for x in spherical_order}
         == set(
-            ["s{}".format(m) for m in range(angmom, 0, -1)]
-            + ["c{}".format(m) for m in range(angmom + 1)]
+            [f"s{m}" for m in range(angmom, 0, -1)]
+            + [f"c{m}" for m in range(angmom + 1)]
         )
     ):
         raise ValueError(

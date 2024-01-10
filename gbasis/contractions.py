@@ -1,6 +1,7 @@
 """Data class for contractions of Gaussian-type primitives."""
-from gbasis.utils import factorial2
 import numpy as np
+
+from gbasis.utils import factorial2
 
 
 class GeneralizedContractionShell:
@@ -384,8 +385,8 @@ class GeneralizedContractionShell:
 
         """
         return tuple(
-            ["s{}".format(m) for m in range(self.angmom, 0, -1)]
-            + ["c{}".format(m) for m in range(self.angmom + 1)]
+            [f"s{m}" for m in range(self.angmom, 0, -1)]
+            + [f"c{m}" for m in range(self.angmom + 1)]
         )
 
     @property

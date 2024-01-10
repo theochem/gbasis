@@ -1,9 +1,10 @@
 """Test gbasis.integrals._one_elec_int."""
-from gbasis.contractions import GeneralizedContractionShell
-from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
 import numpy as np
 import pytest
 from scipy.special import hyp1f1
+
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
 
 
 def boys_func(order, weighted_dist):

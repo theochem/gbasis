@@ -1,10 +1,11 @@
 """Test gbasis.wrapper."""
-from gbasis.contractions import GeneralizedContractionShell
-from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.wrappers import from_iodata, from_pyscf
 import numpy as np
 import pytest
 from utils import find_datafile
+
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.wrappers import from_iodata, from_pyscf
 
 
 def test_from_iodata():

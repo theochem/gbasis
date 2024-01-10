@@ -1,6 +1,7 @@
 """Module for computing electrostatic potential integrals."""
-from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
+
+from gbasis.integrals.point_charge import point_charge_integral
 
 
 def electrostatic_potential(

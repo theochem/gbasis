@@ -1,9 +1,10 @@
 """Test gbasis.integrals._moment_int."""
 import itertools as it
 
+import numpy as np
+
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.utils import factorial2
-import numpy as np
 
 
 def answer_prim(coord_type, i, j, k):

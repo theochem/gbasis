@@ -2,8 +2,9 @@
 import itertools as it
 import os
 
-from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
+
+from gbasis.contractions import GeneralizedContractionShell
 
 
 def skip_init(class_obj):
@@ -28,7 +29,7 @@ def skip_init(class_obj):
             """Null initialization."""
             pass
 
-    NoInitClass.__name__ = "NoInit{}".format(class_obj.__name__)
+    NoInitClass.__name__ = f"NoInit{class_obj.__name__}"
     NoInitClass.__doc__ = NoInitClass.__doc__.format(class_obj.__name__)
     return NoInitClass()
 
@@ -62,7 +63,7 @@ def disable_abstract(abclass, dict_overwrite={}):
     new_dict.update(dict_overwrite)
     # make subclass of the abstract class with
     return type(
-        "{} class with abstract methods disabled".format(abclass.__name__), (abclass,), new_dict
+        f"{abclass.__name__} class with abstract methods disabled", (abclass,), new_dict
     )
 
 
@@ -189,8 +190,8 @@ class HortonContractions(GeneralizedContractionShell):
         """Ordering of the magnetic quantum number for HORTON's convention."""
         if self.angmom == 1:
             return ("c1", "s1", "c0")
-        cosines = ["c{}".format(m) for m in range(1, self.angmom + 1)]
-        sines = ["s{}".format(m) for m in range(1, self.angmom + 1)]
+        cosines = [f"c{m}" for m in range(1, self.angmom + 1)]
+        sines = [f"s{m}" for m in range(1, self.angmom + 1)]
         output = ["c0"] + [None for _ in range(2 * self.angmom)]
         output[1::2] = cosines
         output[2::2] = sines

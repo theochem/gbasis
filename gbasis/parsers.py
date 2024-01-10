@@ -1,8 +1,9 @@
 """Parsers for reading basis set files."""
 import re
 
-from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
+
+from gbasis.contractions import GeneralizedContractionShell
 
 
 def parse_nwchem(nwchem_basis_file):
@@ -26,7 +27,7 @@ def parse_nwchem(nwchem_basis_file):
 
     """
     # pylint: disable=R0914
-    with open(nwchem_basis_file, "r") as basis_fh:
+    with open(nwchem_basis_file) as basis_fh:
         nwchem_basis = basis_fh.read()
 
     data = re.split(r"\n\s*(\w[\w]?)[ ]+(\w+)\s*\n", nwchem_basis)
@@ -97,7 +98,7 @@ def parse_gbs(gbs_basis_file):
 
     """
     # pylint: disable=R0914
-    with open(gbs_basis_file, "r") as basis_fh:
+    with open(gbs_basis_file) as basis_fh:
         gbs_basis = basis_fh.read()
     # splits file into 'element', 'basis stuff', 'element',' basis stuff'
     # e.g., ['H','stuff with exponents & coefficients\n', 'C', 'stuff with etc\n']

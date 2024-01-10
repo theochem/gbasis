@@ -1,9 +1,10 @@
 """Test gbasis.evals._deriv."""
 import itertools as it
 
-from gbasis.evals._deriv import _eval_deriv_contractions
 import numpy as np
 from utils import partial_deriv_finite_diff
+
+from gbasis.evals._deriv import _eval_deriv_contractions
 
 
 def evaluate_deriv_prim(coord, orders, center, angmom_comps, alpha):

@@ -1,10 +1,11 @@
 """Module for computing properties related to the stress tensor."""
+import numpy as np
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
     evaluate_deriv_reduced_density_matrix,
 )
-import numpy as np
 
 
 # TODO: need to be tested against reference
