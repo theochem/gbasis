@@ -196,18 +196,3 @@ def eval_nuc_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, no
             angular_output[l] = derivative
         output[m] = angular_output
     return output
-
-
-coords = np.random.rand(10, 3)
-center = np.random.rand(3)
-R_x, R_y, R_z = center
-angmom_comps = np.random.randint(0, 2, (1, 3))
-alphas = np.random.rand(1)
-
-prim_coeffs = np.random.rand(2, 1)
-norm = np.ones((1, 2))
-
-output = np.apply_along_axis(eval_contractions, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
-
-gradient = _eval_nuc_deriv(coords, np.array([3, 5, 5]), center, angmom_comps, alphas, prim_coeffs, norm)
-print(gradient)
