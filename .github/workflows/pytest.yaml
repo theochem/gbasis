@@ -20,18 +20,22 @@ jobs:
 
     steps:
       - uses: "actions/checkout@v3"
+        
       - name: Setup python for test ${{ matrix.py }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.py }}
+
       - name: Install dependencies for testing
         run: |
           pip install --upgrade pip
           pip install pytest pytest-md pytest-emoji pytest-cov
+
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
           pip install -e .
+
       - name: Run pytest
         uses: pavelzw/pytest-action@v2
         with:
