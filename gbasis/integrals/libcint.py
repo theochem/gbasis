@@ -79,7 +79,7 @@ def ndptr(enable_null=False, **kwargs):
     if not enable_null:
         return base
 
-    return type(base.__name__, (base,), {'from_param': classmethod(from_param)})
+    return type(base.__name__, (base,), {"from_param": classmethod(from_param)})
 
 
 class PairData(Structure):
@@ -131,7 +131,7 @@ class _LibCInt:
 
     def __init__(self):
         r"""
-        Singleton class inializer.
+        Singleton class initializer.
 
         """
         # Make the bound C functions we'll always need here
@@ -385,30 +385,19 @@ class CBasis:
 
         self.rinv = self.make_int1e("int1e_rinv", inv_origin=True)
 
+        self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True)
+
         self.amom = self.make_int1e("int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True)
 
-        self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True)
-
-        # not sure if these r,rr,rrr,rrrr integrals are complex or not
-        self.r = self.make_int1e("int1e_r", components=(3,), is_complex=True, origin=True)
-        self.rr = self.make_int1e("int1e_rr", components=(3,), is_complex=True, origin=True)
-        self.rrr = self.make_int1e("int1e_rrr", components=(3,), is_complex=True, origin=True)
-        self.rrrr = self.make_int1e("int1e_rrrr", components=(3,), is_complex=True, origin=True)
-
-        self.x = self.make_int1e("int1e_x", origin=True)
-        self.xx = self.make_int1e("int1e_xx", origin=True)
-        self.xxx = self.make_int1e("int1e_xxx", origin=True)
-        self.xxxx = self.make_int1e("int1e_xxxx", origin=True)
-
-        self.y = self.make_int1e("int1e_y", origin=True)
-        self.yy = self.make_int1e("int1e_yy", origin=True)
-        self.yyy = self.make_int1e("int1e_yyy", origin=True)
-        self.yyyy = self.make_int1e("int1e_yyyy", origin=True)
-
-        self.z = self.make_int1e("int1e_z", origin=True)
-        self.zz = self.make_int1e("int1e_zz", origin=True)
-        self.zzz = self.make_int1e("int1e_zzz", origin=True)
-        self.zzzz = self.make_int1e("int1e_zzzz", origin=True)
+        self._moments = {}
+        for nx in range(5):
+            for ny in range(5):
+                for nz in range(5):
+                    if 0 < nx + ny + nz < 5:
+                        self._moments[(nx, ny, nz)] = self.make_int1e(
+                            "int1e_" + nx * "x" + ny * "y" + nz * "z",
+                            origin=True,
+                    )
 
         self.d_olp = self.make_int1e("int1e_ipovlp", components=(3,))
         self.d_kin = self.make_int1e("int1e_ipkin", components=(3,))
@@ -771,40 +760,28 @@ class CBasis:
         return out
 
     def moment(self, orders, origin=None):
+        r"""
+        Moment integral.
 
-        n = len(orders)
+        Notes
+        -----
+        This function is tied to the Libcint functions generated at compile-time.
+        They were generated up to 4th order for any one X, Y, or Z, and up to 4th order
+        for any combination of X, Y, or Z (still up to 4th order for any one component).
 
-        xs = list(set([elem[0] for elem in orders]))
-        ys = list(set([elem[1] for elem in orders]))
-        zs = list(set([elem[2] for elem in orders]))
+        """
 
-        if np.greater([xs, ys, zs], 4).any():
-            raise ValueError
+        out = np.zeros((self.nbfn, self.nbfn, len(orders)), dtype=np.float64)
 
-        x_comps = [0]
-        x_comps.append(self.x(origin=origin) if 1 in xs else 0)
-        x_comps.append(self.xx(origin=origin) if 2 in xs else 0)
-        x_comps.append(self.xxx(origin=origin) if 3 in xs else 0)
-        x_comps.append(self.xxxx(origin=origin) if 4 in xs else 0)
-
-        y_comps = [0]
-        y_comps.append(self.y(origin=origin) if 1 in ys else 0)
-        y_comps.append(self.yy(origin=origin) if 2 in ys else 0)
-        y_comps.append(self.yyy(origin=origin) if 3 in ys else 0)
-        y_comps.append(self.yyyy(origin=origin) if 4 in ys else 0)
-
-        z_comps = [0]
-        z_comps.append(self.z(origin=origin) if 1 in zs else 0)
-        z_comps.append(self.zz(origin=origin) if 2 in zs else 0)
-        z_comps.append(self.zzz(origin=origin) if 3 in zs else 0)
-        z_comps.append(self.zzzz(origin=origin) if 4 in zs else 0)
-
-        out = np.zeros((self.nbfn, self.nbfn, n), dtype=np.float64)
-
-        for i, (x, y, z) in enumerate(orders):
-            out[:, :, i] += x_comps[x]
-            out[:, :, i] += y_comps[y]
-            out[:, :, i] += z_comps[z]
+        try:
+            for i, order in enumerate(orders):
+                if sum(order) == 0:
+                    out[:, :, i] = self.olp()
+                else:
+                    out[:, :, i] = self._moments[tuple(order)](origin=origin)
+        except KeyError:
+            raise ValueError("Invalid order; can use up to order 4 for any XYZ component,"
+                             "and up to 4th order total using combinations of XYZ components")
 
         return out
 

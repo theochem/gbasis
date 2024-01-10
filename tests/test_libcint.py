@@ -113,7 +113,7 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
     elif integral == "mom":
         py_int = momentum_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        lc_int = lc_basis.mom(origin=np.zeros(3))
+        lc_int = lc_basis.mom()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
     elif integral == "eri":
