@@ -1,7 +1,7 @@
 # Contributing to gbasis
 Hello! Thank you for taking your time to contribute!
 
-Please note we have a [Code of Conduct](CODE_OF_CONDUCT.md) , please follow it in all your interactions with the project. Please report unacceptable behavior to [theochem@github.com](mailto:theochem@github.com).
+Please note we have a [Code of Conduct](https://qcdevs.org/guidelines/QCDevsCodeOfConduct/) , please follow it in all your interactions with the project. Please report unacceptable behavior to [theochem@github.com](mailto:theochem@github.com).
 
 ## Do you have a question?
 
