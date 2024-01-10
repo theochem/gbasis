@@ -138,19 +138,13 @@ def from_iodata(mol):
     return basis
 
 
-def from_pyscf(mol, coord_types="spherical"):
+def from_pyscf(mol):
     """Return basis set stored within the `Mole` instance in `pyscf`.
 
     Parameters
     ----------
     mol : pyscf.gto.mole.Mole
         `Mole` object in `pyscf`.
-    coord_types : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `PyscfShell` instance.
 
     Returns
     -------
@@ -173,6 +167,10 @@ def from_pyscf(mol, coord_types="spherical"):
     # pylint: disable=W0212
     if not (mol.__class__.__name__ == "Mole" and hasattr(mol, "_basis")):
         raise ValueError("`mol` must be a `pyscf.gto.mole.Mole` instance.")
+
+    # assign the coordinate types (which can be either Cartesian or Spherical)
+    # it seems like pyscf does not support mixed "cartesian" and "spherical" basis.
+    coord_types = "cartesian" if mol.cart else "spherical"
 
     class PyscfShell(GeneralizedContractionShell):
         """Shell object that is compatible with gbasis' shell object.

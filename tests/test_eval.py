@@ -163,10 +163,15 @@ def test_evaluate_basis_pyscf():
     from pyscf import gto
     from gbasis.wrappers import from_pyscf
 
-    mol = gto.Mole()
+    # build Cartesian basis (default is cart=False)
+    mol = gto.Mole(cart=True)
     mol.build(atom="H 0 0 0; He 0.8 0 0", basis="ano-rcc", spin=1)
-    cartesian_basis = from_pyscf(mol, coord_types="cartesian")
-    spherical_basis = from_pyscf(mol, coord_types="spherical")
+    cartesian_basis = from_pyscf(mol)
+
+    # build Spherical basis (default is cart=False)
+    mol = gto.Mole(cart=False)
+    mol.build(atom="H 0 0 0; He 0.8 0 0", basis="ano-rcc", spin=1)
+    spherical_basis = from_pyscf(mol)
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
