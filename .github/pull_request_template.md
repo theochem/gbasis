@@ -9,16 +9,15 @@ https://github.com/theochem/gbasis/blob/master/CONTRIBUTING.md
 
 -->
 
-## Steps
+<!-- Description of the PR: what it does, what issues it addresses, etc -->
+
+## Checklist
 
 - [ ] Write a good description of what the PR does.
 - [ ] Add tests for each unit of code added (e.g. function, class)
 - [ ] Update documentation
 - [ ] Squash commits that can be grouped together
 - [ ] Rebase onto master
-
-## Description
-
 
 ## Type of Changes
 <!-- Leave the corresponding lines for the applicable type of change: -->
@@ -29,7 +28,7 @@ https://github.com/theochem/gbasis/blob/master/CONTRIBUTING.md
 | ✓  | :hammer: Refactoring  |
 | ✓  | :scroll: Docs |
 
-## Related Issue
+## Related
 
 <!--
 If this PR fixes a particular issue, use the following to automatically close that issue
