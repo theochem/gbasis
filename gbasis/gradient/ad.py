@@ -131,8 +131,6 @@ def _eval_nuc_deriv(coords, center, angmom_comps, alphas, prim_coeffs, norm):
     g_y = grad(eval_contractions, 2)
     g_z = grad(eval_contractions, 3)
 
-
-
     # vectorizing derivatives to evaluate them at each coordinate efficiently
     grad_x = np.apply_along_axis(g_x, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
     grad_y = np.apply_along_axis(g_y, 1, coords, R_x, R_y, R_z, angmom_comps, alphas, prim_coeffs, norm)
