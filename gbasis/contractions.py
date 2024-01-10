@@ -116,7 +116,7 @@ class GeneralizedContractionShell:
 
     """
 
-    def __init__(self, angmom, coord, coeffs, exps, coord_type="p"):
+    def __init__(self, angmom, coord, coeffs, exps, coord_type):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -137,7 +137,7 @@ class GeneralizedContractionShell:
             dimension.
         exps : np.ndarray(K,)
             Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
-        coord_type : str, optional
+        coord_type : str
             Coordinate type of the contraction. Options include "cartesian" or "c" and
             "spherical" or "p".
 

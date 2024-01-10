@@ -165,7 +165,7 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
-def make_contractions(basis_dict, atoms, coords, coord_types='spherical'):
+def make_contractions(basis_dict, atoms, coords, coord_types):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
