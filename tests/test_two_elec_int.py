@@ -3,9 +3,10 @@ from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
 )
+from gbasis.utils import factorial2
 import numpy as np
 import pytest
-from scipy.special import factorial2, hyp1f1  # pylint: disable=E0611
+from scipy.special import hyp1f1  # pylint: disable=E0611
 
 
 def boys_func(order, weighted_dist):
@@ -185,7 +186,7 @@ def two_int_brute(
     # initial
     if i_0 == i_1 == i_2 == j_0 == j_1 == j_2 == k_0 == k_1 == k_2 == l_0 == l_1 == l_2 == 0:
         return (
-            (2 * np.pi ** 2.5)
+            (2 * np.pi**2.5)
             / (zeta * eta * (zeta + eta) ** 0.5)
             * boys_func(m, (rho) * ((x_p - x_q) ** 2 + (y_p - y_q) ** 2 + (z_p - z_q) ** 2))
             * olp_ab

@@ -107,7 +107,7 @@ def test_from_iodata():
         basis[2].angmom_components_sph
 
     with pytest.raises(ValueError):
-        mol.obasis = mol.obasis._replace(primitive_normalization="L1")
+        mol.obasis.primitive_normalization = "L1"
         basis, coord_types = from_iodata(mol)
 
 

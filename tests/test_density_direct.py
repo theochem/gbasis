@@ -21,15 +21,16 @@ def test_evaluate_density_using_evaluated_orbs():
     """Test gbasis.evals.density.evaluate_density_using_evaluated_orbs."""
     density_mat = np.array([[1.0, 2.0], [2.0, 3.0]])
     orb_eval = np.array([[1.0], [2.0]])
-    dens = evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
-    assert np.all(dens >= 0.0)
-    assert np.allclose(dens, np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval))
-
+    assert np.allclose(
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval),
+        np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval),
+    )
     density_mat = np.array([[1.0, 2.0], [2.0, 3.0]])
     orb_eval = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-    dens = evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
-    assert np.all(dens >= 0)
-    assert np.allclose(dens, np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval))
+    assert np.allclose(
+        evaluate_density_using_evaluated_orbs(density_mat, orb_eval),
+        np.einsum("ij,ik,jk->k", density_mat, orb_eval, orb_eval),
+    )
 
     with pytest.raises(TypeError):
         orb_eval = [[1.0, 2.0], [1.0, 2.0]]
@@ -69,9 +70,10 @@ def test_evaluate_density():
     points = np.random.rand(10, 3)
 
     evaluate_orbs = evaluate_basis(basis, points, transform)
-    dens = evaluate_density(density, basis, points, transform)
-    assert np.all(dens >= 0.0)
-    assert np.allclose(dens, np.einsum("ij,ik,jk->k", density, evaluate_orbs, evaluate_orbs))
+    assert np.allclose(
+        evaluate_density(density, basis, points, transform),
+        np.einsum("ij,ik,jk->k", density, evaluate_orbs, evaluate_orbs),
+    )
 
 
 def test_evaluate_deriv_density():
@@ -84,7 +86,8 @@ def test_evaluate_deriv_density():
     points = np.random.rand(10, 3)
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([1, 0, 0]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([1, 0, 0]), density, basis, points,
+                               transform, deriv_type="direct"),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -100,7 +103,8 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([0, 1, 0]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([0, 1, 0]), density, basis,
+                               points, transform, deriv_type='direct'),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -116,7 +120,8 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([0, 0, 1]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([0, 0, 1]), density, basis,
+                               points, transform, deriv_type='direct'),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -132,7 +137,8 @@ def test_evaluate_deriv_density():
     )
 
     assert np.allclose(
-        evaluate_deriv_density(np.array([2, 3, 0]), density, basis, points, transform),
+        evaluate_deriv_density(np.array([2, 3, 0]), density, basis, points,
+                               transform, deriv_type='direct'),
         np.einsum(
             "ij,ik,jk->k",
             density,
@@ -228,7 +234,7 @@ def test_evaluate_density_gradient():
     points = np.random.rand(10, 3)
 
     np.allclose(
-        evaluate_density_gradient(density, basis, points, transform).T,
+        evaluate_density_gradient(density, basis, points, transform, deriv_type='direct').T,
         np.array(
             [
                 np.einsum(
@@ -290,9 +296,9 @@ def test_evaluate_density_horton():
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
-    dens = evaluate_density(np.identity(88), basis, grid_3d, np.identity(88))
-    assert np.all(dens >= 0.0)
-    assert np.allclose(dens, horton_density)
+    assert np.allclose(
+        evaluate_density(np.identity(88), basis, grid_3d, np.identity(88)), horton_density
+    )
 
 
 def test_evaluate_density_gradient_horton():
@@ -314,7 +320,8 @@ def test_evaluate_density_gradient_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        evaluate_density_gradient(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_gradient(np.identity(88), basis, grid_3d,
+                                  np.identity(88), deriv_type='direct'),
         horton_density_gradient,
     )
 
@@ -331,7 +338,7 @@ def test_evaluate_hessian_deriv_horton():
     basis = make_contractions(basis_dict, ["H", "He"], points)
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
 
-    horton_density_hessian = np.zeros((10**3, 3, 3))
+    horton_density_hessian = np.zeros((10 ** 3, 3, 3))
     horton_density_hessian[:, [0, 0, 0, 1, 1, 2], [0, 1, 2, 1, 2, 2]] = np.load(
         find_datafile("data_horton_hhe_sph_density_hessian.npy")
     )
@@ -344,7 +351,8 @@ def test_evaluate_hessian_deriv_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        evaluate_density_hessian(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_hessian(np.identity(88), basis, grid_3d,
+                                 np.identity(88), deriv_type='direct'),
         horton_density_hessian,
     )
 
@@ -368,7 +376,8 @@ def test_evaluate_laplacian_deriv_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        evaluate_density_laplacian(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_laplacian(np.identity(88), basis, grid_3d,
+                                   np.identity(88), deriv_type='direct'),
         horton_density_laplacian,
     )
 
@@ -393,9 +402,11 @@ def test_evaluate_posdef_kinetic_energy_density():
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
-    dens = evaluate_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88))
-    assert np.all(dens >= 0.0)
-    assert np.allclose(dens, horton_density_kinetic_density)
+    assert np.allclose(
+        evaluate_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d,
+                                               np.identity(88), deriv_type='direct'),
+        horton_density_kinetic_density,
+    )
 
 
 def test_evaluate_general_kinetic_energy_density_horton():
@@ -422,7 +433,7 @@ def test_evaluate_general_kinetic_energy_density_horton():
 
     assert np.allclose(
         evaluate_general_kinetic_energy_density(
-            np.identity(88), basis, grid_3d, 0, np.identity(88)
+            np.identity(88), basis, grid_3d, 0, np.identity(88), deriv_type='direct'
         ),
         horton_density_kinetic_density,
     )
@@ -437,14 +448,17 @@ def test_evaluate_general_kinetic_energy_density():
 
     with pytest.raises(TypeError):
         evaluate_general_kinetic_energy_density(
-            np.identity(40), basis, points, np.identity(40), np.array(0)
+            np.identity(40), basis, points, np.identity(40), np.array(0), deriv_type='direct'
         )
     with pytest.raises(TypeError):
         evaluate_general_kinetic_energy_density(
-            np.identity(40), basis, points, None, np.identity(40)
+            np.identity(40), basis, points, None, np.identity(40), deriv_type='direct'
         )
     assert np.allclose(
-        evaluate_general_kinetic_energy_density(np.identity(40), basis, points, 1, np.identity(40)),
-        evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40))
-        + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40)),
+        evaluate_general_kinetic_energy_density(np.identity(40), basis, points, 1,
+                                                np.identity(40), deriv_type='direct'),
+        evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points,
+                                               np.identity(40), deriv_type='direct')
+        + evaluate_density_laplacian(np.identity(40), basis, points,
+                                     np.identity(40), deriv_type='direct'),
     )

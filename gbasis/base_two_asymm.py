@@ -30,9 +30,10 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
     __init__(self, contractions_one, contractions_two)
         Initialize.
     construct_array_contraction(self, contractions_one, contractions_two, **kwargs) :
-    np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)
+        **np.ndarray(M_1, L_cart_1, M_2, L_cart_2, ...)**
+
         Return the array associated with a `GeneralizedContractionShell` instance.
-       `M_1` is the number of segmented contractions with the same exponents (and angular
+        `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
         `L_cart_1` is the number of Cartesian contractions for the given angular momentum
         associated with the first index.
@@ -49,7 +50,8 @@ class BaseTwoIndexAsymmetric(BaseGaussianRelatedArray):
         `K_sph_1` is the total number of spherical contractions within `contractions_one`.
         `K_sph_2` is the total number of spherical contractions within `contractions_two`.
     construct_array_lincomb(self, transform_one, transform_two, coord_type, **kwargs) :
-    np.ndarray(K_orbs_1, K_orbs_2, ...)
+        **np.ndarray(K_orbs_1, K_orbs_2, ...)**
+
         Return the array associated with linear combinations of contractions in the given coordinate
         system.
         `K_orbs_1` is the number of basis functions produced by linear combinations of the

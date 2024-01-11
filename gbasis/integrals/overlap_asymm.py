@@ -22,7 +22,7 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
     __init__(self, contractions_one, contractions_two)
         Initialize.
     construct_array_contraction(contractions_one, contractions_two) :
-    np.ndarray(M_1, L_cart_1, M_2, L_cart_2)
+        **np.ndarray(M_1, L_cart_1, M_2, L_cart_2)**
         Return the overlap associated with the two `GeneralizedContractionShell` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.
@@ -42,13 +42,15 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
         `K_sph_1` is the total number of spherical contractions within `contractions_one`.
         `K_sph_2` is the total number of spherical contractions within `contractions_two`.
     construct_array_mix(self, coord_types_one, coord_types_two) :
-    np.ndarray(K_cont_1, K_cont_2)
+        **np.ndarray(K_cont_1, K_cont_2)**
+
         Return the overlap integrals associated with the contractions in the given coordinate
         systems of the two basis sets.
         `K_cont_1` is the total number of contractions within the given basis set.
         `K_cont_2` is the total number of contractions within the given basis set.
     construct_array_lincomb(self, transform_one, transform_two, coord_type_one, coord_type_two) :
-    np.ndarray(K_orbs_1, K_orbs_2)
+        **np.ndarray(K_orbs_1, K_orbs_2)**
+
         Return the overlap integrals associated with the linear combinations of contractions of the
         two basis sets.
         `K_orbs_1` is the number of basis functions produced after the linear combinations of

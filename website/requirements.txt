@@ -1,0 +1,5 @@
+jupyter-book
+sphinx
+matplotlib
+numpy>= 1.10
+scipy>=1.0, <=1.10.1

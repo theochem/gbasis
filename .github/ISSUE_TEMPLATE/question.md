@@ -2,8 +2,8 @@
 name: Question
 about: Ask us a question
 title: "[QUESTION]"
-labels:
-assignees: '**
+labels: question
+assignees: ''
 
 ---
 
@@ -18,9 +18,5 @@ Try to give enough information.
 Try not to ask rhetorical questions
 
 If it is installation related, what is your OS? Python version? NumPy version? SciPy version?
-
-Please note that some questions may take a long time to get answered.
-
-For general guideline on asking questions, see https://stackoverflow.com/help/how-to-ask.
 
 -->

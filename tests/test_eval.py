@@ -3,9 +3,9 @@ from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval import Eval, evaluate_basis
 from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.utils import factorial2
 import numpy as np
 import pytest
-from scipy.special import factorial2
 from utils import find_datafile, HortonContractions
 
 

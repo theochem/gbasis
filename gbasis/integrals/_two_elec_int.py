@@ -1,6 +1,6 @@
 """Two-electron integrals involving Contracted Cartesian Gaussians."""
 import numpy as np
-from scipy.special import factorial2
+from gbasis.utils import factorial2
 
 # pylint: disable=C0103,R0914,R0915
 
@@ -122,9 +122,9 @@ def _compute_two_elec_integrals_angmom_zero(
     ) / (exps_c + exps_d)
 
     integrals = (
-        (2 * np.pi ** 2.5)
+        (2 * np.pi**2.5)
         / ((exps_a + exps_b) * (exps_c + exps_d) * (exps_a + exps_b + exps_c + exps_d) ** 0.5)
-        * boys_func(0, (harm_mean * np.sum(coord_wac ** 2, axis=0))[:, :, :, :])
+        * boys_func(0, (harm_mean * np.sum(coord_wac**2, axis=0))[:, :, :, :])
         * np.exp(-harm_mean_one * np.sum((coord_a - coord_b) ** 2, axis=0))
         * np.exp(-harm_mean_two * np.sum((coord_c - coord_d) ** 2, axis=0))
     )
@@ -337,14 +337,14 @@ def _compute_two_elec_integrals(
     )
     # Initialize V(m)(000|000) for all m
     integrals_vert[:, 0, 0, 0, :, :, :, :] = (
-        (2 * np.pi ** 2.5)
-        / (exps_sum_one * exps_sum_two * exps_sum ** 0.5)
+        (2 * np.pi**2.5)
+        / (exps_sum_one * exps_sum_two * exps_sum**0.5)
         * boys_func(
             np.arange(m_max)[:, None, None, None, None],
-            (harm_mean * np.sum(coord_wac ** 2, axis=0))[None, :, :, :, :],
+            (harm_mean * np.sum(coord_wac**2, axis=0))[None, :, :, :, :],
         )
-        * np.exp(-harm_mean_one * np.sum(rel_dist_one ** 2, axis=0))
-        * np.exp(-harm_mean_two * np.sum(rel_dist_two ** 2, axis=0))
+        * np.exp(-harm_mean_one * np.sum(rel_dist_one**2, axis=0))
+        * np.exp(-harm_mean_two * np.sum(rel_dist_two**2, axis=0))
     )
 
     # Vertical recursion for the first index
@@ -436,10 +436,10 @@ def _compute_two_elec_integrals(
     # 0) is not supported. Use `_compute_two_elec_integrals_angmom_zero` for this case.
     # FIXME: i couldn't get the base case (all angmom of zero) to work.
     integrals_etransf[1:2, 0, 0, 0:1, :, :, :, :, :, :] = (
-        (rel_coord_c[0] + exps_sum_one / exps_sum_two * rel_coord_a[0])
-        * integrals_etransf[0:1, 0, 0, 0:1]
-        - exps_sum_one / exps_sum_two * integrals_etransf[0:1, 0, 0, 1:2]
-    )
+        rel_coord_c[0] + exps_sum_one / exps_sum_two * rel_coord_a[0]
+    ) * integrals_etransf[0:1, 0, 0, 0:1] - exps_sum_one / exps_sum_two * integrals_etransf[
+        0:1, 0, 0, 1:2
+    ]
     integrals_etransf[1:2, 0, 0, 1:-1, :, :, :, :, :, :] = (
         (rel_coord_c[0] + exps_sum_one / exps_sum_two * rel_coord_a[0])
         * integrals_etransf[0:1, 0, 0, 1:-1]
@@ -466,10 +466,10 @@ def _compute_two_elec_integrals(
         )
     # electron transfer recursion for second index
     integrals_etransf[:, 1:2, 0, :, 0:1, :, :, :, :, :] = (
-        (rel_coord_c[1] + exps_sum_one / exps_sum_two * rel_coord_a[1])
-        * integrals_etransf[:, 0:1, 0, :, 0:1]
-        - exps_sum_one / exps_sum_two * integrals_etransf[:, 0:1, 0, :, 1:2]
-    )
+        rel_coord_c[1] + exps_sum_one / exps_sum_two * rel_coord_a[1]
+    ) * integrals_etransf[:, 0:1, 0, :, 0:1] - exps_sum_one / exps_sum_two * integrals_etransf[
+        :, 0:1, 0, :, 1:2
+    ]
     integrals_etransf[:, 1:2, 0, :, 1:-1, :, :, :, :, :] = (
         (rel_coord_c[1] + exps_sum_one / exps_sum_two * rel_coord_a[1])
         * integrals_etransf[:, 0:1, 0, :, 1:-1]
@@ -496,10 +496,10 @@ def _compute_two_elec_integrals(
         )
     # electron transfer recursion for third index
     integrals_etransf[:, :, 1:2, :, :, 0:1, :, :, :, :] = (
-        (rel_coord_c[2] + exps_sum_one / exps_sum_two * rel_coord_a[2])
-        * integrals_etransf[:, :, 0:1, :, :, 0:1]
-        - exps_sum_one / exps_sum_two * integrals_etransf[:, :, 0:1, :, :, 1:2]
-    )
+        rel_coord_c[2] + exps_sum_one / exps_sum_two * rel_coord_a[2]
+    ) * integrals_etransf[:, :, 0:1, :, :, 0:1] - exps_sum_one / exps_sum_two * integrals_etransf[
+        :, :, 0:1, :, :, 1:2
+    ]
     integrals_etransf[:, :, 1:2, :, :, 1:-1, :, :, :, :] = (
         (rel_coord_c[2] + exps_sum_one / exps_sum_two * rel_coord_a[2])
         * integrals_etransf[:, :, 0:1, :, :, 1:-1]
