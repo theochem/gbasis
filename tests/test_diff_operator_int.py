@@ -2,10 +2,10 @@
 import itertools as it
 
 import numpy as np
-from scipy.special import factorial2
 from test_moment_int import answer_prim as answer_prim_overlap
 
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.utils import factorial2
 
 
 def answer_prim(coord_type, i, j, k):
@@ -297,6 +297,7 @@ def test_compute_differential_operator_integrals_multiarray():
         ),
         axis=1,
     )
+
     test = _compute_differential_operator_integrals(
         orders_diff,
         coord_a,
