@@ -112,6 +112,7 @@ def evaluate_deriv_reduced_density_matrix(
     points,
     transform=None,
     coord_type="spherical",
+    deriv_type="general"
 ):
     r"""Return the derivative of the first-order reduced density matrix at the given points.
 
@@ -165,6 +166,11 @@ def evaluate_deriv_reduced_density_matrix(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -173,13 +179,14 @@ def evaluate_deriv_reduced_density_matrix(
 
     """
     deriv_orb_eval_one = evaluate_deriv_basis(
-        basis, points, orders_one, transform=transform, coord_type=coord_type
+        basis, points, orders_one, transform=transform, coord_type=coord_type, deriv_type=deriv_type
     )
     if np.array_equal(orders_one, orders_two):
         deriv_orb_eval_two = deriv_orb_eval_one
     else:
         deriv_orb_eval_two = evaluate_deriv_basis(
-            basis, points, orders_two, transform=transform, coord_type=coord_type
+            basis, points, orders_two, transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
     density *= deriv_orb_eval_one
@@ -188,7 +195,8 @@ def evaluate_deriv_reduced_density_matrix(
 
 
 def evaluate_deriv_density(
-    orders, one_density_matrix, basis, points, transform=None, coord_type="spherical"
+    orders, one_density_matrix, basis, points, transform=None,
+    coord_type="spherical", deriv_type="general"
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
 
@@ -220,6 +228,11 @@ def evaluate_deriv_density(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -245,21 +258,34 @@ def evaluate_deriv_density(
                 num_occurence = comb(total_l_x, l_x) * comb(total_l_y, l_y) * comb(total_l_z, l_z)
                 orders_one = np.array([l_x, l_y, l_z])
                 orders_two = orders - orders_one
-                density = evaluate_deriv_reduced_density_matrix(
-                    orders_one,
-                    orders_two,
-                    one_density_matrix,
-                    basis,
-                    points,
-                    transform=transform,
-                    coord_type=coord_type,
-                )
+                if any(orders_one > 2) or any(orders_two > 2):
+                    density = evaluate_deriv_reduced_density_matrix(
+                            orders_one,
+                            orders_two,
+                            one_density_matrix,
+                            basis,
+                            points,
+                            transform=transform,
+                            coord_type=coord_type,
+                            deriv_type='general',
+                        )
+                else:
+                    density = evaluate_deriv_reduced_density_matrix(
+                        orders_one,
+                        orders_two,
+                        one_density_matrix,
+                        basis,
+                        points,
+                        transform=transform,
+                        coord_type=coord_type,
+                        deriv_type=deriv_type,
+                    )
                 output += factor * num_occurence * density
     return output
 
 
 def evaluate_density_gradient(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
 ):
     r"""Return the gradient of the density evaluated at the given points.
 
@@ -289,6 +315,11 @@ def evaluate_density_gradient(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -296,38 +327,29 @@ def evaluate_density_gradient(
         Gradient of the density evaluated at `N` grid points.
 
     """
-    return np.array(
-        [
-            evaluate_deriv_density(
-                np.array([1, 0, 0]),
-                one_density_matrix,
-                basis,
-                points,
-                transform=transform,
-                coord_type=coord_type,
-            ),
-            evaluate_deriv_density(
-                np.array([0, 1, 0]),
-                one_density_matrix,
-                basis,
-                points,
-                transform=transform,
-                coord_type=coord_type,
-            ),
-            evaluate_deriv_density(
-                np.array([0, 0, 1]),
-                one_density_matrix,
-                basis,
-                points,
-                transform=transform,
-                coord_type=coord_type,
-            ),
-        ]
-    ).T
+
+    orders_one = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
+    output = np.zeros((3, len(points)))
+    # Evaluation of generalized contraction shell for zeroth order = 0,0,0
+    zeroth_deriv = evaluate_deriv_basis(
+        basis, points, np.array([0, 0, 0]),
+        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+    )
+
+    # Evaluation of generalized contraction shell for each partial derivative
+    for ind, orders in enumerate(orders_one):
+        deriv_comp = evaluate_deriv_basis(
+            basis, points, orders, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+            )
+        # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
+        density = one_density_matrix.dot(zeroth_deriv)
+        density *= deriv_comp
+        output[ind] = (2 * 1 * np.sum(density, axis=0))
+    return output.T
 
 
 def evaluate_density_laplacian(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
 ):
     r"""Return the Laplacian of the density evaluated at the given points.
 
@@ -357,6 +379,11 @@ def evaluate_density_laplacian(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -364,35 +391,46 @@ def evaluate_density_laplacian(
         Laplacian of the density evaluated at `N` grid points.
 
     """
-    output = evaluate_deriv_density(
-        np.array([2, 0, 0]),
-        one_density_matrix,
-        basis,
-        points,
-        transform=transform,
-        coord_type=coord_type,
+    orders_one_second = np.array(([2, 0, 0], [0, 2, 0], [0, 0, 2]))
+    orders_one_first = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
+    orders_two = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
+    output = np.zeros(points.shape[0])
+    # Evaluation of generalized contraction shell for zeroth order = 0,0,0
+    zeroth_deriv = evaluate_deriv_basis(
+        basis, points, np.array([0, 0, 0]),
+        transform=transform, coord_type=coord_type, deriv_type=deriv_type
     )
-    output += evaluate_deriv_density(
-        np.array([0, 2, 0]),
-        one_density_matrix,
-        basis,
-        points,
-        transform=transform,
-        coord_type=coord_type,
-    )
-    output += evaluate_deriv_density(
-        np.array([0, 0, 2]),
-        one_density_matrix,
-        basis,
-        points,
-        transform=transform,
-        coord_type=coord_type,
-    )
+
+    # Evaluation of generalized contraction shell for each partial derivative
+    for orders in orders_one_second:
+        deriv_one = evaluate_deriv_basis(
+            basis, points, orders, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        )
+
+        density = one_density_matrix.dot(zeroth_deriv)
+        density *= deriv_one
+        output += (2 * 1 * np.sum(density, axis=0))
+
+    for orders in zip(orders_one_first, orders_two):
+        deriv_one = evaluate_deriv_basis(
+            basis, points, orders[0], transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
+        )
+
+        deriv_two = evaluate_deriv_basis(
+            basis, points, orders[1], transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
+        )
+        # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
+        density = one_density_matrix.dot(deriv_two)
+        density *= deriv_one
+        output += (2 * 1 * np.sum(density, axis=0))
+
     return output
 
 
 def evaluate_density_hessian(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
 ):
     r"""Return the Hessian of the density evaluated at the given points.
 
@@ -422,6 +460,11 @@ def evaluate_density_hessian(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -432,26 +475,64 @@ def evaluate_density_hessian(
         was calculated.
 
     """
-    return np.array(
-        [
-            [
-                evaluate_deriv_density(
-                    orders_one + orders_two,
-                    one_density_matrix,
-                    basis,
-                    points,
-                    transform=transform,
-                    coord_type=coord_type,
-                )
-                for orders_one in np.identity(3, dtype=int)
-            ]
-            for orders_two in np.identity(3, dtype=int)
-        ]
-    ).T
+    # Orders combined with zeroth derivative
+    orders_one_zeroth = np.array(([[2, 0, 0], [1, 1, 0], [1, 0, 1]],
+                                  [[1, 1, 0], [0, 2, 0], [0, 1, 1]],
+                                  [[1, 0, 1], [0, 1, 1], [0, 0, 2]]))
+
+    # Pairs of first order derivatives
+    orders_one_two = np.array(([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                               [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                               [[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
+
+    # Evaluation of generalized contraction shell for zeroth order = 0,0,0
+    zeroth_deriv = evaluate_deriv_basis(
+        basis, points, np.array([0, 0, 0]),
+        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+    )
+
+    # Arrays for derivative
+    zeroth_arr = np.full((3, 3, one_density_matrix.shape[0], points.shape[0]), zeroth_deriv)
+    one_zeroth_arr = np.zeros((3, 3, one_density_matrix.shape[0], points.shape[0]))
+    one_two_arr_1 = np.zeros((3, 3, one_density_matrix.shape[0], points.shape[0]))
+    one_two_arr_2 = np.zeros((3, 3, one_density_matrix.shape[0], points.shape[0]))
+
+    for i in range(3):
+        for j in range(i + 1):
+            # for j in range(3):
+            one_zeroth_arr[j][i] = evaluate_deriv_basis(
+                basis, points, orders_one_zeroth[j][i], transform=transform,
+                coord_type=coord_type, deriv_type=deriv_type
+            )
+            one_two_arr_1[j][i] = evaluate_deriv_basis(
+                basis, points, orders_one_two[j][j], transform=transform,
+                coord_type=coord_type, deriv_type=deriv_type
+            )
+            one_two_arr_2[j][i] = evaluate_deriv_basis(
+                basis, points, orders_one_two[j][i], transform=transform,
+                coord_type=coord_type, deriv_type=deriv_type
+            )
+
+    # double orders-zeroth density
+    raw_density_1 = np.tensordot(one_zeroth_arr, one_density_matrix, (2, 1))
+    density_1 = np.einsum('ijkm,ijmk -> ijkm', zeroth_arr, raw_density_1)
+
+    # one_two density
+    raw_density_2 = np.tensordot(one_two_arr_2, one_density_matrix, (2, 1))
+    density_2 = np.einsum('ijkm,ijmk -> ijkm', one_two_arr_1, raw_density_2)
+
+    # factors and sum over basis functions
+    output = 2 * 1 * np.sum(density_1, axis=2)
+    output += 2 * 1 * np.sum(density_2, axis=2)
+
+    # copying lower matrix to upper matrix
+    upp = np.swapaxes(output, 0, 1)
+    upp = np.triu(upp.T, 1)
+    return output.T + upp
 
 
 def evaluate_posdef_kinetic_energy_density(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
 ):
     r"""Return evaluations of positive definite kinetic energy density at the given points.
 
@@ -493,6 +574,11 @@ def evaluate_posdef_kinetic_energy_density(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -511,6 +597,7 @@ def evaluate_posdef_kinetic_energy_density(
             points,
             transform=transform,
             coord_type=coord_type,
+            deriv_type=deriv_type
         )
     # Fix: #117; to avoid small negative values, the array is clipped
     return (0.5 * output).clip(min=0.0)
@@ -518,7 +605,8 @@ def evaluate_posdef_kinetic_energy_density(
 
 # TODO: test against a reference
 def evaluate_general_kinetic_energy_density(
-    one_density_matrix, basis, points, alpha, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, alpha, transform=None,
+    coord_type="spherical", deriv_type="general"
 ):
     r"""Return evaluations of general form of the kinetic energy density at the given points.
 
@@ -556,6 +644,11 @@ def evaluate_general_kinetic_energy_density(
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -573,10 +666,12 @@ def evaluate_general_kinetic_energy_density(
         raise TypeError("`alpha` must be an int or float.")
 
     general_kinetic_energy_density = evaluate_posdef_kinetic_energy_density(
-        one_density_matrix, basis, points, transform=transform, coord_type=coord_type
+        one_density_matrix, basis, points, transform=transform, coord_type=coord_type,
+        deriv_type=deriv_type
     )
     if alpha != 0:
         general_kinetic_energy_density += alpha * evaluate_density_laplacian(
-            one_density_matrix, basis, points, transform=transform, coord_type=coord_type
+            one_density_matrix, basis, points, transform=transform, coord_type=coord_type,
+            deriv_type=deriv_type
         )
     return general_kinetic_energy_density
