@@ -205,7 +205,7 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
 
 
 def electron_repulsion_integral(
-    basis, transform=None, coord_type="spherical", notation="physicist"
+    basis, transform=None, notation="physicist"
 ):
     """Return the electron repulsion integrals fo the given basis set.
 
@@ -219,13 +219,6 @@ def electron_repulsion_integral(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     notation : {"physicist", "chemist"}
         Convention with which the integrals are ordered.
         Default is Physicists' notation.
@@ -248,11 +241,13 @@ def electron_repulsion_integral(
     if notation not in ["physicist", "chemist"]:
         raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
 
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
     if transform is not None:
         array = ElectronRepulsionIntegral(basis).construct_array_lincomb(transform, coord_type)
-    elif coord_type == "cartesian":
+    elif all(ct == "cartesian" for ct in coord_type):
         array = ElectronRepulsionIntegral(basis).construct_array_cartesian()
-    elif coord_type == "spherical":
+    elif all(ct == "spherical" for ct in coord_type):
         array = ElectronRepulsionIntegral(basis).construct_array_spherical()
     else:
         array = ElectronRepulsionIntegral(basis).construct_array_mix(coord_type)

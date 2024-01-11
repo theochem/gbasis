@@ -63,7 +63,7 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def evaluate_density(one_density_matrix, basis, points, transform=None, coord_type="spherical"):
+def evaluate_density(one_density_matrix, basis, points, transform=None):
     r"""Return the density of the given basis set at the given points.
 
     Parameters
@@ -85,13 +85,6 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, coord_ty
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -99,7 +92,7 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, coord_ty
         Density evaluated at `N` grid points.
 
     """
-    orb_eval = evaluate_basis(basis, points, transform=transform, coord_type=coord_type)
+    orb_eval = evaluate_basis(basis, points, transform=transform)
     # Fix: # 117; to avoid small negative density values, the array is clipped
     return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval).clip(min=0.0)
 
@@ -111,7 +104,6 @@ def evaluate_deriv_reduced_density_matrix(
     basis,
     points,
     transform=None,
-    coord_type="spherical",
     deriv_type="general",
 ):
     r"""Return the derivative of the first-order reduced density matrix at the given points.
@@ -159,13 +151,6 @@ def evaluate_deriv_reduced_density_matrix(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -179,7 +164,11 @@ def evaluate_deriv_reduced_density_matrix(
 
     """
     deriv_orb_eval_one = evaluate_deriv_basis(
-        basis, points, orders_one, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        basis,
+        points,
+        orders_one,
+        transform=transform,
+        deriv_type=deriv_type,
     )
     if np.array_equal(orders_one, orders_two):
         deriv_orb_eval_two = deriv_orb_eval_one
@@ -189,7 +178,6 @@ def evaluate_deriv_reduced_density_matrix(
             points,
             orders_two,
             transform=transform,
-            coord_type=coord_type,
             deriv_type=deriv_type,
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
@@ -204,7 +192,6 @@ def evaluate_deriv_density(
     basis,
     points,
     transform=None,
-    coord_type="spherical",
     deriv_type="general",
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
@@ -230,13 +217,6 @@ def evaluate_deriv_density(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -275,7 +255,6 @@ def evaluate_deriv_density(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                         deriv_type="general",
                     )
                 else:
@@ -286,7 +265,6 @@ def evaluate_deriv_density(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                         deriv_type=deriv_type,
                     )
                 output += factor * num_occurence * density
@@ -294,7 +272,11 @@ def evaluate_deriv_density(
 
 
 def evaluate_density_gradient(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
+    one_density_matrix,
+    basis,
+    points,
+    transform=None,
+    deriv_type="general",
 ):
     r"""Return the gradient of the density evaluated at the given points.
 
@@ -317,13 +299,6 @@ def evaluate_density_gradient(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -336,7 +311,6 @@ def evaluate_density_gradient(
         Gradient of the density evaluated at `N` grid points.
 
     """
-
     orders_one = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
     output = np.zeros((3, len(points)))
     # Evaluation of generalized contraction shell for zeroth order = 0,0,0
@@ -345,14 +319,17 @@ def evaluate_density_gradient(
         points,
         np.array([0, 0, 0]),
         transform=transform,
-        coord_type=coord_type,
         deriv_type=deriv_type,
     )
 
     # Evaluation of generalized contraction shell for each partial derivative
     for ind, orders in enumerate(orders_one):
         deriv_comp = evaluate_deriv_basis(
-            basis, points, orders, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+            basis,
+            points,
+            orders,
+            transform=transform,
+            deriv_type=deriv_type,
         )
         # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
         density = one_density_matrix.dot(zeroth_deriv)
@@ -362,7 +339,11 @@ def evaluate_density_gradient(
 
 
 def evaluate_density_laplacian(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
+    one_density_matrix,
+    basis,
+    points,
+    transform=None,
+    deriv_type="general",
 ):
     r"""Return the Laplacian of the density evaluated at the given points.
 
@@ -385,13 +366,6 @@ def evaluate_density_laplacian(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -414,14 +388,17 @@ def evaluate_density_laplacian(
         points,
         np.array([0, 0, 0]),
         transform=transform,
-        coord_type=coord_type,
         deriv_type=deriv_type,
     )
 
     # Evaluation of generalized contraction shell for each partial derivative
     for orders in orders_one_second:
         deriv_one = evaluate_deriv_basis(
-            basis, points, orders, transform=transform, coord_type=coord_type, deriv_type=deriv_type
+            basis,
+            points,
+            orders,
+            transform=transform,
+            deriv_type=deriv_type,
         )
 
         density = one_density_matrix.dot(zeroth_deriv)
@@ -434,7 +411,6 @@ def evaluate_density_laplacian(
             points,
             orders[0],
             transform=transform,
-            coord_type=coord_type,
             deriv_type=deriv_type,
         )
 
@@ -443,7 +419,6 @@ def evaluate_density_laplacian(
             points,
             orders[1],
             transform=transform,
-            coord_type=coord_type,
             deriv_type=deriv_type,
         )
         # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
@@ -455,7 +430,11 @@ def evaluate_density_laplacian(
 
 
 def evaluate_density_hessian(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
+    one_density_matrix,
+    basis,
+    points,
+    transform=None,
+    deriv_type="general",
 ):
     r"""Return the Hessian of the density evaluated at the given points.
 
@@ -478,13 +457,6 @@ def evaluate_density_hessian(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -524,7 +496,6 @@ def evaluate_density_hessian(
         points,
         np.array([0, 0, 0]),
         transform=transform,
-        coord_type=coord_type,
         deriv_type=deriv_type,
     )
 
@@ -542,7 +513,6 @@ def evaluate_density_hessian(
                 points,
                 orders_one_zeroth[j][i],
                 transform=transform,
-                coord_type=coord_type,
                 deriv_type=deriv_type,
             )
             one_two_arr_1[j][i] = evaluate_deriv_basis(
@@ -550,7 +520,6 @@ def evaluate_density_hessian(
                 points,
                 orders_one_two[j][j],
                 transform=transform,
-                coord_type=coord_type,
                 deriv_type=deriv_type,
             )
             one_two_arr_2[j][i] = evaluate_deriv_basis(
@@ -558,7 +527,6 @@ def evaluate_density_hessian(
                 points,
                 orders_one_two[j][i],
                 transform=transform,
-                coord_type=coord_type,
                 deriv_type=deriv_type,
             )
 
@@ -581,7 +549,11 @@ def evaluate_density_hessian(
 
 
 def evaluate_posdef_kinetic_energy_density(
-    one_density_matrix, basis, points, transform=None, coord_type="spherical", deriv_type="general"
+    one_density_matrix,
+    basis,
+    points,
+    transform=None,
+    deriv_type="general",
 ):
     r"""Return evaluations of positive definite kinetic energy density at the given points.
 
@@ -616,13 +588,6 @@ def evaluate_posdef_kinetic_energy_density(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -645,7 +610,6 @@ def evaluate_posdef_kinetic_energy_density(
             basis,
             points,
             transform=transform,
-            coord_type=coord_type,
             deriv_type=deriv_type,
         )
     # Fix: #117; to avoid small negative values, the array is clipped
@@ -659,7 +623,6 @@ def evaluate_general_kinetic_energy_density(
     points,
     alpha,
     transform=None,
-    coord_type="spherical",
     deriv_type="general",
 ):
     r"""Return evaluations of general form of the kinetic energy density at the given points.
@@ -691,13 +654,6 @@ def evaluate_general_kinetic_energy_density(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -724,7 +680,6 @@ def evaluate_general_kinetic_energy_density(
         basis,
         points,
         transform=transform,
-        coord_type=coord_type,
         deriv_type=deriv_type,
     )
     if alpha != 0:
@@ -733,7 +688,6 @@ def evaluate_general_kinetic_energy_density(
             basis,
             points,
             transform=transform,
-            coord_type=coord_type,
             deriv_type=deriv_type,
         )
     return general_kinetic_energy_density

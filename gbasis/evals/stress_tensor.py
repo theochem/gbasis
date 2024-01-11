@@ -10,7 +10,7 @@ from gbasis.evals.density import (
 
 # TODO: need to be tested against reference
 def evaluate_stress_tensor(
-    one_density_matrix, basis, points, alpha=1, beta=0, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, alpha=1, beta=0, transform=None
 ):
     r"""Return the stress tensor evaluated at the given coordinates.
 
@@ -74,13 +74,6 @@ def evaluate_stress_tensor(
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -110,7 +103,6 @@ def evaluate_stress_tensor(
                     basis,
                     points,
                     transform=transform,
-                    coord_type=coord_type,
                 )
             if alpha != 1:
                 output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -120,7 +112,6 @@ def evaluate_stress_tensor(
                     basis,
                     points,
                     transform=transform,
-                    coord_type=coord_type,
                 )
             if i == j and beta != 0:
                 output[i, j] -= (
@@ -131,7 +122,6 @@ def evaluate_stress_tensor(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                 )
             output[j, i] = output[i, j]
@@ -140,7 +130,7 @@ def evaluate_stress_tensor(
 
 # TODO: need to be tested against reference
 def evaluate_ehrenfest_force(
-    one_density_matrix, basis, points, alpha=1, beta=0, transform=None, coord_type="spherical"
+    one_density_matrix, basis, points, alpha=1, beta=0, transform=None
 ):
     r"""Return the Ehrenfest force.
 
@@ -203,13 +193,6 @@ def evaluate_ehrenfest_force(
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -238,7 +221,6 @@ def evaluate_ehrenfest_force(
                     basis,
                     points,
                     transform=transform,
-                    coord_type=coord_type,
                 )
             if alpha != 1:
                 output[i] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -248,7 +230,6 @@ def evaluate_ehrenfest_force(
                     basis,
                     points,
                     transform=transform,
-                    coord_type=coord_type,
                 )
             if alpha != 0.5:
                 output[i] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -258,7 +239,6 @@ def evaluate_ehrenfest_force(
                     basis,
                     points,
                     transform=transform,
-                    coord_type=coord_type,
                 )
             if beta != 0:
                 output[i] += (
@@ -270,7 +250,6 @@ def evaluate_ehrenfest_force(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                 )
     return output.T
@@ -284,7 +263,6 @@ def evaluate_ehrenfest_hessian(
     alpha=1,
     beta=0,
     transform=None,
-    coord_type="spherical",
     symmetric=False,
 ):
     r"""Return the Ehrenfest Hessian.
@@ -357,13 +335,6 @@ def evaluate_ehrenfest_hessian(
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
     symmetric : {True, False}
         Flag for symmetrizing the Hessian.
         If True, then the Hessian is symmetrized by averaging it with its transpose.
@@ -398,7 +369,6 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                     output[i, j] += alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one,
@@ -407,7 +377,6 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                 if alpha != 1:
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -417,7 +386,6 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
@@ -426,7 +394,6 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                 if alpha != 0.5:
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -436,7 +403,6 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two,
@@ -445,7 +411,6 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
-                        coord_type=coord_type,
                     )
                 if beta != 0:
                     output[i, j] += (
@@ -457,7 +422,6 @@ def evaluate_ehrenfest_hessian(
                             basis,
                             points,
                             transform=transform,
-                            coord_type=coord_type,
                         )
                     )
     if symmetric:

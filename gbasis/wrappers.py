@@ -17,11 +17,6 @@ def from_iodata(mol):
     basis : tuple of gbasis.contraciton.GeneralizedContractionShell
         Basis set object used within the `gbasis` module.
         `GeneralizedContractionShell` corresponds to the `Shell` object within `iodata.basis`.
-    coord_types : list of str
-        A list of strings, each on being either ``"cartesian"`` or
-        ``"spherical"``, which needs to be passed into integral and eval
-        functions. This part of the basis set is not stored in the ``basis``
-        return value. Users need to keep track of this in a separate variable.
 
     Raises
     ------
@@ -128,7 +123,6 @@ def from_iodata(mol):
         )
 
     basis = []
-    coord_types = []
     for shell in molbasis.shells:
         # Verify that this is not a generalized contraction.
         if shell.ncon != 1:
@@ -137,15 +131,14 @@ def from_iodata(mol):
         # NOTE: GeneralizedContractionShell only accepts angular momentum as an int.
         angmom = int(shell.angmoms[0])
 
-        # get type
-        coord_types.append({"c": "cartesian", "p": "spherical"}[shell.kinds[0]])
-
         # pylint: disable=E1136
         basis.append(
-            IODataShell(angmom, mol.atcoords[shell.icenter], shell.coeffs, shell.exponents)
+            IODataShell(
+                angmom, mol.atcoords[shell.icenter], shell.coeffs, shell.exponents, shell.kinds[0]
+            )
         )
 
-    return basis, coord_types
+    return basis
 
 
 def from_pyscf(mol):
@@ -178,6 +171,10 @@ def from_pyscf(mol):
     if not (mol.__class__.__name__ == "Mole" and hasattr(mol, "_basis")):
         raise ValueError("`mol` must be a `pyscf.gto.mole.Mole` instance.")
 
+    # assign the coordinate types (which can be either Cartesian or Spherical)
+    # it seems like pyscf does not support mixed "cartesian" and "spherical" basis.
+    coord_types = "cartesian" if mol.cart else "spherical"
+
     class PyscfShell(GeneralizedContractionShell):
         """Shell object that is compatible with gbasis' shell object.
 
@@ -198,12 +195,9 @@ def from_pyscf(mol):
 
         for shell in basis_info:
             angmom = shell[0]
-
             exps_coeffs = np.vstack(shell[1:])
-            exps = exps_coeffs[:, 0]
-
-            coeffs = exps_coeffs[:, 1:]
-
-            basis.append(PyscfShell(angmom, np.array(coord), np.array(coeffs), np.array(exps)))
+            exps = np.array(exps_coeffs[:, 0])
+            coeffs = np.array(exps_coeffs[:, 1:])
+            basis.append(PyscfShell(angmom, np.array(coord), coeffs, exps, coord_types))
 
     return tuple(basis)

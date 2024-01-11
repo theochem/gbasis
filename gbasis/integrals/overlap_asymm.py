@@ -68,8 +68,6 @@ def overlap_integral_asymmetric(
     basis_two,
     transform_one=None,
     transform_two=None,
-    coord_type_one="spherical",
-    coord_type_two="spherical",
 ):
     """Return overlap integrals between two basis sets.
 
@@ -91,20 +89,6 @@ def overlap_integral_asymmetric(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type_one : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions in `basis_one`.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
-    coord_type_two : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions in `basis_two`.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -116,6 +100,9 @@ def overlap_integral_asymmetric(
         `K_orbs_2` is the number of basis functions in the `basis_two`.
 
     """
+    coord_type_one = [ct for ct in [shell.coord_type for shell in basis_one]]
+    coord_type_two = [ct for ct in [shell.coord_type for shell in basis_two]]
+
     return OverlapAsymmetric(basis_one, basis_two).construct_array_lincomb(
         transform_one, transform_two, coord_type_one, coord_type_two
     )

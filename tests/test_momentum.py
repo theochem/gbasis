@@ -13,10 +13,10 @@ from gbasis.utils import factorial2
 def test_momentum_construct_array_contraction():
     """Test gbasis.integrals.momentum.MomentumIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02])
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), 'spherical'
     )
     test = MomentumIntegral.construct_array_contraction(test_one, test_two).squeeze()
     answer = np.array(
@@ -163,11 +163,11 @@ def test_momentum_construct_array_contraction():
 def test_momentum_integral_cartesian():
     """Test gbasis.integrals.momentum.momentum_integral_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
         momentum_integral_obj.construct_array_cartesian(),
-        momentum_integral(basis, coord_type="cartesian"),
+        momentum_integral(basis),
     )
 
 
@@ -175,11 +175,11 @@ def test_momentum_integral_spherical():
     """Test gbasis.integrals.momentum.momentum_integral_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
         momentum_integral_obj.construct_array_spherical(),
-        momentum_integral(basis, coord_type="spherical"),
+        momentum_integral(basis),
     )
 
 
@@ -187,21 +187,21 @@ def test_momentum_integral_mix():
     """Test gbasis.integrals.momentum.momentum_integral_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ['spherical'] * 8)
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
         momentum_integral_obj.construct_array_mix(["spherical"] * 8),
-        momentum_integral(basis, coord_type=["spherical"] * 8),
+        momentum_integral(basis),
     )
 
 
 def test_momentum_integral_lincomb():
     """Test gbasis.integrals.momentum.momentum_integral_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     momentum_integral_obj = MomentumIntegral(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        momentum_integral_obj.construct_array_lincomb(transform, "spherical"),
-        momentum_integral(basis, transform=transform, coord_type="spherical"),
+        momentum_integral_obj.construct_array_lincomb(transform, ["spherical"]),
+        momentum_integral(basis, transform=transform),
     )

@@ -18,13 +18,13 @@ from gbasis.parsers import make_contractions, parse_nwchem
 def test_construct_array_contraction():
     """Test integrals.electron_repulsion.ElectronRepulsionIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
-    cont_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]))
+    cont_one = GeneralizedContractionShell(0, coord_one, np.array([1.0]), np.array([0.1]), 'spherical')
     coord_two = np.array([1.5, 2, 3])
-    cont_two = GeneralizedContractionShell(0, coord_two, np.array([3.0]), np.array([0.2]))
+    cont_two = GeneralizedContractionShell(0, coord_two, np.array([3.0]), np.array([0.2]), 'spherical')
     coord_three = np.array([2.5, 3, 4])
-    cont_three = GeneralizedContractionShell(0, coord_three, np.array([3.0]), np.array([0.2]))
+    cont_three = GeneralizedContractionShell(0, coord_three, np.array([3.0]), np.array([0.2]), 'spherical')
     coord_four = np.array([3.5, 4, 5])
-    cont_four = GeneralizedContractionShell(0, coord_four, np.array([3.0]), np.array([0.2]))
+    cont_four = GeneralizedContractionShell(0, coord_four, np.array([3.0]), np.array([0.2]), 'spherical')
 
     with pytest.raises(TypeError):
         ElectronRepulsionIntegral.construct_array_contraction(None, cont_two, cont_three, cont_four)
@@ -100,12 +100,12 @@ def test_electron_repulsion_cartesian_horton_sto6g_bec():
     """
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     coords = np.array([[0, 0, 0], [1.0, 0, 0]])
-    basis = make_contractions(basis_dict, ["Be", "C"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = make_contractions(basis_dict, ["Be", "C"], coords, 'cartesian')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_elec_repulsion = np.load(find_datafile("data_horton_bec_cart_elec_repulsion.npy"))
     assert np.allclose(
-        horton_elec_repulsion, electron_repulsion_integral(basis, coord_type="cartesian")
+        horton_elec_repulsion, electron_repulsion_integral(basis)
     )
 
 
@@ -121,91 +121,91 @@ def test_electron_repulsion_cartesian_horton_custom_hhe():
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0], [0.8, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords)
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs[:, 0], i.exps) for i in basis[:8]]
+    basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs[:, 0], i.exps, i.coord_type) for i in basis[:8]]
     basis[0] = HortonContractions(
-        basis[0].angmom, basis[0].coord, basis[0].coeffs[3:], basis[0].exps[3:]
+        basis[0].angmom, basis[0].coord, basis[0].coeffs[3:], basis[0].exps[3:], basis[0].coord_type
     )
     basis[4] = HortonContractions(
-        basis[4].angmom, basis[4].coord, basis[4].coeffs[4:], basis[4].exps[4:]
+        basis[4].angmom, basis[4].coord, basis[4].coeffs[4:], basis[4].exps[4:], basis[4].coord_type
     )
     basis.pop(3)
     basis.pop(2)
 
     horton_elec_repulsion = np.load(find_datafile("data_horton_hhe_cart_elec_repulsion.npy"))
     assert np.allclose(
-        horton_elec_repulsion, electron_repulsion_integral(basis, coord_type="cartesian")
+        horton_elec_repulsion, electron_repulsion_integral(basis)
     )
 
 
 def test_electron_repulsion_cartesian():
     """Test gbasis.integrals.electron_repulsion.electron_repulsion_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), 'cartesian')
 
     erep_obj = ElectronRepulsionIntegral(basis)
     assert np.allclose(
         erep_obj.construct_array_cartesian(),
-        electron_repulsion_integral(basis, notation="chemist", coord_type="cartesian"),
+        electron_repulsion_integral(basis, notation="chemist"),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_cartesian()),
-        electron_repulsion_integral(basis, notation="physicist", coord_type="cartesian"),
+        electron_repulsion_integral(basis, notation="physicist"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_integral(basis, notation="bad", coord_type="cartesian")
+        electron_repulsion_integral(basis, notation="bad")
 
 
 def test_electron_repulsion_spherical():
     """Test gbasis.integrals.electron_repulsion.electron_repulsion_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), 'spherical')
 
     erep_obj = ElectronRepulsionIntegral(basis)
     assert np.allclose(
         erep_obj.construct_array_spherical(),
-        electron_repulsion_integral(basis, notation="chemist", coord_type="spherical"),
+        electron_repulsion_integral(basis, notation="chemist"),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_spherical()),
-        electron_repulsion_integral(basis, notation="physicist", coord_type="spherical"),
+        electron_repulsion_integral(basis, notation="physicist"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_integral(basis, notation="bad", coord_type="spherical")
+        electron_repulsion_integral(basis, notation="bad")
 
 
 def test_electron_repulsion_mix():
     """Test gbasis.integrals.electron_repulsion.electron_repulsion_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), ["spherical"] * 3)
 
     erep_obj = ElectronRepulsionIntegral(basis)
     assert np.allclose(
         erep_obj.construct_array_mix(["spherical"] * 3),
-        electron_repulsion_integral(basis, notation="chemist", coord_type=["spherical"] * 3),
+        electron_repulsion_integral(basis, notation="chemist"),
     )
     assert np.allclose(
         np.einsum("ijkl->ikjl", erep_obj.construct_array_mix(["spherical"] * 3)),
-        electron_repulsion_integral(basis, notation="physicist", coord_type=["spherical"] * 3),
+        electron_repulsion_integral(basis, notation="physicist"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_integral(basis, notation="bad", coord_type=["spherical"] * 3)
+        electron_repulsion_integral(basis, notation="bad")
 
 
 def test_electron_repulsion_lincomb():
     """Test gbasis.integrals.electron_repulsion.electron_repulsion_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), "spherical")
 
     erep_obj = ElectronRepulsionIntegral(basis)
     transform = np.random.rand(3, 5)
     assert np.allclose(
-        erep_obj.construct_array_lincomb(transform, "spherical"),
-        electron_repulsion_integral(basis, transform, notation="chemist", coord_type="spherical"),
+        erep_obj.construct_array_lincomb(transform, ["spherical"]),
+        electron_repulsion_integral(basis, transform, notation="chemist"),
     )
     assert np.allclose(
-        np.einsum("ijkl->ikjl", erep_obj.construct_array_lincomb(transform, "spherical")),
-        electron_repulsion_integral(basis, transform, notation="physicist", coord_type="spherical"),
+        np.einsum("ijkl->ikjl", erep_obj.construct_array_lincomb(transform, ["spherical"])),
+        electron_repulsion_integral(basis, transform, notation="physicist"),
     )
     with pytest.raises(ValueError):
-        electron_repulsion_integral(basis, transform, notation="bad", coord_type="spherical")
+        electron_repulsion_integral(basis, transform, notation="bad")
