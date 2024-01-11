@@ -772,7 +772,9 @@ Suppose the following derivative of the density is desired:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_deriv_density
 
-output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d)
+output = evaluate_deriv_density(
+	np.array([1, 2, 0]), one_dm, basis, grid_3d, deriv_type="general"
+)
 \end{lstlisting}
 \item To evaluate the derivative of the density using density matrix expressed
   with respect to molecular orbitals,
@@ -780,9 +782,12 @@ output = evaluate_deriv_density(np.array([1, 2, 0]), one_dm, basis, grid_3d)
 from gbasis.evals.density import evaluate_deriv_density
 
 output = evaluate_deriv_density(
-    np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao
+    np.array([1, 2, 0]), one_dm, basis, grid_3d, transform=transform_mo_ao,
+    deriv_type="general"
 )
 \end{lstlisting}
+Notice the use of the keyword argument \verb|deriv_type|, which allows to choose between a general or a specific function derivative procedure based on the order of derivation. If \verb|deriv_type="general"|, an implementation valid for any order of derivative of the density function is used. However, for first and second order derivatives of the density an optimized procedure can be utilized by setting \verb|deriv_type="direct"| which makes the computation faster.
+
 \end{itemize}
 \subsubsection{Gradient of density}
 \begin{equation}
@@ -802,7 +807,14 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density_gradient
 
-output = evaluate_density_gradient(one_dm, basis, grid_3d)
+output = evaluate_density_gradient(one_dm, basis, grid_3d, deriv_type="general")
+\end{lstlisting}
+\item To evaluate the gradient of the density using the specific procedure for up to second order derivatives and the density matrix expressed
+with respect to atomic orbitals,
+\begin{lstlisting}[xleftmargin=-25pt]
+	from gbasis.evals.density import evaluate_density_gradient
+	
+	output = evaluate_density_gradient(one_dm, basis, grid_3d, deriv_type="direct")
 \end{lstlisting}
 \item To evaluate the gradient of the density using density matrix expressed
   with respect to molecular orbitals,
@@ -810,7 +822,7 @@ output = evaluate_density_gradient(one_dm, basis, grid_3d)
 from gbasis.evals.density import evaluate_density_gradient
 
 output = evaluate_density_gradient(
-    one_dm, basis, grid_3d, transform=transform_mo_ao
+    one_dm, basis, grid_3d, transform=transform_mo_ao, deriv_type="general"
 )
 \end{lstlisting}
 \end{itemize}
@@ -830,7 +842,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density_laplacian
 
-output = evaluate_density_laplacian(one_dm, basis, grid_3d)
+output = evaluate_density_laplacian(one_dm, basis, grid_3d, deriv_type="general")
 \end{lstlisting}
   where
 \item To evaluate the laplacian of the density using density matrix expressed
@@ -839,7 +851,7 @@ output = evaluate_density_laplacian(one_dm, basis, grid_3d)
 from gbasis.evals.density import evaluate_density_laplacian
 
 output = evaluate_density_laplacian(
-    one_dm, basis, grid_3d, transform=transform_mo_ao
+    one_dm, basis, grid_3d, transform=transform_mo_ao, deriv_type="general"
 )
 \end{lstlisting}
 \end{itemize}
@@ -867,7 +879,7 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_density_hessian
 
-output = evaluate_density_hessian(one_dm, basis, grid_3d)
+output = evaluate_density_hessian(one_dm, basis, grid_3d, deriv_type="general")
 \end{lstlisting}
 \item To evaluate the Hessian of the density using density matrix expressed
   with respect to molecular orbitals,
@@ -875,7 +887,7 @@ output = evaluate_density_hessian(one_dm, basis, grid_3d)
 from gbasis.evals.density import evaluate_density_hessian
 
 output = evaluate_density_hessian(
-    one_dm, basis, grid_3d, transform=transform_mo_ao
+    one_dm, basis, grid_3d, transform=transform_mo_ao, deriv_type="general"
 )
 \end{lstlisting}
 \end{itemize}
@@ -1136,7 +1148,9 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_posdef_kinetic_energy_density
 
-output = evaluate_posdef_kinetic_energy_density(one_dm, basis, grid_3d)
+output = evaluate_posdef_kinetic_energy_density(
+	one_dm, basis, grid_3d, deriv_type="general"
+)
 \end{lstlisting}
 \item To evaluate the positive-definite kinetic energy density using density
   matrix expressed with respect to molecular orbitals,
@@ -1144,7 +1158,7 @@ output = evaluate_posdef_kinetic_energy_density(one_dm, basis, grid_3d)
 from gbasis.evals.density import evaluate_posdef_kinetic_energy_density
 
 output = evaluate_posdef_kinetic_energy_density(
-    one_dm, basis, grid_3d, transform=transform_mo_ao
+    one_dm, basis, grid_3d, transform=transform_mo_ao, deriv_type="general"
 )
 \end{lstlisting}
 \end{itemize}
@@ -1160,14 +1174,18 @@ Example:
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_general_kinetic_energy_density
 
-output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d)
+output = evaluate_general_kinetic_energy_density(
+	one_dm, basis, grid_3d, deriv_type="general"
+)
 \end{lstlisting}
 \item To evaluate the general form of the kinetic energy density ($\alpha=0.5$)
   using density matrix expressed with respect to atomic orbitals,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.evals.density import evaluate_general_kinetic_energy_density
 
-output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d, alpha=0.5)
+output = evaluate_general_kinetic_energy_density(
+	one_dm, basis, grid_3d, alpha=0.5, deriv_type="general"
+)
 \end{lstlisting}
 \item To evaluate the general form of the kinetic energy density ($\alpha=1$)
   using density matrix expressed with respect to molecular orbitals,
@@ -1175,7 +1193,7 @@ output = evaluate_general_kinetic_energy_density(one_dm, basis, grid_3d, alpha=0
 from gbasis.evals.density import evaluate_general_kinetic_energy_density
 
 output = evaluate_general_kinetic_energy_density(
-    one_dm, basis, grid_3d, transform=transform_mo_ao
+    one_dm, basis, grid_3d, transform=transform_mo_ao, deriv_type="general"
 )
 \end{lstlisting}
 \end{itemize}
