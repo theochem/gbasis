@@ -2,6 +2,7 @@
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
+from gbasis.evals._deriv import _eval_first_second_order_deriv_contractions
 import numpy as np
 
 
@@ -54,7 +55,7 @@ class EvalDeriv(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points, orders):
+    def construct_array_contraction(contractions, points, orders, deriv_type="general"):
         r"""Return the array associated with a set of contracted Cartesian Gaussians.
 
         Parameters
@@ -69,6 +70,12 @@ class EvalDeriv(BaseOneIndex):
             components.
         orders : np.ndarray(3,)
             Orders of the derivative.
+        deriv_type : "general" or "direct"
+            Specification of derivative of contraction function in _deriv.py. "general"
+            makes reference to general implementation of any order derivative
+            function (_eval_deriv_contractions()) and "direct" makes reference to specific
+            implementation of first and second order derivatives for generalized
+            contraction (_eval_first_second_order_deriv_contractions()).
 
         Returns
         -------
@@ -120,13 +127,20 @@ class EvalDeriv(BaseOneIndex):
         angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
         norm_prim_cart = contractions.norm_prim_cart
-        output = _eval_deriv_contractions(
-            points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
-        )
+        if deriv_type == "general":
+            output = _eval_deriv_contractions(
+                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+            )
+        elif deriv_type == "direct":
+            output = _eval_first_second_order_deriv_contractions(
+                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+            )
         return output
 
 
-def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="spherical"):
+def evaluate_deriv_basis(
+    basis, points, orders, transform=None, coord_type="spherical", deriv_type="general"
+):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
     Parameters
@@ -156,6 +170,11 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
         If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
         coordinate type of each GeneralizedContractionShell instance.
         Default value is "spherical".
+    deriv_type : "general" or "direct"
+        Specification of derivative of contraction function in _deriv.py. "general" makes reference
+        to general implementation of any order derivative function (_eval_deriv_contractions())
+        and "direct" makes reference to specific implementation of first and second order
+        derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
 
     Returns
     -------
@@ -169,10 +188,16 @@ def evaluate_deriv_basis(basis, points, orders, transform=None, coord_type="sphe
     """
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
-            transform, coord_type, points=points, orders=orders
+            transform, coord_type, points=points, orders=orders, deriv_type=deriv_type
         )
-    if coord_type == "cartesian":
-        return EvalDeriv(basis).construct_array_cartesian(points=points, orders=orders)
-    if coord_type == "spherical":
-        return EvalDeriv(basis).construct_array_spherical(points=points, orders=orders)
-    return EvalDeriv(basis).construct_array_mix(coord_type, points=points, orders=orders)
+    if all([item == "cartesian" for item in coord_type]) or coord_type == "cartesian":
+        return EvalDeriv(basis).construct_array_cartesian(
+               points=points, orders=orders, deriv_type=deriv_type
+               )
+    if all([item == "spherical" for item in coord_type]) or coord_type == "spherical":
+        return EvalDeriv(basis).construct_array_spherical(
+               points=points, orders=orders, deriv_type=deriv_type
+               )
+    return EvalDeriv(basis).construct_array_mix(
+           coord_type, points=points, orders=orders, deriv_type=deriv_type
+           )
