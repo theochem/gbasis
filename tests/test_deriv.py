@@ -119,8 +119,9 @@ def test_evaluate_deriv_prim():
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 ),
                 partial_deriv_finite_diff(
-                    lambda xyz, x=x, y=y, z=z:
-                    evaluate_prim(xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1),
+                    lambda xyz, x=x, y=y, z=z: evaluate_prim(
+                        xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
+                    ),
                     np.array([2, 3, 4]),
                     orders,
                 ),
@@ -136,8 +137,9 @@ def test_evaluate_deriv_prim():
                     np.array([2, 3, 4]), orders, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
                 ),
                 partial_deriv_finite_diff(
-                    lambda xyz, x=x, y=y, z=z:
-                    evaluate_prim(xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1),
+                    lambda xyz, x=x, y=y, z=z: evaluate_prim(
+                        xyz, np.array([0.5, 1, 1.5]), np.array([x, y, z]), 1
+                    ),
                     np.array([2, 3, 4]),
                     orders,
                     epsilon=1e-5,

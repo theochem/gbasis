@@ -46,6 +46,7 @@ def boys_func(order, weighted_dist):
 
     return hyp1f1(order + 1 / 2, order + 3 / 2, -weighted_dist) / (2 * order + 1)
 
+
 # ruff: noqa: PLR0911
 def two_int_brute(
     i_0,

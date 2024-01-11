@@ -63,9 +63,7 @@ def disable_abstract(abclass, dict_overwrite={}):
     # replace namespace
     new_dict.update(dict_overwrite)
     # make subclass of the abstract class with
-    return type(
-        f"{abclass.__name__} class with abstract methods disabled", (abclass,), new_dict
-    )
+    return type(f"{abclass.__name__} class with abstract methods disabled", (abclass,), new_dict)
 
 
 def partial_deriv_finite_diff(func, x, order, epsilon=1e-8, num_points=1):

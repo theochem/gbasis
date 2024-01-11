@@ -385,8 +385,7 @@ class GeneralizedContractionShell:
 
         """
         return tuple(
-            [f"s{m}" for m in range(self.angmom, 0, -1)]
-            + [f"c{m}" for m in range(self.angmom + 1)]
+            [f"s{m}" for m in range(self.angmom, 0, -1)] + [f"c{m}" for m in range(self.angmom + 1)]
         )
 
     @property

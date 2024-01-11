@@ -8,6 +8,7 @@ from gbasis.evals._deriv import (
     _eval_first_second_order_deriv_contractions,
 )
 
+
 class EvalDeriv(BaseOneIndex):
     """Class for evaluating Gaussian contractions and their linear combinations.
 
@@ -131,11 +132,11 @@ class EvalDeriv(BaseOneIndex):
         norm_prim_cart = contractions.norm_prim_cart
         if deriv_type == "general":
             output = _eval_deriv_contractions(
-                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         elif deriv_type == "direct":
             output = _eval_first_second_order_deriv_contractions(
-                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         return output
 
@@ -194,12 +195,12 @@ def evaluate_deriv_basis(
         )
     if all([item == "cartesian" for item in coord_type]) or coord_type == "cartesian":
         return EvalDeriv(basis).construct_array_cartesian(
-               points=points, orders=orders, deriv_type=deriv_type
-               )
+            points=points, orders=orders, deriv_type=deriv_type
+        )
     if all([item == "spherical" for item in coord_type]) or coord_type == "spherical":
         return EvalDeriv(basis).construct_array_spherical(
-               points=points, orders=orders, deriv_type=deriv_type
-               )
+            points=points, orders=orders, deriv_type=deriv_type
+        )
     return EvalDeriv(basis).construct_array_mix(
-           coord_type, points=points, orders=orders, deriv_type=deriv_type
-           )
+        coord_type, points=points, orders=orders, deriv_type=deriv_type
+    )

@@ -112,7 +112,7 @@ def evaluate_deriv_reduced_density_matrix(
     points,
     transform=None,
     coord_type="spherical",
-    deriv_type="general"
+    deriv_type="general",
 ):
     r"""Return the derivative of the first-order reduced density matrix at the given points.
 
@@ -185,8 +185,12 @@ def evaluate_deriv_reduced_density_matrix(
         deriv_orb_eval_two = deriv_orb_eval_one
     else:
         deriv_orb_eval_two = evaluate_deriv_basis(
-            basis, points, orders_two, transform=transform, coord_type=coord_type,
-            deriv_type=deriv_type
+            basis,
+            points,
+            orders_two,
+            transform=transform,
+            coord_type=coord_type,
+            deriv_type=deriv_type,
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
     density *= deriv_orb_eval_one
@@ -195,8 +199,13 @@ def evaluate_deriv_reduced_density_matrix(
 
 
 def evaluate_deriv_density(
-    orders, one_density_matrix, basis, points, transform=None,
-    coord_type="spherical", deriv_type="general"
+    orders,
+    one_density_matrix,
+    basis,
+    points,
+    transform=None,
+    coord_type="spherical",
+    deriv_type="general",
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
 
@@ -260,15 +269,15 @@ def evaluate_deriv_density(
                 orders_two = orders - orders_one
                 if any(orders_one > 2) or any(orders_two > 2):
                     density = evaluate_deriv_reduced_density_matrix(
-                            orders_one,
-                            orders_two,
-                            one_density_matrix,
-                            basis,
-                            points,
-                            transform=transform,
-                            coord_type=coord_type,
-                            deriv_type='general',
-                        )
+                        orders_one,
+                        orders_two,
+                        one_density_matrix,
+                        basis,
+                        points,
+                        transform=transform,
+                        coord_type=coord_type,
+                        deriv_type="general",
+                    )
                 else:
                     density = evaluate_deriv_reduced_density_matrix(
                         orders_one,
@@ -332,19 +341,23 @@ def evaluate_density_gradient(
     output = np.zeros((3, len(points)))
     # Evaluation of generalized contraction shell for zeroth order = 0,0,0
     zeroth_deriv = evaluate_deriv_basis(
-        basis, points, np.array([0, 0, 0]),
-        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        basis,
+        points,
+        np.array([0, 0, 0]),
+        transform=transform,
+        coord_type=coord_type,
+        deriv_type=deriv_type,
     )
 
     # Evaluation of generalized contraction shell for each partial derivative
     for ind, orders in enumerate(orders_one):
         deriv_comp = evaluate_deriv_basis(
             basis, points, orders, transform=transform, coord_type=coord_type, deriv_type=deriv_type
-            )
+        )
         # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
         density = one_density_matrix.dot(zeroth_deriv)
         density *= deriv_comp
-        output[ind] = (2 * 1 * np.sum(density, axis=0))
+        output[ind] = 2 * 1 * np.sum(density, axis=0)
     return output.T
 
 
@@ -397,8 +410,12 @@ def evaluate_density_laplacian(
     output = np.zeros(points.shape[0])
     # Evaluation of generalized contraction shell for zeroth order = 0,0,0
     zeroth_deriv = evaluate_deriv_basis(
-        basis, points, np.array([0, 0, 0]),
-        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        basis,
+        points,
+        np.array([0, 0, 0]),
+        transform=transform,
+        coord_type=coord_type,
+        deriv_type=deriv_type,
     )
 
     # Evaluation of generalized contraction shell for each partial derivative
@@ -409,22 +426,30 @@ def evaluate_density_laplacian(
 
         density = one_density_matrix.dot(zeroth_deriv)
         density *= deriv_one
-        output += (2 * 1 * np.sum(density, axis=0))
+        output += 2 * 1 * np.sum(density, axis=0)
 
     for orders in zip(orders_one_first, orders_two):
         deriv_one = evaluate_deriv_basis(
-            basis, points, orders[0], transform=transform, coord_type=coord_type,
-            deriv_type=deriv_type
+            basis,
+            points,
+            orders[0],
+            transform=transform,
+            coord_type=coord_type,
+            deriv_type=deriv_type,
         )
 
         deriv_two = evaluate_deriv_basis(
-            basis, points, orders[1], transform=transform, coord_type=coord_type,
-            deriv_type=deriv_type
+            basis,
+            points,
+            orders[1],
+            transform=transform,
+            coord_type=coord_type,
+            deriv_type=deriv_type,
         )
         # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
         density = one_density_matrix.dot(deriv_two)
         density *= deriv_one
-        output += (2 * 1 * np.sum(density, axis=0))
+        output += 2 * 1 * np.sum(density, axis=0)
 
     return output
 
@@ -476,19 +501,31 @@ def evaluate_density_hessian(
 
     """
     # Orders combined with zeroth derivative
-    orders_one_zeroth = np.array(([[2, 0, 0], [1, 1, 0], [1, 0, 1]],
-                                  [[1, 1, 0], [0, 2, 0], [0, 1, 1]],
-                                  [[1, 0, 1], [0, 1, 1], [0, 0, 2]]))
+    orders_one_zeroth = np.array(
+        (
+            [[2, 0, 0], [1, 1, 0], [1, 0, 1]],
+            [[1, 1, 0], [0, 2, 0], [0, 1, 1]],
+            [[1, 0, 1], [0, 1, 1], [0, 0, 2]],
+        )
+    )
 
     # Pairs of first order derivatives
-    orders_one_two = np.array(([[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-                               [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
-                               [[1, 0, 0], [0, 1, 0], [0, 0, 1]]))
+    orders_one_two = np.array(
+        (
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+        )
+    )
 
     # Evaluation of generalized contraction shell for zeroth order = 0,0,0
     zeroth_deriv = evaluate_deriv_basis(
-        basis, points, np.array([0, 0, 0]),
-        transform=transform, coord_type=coord_type, deriv_type=deriv_type
+        basis,
+        points,
+        np.array([0, 0, 0]),
+        transform=transform,
+        coord_type=coord_type,
+        deriv_type=deriv_type,
     )
 
     # Arrays for derivative
@@ -501,25 +538,37 @@ def evaluate_density_hessian(
         for j in range(i + 1):
             # for j in range(3):
             one_zeroth_arr[j][i] = evaluate_deriv_basis(
-                basis, points, orders_one_zeroth[j][i], transform=transform,
-                coord_type=coord_type, deriv_type=deriv_type
+                basis,
+                points,
+                orders_one_zeroth[j][i],
+                transform=transform,
+                coord_type=coord_type,
+                deriv_type=deriv_type,
             )
             one_two_arr_1[j][i] = evaluate_deriv_basis(
-                basis, points, orders_one_two[j][j], transform=transform,
-                coord_type=coord_type, deriv_type=deriv_type
+                basis,
+                points,
+                orders_one_two[j][j],
+                transform=transform,
+                coord_type=coord_type,
+                deriv_type=deriv_type,
             )
             one_two_arr_2[j][i] = evaluate_deriv_basis(
-                basis, points, orders_one_two[j][i], transform=transform,
-                coord_type=coord_type, deriv_type=deriv_type
+                basis,
+                points,
+                orders_one_two[j][i],
+                transform=transform,
+                coord_type=coord_type,
+                deriv_type=deriv_type,
             )
 
     # double orders-zeroth density
     raw_density_1 = np.tensordot(one_zeroth_arr, one_density_matrix, (2, 1))
-    density_1 = np.einsum('ijkm,ijmk -> ijkm', zeroth_arr, raw_density_1)
+    density_1 = np.einsum("ijkm,ijmk -> ijkm", zeroth_arr, raw_density_1)
 
     # one_two density
     raw_density_2 = np.tensordot(one_two_arr_2, one_density_matrix, (2, 1))
-    density_2 = np.einsum('ijkm,ijmk -> ijkm', one_two_arr_1, raw_density_2)
+    density_2 = np.einsum("ijkm,ijmk -> ijkm", one_two_arr_1, raw_density_2)
 
     # factors and sum over basis functions
     output = 2 * 1 * np.sum(density_1, axis=2)
@@ -597,7 +646,7 @@ def evaluate_posdef_kinetic_energy_density(
             points,
             transform=transform,
             coord_type=coord_type,
-            deriv_type=deriv_type
+            deriv_type=deriv_type,
         )
     # Fix: #117; to avoid small negative values, the array is clipped
     return (0.5 * output).clip(min=0.0)
@@ -605,8 +654,13 @@ def evaluate_posdef_kinetic_energy_density(
 
 # TODO: test against a reference
 def evaluate_general_kinetic_energy_density(
-    one_density_matrix, basis, points, alpha, transform=None,
-    coord_type="spherical", deriv_type="general"
+    one_density_matrix,
+    basis,
+    points,
+    alpha,
+    transform=None,
+    coord_type="spherical",
+    deriv_type="general",
 ):
     r"""Return evaluations of general form of the kinetic energy density at the given points.
 
@@ -666,12 +720,20 @@ def evaluate_general_kinetic_energy_density(
         raise TypeError("`alpha` must be an int or float.")
 
     general_kinetic_energy_density = evaluate_posdef_kinetic_energy_density(
-        one_density_matrix, basis, points, transform=transform, coord_type=coord_type,
-        deriv_type=deriv_type
+        one_density_matrix,
+        basis,
+        points,
+        transform=transform,
+        coord_type=coord_type,
+        deriv_type=deriv_type,
     )
     if alpha != 0:
         general_kinetic_energy_density += alpha * evaluate_density_laplacian(
-            one_density_matrix, basis, points, transform=transform, coord_type=coord_type,
-            deriv_type=deriv_type
+            one_density_matrix,
+            basis,
+            points,
+            transform=transform,
+            coord_type=coord_type,
+            deriv_type=deriv_type,
         )
     return general_kinetic_energy_density

@@ -814,7 +814,7 @@ def test_compute_multipole_moment_integrals_multiarray():
                         coeffs_b,
                         norm_b,
                     )[0, 0, j, 0, k],
-                    test[i, 0, j, 0, k]
+                    test[i, 0, j, 0, k],
                 )
 
 

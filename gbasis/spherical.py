@@ -303,10 +303,7 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         len(spherical_order) == 2 * angmom + 1
         # Strip out "-" from the ordering to make sure the right components are there
         and {x.replace("-", "") for x in spherical_order}
-        == set(
-            [f"s{m}" for m in range(angmom, 0, -1)]
-            + [f"c{m}" for m in range(angmom + 1)]
-        )
+        == set([f"s{m}" for m in range(angmom, 0, -1)] + [f"c{m}" for m in range(angmom + 1)])
     ):
         raise ValueError(
             "`spherical_order` must contain exactly 2 * `angmom` + 1 pure function strings, with "
