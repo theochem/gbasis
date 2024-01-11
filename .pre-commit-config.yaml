@@ -1,5 +1,5 @@
-include: "gbasis/*.py|gbasis/*/*.py|tests/*.py"
-exclude: "website/*"
+files: "gbasis/|tests/"
+exclude: "website/"
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.5.0
