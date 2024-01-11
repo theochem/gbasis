@@ -232,102 +232,101 @@ def test_compute_differential_operator_integrals_diff_recursion():
         )
 
 
-# See issue #152: https://github.com/theochem/gbasis/issues/152
-# def test_compute_differential_operator_integrals_multiarray():
-#     """Test _compute_differential_operator_integrals for computing multiple cases simultaneously.
-#
-#     Note
-#     ----
-#     The function itself `_compute_differential._operator_integrals` is used to test the use case for
-#     contractions. It assumes that this function behaves correctly for contractions.
-#
-#     """
-#     coord_a = np.array([0.2, 0.4, 0.6])
-#     coord_b = np.array([0.3, 0.5, 0.7])
-#     angmoms_a = np.array(
-#         [
-#             [3, 0, 0],
-#             [0, 3, 0],
-#             [0, 0, 3],
-#             [2, 1, 0],
-#             [2, 0, 1],
-#             [1, 2, 0],
-#             [0, 2, 1],
-#             [1, 0, 2],
-#             [0, 1, 2],
-#         ]
-#     )
-#     angmoms_b = np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2], [1, 1, 0], [1, 0, 1], [0, 1, 1]])
-#     exps_a = np.array([5.4471780, 0.8245470])
-#     exps_b = np.array([0.1831920])
-#     coeffs_a = np.array([[0.1562850], [0.9046910]])
-#     coeffs_b = np.array([[1.0]])
-#     orders_diff = np.array(
-#         [
-#             [3, 0, 0],
-#             [0, 3, 0],
-#             [0, 0, 3],
-#             [2, 1, 0],
-#             [2, 0, 1],
-#             [1, 2, 0],
-#             [0, 2, 1],
-#             [1, 0, 2],
-#             [0, 1, 2],
-#             [2, 0, 0],
-#             [0, 2, 0],
-#             [0, 0, 2],
-#             [1, 1, 0],
-#             [1, 0, 1],
-#             [0, 1, 1],
-#         ]
-#     )
-#
-#     norm_a = np.prod(
-#         np.sqrt(
-#             (2 * exps_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
-#             * (4 * exps_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
-#             / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
-#         ),
-#         axis=1,
-#     )
-#     norm_b = np.prod(
-#         np.sqrt(
-#             (2 * exps_b[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
-#             * (4 * exps_b[np.newaxis, np.newaxis, :]) ** angmoms_b[:, :, np.newaxis]
-#             / factorial2(2 * angmoms_b[:, :, np.newaxis] - 1)
-#         ),
-#         axis=1,
-#     )
-#     test = _compute_differential_operator_integrals(
-#         orders_diff,
-#         coord_a,
-#         angmoms_a,
-#         exps_a,
-#         coeffs_a,
-#         norm_a,
-#         coord_b,
-#         angmoms_b,
-#         exps_b,
-#         coeffs_b,
-#         norm_b,
-#     )
-#     assert test.shape == (orders_diff.shape[0], 1, angmoms_a.shape[0], 1, angmoms_b.shape[0])
-#     for i, order_diff in enumerate(orders_diff):
-#         for j, angmom_a in enumerate(angmoms_a):
-#             for k, angmom_b in enumerate(angmoms_b):
-#                 assert np.allclose(
-#                     _compute_differential_operator_integrals(
-#                         np.array([order_diff]),
-#                         coord_a,
-#                         np.array([angmom_a]),
-#                         exps_a,
-#                         coeffs_a,
-#                         norm_a,
-#                         coord_b,
-#                         np.array([angmom_b]),
-#                         exps_b,
-#                         coeffs_b,
-#                         norm_b,
-#                     ),
-#                     test[i, 0, j, 0, k]
-#                 )
+def test_compute_differential_operator_integrals_multiarray():
+    """Test _compute_differential_operator_integrals for computing multiple cases simultaneously.
+
+    Note
+    ----
+    The function itself `_compute_differential._operator_integrals` is used to test the use case for
+    contractions. It assumes that this function behaves correctly for contractions.
+
+    """
+    coord_a = np.array([0.2, 0.4, 0.6])
+    coord_b = np.array([0.3, 0.5, 0.7])
+    angmoms_a = np.array(
+        [
+            [3, 0, 0],
+            [0, 3, 0],
+            [0, 0, 3],
+            [2, 1, 0],
+            [2, 0, 1],
+            [1, 2, 0],
+            [0, 2, 1],
+            [1, 0, 2],
+            [0, 1, 2],
+        ]
+    )
+    angmoms_b = np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2], [1, 1, 0], [1, 0, 1], [0, 1, 1]])
+    exps_a = np.array([5.4471780, 0.8245470])
+    exps_b = np.array([0.1831920])
+    coeffs_a = np.array([[0.1562850], [0.9046910]])
+    coeffs_b = np.array([[1.0]])
+    orders_diff = np.array(
+        [
+            [3, 0, 0],
+            [0, 3, 0],
+            [0, 0, 3],
+            [2, 1, 0],
+            [2, 0, 1],
+            [1, 2, 0],
+            [0, 2, 1],
+            [1, 0, 2],
+            [0, 1, 2],
+            [2, 0, 0],
+            [0, 2, 0],
+            [0, 0, 2],
+            [1, 1, 0],
+            [1, 0, 1],
+            [0, 1, 1],
+        ]
+    )
+
+    norm_a = np.prod(
+        np.sqrt(
+            (2 * exps_a[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * exps_a[np.newaxis, np.newaxis, :]) ** angmoms_a[:, :, np.newaxis]
+            / factorial2(2 * angmoms_a[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    norm_b = np.prod(
+        np.sqrt(
+            (2 * exps_b[np.newaxis, np.newaxis, :] / np.pi) ** (1 / 2)
+            * (4 * exps_b[np.newaxis, np.newaxis, :]) ** angmoms_b[:, :, np.newaxis]
+            / factorial2(2 * angmoms_b[:, :, np.newaxis] - 1)
+        ),
+        axis=1,
+    )
+    test = _compute_differential_operator_integrals(
+        orders_diff,
+        coord_a,
+        angmoms_a,
+        exps_a,
+        coeffs_a,
+        norm_a,
+        coord_b,
+        angmoms_b,
+        exps_b,
+        coeffs_b,
+        norm_b,
+    )
+    assert test.shape == (orders_diff.shape[0], 1, angmoms_a.shape[0], 1, angmoms_b.shape[0])
+    for i, single_order in enumerate(orders_diff):
+        for j, angmom_a in enumerate(angmoms_a):
+            for k, angmom_b in enumerate(angmoms_b):
+                assert np.allclose(
+                    _compute_differential_operator_integrals(
+                        np.array([single_order]),
+                        coord_a,
+                        np.array([angmom_a]),
+                        exps_a,
+                        coeffs_a,
+                        norm_a,
+                        coord_b,
+                        np.array([angmom_b]),
+                        exps_b,
+                        coeffs_b,
+                        norm_b,
+                    )[0, 0, j, 0, k],
+                    test[i, 0, j, 0, k]
+                )
