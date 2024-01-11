@@ -3,15 +3,21 @@
 # Libcint version to patch and install
 LIBCINT_VERSION=v6.1.0
 
+if [ -z ${USE_LIBCINT:-} ]; then
+    cint_name=qcint
+else
+    cint_name=libcint
+fi
+
 # Notice for user
-echo ''
-echo '    NOTE: If this script has been run previously, and it failed, please ensure'
-echo '          the `build/libcint/build` directory is removed before running it again.'
-echo ''
-echo '    See the GBasis documentation for help:'
-echo ''
-echo '          https://theochem.github.io/gbasis/PLACEHOLDER/'
-echo ''
+echo ""
+echo "    NOTE: If this script has been run previously, and it failed, please ensure"
+echo "          the \`build/${cint_name}/build\` directory is removed before running it again."
+echo ""
+echo "    See the GBasis documentation for help:"
+echo ""
+echo "          https://theochem.github.io/gbasis/PLACEHOLDER/"
+echo ""
 
 # Check that a Common Lisp program is installed
 if command -v sbcl > /dev/null; then
@@ -19,9 +25,9 @@ if command -v sbcl > /dev/null; then
 elif command -v clisp > /dev/null; then
     lisp_program='clisp'
 else
-    echo 'ERROR: This script requires a Common Lisp interpreter.'
-    echo '       Please install either sbcl or clisp and try again.'
-    echo ''
+    echo "ERROR: This script requires a Common Lisp interpreter."
+    echo "       Please install either sbcl or clisp and try again."
+    echo ""
     exit 1
 fi
 
@@ -33,7 +39,7 @@ gbasis_dir=$(cd "$(dirname "$(dirname "${0}")")" && pwd)
 
 # Cleanup function; runs on failure or exit
 cleanup() {
-    rm -rf "${gbasis_dir}/build/libcint/build"
+    rm -rf "${gbasis_dir}/build/${cint_name}/build"
 }
 trap cleanup EXIT
 
@@ -49,10 +55,10 @@ mkdir -p "${gbasis_dir}/build"
 cd "${gbasis_dir}/build"
 
 # Clone Libcint Git repo and enter it
-if [ ! -e "${gbasis_dir}/build/libcint" ]; then
-    git clone --branch ${LIBCINT_VERSION} --depth 1 https://github.com/sunqm/libcint.git
+if [ ! -e "${gbasis_dir}/build/${cint_name}" ]; then
+    git clone --branch ${LIBCINT_VERSION} --depth 1 https://github.com/sunqm/${cint_name}.git
 fi
-cd libcint
+cd "${cint_name}"
 git checkout .
 
 # Auto-generate integrals
@@ -68,5 +74,5 @@ cd build
 cmake "-DCMAKE_INSTALL_PREFIX=${gbasis_dir}/gbasis/integrals" ${lc_cmake_opts} ..
 
 # Compile and install Libcint
-make # cmake --build .
-make install # cmake --install .
+make
+make install

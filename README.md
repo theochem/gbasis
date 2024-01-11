@@ -57,6 +57,12 @@ This script depends on the following packages:
 * Python 3
 * a C compiler (gcc or clang are recommended)
 * a Common Lisp interpreter (sbcl or clisp are recommended)
+By default, the x86-optimized `qcint` package is used for `libcint`.
+If this doesn't work on your computer, then run the script with the environment
+variable `USE_LIBCINT=1` to use the regular `libcint` package:
+```bash
+USE_LIBCINT=1 tools/install_libcint.sh
+```
 
 Note that `iodata` must be installed separately. `cython` is a dependency of `iodata`.
 
