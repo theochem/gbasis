@@ -12,7 +12,8 @@ jobs:
   tests:
     name: "Python ${{ matrix.py }} on OS ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
-
+    permissions: write-all
+    
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
