@@ -177,12 +177,12 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
-    coord_types : {"cartesian"/"c", list/tuple of "cartesian"/"c" or "spherical"/"p", "spherical"/"p"}
+    coord_types: {"cartesian"/"c", list/tuple of "cartesian"/"c", "spherical"/"p", "spherical"/"p"}
         Types of the coordinate system for the contractions.
         If "cartesian" or "c", then all of the contractions are treated as Cartesian contractions.
         If "spherical" or "p", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
+        If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to
+        specify the coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
 
     Returns
@@ -224,8 +224,8 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
 
     if len(coord_types) != num_coord_types:
         raise ValueError(
-            f"If coord_types is a list, it must be the same length as the total number of contractions."
-            f"got {len(coord_types)}"
+            f"If coord_types is a list, it must be the same length "
+            f"as the total number of contractions. got {len(coord_types)}"
         )
 
     # make shells
