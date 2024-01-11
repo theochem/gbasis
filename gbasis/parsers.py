@@ -210,6 +210,7 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
 
     basis = []
     len_coord_types = len(coord_types)
+
     for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
             if type(coord_types) == str:
