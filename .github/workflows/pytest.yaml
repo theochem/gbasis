@@ -9,11 +9,13 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  pytest:
     name: "Python ${{ matrix.py }} on OS ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
-    permissions: write-all
-    
+    env:
+      COVERAGE_SINGLE: 80
+      COVERAGE_TOTAL: 90
+
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
@@ -37,18 +39,23 @@ jobs:
           # Need editable mode in order to include the test files
           pip install -e .
 
-      - name: Run pytest
-        uses: pavelzw/pytest-action@v2
+      - name: pytester-cov
+        id: pytester-cov
+        uses: programmingwithalex/pytester-cov@main
         with:
-          verbose: true
-          emoji: true
-          job-summary: true
-          click-to-expand: true
-          custom-arguments: "--junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=gbasis"
-          report-title: 'Test Report'
+          pytest-root-dir: './gbasis/'
+          pytest-tests-dir: "./tests/"
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
-      - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@main
-        with:
-          pytest-coverage-path: ./pytest-coverage.txt
-          junitxml-path: ./pytest.xml
+      - name: Coverage single fail - exit
+        if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
+        run: |
+          echo "cov single fail ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
+          exit 1
+
+      - name: Coverage total fail - exit
+        if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
+        run: |
+          echo "cov single fail ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
+          exit 1
