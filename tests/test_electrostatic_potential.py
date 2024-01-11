@@ -14,12 +14,20 @@ def test_electrostatic_potential():
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    cartesian_basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
-    cartesian_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in cartesian_basis]
-    spherical_basis = make_contractions(basis_dict, ["H", "He"], coords, 'spherical')
-    spherical_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in spherical_basis]
-    mixed_basis = make_contractions(basis_dict, ["H", "He"], coords, ['spherical'] * 9)
-    mixed_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in mixed_basis]
+    cartesian_basis = make_contractions(basis_dict, ["H", "He"], coords, "cartesian")
+    cartesian_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type)
+        for i in cartesian_basis
+    ]
+    spherical_basis = make_contractions(basis_dict, ["H", "He"], coords, "spherical")
+    spherical_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type)
+        for i in spherical_basis
+    ]
+    mixed_basis = make_contractions(basis_dict, ["H", "He"], coords, ["spherical"] * 9)
+    mixed_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in mixed_basis
+    ]
 
     # check density_matrix type
     with pytest.raises(TypeError):
@@ -146,7 +154,7 @@ def test_electrostatic_potential_cartesian():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
+    basis = make_contractions(basis_dict, ["H", "He"], coords, "cartesian")
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
@@ -155,9 +163,7 @@ def test_electrostatic_potential_cartesian():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_esp.npy"))
     assert np.allclose(
-        electrostatic_potential(
-            basis, np.identity(103), grid_3d, coords, np.array([1, 2])
-        ),
+        electrostatic_potential(basis, np.identity(103), grid_3d, coords, np.array([1, 2])),
         horton_nucattract,
     )
 
@@ -172,7 +178,7 @@ def test_electrostatic_potential_spherical():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords, 'spherical')
+    basis = make_contractions(basis_dict, ["H", "He"], coords, "spherical")
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     grid_1d = np.linspace(-2, 2, num=5)
@@ -181,9 +187,7 @@ def test_electrostatic_potential_spherical():
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_sph_esp.npy"))
     assert np.allclose(
-        electrostatic_potential(
-            basis, np.identity(88), grid_3d, coords, np.array([1, 2])
-        ),
+        electrostatic_potential(basis, np.identity(88), grid_3d, coords, np.array([1, 2])),
         horton_nucattract,
     )
 
@@ -198,10 +202,16 @@ def test_electrostatic_potential_mix():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    spherical_basis = make_contractions(basis_dict, ["H", "He"], coords, ['spherical'] * 9)
-    spherical_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in spherical_basis]
-    cartesian_basis = make_contractions(basis_dict, ["H", "He"], coords, ['cartesian'] * 9)
-    cartesian_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in cartesian_basis]
+    spherical_basis = make_contractions(basis_dict, ["H", "He"], coords, ["spherical"] * 9)
+    spherical_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type)
+        for i in spherical_basis
+    ]
+    cartesian_basis = make_contractions(basis_dict, ["H", "He"], coords, ["cartesian"] * 9)
+    cartesian_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type)
+        for i in cartesian_basis
+    ]
 
     grid_1d = np.linspace(-2, 2, num=5)
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)

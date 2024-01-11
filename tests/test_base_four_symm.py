@@ -11,7 +11,9 @@ def test_init():
     """Test BaseFourIndexSymmetric.__init__."""
     Test = disable_abstract(BaseFourIndexSymmetric)  # noqa: N806
     test = skip_init(Test)
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     Test.__init__(test, [contractions])
     assert test._axes_contractions[0][0] == contractions
     with pytest.raises(TypeError):
@@ -21,7 +23,7 @@ def test_init():
 def test_contractions():
     """Test BaseFourIndexSymmetric.contractions."""
     Test = disable_abstract(BaseFourIndexSymmetric)  # noqa: N806
-    cont = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    cont = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical")
     test = Test([cont])
     assert test.contractions[0] == cont
 
@@ -35,15 +37,21 @@ def test_construct_array_contraction():
             "construct_array_contraction": BaseFourIndexSymmetric.construct_array_contraction
         },
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     with pytest.raises(TypeError):
         Test([contractions])
 
 
 def test_construct_array_cartesian():
     """Test BaseFourIndexSymmetric.construct_array_cartesian."""
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones((1, 1)), np.ones(1), 'spherical')
-    cont_two = GeneralizedContractionShell(2, np.array([2, 3, 4]), np.ones((1, 1)), 2 * np.ones(1), 'spherical')
+    cont_one = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones((1, 1)), np.ones(1), "spherical"
+    )
+    cont_two = GeneralizedContractionShell(
+        2, np.array([2, 3, 4]), np.ones((1, 1)), 2 * np.ones(1), "spherical"
+    )
     Test = disable_abstract(  # noqa: N806
         BaseFourIndexSymmetric,
         dict_overwrite={
@@ -91,7 +99,9 @@ def test_construct_array_cartesian():
 
 def test_construct_array_spherical():
     """Test BaseFourIndexSymmetric.construct_array_spherical."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     transform = generate_transformation(
         1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
@@ -127,8 +137,12 @@ def test_construct_array_spherical():
     with pytest.raises(TypeError):
         test.construct_array_spherical(bad_keyword=3)
 
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
-    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    cont_one = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
+    cont_two = GeneralizedContractionShell(
+        2, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     transform_one = generate_transformation(
         1, cont_one.angmom_components_cart, cont_one.angmom_components_sph, "left"
     )
@@ -400,7 +414,9 @@ def test_construct_array_spherical():
 
 def test_construct_array_mix():
     """Test BaseFourIndex.construct_array_mix."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
 
     Test = disable_abstract(  # noqa: N806
         BaseFourIndexSymmetric,
@@ -423,8 +439,12 @@ def test_construct_array_mix():
         test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"], a=3)
     )
 
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
-    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    cont_one = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
+    cont_two = GeneralizedContractionShell(
+        2, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
 
     Test = disable_abstract(  # noqa: N806
         BaseFourIndexSymmetric,
@@ -566,8 +586,12 @@ def test_construct_array_mix_with_both_cartesian_and_spherical():
         BaseFourIndexSymmetric,
         dict_overwrite={"construct_array_contraction": construct_array_cont},
     )
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
-    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    cont_one = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
+    cont_two = GeneralizedContractionShell(
+        2, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
 
     # Remove the dependence on norm constants.
     cont_one.norm_cont = np.ones((1, cont_one.num_cart))
@@ -656,7 +680,9 @@ def test_construct_array_mix_with_both_cartesian_and_spherical():
 
 def test_construct_array_lincomb():
     """Test BaseFourIndexSymmetric.construct_array_lincomb."""
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     sph_transform = generate_transformation(
         1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
@@ -732,8 +758,12 @@ def test_construct_array_lincomb():
             )
         },
     )
-    cont_one = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
-    cont_two = GeneralizedContractionShell(2, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    cont_one = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
+    cont_two = GeneralizedContractionShell(
+        2, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     cont_one.norm_cont = np.ones((1, cont_one.num_cart))
     cont_two.norm_cont = np.ones((1, cont_two.num_cart))
     test = Test([cont_one, cont_two])
@@ -1250,7 +1280,7 @@ def test_construct_array_mix_missing_conventions():
             """Raise error in case undefined conventions are accessed."""
             raise NotImplementedError
 
-    contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1), 'spherical')
+    contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1), "spherical")
     Test = disable_abstract(  # noqa: N806
         BaseFourIndexSymmetric,
         dict_overwrite={

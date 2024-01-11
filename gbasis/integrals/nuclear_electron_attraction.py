@@ -3,9 +3,7 @@ from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
 
 
-def nuclear_electron_attraction_integral(
-    basis, nuclear_coords, nuclear_charges, transform=None
-):
+def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges, transform=None):
     """Return the nuclear electron attraction integrals of the basis set in the Cartesian form.
 
     Parameters
@@ -32,8 +30,6 @@ def nuclear_electron_attraction_integral(
 
     """
     return np.sum(
-        point_charge_integral(
-            basis, nuclear_coords, nuclear_charges, transform=transform
-        ),
+        point_charge_integral(basis, nuclear_coords, nuclear_charges, transform=transform),
         axis=2,
     )
