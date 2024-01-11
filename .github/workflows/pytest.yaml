@@ -39,23 +39,6 @@ jobs:
           # Need editable mode in order to include the test files
           pip install -e .
 
-      - name: pytester-cov
-        id: pytester-cov
-        uses: programmingwithalex/pytester-cov@main
-        with:
-          pytest-root-dir: './gbasis/'
-          pytest-tests-dir: "./tests/"
-          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
-
-      - name: Coverage single fail - exit
-        if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
+      - name: Run Pytest
         run: |
-          echo "cov single fail ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
-          exit 1
-
-      - name: Coverage total fail - exit
-        if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
-        run: |
-          echo "cov single fail ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
-          exit 1
+          pytest --cov=./gbasis/ --cov-fail-under=90 --cov-report term .
