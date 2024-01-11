@@ -290,12 +290,15 @@ class CBasis:
         nbfn = 0
         nenv = 20 + 4 * natm
         mults = []
+        atm_offs = np.zeros(natm + 1, dtype=int)
         for shell in basis:
             mults.extend([num_angmom(shell)] * shell.num_seg_cont)
+            atm_offs[shell.icenter + 1] += num_angmom(shell) * shell.num_seg_cont
             nbas += shell.num_seg_cont
             nbfn += num_angmom(shell) * shell.num_seg_cont
             nenv += shell.exps.size + shell.coeffs.size
         mults = np.asarray(mults, dtype=c_int)
+        atm_offs = np.cumsum(atm_offs)
 
         # Allocate and fill C input arrays
         ienv = 20
@@ -374,6 +377,10 @@ class CBasis:
         self.mults = mults
         self.max_mult = max(mults)
 
+        # Save atom coordinates and atom shell offsets
+        self.atcoords = atcoords.copy()
+        self.atm_offs = atm_offs
+
         # Set inverse sqrt of overlap integral (temporarily, for __init__)
         self._olp_minhalf = np.ones(nbfn)
 
@@ -397,7 +404,7 @@ class CBasis:
                         self._moments[(nx, ny, nz)] = self.make_int1e(
                             "int1e_" + nx * "x" + ny * "y" + nz * "z",
                             origin=True,
-                    )
+                        )
 
         self.d_olp = self.make_int1e("int1e_ipovlp", components=(3,))
         self.d_kin = self.make_int1e("int1e_ipkin", components=(3,))
@@ -770,9 +777,9 @@ class CBasis:
         for any combination of X, Y, or Z (still up to 4th order for any one component).
 
         """
-
+        # Make output array
         out = np.zeros((self.nbfn, self.nbfn, len(orders)), dtype=np.float64)
-
+        # Compute moment integral for each {X,Y,Z} order
         try:
             for i, order in enumerate(orders):
                 if sum(order) == 0:
@@ -782,13 +789,13 @@ class CBasis:
         except KeyError:
             raise ValueError("Invalid order; can use up to order 4 for any XYZ component,"
                              "and up to 4th order total using combinations of XYZ components")
-
+        # Return integrals in `out` array
         return out
 
 
 def normalized_coeffs(shell):
     r"""
-    Normalize (the radial part of) the spherical GeneralizedContractionShell coefficients.
+    Normalize the GeneralizedContractionShell coefficients.
 
     """
     def gaussian_int(l, a):
@@ -797,13 +804,9 @@ def normalized_coeffs(shell):
     def gto_norm(l, a):
         return 1 / np.sqrt(gaussian_int(2 * l + 2, 2 * a))
 
+    # Normalize radial part of GTO
     cs = np.einsum("km,k->km", shell.coeffs, gto_norm(shell.angmom, shell.exps))
-
+    # Normalize contractions
     es = gaussian_int(2 * shell.angmom + 2, shell.exps[:, np.newaxis] + shell.exps[np.newaxis, :])
     ss = 1 / np.sqrt(np.einsum("km,kl,lm->m", cs, es, cs))
-    cs = np.einsum("km,m->km", cs, ss);
-
-    return cs
-
-
-
+    return np.einsum("km,m->km", cs, ss)
