@@ -192,7 +192,6 @@ def eval_nuc_deriv(coords, orders, center, angmom_comps, alphas, prim_coeffs, no
             norm = norms[l]      
 
             derivative = _eval_nuc_deriv(coords, orders, center, angmom_comp, alphas, prim_coeff, norm)
-            print(derivative.shape)
             angular_output[l] = derivative
         output[m] = angular_output
     return output
