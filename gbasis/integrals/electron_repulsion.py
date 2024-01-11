@@ -204,9 +204,7 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
         return integrals
 
 
-def electron_repulsion_integral(
-    basis, transform=None, notation="physicist"
-):
+def electron_repulsion_integral(basis, transform=None, notation="physicist"):
     """Return the electron repulsion integrals fo the given basis set.
 
     Parameters

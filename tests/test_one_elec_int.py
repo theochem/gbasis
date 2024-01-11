@@ -47,10 +47,10 @@ def boys_func(order, weighted_dist):
 def test_compute_one_elec_int_v_recursion():
     """Test vertical recursion in _one_elec_int._compute_one_elec_integrals."""
     contr_one = GeneralizedContractionShell(
-        3, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.25]), 'spherical'
+        3, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.25]), "spherical"
     )
     contr_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.02, 0.01]), 'spherical'
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.02, 0.01]), "spherical"
     )
     coord_a = contr_one.coord
     angmom_a = contr_one.angmom
@@ -99,10 +99,10 @@ def test_compute_one_elec_int_s_type():
     """Test _one_elec_int._compute_one_electron_integrals for s-type primitives."""
     # GeneralizedContractionShell(angmom, coord, charge, coeffs, exps)
     s_type_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0]), np.array([0.1]), 'spherical'
+        1, np.array([0.5, 1, 1.5]), np.array([1.0]), np.array([0.1]), "spherical"
     )
     s_type_two = GeneralizedContractionShell(
-        1, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.02]), 'spherical'
+        1, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.02]), "spherical"
     )
     coord_a = s_type_one.coord
     angmom_a = s_type_one.angmom
@@ -183,10 +183,10 @@ def test_compute_one_elec_int_multiple_contractions():
     """Test _one_elec_int._compute_one_electron_integrals for s-type contractions."""
     # GeneralizedContractionShell(angmom, coord, charge, coeffs, exps)
     contr_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.25]), 'spherical'
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.25]), "spherical"
     )
     contr_two = GeneralizedContractionShell(
-        1, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.02, 0.01]), 'spherical'
+        1, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.02, 0.01]), "spherical"
     )
     coord_a = contr_one.coord
     angmom_a = contr_one.angmom
@@ -228,10 +228,18 @@ def test_compute_one_elec_int_multiple_contractions():
 def test_compute_one_elec_int_generalized_contraction():
     """Test _one_elec_int._compute_one_electron_integrals for generalized contractions."""
     contr_one = GeneralizedContractionShell(
-        3, np.array([0.5, 1, 1.5]), np.array([[1.0, 2.0], [1.5, 2.5]]), np.array([0.1, 0.25]), 'spherical'
+        3,
+        np.array([0.5, 1, 1.5]),
+        np.array([[1.0, 2.0], [1.5, 2.5]]),
+        np.array([0.1, 0.25]),
+        "spherical",
     )
     contr_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([[3.0, 4.0], [3.5, 4.5]]), np.array([0.02, 0.01]), 'spherical'
+        2,
+        np.array([1.5, 2, 3]),
+        np.array([[3.0, 4.0], [3.5, 4.5]]),
+        np.array([0.02, 0.01]),
+        "spherical",
     )
     coord_a = contr_one.coord
     angmom_a = contr_one.angmom

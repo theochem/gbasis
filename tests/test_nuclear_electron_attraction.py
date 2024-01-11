@@ -16,14 +16,12 @@ def test_nuclear_electron_attraction_horton_anorcc_hhe():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], coords, 'cartesian')
+    basis = make_contractions(basis_dict, ["H", "He"], coords, "cartesian")
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_nucattract = np.load(find_datafile("data_horton_hhe_cart_nucattract.npy"))
     assert np.allclose(
-        nuclear_electron_attraction_integral(
-            basis, coords, np.array([1, 2])
-        ),
+        nuclear_electron_attraction_integral(basis, coords, np.array([1, 2])),
         horton_nucattract,
     )
 
@@ -37,14 +35,12 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     coords = np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
-    basis = make_contractions(basis_dict, ["Be", "C"], coords, 'cartesian')
+    basis = make_contractions(basis_dict, ["Be", "C"], coords, "cartesian")
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_nucattract = np.load(find_datafile("data_horton_bec_cart_nucattract.npy"))
     assert np.allclose(
-        nuclear_electron_attraction_integral(
-            basis, coords, np.array([4, 6])
-        ),
+        nuclear_electron_attraction_integral(basis, coords, np.array([4, 6])),
         horton_nucattract,
     )
 
@@ -52,57 +48,49 @@ def test_nuclear_electron_attraction_horton_anorcc_bec():
 def test_nuclear_electron_attraction_cartesian():
     """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
     ref = point_charge_integral(basis, nuclear_coords, nuclear_charges)
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_integral(
-            basis, nuclear_coords, nuclear_charges
-        ),
+        nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges),
     )
 
 
 def test_nuclear_electron_attraction_spherical():
     """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
     ref = point_charge_integral(basis, nuclear_coords, nuclear_charges)
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_integral(
-            basis, nuclear_coords, nuclear_charges
-        ),
+        nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges),
     )
 
 
 def test_nuclear_electron_attraction_mix():
     """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ['spherical'] * 8)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)
-    ref = point_charge_integral(
-        basis, nuclear_coords, nuclear_charges
-    )
+    ref = point_charge_integral(basis, nuclear_coords, nuclear_charges)
     assert np.allclose(
         ref[:, :, 0] + ref[:, :, 1] + ref[:, :, 2] + ref[:, :, 3] + ref[:, :, 4],
-        nuclear_electron_attraction_integral(
-            basis, nuclear_coords, nuclear_charges
-        ),
+        nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges),
     )
 
 
 def test_nuclear_electron_attraction_lincomb():
     """Test gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
 
     nuclear_coords = np.random.rand(5, 3)
     nuclear_charges = np.random.rand(5)

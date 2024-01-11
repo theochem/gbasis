@@ -15,10 +15,10 @@ from gbasis.parsers import make_contractions, parse_nwchem
 def test_angular_momentum_construct_array_contraction():
     """Test integrals.angular_momentum.angular_momentumIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), "spherical"
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), 'spherical'
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), "spherical"
     )
 
     # copied the code it is testing
@@ -370,7 +370,7 @@ def test_angular_momentum_construct_array_contraction():
 def test_angular_momentum_integral_cartesian():
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_cartesian(),
@@ -382,7 +382,7 @@ def test_angular_momentum_integral_spherical():
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_spherical(),
@@ -394,7 +394,7 @@ def test_angular_momentum_integral_mix():
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ['spherical'] * 8)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
         angular_momentum_integral_obj.construct_array_mix(["spherical"] * 8),
@@ -405,7 +405,7 @@ def test_angular_momentum_integral_mix():
 def test_angular_momentum_integral_lincomb():
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(

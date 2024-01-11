@@ -11,7 +11,9 @@ def test_init():
     """Test base.BaseGaussianRelatedArray."""
     Test = disable_abstract(BaseGaussianRelatedArray)
     test = skip_init(Test)
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     assert not hasattr(test, "_axes_contractions")
     with pytest.raises(TypeError):
         Test.__init__(test, set([contractions]))
@@ -39,7 +41,9 @@ def test_contruct_array_contraction():
             "construct_array_contraction": BaseGaussianRelatedArray.construct_array_contraction
         },
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -53,7 +57,9 @@ def test_contruct_array_cartesian():
             "construct_array_cartesian": BaseGaussianRelatedArray.construct_array_cartesian
         },
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -67,7 +73,9 @@ def test_contruct_array_spherical():
             "construct_array_spherical": BaseGaussianRelatedArray.construct_array_spherical
         },
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     with pytest.raises(TypeError):
         Test([contractions])
 
@@ -81,6 +89,8 @@ def test_contruct_array_lincomb():
             "construct_array_lincomb": BaseGaussianRelatedArray.construct_array_lincomb
         },
     )
-    contractions = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), 'spherical')
+    contractions = GeneralizedContractionShell(
+        1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
+    )
     with pytest.raises(TypeError):
         Test([contractions])

@@ -269,9 +269,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         return output
 
 
-def point_charge_integral(
-    basis, points_coords, points_charge, transform=None
-):
+def point_charge_integral(basis, points_coords, points_charge, transform=None):
     r"""Return the point-charge interaction integrals of basis set in the given coordinate systems.
 
     Parameters

@@ -9,9 +9,7 @@ from gbasis.evals.density import (
 
 
 # TODO: need to be tested against reference
-def evaluate_stress_tensor(
-    one_density_matrix, basis, points, alpha=1, beta=0, transform=None
-):
+def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
     r"""Return the stress tensor evaluated at the given coordinates.
 
     Stress tensor is defined here as:
@@ -129,9 +127,7 @@ def evaluate_stress_tensor(
 
 
 # TODO: need to be tested against reference
-def evaluate_ehrenfest_force(
-    one_density_matrix, basis, points, alpha=1, beta=0, transform=None
-):
+def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
     r"""Return the Ehrenfest force.
 
     Ehrenfest force is the negative of the divergence of the stress tensor:
