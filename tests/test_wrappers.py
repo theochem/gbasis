@@ -14,7 +14,8 @@ def test_from_iodata():
 
     mol = load_one(find_datafile("data_iodata_water_sto3g_hf_g03.fchk"))
 
-    basis, coord_types = from_iodata(mol)
+    basis = from_iodata(mol)
+    coord_types = [type for type in [shell.coord_type for shell in basis]]
 
     assert coord_types == ["cartesian"] * 5
     assert all(isinstance(i, GeneralizedContractionShell) for i in basis)
@@ -77,28 +78,30 @@ def test_from_iodata():
     # NOTE: you shouldn't actually change the magnetic quantum number that is not compatible with
     # the angular momentum, but we do so here to check that user input is accepted
     mol.obasis.conventions[(0, "p")] = ["c1"]
-    basis, coord_types = from_iodata(mol)
+    basis = from_iodata(mol)
+    coord_types = [type for type in [shell.coord_type for shell in basis]]
     basis[2].angmom = 0
     assert coord_types == ["cartesian"] * 5
     assert basis[2].angmom_components_sph == ("c1",)
     assert np.allclose(basis[2].norm_cont, 1.0)
 
     mol.obasis.conventions[(1, "p")] = ["c1", "c0", "s1"]
-    basis, coord_types = from_iodata(mol)
+    basis = from_iodata(mol)
+    coord_types = [type for type in [shell.coord_type for shell in basis]]
     basis[2].angmom = 1
     assert coord_types == ["cartesian"] * 5
     assert basis[2].angmom_components_sph == ("c1", "c0", "s1")
     assert np.allclose(basis[2].norm_cont, 1.0)
 
     mol.obasis.conventions[(1, "c")] = ["z", "y", "x"]
-    basis, coord_types = from_iodata(mol)
+    basis = from_iodata(mol)
     basis[2].angmom = 1
     assert np.allclose(np.array([[0, 0, 1], [0, 1, 0], [1, 0, 0]]), basis[2].angmom_components_cart)
 
     # Test Cartesian convention generation for missing angmom
     # Needed for cases when only spherical basis is used in basis set
     del mol.obasis.conventions[(1, "c")]
-    basis, coord_types = from_iodata(mol)
+    basis = from_iodata(mol)
     basis[2].angmom = 1
     assert np.allclose(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), basis[2].angmom_components_cart)
 
@@ -121,7 +124,7 @@ def test_from_pyscf():
     test = from_pyscf(mol)
 
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[1, 2, 3]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[1, 2, 3]]), "spherical")
 
     with pytest.raises(ValueError):
 

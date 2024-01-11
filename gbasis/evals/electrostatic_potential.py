@@ -10,7 +10,6 @@ def electrostatic_potential(
     nuclear_coords,
     nuclear_charges,
     transform=None,
-    coord_type="spherical",
     threshold_dist=0.0,
 ):
     r"""Return the electrostatic potentials of the basis set in the Cartesian form.
@@ -40,12 +39,6 @@ def electrostatic_potential(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
     threshold_dist : {float, 0.0}
         Threshold for rejecting nuclei whose distances to the points are less than the provided
         value. i.e. nuclei that are closer to the point than the threshold are discarded when
@@ -100,13 +93,15 @@ def electrostatic_potential(
     if threshold_dist < 0:
         raise ValueError("`threshold_dist` must be greater than or equal to zero.")
 
-    if coord_type == "cartesian":
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
+    if all(ct == "cartesian" for ct in coord_type):
         if sum(cont.num_cart * cont.num_seg_cont for cont in basis) != one_density_matrix.shape[0]:
             raise ValueError(
                 "`one_density_matrix` does not have number of rows/columns that is equal to the "
                 "total number of Cartesian contractions (atomic orbitals)."
             )
-    elif coord_type == "spherical":
+    elif all(ct == "spherical" for ct in coord_type):
         if sum(cont.num_sph * cont.num_seg_cont for cont in basis) != one_density_matrix.shape[0]:
             raise ValueError(
                 "`one_density_matrix` does not have number of rows/columns that is equal to the "
@@ -128,10 +123,10 @@ def electrostatic_potential(
             )
     else:
         raise TypeError(
-            "`coord_type` must be 'spherical', 'cartesian', or a list/tuple of these strings."
+            "`coord_type` must be a list/tuple of the strings 'spherical' or 'cartesian'."
         )
     hartree_potential = point_charge_integral(
-        basis, points, -np.ones(points.shape[0]), transform=transform, coord_type=coord_type
+        basis, points, -np.ones(points.shape[0]), transform=transform
     )
     hartree_potential *= one_density_matrix[:, :, None]
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))

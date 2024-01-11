@@ -41,7 +41,7 @@ class Overlap(BaseTwoIndexSymmetric):
     construct_array_mix(self, coord_types, **kwargs) : np.ndarray(K_cont, K_cont)
         Return the overlap integrals associated with the contraction in the given coordinate system.
         `K_cont` is the total number of contractions within the given basis set.
-    construct_array_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
+    construct_array_lincomb(self, transform, coord_type) : np.ndarray(K_orbs, K_orbs)
         Return the overlap integrals associated with the linear combinations of contractions in the
         given coordinate system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
@@ -108,7 +108,7 @@ class Overlap(BaseTwoIndexSymmetric):
         )[0]
 
 
-def overlap_integral(basis, transform=None, coord_type="spherical"):
+def overlap_integral(basis, transform=None):
     """Return overlap integral of the given basis set.
 
     Parameters
@@ -121,13 +121,6 @@ def overlap_integral(basis, transform=None, coord_type="spherical"):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -137,10 +130,12 @@ def overlap_integral(basis, transform=None, coord_type="spherical"):
         number of basis functions in the basis set.
 
     """
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
     if transform is not None:
         return Overlap(basis).construct_array_lincomb(transform, coord_type)
-    if coord_type == "cartesian":
+    if all(ct == "cartesian" for ct in coord_type):
         return Overlap(basis).construct_array_cartesian()
-    if coord_type == "spherical":
+    if all(ct == "spherical" for ct in coord_type):
         return Overlap(basis).construct_array_spherical()
     return Overlap(basis).construct_array_mix(coord_type)

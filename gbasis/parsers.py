@@ -165,7 +165,7 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
-def make_contractions(basis_dict, atoms, coords):
+def make_contractions(basis_dict, atoms, coords, coord_types):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
@@ -176,6 +176,13 @@ def make_contractions(basis_dict, atoms, coords):
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
+    coord_types : {"cartesian"/"c", list/tuple of "cartesian"/"c" or "spherical"/"p", "spherical"/"p"}
+        Types of the coordinate system for the contractions.
+        If "cartesian" or "c", then all of the contractions are treated as Cartesian contractions.
+        If "spherical" or "p", then all of the contractions are treated as spherical contractions.
+        If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to specify the
+        coordinate type of each `GeneralizedContractionShell` instance.
+        Default value is "spherical".
 
     Returns
     -------
@@ -202,7 +209,28 @@ def make_contractions(basis_dict, atoms, coords):
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 
     basis = []
+    # expected number of coordinates
+    num_coord_types = sum([len(basis_dict[i]) for i in atoms])
+
+    # check and assign coord_types
+    if isinstance(coord_types, str):
+        if coord_types not in ["c", "cartesian", "p", "spherical"]:
+            raise ValueError(
+                f"If coord_types is a string, it must be either 'spherical'/'p' or 'cartesian'/'c'."
+                f"got {coord_types}"
+            )
+        coord_types = [coord_types] * num_coord_types
+
+    if len(coord_types) != num_coord_types:
+        raise ValueError(
+            f"If coord_types is a list, it must be the same length as the total number of contractions."
+            f"got {len(coord_types)}"
+        )
+
+    # make shells
     for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
-            basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps))
+            basis.append(
+                GeneralizedContractionShell(angmom, coord, coeffs, exps, coord_types.pop(0))
+            )
     return tuple(basis)

@@ -48,7 +48,7 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         Return the integral over the angular momentum operators associated with the contraction in
         the given coordinate system.
         :math:`K_cont` is the total number of contractions within the given basis set.
-    construct_array_spherical_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs, 3)
+    construct_array_lincomb(self, transform, coord_type) : np.ndarray(K_orbs, K_orbs, 3)
         Return the integral over the angular momentum operator associated with linear combinations
         of spherical Gaussians (linear combinations of atomic orbitals).
         :math:`K_orbs` is the number of basis functions produced after the linear combinations.
@@ -156,7 +156,7 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         return -1j * np.transpose(output, (3, 2, 4, 1, 0))
 
 
-def angular_momentum_integral(basis, transform=None, coord_type="spherical"):
+def angular_momentum_integral(basis, transform=None):
     r"""Return the integral over :math:`hat{L}` of the given basis set.
 
     Parameters
@@ -169,13 +169,6 @@ def angular_momentum_integral(basis, transform=None, coord_type="spherical"):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", "spherical", list/tuple of "cartesian" or "spherical}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default is "spherical".
 
     Returns
     -------
@@ -186,10 +179,12 @@ def angular_momentum_integral(basis, transform=None, coord_type="spherical"):
         Dimension 2 corresponds to the direction of the angular momentum :math:`(x, y, z)`.
 
     """
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
     if transform is not None:
         return AngularMomentumIntegral(basis).construct_array_lincomb(transform, coord_type)
-    if coord_type == "spherical":
-        return AngularMomentumIntegral(basis).construct_array_spherical()
-    if coord_type == "cartesian":
+    if all(ct == "cartesian" for ct in coord_type):
         return AngularMomentumIntegral(basis).construct_array_cartesian()
+    if all(ct == "spherical" for ct in coord_type):
+        return AngularMomentumIntegral(basis).construct_array_spherical()
     return AngularMomentumIntegral(basis).construct_array_mix(coord_type)

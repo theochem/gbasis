@@ -13,10 +13,10 @@ from utils import find_datafile, HortonContractions
 def test_overlap_construct_array_contraction():
     """Test gbasis.integrals.overlap.Overlap.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02])
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), 'spherical'
     )
     answer = np.array(
         [
@@ -75,10 +75,10 @@ def test_overlap_construct_array_contraction():
 def test_overlap_cartesian():
     """Test gbasis.integrals.overlap.overlap_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     overlap_obj = Overlap(basis)
     assert np.allclose(
-        overlap_obj.construct_array_cartesian(), overlap_integral(basis, coord_type="cartesian")
+        overlap_obj.construct_array_cartesian(), overlap_integral(basis)
     )
 
 
@@ -86,10 +86,10 @@ def test_overlap_spherical():
     """Test gbasis.integrals.overlap.overlap_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     overlap_obj = Overlap(basis)
     assert np.allclose(
-        overlap_obj.construct_array_spherical(), overlap_integral(basis, coord_type="spherical")
+        overlap_obj.construct_array_spherical(), overlap_integral(basis)
     )
 
 
@@ -97,23 +97,23 @@ def test_overlap_mix():
     """Test gbasis.integrals.overlap.overlap_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
     overlap_obj = Overlap(basis)
     assert np.allclose(
         overlap_obj.construct_array_mix(["spherical"] * 8),
-        overlap_integral(basis, coord_type=["spherical"] * 8),
+        overlap_integral(basis),
     )
 
 
 def test_overlap_lincomb():
     """Test gbasis.integrals.overlap.overlap_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     overlap_obj = Overlap(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        overlap_obj.construct_array_lincomb(transform, "spherical"),
-        overlap_integral(basis, transform=transform, coord_type="spherical"),
+        overlap_obj.construct_array_lincomb(transform, ["spherical"]),
+        overlap_integral(basis, transform=transform),
     )
 
 
@@ -125,7 +125,7 @@ def test_overlap_cartesian_norm_anorcc():
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
     overlap_obj = Overlap(basis)
     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
 
@@ -139,7 +139,7 @@ def test_overlap_spherical_norm_sto6g():
     """
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     overlap_obj = Overlap(basis)
     assert np.allclose(np.diag(overlap_obj.construct_array_spherical()), 1)
 
@@ -152,11 +152,11 @@ def test_overlap_spherical_norm_anorcc():
     """
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
 
-    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), 'cartesian')
     overlap_obj = Overlap(basis)
     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
 
-    basis = make_contractions(basis_dict, ["Xe"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Xe"], np.array([[0, 0, 0]]), 'cartesian')
     overlap_obj = Overlap(basis)
     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
 
@@ -170,7 +170,7 @@ def test_overlap_cartesian_norm_sto6g():
     """
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
     overlap_obj = Overlap(basis)
     assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
 
@@ -184,12 +184,12 @@ def test_overlap_horton_anorcc_hhe():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
-        basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]])
+        basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]]), "cartesian"
     )
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
-    assert np.allclose(overlap_integral(basis, coord_type="cartesian"), horton_overlap)
+    assert np.allclose(overlap_integral(basis), horton_overlap)
 
 
 def test_overlap_horton_anorcc_bec():
@@ -201,9 +201,10 @@ def test_overlap_horton_anorcc_bec():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
-        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]])
+        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]]), "cartesian"
     )
-    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps) for i in basis]
+
+    basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
-    assert np.allclose(overlap_integral(basis, coord_type="cartesian"), horton_overlap)
+    assert np.allclose(overlap_integral(basis), horton_overlap)

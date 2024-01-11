@@ -12,10 +12,10 @@ from utils import find_datafile
 def test_moment_construct_array_contraction():
     """Test gbasis.integrals.moment.Moment.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01])
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02])
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), 'spherical'
     )
     answer = np.array(
         [
@@ -134,7 +134,7 @@ def test_moment_construct_array_contraction():
 def test_moment_cartesian():
     """Test gbasis.integrals.moment.moment_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
     moment_obj = Moment(basis)
 
     assert np.allclose(
@@ -172,7 +172,6 @@ def test_moment_cartesian():
                     [0, 1, 1],
                 ]
             ),
-            coord_type="cartesian",
         ),
     )
 
@@ -181,7 +180,7 @@ def test_moment_spherical():
     """Test gbasis.integrals.moment.moment_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     moment_obj = Moment(basis)
     assert np.allclose(
         moment_obj.construct_array_spherical(
@@ -218,7 +217,6 @@ def test_moment_spherical():
                     [0, 1, 1],
                 ]
             ),
-            coord_type="spherical",
         ),
     )
 
@@ -227,7 +225,7 @@ def test_moment_mix():
     """Test gbasis.integrals.moment.moment_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ['spherical'] * 8)
     moment_obj = Moment(basis)
     assert np.allclose(
         moment_obj.construct_array_mix(
@@ -265,7 +263,6 @@ def test_moment_mix():
                     [0, 1, 1],
                 ]
             ),
-            coord_type=["spherical"] * 8,
         ),
     )
 
@@ -273,13 +270,13 @@ def test_moment_mix():
 def test_moment_spherical_lincomb():
     """Test gbasis.integrals.moment.moment_spherical_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
     moment_obj = Moment(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
         moment_obj.construct_array_lincomb(
             transform,
-            "spherical",
+            ["spherical"],
             moment_coord=np.zeros(3),
             moment_orders=np.array(
                 [

@@ -40,7 +40,7 @@ class Moment(BaseTwoIndexSymmetric):
         Return the moment integrals associated with all of the contraction in the given coordinate
         system.
         `K_cont` is the total number of contractions within the given basis set.
-    construct_array_lincomb(self, transform) : np.ndarray(K_orbs, K_orbs)
+    construct_array_lincomb(self, transform, coord_type, **kwargs) : np.ndarray(K_orbs, K_orbs)
         Return the moment integrals associated with the linear combinations of contractions in the
         given coordinate system.
         `K_orbs` is the number of basis functions produced after the linear combinations.
@@ -157,7 +157,7 @@ class Moment(BaseTwoIndexSymmetric):
         return np.transpose(output, (1, 2, 3, 4, 0))
 
 
-def moment_integral(basis, moment_coord, moment_orders, transform=None, coord_type="spherical"):
+def moment_integral(basis, moment_coord, moment_orders, transform=None):
     """Return moment integral of the given basis set.
 
     Parameters
@@ -176,13 +176,6 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None, coord_ty
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
-        Default value is "spherical".
 
     Returns
     -------
@@ -201,16 +194,17 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None, coord_ty
     order.
 
     """
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
         return Moment(basis).construct_array_lincomb(
             transform, coord_type, moment_coord=moment_coord, moment_orders=moment_orders
         )
-    if coord_type == "cartesian":
+    if all(ct == "cartesian" for ct in coord_type):
         return Moment(basis).construct_array_cartesian(
             moment_coord=moment_coord, moment_orders=moment_orders
         )
-    if coord_type == "spherical":
+    if all(ct == "spherical" for ct in coord_type):
         return Moment(basis).construct_array_spherical(
             moment_coord=moment_coord, moment_orders=moment_orders
         )

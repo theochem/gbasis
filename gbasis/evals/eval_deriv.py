@@ -129,17 +129,21 @@ class EvalDeriv(BaseOneIndex):
         norm_prim_cart = contractions.norm_prim_cart
         if deriv_type == "general":
             output = _eval_deriv_contractions(
-                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         elif deriv_type == "direct":
             output = _eval_first_second_order_deriv_contractions(
-                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         return output
 
 
 def evaluate_deriv_basis(
-    basis, points, orders, transform=None, coord_type="spherical", deriv_type="general"
+    basis,
+    points,
+    orders,
+    transform=None,
+    deriv_type="general",
 ):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
@@ -163,13 +167,6 @@ def evaluate_deriv_basis(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    coord_type : {"cartesian", list/tuple of "cartesian" or "spherical", "spherical"}
-        Types of the coordinate system for the contractions.
-        If "cartesian", then all of the contractions are treated as Cartesian contractions.
-        If "spherical", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" or "spherical" to specify the
-        coordinate type of each GeneralizedContractionShell instance.
-        Default value is "spherical".
     deriv_type : "general" or "direct"
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
@@ -186,18 +183,20 @@ def evaluate_deriv_basis(
         `N` is the number of coordinates at which the contractions are evaluated.
 
     """
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
             transform, coord_type, points=points, orders=orders, deriv_type=deriv_type
         )
-    if all([item == "cartesian" for item in coord_type]) or coord_type == "cartesian":
+    if all(ct == "cartesian" for ct in coord_type) or coord_type == "cartesian":
         return EvalDeriv(basis).construct_array_cartesian(
-               points=points, orders=orders, deriv_type=deriv_type
-               )
-    if all([item == "spherical" for item in coord_type]) or coord_type == "spherical":
+            points=points, orders=orders, deriv_type=deriv_type
+        )
+    if all(ct == "spherical" for ct in coord_type) or coord_type == "spherical":
         return EvalDeriv(basis).construct_array_spherical(
-               points=points, orders=orders, deriv_type=deriv_type
-               )
+            points=points, orders=orders, deriv_type=deriv_type
+        )
     return EvalDeriv(basis).construct_array_mix(
-           coord_type, points=points, orders=orders, deriv_type=deriv_type
-           )
+        coord_type, points=points, orders=orders, deriv_type=deriv_type
+    )
