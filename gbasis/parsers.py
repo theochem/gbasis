@@ -209,25 +209,28 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 
     basis = []
-    len_coord_types = len(coord_types)
+    # expected number of coordinates
+    num_coord_types = sum([len(basis_dict[i]) for i in atoms])
 
+    # check and assign coord_types
+    if isinstance(coord_types, str):
+        if coord_types not in ["c", "cartesian", "p", "spherical"]:
+            raise ValueError(
+                f"If coord_types is a string, it must be either 'spherical'/'p' or 'cartesian'/'c'."
+                f"got {coord_types}"
+            )
+        coord_types = [coord_types] * num_coord_types
+
+    if len(coord_types) != num_coord_types:
+        raise ValueError(
+            f"If coord_types is a list, it must be the same length as the total number of contractions."
+            f"got {len(coord_types)}"
+        )
+
+    # make shells
     for atom, coord in zip(atoms, coords):
         for angmom, exps, coeffs in basis_dict[atom]:
-            if type(coord_types) == str:
-                # if coord_types given as a single string, assign the specified type to all contractions for all atoms
-                if coord_types == "spherical" or coord_types == "p":
-                    basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, 'p'))
-                elif coord_types == "cartesian" or coord_types == "c":
-                    basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, 'c'))
-                else:
-                    raise ValueError("If coord_types is a string, it must be either 'spherical'/'p' or 'cartesian'/'c'.")
-            elif type(coord_types) == list:
-                # if coord_types given as a list, assign the specified type to each atom's contractions individually
-                if len_coord_types == sum([len(basis_dict[i]) for i in atoms]):
-                    basis.append(GeneralizedContractionShell(angmom, coord, coeffs, exps, coord_types.pop(0)))
-                else:
-                    raise ValueError("If coord_types is a list, it must be the same length as the total number of contractions.")
-            else:
-                raise TypeError("coord_types must be a string or list of strings.")
-
+            basis.append(
+                GeneralizedContractionShell(angmom, coord, coeffs, exps, coord_types.pop(0))
+            )
     return tuple(basis)
