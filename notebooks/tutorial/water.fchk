@@ -1,16 +1,16 @@
 0015_q000_m01_k00_opt_uwb97xd_def2svpd/0015_q000_m01_k00_force_uwb97xd_d
-Force     UwB97XD                                                     Gen                 
+Force     UwB97XD                                                     Gen
 Number of atoms                            I                3
 Info1-9                                    I   N=           9
           13           9           0           0           0         100
            5          18       -5802
 Full Title                                 C   N=           9
 0015_q000_m01_k00_opt_uwb97xd_def2svpd/0015_q000_m01_k00_for
-ce_uwb97xd_def2tzvpd stable-force-charge        
+ce_uwb97xd_def2tzvpd stable-force-charge
 Route                                      C   N=          15
 #p uwb97xd/chkbasis force guess=read geom=check scf=(maxcycl
 e=900,verytightlineq,xqc) integral=grid=ultrafine symmetry=N
-one density=current pop=(cm5,hlygat,mbs,npa) output=wfx     
+one density=current pop=(cm5,hlygat,mbs,npa) output=wfx
 Charge                                     I                0
 Multiplicity                               I                1
 Number of electrons                        I               10
@@ -32,7 +32,7 @@ Int Atom Types                             I   N=           3
            0           0           0
 Force Field                                I                0
 Atom Types                                 C   N=           3
-                                    
+
 MM charges                                 R   N=           3
   0.00000000E+00  0.00000000E+00  0.00000000E+00
 Integer atomic weights                     I   N=           3
@@ -4977,7 +4977,7 @@ Int Atom Modified Types                    I   N=           3
            0           0           0
 Force Field                                I                0
 Atom Modified Types                        C   N=           3
-                                    
+
 Link Atoms                                 I   N=           3
            0           0           0
 Atom Modified MM Charges                   R   N=           3
@@ -5861,4 +5861,4 @@ ClPar Real Params                          R   N=        3200
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
 Gaussian Version                           C   N=           2
-ES64L-G16RevC.01        
+ES64L-G16RevC.01
