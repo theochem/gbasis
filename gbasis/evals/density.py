@@ -65,6 +65,13 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
 def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
     r"""Return the density of the given basis set at the given points.
 
+    .. math::
+    
+        \rho(\mathbf{r}_n) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}_n) \phi_j(\mathbf{r}_n)
+    
+    where :math:`\mathbf{r}_n` is the point at which the density is evaluated, :math:`\gamma_{ij}` 
+    is the one-electron density matrix, and :math:`\phi_i` is the :math:`i`-th basis function.
+
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orbs, K_orbs)
@@ -202,6 +209,25 @@ def evaluate_deriv_density(
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
 
+    .. math::
+        \begin{align}
+            &\frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
+            \rho(\mathbf{r}_n)\\
+            &=
+            \sum_{l_x=0}^{L_x} \sum_{l_y=0}^{L_y} \sum_{l_z=0}^{L_z}
+            \binom{L_x}{l_x} \binom{L_y}{l_y} \binom{L_z}{l_z}
+            \sum_{ij} \gamma_{ij}
+            \frac{\partial^{l_x + l_y + l_z} \rho(\mathbf{r}_n)}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
+            \frac{
+                \partial^{L_x + L_y + L_z - l_x - l_y - l_z} \rho(\mathbf{r}_n)
+            }{
+                \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
+            }
+        \end{align}
+    
+    where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the :math:`x, y, \text{and} z` components,
+    respectively.
+
     Parameters
     ----------
     orders : np.ndarray(3,)
@@ -286,6 +312,17 @@ def evaluate_density_gradient(
 ):
     r"""Return the gradient of the density evaluated at the given points.
 
+    .. math::
+        \begin{equation}
+            \nabla \rho(\mathbf{r}_n)
+            =
+            \begin{bmatrix}
+            \frac{\partial}{\partial x} \rho(\mathbf{r}_n)\\\\
+            \frac{\partial}{\partial y} \rho(\mathbf{r}_n)\\\\
+            \frac{\partial}{\partial z} \rho(\mathbf{r}_n)
+            \end{bmatrix}\\
+        \end{equation}
+
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
@@ -352,6 +389,15 @@ def evaluate_density_laplacian(
     deriv_type="general",
 ):
     r"""Return the Laplacian of the density evaluated at the given points.
+
+    .. math::
+        \begin{equation}
+            \nabla^2 \rho(\mathbf{r}_n)
+            =
+            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n)
+            + \frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)
+            + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)
+        \end{equation}
 
     Parameters
     ----------
@@ -443,6 +489,23 @@ def evaluate_density_hessian(
     deriv_type="general",
 ):
     r"""Return the Hessian of the density evaluated at the given points.
+
+    .. math::
+        \begin{equation}
+        H[\rho(\mathbf{r}_n)]
+        =
+        \begin{bmatrix}
+            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n) &
+            \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
+            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\\\
+            \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
+            \frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)&
+            \frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r}_n)\\\\
+            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n) &
+            \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)&
+            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\
+        \end{bmatrix}\\
+        \end{equation}
 
     Parameters
     ----------
