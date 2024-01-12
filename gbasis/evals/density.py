@@ -66,10 +66,10 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
     r"""Return the density of the given basis set at the given points.
 
     .. math::
-    
+
         \rho(\mathbf{r}_n) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}_n) \phi_j(\mathbf{r}_n)
-    
-    where :math:`\mathbf{r}_n` is the point at which the density is evaluated, :math:`\gamma_{ij}` 
+
+    where :math:`\mathbf{r}_n` is the point at which the density is evaluated, :math:`\gamma_{ij}`
     is the one-electron density matrix, and :math:`\phi_i` is the :math:`i`-th basis function.
 
     Parameters
@@ -224,7 +224,7 @@ def evaluate_deriv_density(
                 \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
             }
         \end{align}
-    
+
     where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the :math:`x, y, \text{and} z` components,
     respectively.
 
