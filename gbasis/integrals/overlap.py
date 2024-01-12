@@ -129,6 +129,12 @@ class Overlap(BaseTwoIndexSymmetric):
 def overlap_integral(basis, transform=None, tol_screen=None):
     """Return overlap integral of the given basis set.
 
+    .. math::
+    
+        \int \phi_a (\mathbf{r}) \phi_b (\mathbf{r}) d\mathbf{r}
+
+    where :math:`\phi_a(\mathbf{r})` and :math:`\phi_b(\mathbf{r})` are the basis functions
+
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
