@@ -90,7 +90,7 @@ class Overlap(BaseTwoIndexSymmetric):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
         # screen these contractions to see if overlap calculation is required or can be set to zero
-        if calculate_these_overlaps(contractions_one, contractions_two):
+        if is_overlap_included(contractions_one, contractions_two):
             # calculate overlaps
             return _compute_multipole_moment_integrals(
                 np.zeros(3),
@@ -157,7 +157,7 @@ def overlap_integral(basis, transform=None, coord_type="spherical"):
     return Overlap(basis).construct_array_mix(coord_type)
 
 
-def calculate_these_overlaps(contractions_one, contractions_two):
+def is_overlap_included(contractions_one, contractions_two):
     r"""Return True or False in response to whether overlap integral is required.
 
     .. math::
