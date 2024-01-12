@@ -328,6 +328,7 @@ Supposed we have the following system:
 \begin{lstlisting}
   atoms = ["H", "H"]
   coords = np.array([[0, 0, 0], [0, 0, 1]])
+  coord_types = "spherical"
 \end{lstlisting}
 \begin{itemize}
 \item To build a basis set from gbs file for the given atoms and coordinates,
@@ -335,16 +336,17 @@ Supposed we have the following system:
 from gbasis.parsers import parse_gbs, make_contractions
 
 all_basis_dict = parse_gbs("./path/to/from_basissetexchange.gbs")
-basis = make_contractions(all_basis_dict, atoms, coords)
+basis = make_contractions(all_basis_dict, atoms, coords, coord_types)
 \end{lstlisting}
 \item To build a basis set from nwchem file for the given atoms and coordinates,
   \begin{lstlisting}[xleftmargin=-25pt]
 from gbasis.parsers import parse_nwchem, make_contractions
 
 all_basis_dict = parse_nwchem("./path/to/from_basissetexchange.nwchem")
-basis = make_contractions(all_basis_dict, atoms, coords)
+basis = make_contractions(all_basis_dict, atoms, coords, coord_types)
 \end{lstlisting}
 \end{itemize}
+The last argument in the \verb|make_contractions| function, \verb|coord_types|, is the type of coordinate system used by the basis. Details about this variable can be found in the next section.
 
 \verb|gbasis| also interfaces to the module \verb|iodata|, which handles the
 inputs and outputs for different quantum chemistry formats, such as Gaussian
@@ -386,10 +388,10 @@ basis = from_pyscf(mol)
 \subsection{Types of coordinate systems used by basis functions}
 In \verb|gbasis|, user can provide the coordinate system used by each shell of
 generalized contractions.
-The function \verb|make_contractions| has the keyword argument \verb|coord_type| to
+The function \verb|gbasis.parsers.make_contractions| has the positional argument \verb|coord_type| to
 specify the coordinate systems used by the basis.
-If \verb|coord_type="spherical"|, all of the shells are treated to be spherical.
-If \verb|coord_type="cartesian"|, all of the shells are treated to be
+If \verb|coord_type| is \verb|"spherical"| (or \verb|"p"|), all of the shells are treated to be spherical.
+If \verb|coord_type| is \verb|"cartesian"| (or \verb|"c"|), all of the shells are treated to be
 Cartesian.
 If different shells correspond to different coordinate system, then a list/tuple
 of the same length as the basis set must be provided with each entry being
@@ -400,21 +402,17 @@ Example:
 \begin{itemize}
 \item To treat all contractions to be spherical
   \begin{lstlisting}[xleftmargin=-25pt]
-basis = make_contractions(all_basis_dict, atoms, coords, coord_type="spherical")
+basis = make_contractions(all_basis_dict, atoms, coords, "spherical")
 \end{lstlisting}
 \item To treat all contractions to be Cartesian
   \begin{lstlisting}[xleftmargin=-25pt]
-basis = make_contractions(all_basis_dict, atoms, coords, coord_type="cartesian")
+basis = make_contractions(all_basis_dict, atoms, coords, "cartesian")
 \end{lstlisting}
 \item To treat first shell of generalized contractions to be Cartesian and
   second shell to be spherical
   \begin{lstlisting}[xleftmargin=-25pt]
-basis = make_contractions(
-    all_basis_dict, ["H", "H"], coords, coord_type=["cartesian", "spherical"]
-)
+basis = make_contractions(all_basis_dict, ["H", "H"], coords, ["c", "spherical"])
 \end{lstlisting}
-%  In this case, the basis set must consist of exactly two shells of
-%  generalized contractions. Otherwise, an error will be raised.
 In this case, each hydrogen atom must contributes exactly one shell of generalized contractions. Otherwise, an error will be raised.
 \end{itemize}
 
