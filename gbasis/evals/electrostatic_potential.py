@@ -25,8 +25,8 @@ def electrostatic_potential(
         - \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
         \end{align}
 
-    where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A` is the 
-    coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}` is the 
+    where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A` is the
+    coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}` is the
     one-electron density matrix.
 
     Parameters
