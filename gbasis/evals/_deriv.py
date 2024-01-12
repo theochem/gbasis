@@ -143,7 +143,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
 
 
 def _eval_first_second_order_deriv_contractions(
-        coords, orders, center, angmom_comps, alphas, prim_coeffs, norm
+    coords, orders, center, angmom_comps, alphas, prim_coeffs, norm
 ):
     """Return the evaluation of direct 1st and 2nd derivative orders of a Cartesian contraction.
 
@@ -195,7 +195,7 @@ def _eval_first_second_order_deriv_contractions(
 
     # Useful variables
     new_coords = coords.T - center[None, :].T
-    gauss = np.exp(-alphas[:, None, None] * (new_coords ** 2))
+    gauss = np.exp(-alphas[:, None, None] * (new_coords**2))
 
     # Filters derivative orders
     indices_noderiv = orders <= 0
@@ -216,17 +216,21 @@ def _eval_first_second_order_deriv_contractions(
 
     # Calling 1st and 2nd derivatives functions for different combination of orders
     if indices_first_deriv.any():
-        first_deriv = _first_derivative(new_coords, gauss, indices_first_deriv,
-                                        angmom_comps, alphas)
+        first_deriv = _first_derivative(
+            new_coords, gauss, indices_first_deriv, angmom_comps, alphas
+        )
         if indices_second_deriv.any():
-            second_deriv = _second_derivative(new_coords, gauss, indices_second_deriv,
-                                              angmom_comps, alphas)
+            second_deriv = _second_derivative(
+                new_coords, gauss, indices_second_deriv, angmom_comps, alphas
+            )
     elif indices_second_deriv.any():
-        second_deriv = _second_derivative(new_coords, gauss, indices_second_deriv,
-                                          angmom_comps, alphas)
+        second_deriv = _second_derivative(
+            new_coords, gauss, indices_second_deriv, angmom_comps, alphas
+        )
         if indices_first_deriv.any():
-            first_deriv = _first_derivative(new_coords, gauss, indices_first_deriv,
-                                            angmom_comps, alphas)
+            first_deriv = _first_derivative(
+                new_coords, gauss, indices_first_deriv, angmom_comps, alphas
+            )
     # Combining all the derivatives
     norm = norm.T[:, :, np.newaxis]
     output = np.tensordot(prim_coeffs, norm * zeroth_deriv * first_deriv * second_deriv, (0, 0))
@@ -279,14 +283,15 @@ def _first_derivative(center_coords, gauss, indices_first_deriv, angmom_comps, a
     # zero (and negative power is undefined).
     power_part_1[power_part_1 < 0] = 0
     part1 = first_coords[:, None, :] ** power_part_1[:, :, None]
-    part2 = (2 * alphas[:, None, None]) * (first_coords ** 2)
+    part2 = (2 * alphas[:, None, None]) * (first_coords**2)
     part2 = first_ang_comp[None, :, :, None] - part2[:, :, None, :]
     # NOTE: Using an array of ones with same shape as first_ang_comp to power part2_zero_ang_mom
     # variable in order to get the same shape as part2. This is done in order to make easier
     # to filter at the end for the angular components corresponding to n=0
     array_ones = np.ones(first_ang_comp.shape)
-    part2_n_0 = -2 * alphas[:, None, None, None] * (
-            first_coords[:, None, :] ** array_ones[:, :, None])
+    part2_n_0 = (
+        -2 * alphas[:, None, None, None] * (first_coords[:, None, :] ** array_ones[:, :, None])
+    )
     raw_first_deriv = part1 * part2
     # Substitute angular components n=0 with correct derivative
     raw_first_deriv[:, n_0_indices, :] = part2_n_0[:, n_0_indices, :]
@@ -342,13 +347,15 @@ def _second_derivative(center_coords, gauss, indices_second_deriv, angmom_comps,
     n_2_indices = second_ang_comp >= 2
 
     # angular momentum == 0
-    total_n_0 = ((4 * alphas[:, None, None] ** 2) * (second_coords ** 2)) - \
-                (2 * alphas[:, None, None])
+    total_n_0 = ((4 * alphas[:, None, None] ** 2) * (second_coords**2)) - (
+        2 * alphas[:, None, None]
+    )
     raw_second_deriv = total_n_0[:, :, None, :] ** array_ones[None, :, :, None]
     # angular momentum == 1
     if any(second_ang_comp[0] == 1):
-        total_n_1 = ((4 * alphas[:, None, None] ** 2) * (second_coords ** 3)) \
-                    - ((6 * alphas[:, None, None]) * second_coords)
+        total_n_1 = ((4 * alphas[:, None, None] ** 2) * (second_coords**3)) - (
+            (6 * alphas[:, None, None]) * second_coords
+        )
         total_n_1 = total_n_1[:, :, None, :] ** array_ones[None, :, :, None]
         # Substitute angular components n=1 with correct derivative
         raw_second_deriv[:, n_1_indices, :] = total_n_1[:, n_1_indices, :]
@@ -363,9 +370,12 @@ def _second_derivative(center_coords, gauss, indices_second_deriv, angmom_comps,
             # Calculating
             # ..math:: 4 \alpha^{2}\left(x-X_{A}\right)^{4}-
             # \alpha(4 n+2)\left(x-X_{A}\right)^{2}+n(n-1)
-            part2_1_n_2 = (4 * alphas[:, None, None] ** 2) * (second_coords ** 4)
-            part2_2_n_2 = alphas[:, None, None, None] * (4 * second_ang_comp[:, :, None] + 2) \
-                                                      * second_coords[:, None, :] ** 2
+            part2_1_n_2 = (4 * alphas[:, None, None] ** 2) * (second_coords**4)
+            part2_2_n_2 = (
+                alphas[:, None, None, None]
+                * (4 * second_ang_comp[:, :, None] + 2)
+                * second_coords[:, None, :] ** 2
+            )
             part2_3_n_2 = second_ang_comp * (second_ang_comp - 1)
             part2_n_2 = part2_1_n_2[:, :, None, :] - part2_2_n_2 + part2_3_n_2[None, :, :, None]
             total_n_2 = part1_n_2[None, :, :, :] * part2_n_2

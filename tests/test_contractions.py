@@ -169,7 +169,7 @@ def tests_init():
         np.array([0, 1, 2]),
         np.array([1, 2, 3, 4], dtype=float),
         np.array([5, 6, 7, 8], dtype=float),
-        'spherical'
+        "spherical",
     )
     assert test._angmom == 1
     assert np.allclose(test._coord, np.array([0, 1, 2]))
@@ -226,9 +226,13 @@ def test_angmom_components_sph():
 # TODO: add more tests
 def test_norm_prim_cart():
     """Test GeneralizedContractionShell.norm_prim_cart."""
-    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), 'spherical')
+    test = GeneralizedContractionShell(
+        0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), "spherical"
+    )
     assert np.isclose(test.norm_prim_cart, 0.2519794355383807303479140)
-    test = GeneralizedContractionShell(3, np.array([0, 0, 0]), np.array([1.0]), np.array([0.5]), 'spherical')
+    test = GeneralizedContractionShell(
+        3, np.array([0, 0, 0]), np.array([1.0]), np.array([0.5]), "spherical"
+    )
     assert np.isclose(test.norm_prim_cart[7], 0.6920252830162908851679097)
 
 
@@ -261,14 +265,20 @@ def test_num_seg_cont():
 
 def test_assign_norm_cont():
     """Test GeneralizedContractionShell.assign_norm_cont."""
-    test = GeneralizedContractionShell(0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), 'spherical')
+    test = GeneralizedContractionShell(
+        0, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), "spherical"
+    )
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)
 
-    test = GeneralizedContractionShell(1, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), 'spherical')
+    test = GeneralizedContractionShell(
+        1, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), "spherical"
+    )
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)
 
-    test = GeneralizedContractionShell(2, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), 'spherical')
+    test = GeneralizedContractionShell(
+        2, np.array([0, 0, 0]), np.array([1.0]), np.array([0.25]), "spherical"
+    )
     test.assign_norm_cont()
     assert np.allclose(test.norm_cont, 1)

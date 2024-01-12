@@ -19,7 +19,7 @@ def test_evaluate_stress_tensor():
     """Test gbasis.evals.stress_tensor.evaluate_stress_tensor."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
-    basis = make_contractions(basis_dict, ["H"], coords, 'spherical')
+    basis = make_contractions(basis_dict, ["H"], coords, "spherical")
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
@@ -78,7 +78,7 @@ def test_evaluate_ehrenfest_force():
     """Test gbasis.evals.stress_tensor.evaluate_ehrenfest_force."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
-    basis = make_contractions(basis_dict, ["H"], coords, 'spherical')
+    basis = make_contractions(basis_dict, ["H"], coords, "spherical")
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
@@ -139,7 +139,7 @@ def test_evaluate_ehrenfest_hessian():
     """Test gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
-    basis = make_contractions(basis_dict, ["H"], coords, 'spherical')
+    basis = make_contractions(basis_dict, ["H"], coords, "spherical")
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     points = np.random.rand(10, 3)

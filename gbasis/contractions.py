@@ -519,14 +519,17 @@ class GeneralizedContractionShell:
                 - 'spherical'
         """
 
-
         if not isinstance(coord_type, str):
             raise TypeError("Coordinate type must be given as a string.")
         if coord_type not in ["c", "cartesian", "p", "spherical"]:
-            raise ValueError("`coord_type` is incorrectly specified. It must be either 'c' "
-                             "or 'cartesian' for Cartesian coordinates, or 'p' or 'spherical' "
-                             "for spherical coordinates.")
-        self._coord_type = {"c": "cartesian",
-                            "cartesian": "cartesian",
-                            "spherical": "spherical",
-                            "p": "spherical"}[coord_type]
+            raise ValueError(
+                "`coord_type` is incorrectly specified. It must be either 'c' "
+                "or 'cartesian' for Cartesian coordinates, or 'p' or 'spherical' "
+                "for spherical coordinates."
+            )
+        self._coord_type = {
+            "c": "cartesian",
+            "cartesian": "cartesian",
+            "spherical": "spherical",
+            "p": "spherical",
+        }[coord_type]

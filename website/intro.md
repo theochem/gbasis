@@ -4,7 +4,7 @@
 [Gbasis](https://github.com/theochem/gbasis/) is a free, open-source, and cross-platform Python library designed to help you effortlessly work with Gaussian-type orbitals. Please use the following citation in any publication using Gbasis library:
 
 **"GBasis: A Python Library for Evaluating Functions, Functionals, and
-Integrals Expressed with Gaussian Basis Functions"**, 
+Integrals Expressed with Gaussian Basis Functions"**,
 Taewon David Kim, Leila Pujal, Maximilian van Zyl, Alireza Tehrani, Michelle Richer, Gabriela
 Sánchez-Díaz, Xiaotian Derrick Yang, Valerii Chuiko, Raymundo Hernández-Esparza, William Adams,
 Xiaomin Huang, Braden D. Kelly, Matthew Chan, Esteban Vöhringer-Martinez, Toon Verstraelen, Farnaz

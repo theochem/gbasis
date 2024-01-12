@@ -12,7 +12,7 @@ from utils import find_datafile, HortonContractions
 def test_evaluate_construct_array_contraction():
     """Test gbasis.evals.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), "spherical"
     )
     answer = np.array(
         [
@@ -56,7 +56,7 @@ def test_evaluate_construct_array_contraction():
 def test_evaluate_basis_cartesian():
     """Test gbasis.evals.eval.evaluate_basis_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), 'cartesian')
+    basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "cartesian")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
@@ -69,21 +69,21 @@ def test_evaluate_basis_spherical():
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     # cartesian and spherical are the same for s orbital
-    basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]])),
     )
     # p orbitals are zero at center
-    basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
         evaluate_basis(basis, np.array([[0, 0, 0]])),
     )
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
@@ -97,28 +97,36 @@ def test_evaluate_basis_mix():
 
     # cartesian and spherical are the same for s orbital
     spherical_basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "spherical")
-    spherical_basis_list = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), ["spherical"])
+    spherical_basis_list = make_contractions(
+        basis_dict, ["H"], np.array([[0, 0, 0]]), ["spherical"]
+    )
     assert np.allclose(
         evaluate_basis(spherical_basis, np.array([[0, 0, 0]])),
         evaluate_basis(spherical_basis_list, np.array([[0, 0, 0]])),
     )
 
     cartesian_basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "cartesian")
-    cartesian_basis_list = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), ["cartesian"])
+    cartesian_basis_list = make_contractions(
+        basis_dict, ["H"], np.array([[0, 0, 0]]), ["cartesian"]
+    )
     assert np.allclose(
         evaluate_basis(cartesian_basis, np.array([[0, 0, 0]])),
         evaluate_basis(cartesian_basis_list, np.array([[0, 0, 0]])),
     )
 
     spherical_basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
-    spherical_basis_list = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
+    spherical_basis_list = make_contractions(
+        basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8
+    )
     assert np.allclose(
         evaluate_basis(spherical_basis, np.array([[1, 1, 1]])),
         evaluate_basis(spherical_basis_list, np.array([[1, 1, 1]])),
     )
 
     cartesian_basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
-    cartesian_basis_list = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["cartesian"] * 8)
+    cartesian_basis_list = make_contractions(
+        basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["cartesian"] * 8
+    )
     assert np.allclose(
         evaluate_basis(cartesian_basis, np.array([[1, 1, 1]])),
         evaluate_basis(cartesian_basis_list, np.array([[1, 1, 1]])),
@@ -128,11 +136,13 @@ def test_evaluate_basis_mix():
 def test_evaluate_basis_lincomb():
     """Test gbasis.evals.eval.evaluate_basis_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        evaluate_obj.construct_array_lincomb(transform, ["spherical"], points=np.array([[1, 1, 1]])),
+        evaluate_obj.construct_array_lincomb(
+            transform, ["spherical"], points=np.array([[1, 1, 1]])
+        ),
         evaluate_basis(basis, np.array([[1, 1, 1]]), transform=transform),
     )
 
@@ -141,9 +151,13 @@ def test_evaluate_basis_horton():
     """Test gbasis.evals.eval.evaluate_basis against horton results."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0], [0.8, 0, 0]])
-    basis = make_contractions(basis_dict, ["H", "He"], points, 'spherical')
-    cartesian_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, 'cartesian') for i in basis]
-    spherical_basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, 'spherical') for i in basis]
+    basis = make_contractions(basis_dict, ["H", "He"], points, "spherical")
+    cartesian_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, "cartesian") for i in basis
+    ]
+    spherical_basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, "spherical") for i in basis
+    ]
 
     horton_eval_cart = np.load(find_datafile("data_horton_hhe_cart_eval.npy"))
     horton_eval_sph = np.load(find_datafile("data_horton_hhe_sph_eval.npy"))

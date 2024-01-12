@@ -12,10 +12,10 @@ from utils import find_datafile, HortonContractions
 def test_kinetic_energy_construct_array_contraction():
     """Test gbasis.integrals.kinetic_energy.KineticEnergyIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
-        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), 'spherical'
+        1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), "spherical"
     )
     test_two = GeneralizedContractionShell(
-        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), 'spherical'
+        2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), "spherical"
     )
     answer = np.array(
         [
@@ -160,7 +160,7 @@ def test_kinetic_energy_construct_array_contraction():
 def test_kinetic_energy_integral_cartesian():
     """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'cartesian')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_cartesian(),
@@ -172,7 +172,7 @@ def test_kinetic_energy_integral_spherical():
     """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_spherical(),
@@ -184,7 +184,7 @@ def test_kinetic_energy_integral_mix():
     """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ['spherical'] * 8)
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     assert np.allclose(
         kinetic_energy_integral_obj.construct_array_mix(["spherical"] * 8),
@@ -195,7 +195,7 @@ def test_kinetic_energy_integral_mix():
 def test_kinetic_energy_integral_lincomb():
     """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), 'spherical')
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     kinetic_energy_integral_obj = KineticEnergyIntegral(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
@@ -213,16 +213,17 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
-        basis_dict, ["H", "He"], np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]]), 'cartesian'
+        basis_dict,
+        ["H", "He"],
+        np.array([[0, 0, 0], [0.8 * 1.0 / 0.5291772083, 0, 0]]),
+        "cartesian",
     )
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_kinetic_energy_integral = np.load(
         find_datafile("data_horton_hhe_cart_kinetic_energy_integral.npy")
     )
-    assert np.allclose(
-        kinetic_energy_integral(basis), horton_kinetic_energy_integral
-    )
+    assert np.allclose(kinetic_energy_integral(basis), horton_kinetic_energy_integral)
 
 
 def test_kinetic_energy_integral_horton_anorcc_bec():
@@ -234,13 +235,14 @@ def test_kinetic_energy_integral_horton_anorcc_bec():
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     # NOTE: used HORTON's conversion factor for angstroms to bohr
     basis = make_contractions(
-        basis_dict, ["Be", "C"], np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]]), 'cartesian'
+        basis_dict,
+        ["Be", "C"],
+        np.array([[0, 0, 0], [1.0 * 1.0 / 0.5291772083, 0, 0]]),
+        "cartesian",
     )
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_kinetic_energy_integral = np.load(
         find_datafile("data_horton_bec_cart_kinetic_energy_integral.npy")
     )
-    assert np.allclose(
-        kinetic_energy_integral(basis), horton_kinetic_energy_integral
-    )
+    assert np.allclose(kinetic_energy_integral(basis), horton_kinetic_energy_integral)
