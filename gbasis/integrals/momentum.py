@@ -115,6 +115,18 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
 def momentum_integral(basis, transform=None):
     """Return integral over momentum operator of the given basis set.
 
+    .. math::
+        \begin{align}
+            \left< \hat{\mathbf{p}} \right>
+            &= \int \phi_a(\mathbf{r}) \left( -i \nabla \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+            &= -i
+            \begin{bmatrix}
+            \int \phi_a(\mathbf{r}) \frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) \frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) \frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
+            \end{bmatrix}
+        \end{align}
+
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell

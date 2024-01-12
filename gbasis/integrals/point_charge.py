@@ -271,6 +271,12 @@ def point_charge_integral(
 ):
     r"""Return the point-charge interaction integrals of basis set in the given coordinate systems.
 
+    .. math::
+
+        \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
+    
+    where :math:`\mathbf{R}_C` is the position of the point charge.
+
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell
