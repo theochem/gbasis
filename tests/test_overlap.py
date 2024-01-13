@@ -2,7 +2,7 @@
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.overlap import Overlap, overlap_integral
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 from gbasis.utils import factorial2
 import numpy as np
 import pytest
@@ -210,3 +210,56 @@ def test_overlap_horton_anorcc_bec():
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
     assert np.allclose(overlap_integral(basis), horton_overlap)
+
+
+def test_overlap_screening_vs_without_screening():
+    """Test overlap screening.
+
+    This test is meant to  pass.  Using spherical 6-31G guassian basis set.
+
+    """
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+
+    # Test 1 uses default overlap tolerance of 1e-20
+    contraction = make_contractions(
+        basis_dict, ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]), "spherical", overlap=True
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]), "spherical", overlap=False
+    )
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    assert np.allclose(overlaps, overlaps_no_screen)
+
+
+def test_overlap_screening_with_fail():
+    """Test overlap screening.
+
+    This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
+
+    """
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+
+    # Test 1 uses default overlap tolerance of 1e-20
+    contraction = make_contractions(
+        basis_dict,
+        ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+        "cartesian",
+        tol=1e-4,
+        overlap=True,
+    )
+    contraction_without_screen = make_contractions(
+        basis_dict, ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]), "cartesian", overlap=False
+    )
+
+    overlaps = overlap_integral(contraction)
+    overlaps_no_screen = overlap_integral(contraction_without_screen)
+
+    # test failure
+    assert not np.allclose(overlaps, overlaps_no_screen, rtol=1.0e-5, atol=1.0e-8)
