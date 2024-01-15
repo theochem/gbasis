@@ -30,8 +30,8 @@ class GeneralizedContractionShell:
 
     .. math::
 
-        \phi_{\vec{a}, \vec{R}_A} (\mathbf{r}) =
-        N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_i g_i (\vec{r} | \vec{a}, \vec{R}_A)
+        \phi_{\vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}} (\mathbf{r}) =
+        N_{\phi} (\vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_i g_i (\vec{r} | \vec{a}, \vec{R}_A)
 
     where :math:`d_i` is the contraction coefficient of the primitive and :math:`N_{\phi}` is the
     normalization constant of the contraction.
@@ -62,8 +62,8 @@ class GeneralizedContractionShell:
 
     .. math::
 
-        \phi_{j, \vec{a}, \vec{R}_A} (\mathbf{r}) =
-        N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)
+        \phi_{j, \vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}} (\mathbf{r}) =
+        N_{\phi} (\vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)
 
     Attributes
     ----------
