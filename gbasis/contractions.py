@@ -114,7 +114,9 @@ class GeneralizedContractionShell:
 
     """
 
-    def __init__(self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False):
+    def __init__(
+        self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False
+    ):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -158,10 +160,10 @@ class GeneralizedContractionShell:
     def icenter(self):
         """Atom center index for the contractions.
 
-       Returns
-        -------
-        icenter : int or None
-            Index for the corresponding atom center of the contractions.
+        Returns
+         -------
+         icenter : int or None
+             Index for the corresponding atom center of the contractions.
 
         """
         return self._icenter

@@ -29,10 +29,10 @@ for nx in range(5):
 
 
 # Read script
-with open(sys.argv[1], 'r') as f:
+with open(sys.argv[1], "r") as f:
     txt = f.read()
 
 
 # Patch script
-with open(sys.argv[1], 'w') as f:
+with open(sys.argv[1], "w") as f:
     f.write(txt.replace(old_intor1, new_intor1))

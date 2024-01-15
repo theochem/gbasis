@@ -242,7 +242,14 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
         for angmom, exps, coeffs in basis_dict[atom]:
             basis.append(
                 GeneralizedContractionShell(
-                    angmom, coord, coeffs, exps, coord_types.pop(0),
-                    icenter=icenter, tol=tol, ovr_screen=overlap)
+                    angmom,
+                    coord,
+                    coeffs,
+                    exps,
+                    coord_types.pop(0),
+                    icenter=icenter,
+                    tol=tol,
+                    ovr_screen=overlap,
+                )
             )
     return tuple(basis)
