@@ -47,13 +47,13 @@ TEST_COORD_TYPES = [
 
 
 TEST_INTEGRALS = [
-    pytest.param("olp", id="Overlap"),
-    pytest.param("kin", id="KineticEnergy"),
-    pytest.param("nuc", id="NuclearAttraction"),
-    pytest.param("mom", id="Momentum"),
-    pytest.param("amom", id="AngularMomentum"),
-    pytest.param("eri", id="ElectronRepulsion"),
-    pytest.param("pntchrg", id="PointCharge"),
+    pytest.param("overlap", id="Overlap"),
+    pytest.param("kinetic_energy", id="KineticEnergy"),
+    pytest.param("nuclear_attraction", id="NuclearAttraction"),
+    pytest.param("momentum", id="Momentum"),
+    pytest.param("angular_momentum", id="AngularMomentum"),
+    pytest.param("electron_repulsion", id="ElectronRepulsion"),
+    pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
 
@@ -86,49 +86,49 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
 
     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
 
-    if integral == "olp":
+    if integral == "overlap":
         py_int = overlap_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.olp()
+        lc_int = lc_basis.overlap()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
-    elif integral == "kin":
+    elif integral == "kinetic_energy":
         py_int = kinetic_energy_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.kin()
+        lc_int = lc_basis.kinetic_energy()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
-    elif integral == "nuc":
+    elif integral == "nuclear_attraction":
         py_int = nuclear_electron_attraction_integral(py_basis, atcoords, atnums, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.nuc()
+        lc_int = lc_basis.nuclear_attraction()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
-    elif integral == "amom":
+    elif integral == "angular_momentum":
         py_int = angular_momentum_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        lc_int = lc_basis.amom(origin=np.zeros(3))
+        lc_int = lc_basis.angular_momentum(origin=np.zeros(3))
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
-    elif integral == "mom":
+    elif integral == "momentum":
         py_int = momentum_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        lc_int = lc_basis.mom()
+        lc_int = lc_basis.momentum(origin=np.zeros(3))
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
-    elif integral == "eri":
+    elif integral == "electron_repulsion":
         py_int = electron_repulsion_integral(py_basis, coord_type=coord_type)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.eri()
+        lc_int = lc_basis.electron_repulsion()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn))
 
-    elif integral == "pntchrg":
+    elif integral == "point_charge":
         charge_coords = np.asarray([[2., 2., 2.], [-3., -3., -3.], [-1., 2., -3.]])
         charges = np.asarray([1., 0.666, -3.1415926])
         for i in range(1, len(charges) + 1):
             py_int = point_charge_integral(py_basis, charge_coords[:i], charges[:i], coord_type=coord_type)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
-            lc_int = lc_basis.pntchrg(charge_coords[:i], charges[:i])
+            lc_int = lc_basis.point_charge(charge_coords[:i], charges[:i])
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
 
     elif integral == "moment":

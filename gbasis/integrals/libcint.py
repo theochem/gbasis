@@ -254,7 +254,54 @@ class CBasis:
     r"""
     ``libcint`` basis class.
 
+    Attributes
+    ----------
+    coord_type : ("spherical" | "cartesian")
+        Coordinate type of ``libcint`` basis.
+    natm : int
+        Number of atoms.
+    nbas : int
+        Number of shells.
+    nbfn : int
+        Number of basis functions.
+    atm : np.ndarray(Natm, 6, dtype=float)
+        Buffer of atom information for ``libcint``.
+    bas : np.ndarray(Nbas, 8, dtype=float)
+        Buffer of basis shell information for ``libcint``.
+    env : np.ndarray(Nenv, dtype=float)
+        Buffer of numerical atom/basis shell data for ``libcint``.
+    atnums : np.ndarray(Natm, dtype=int)
+        Array of atomic numbers.
+    atcoords : np.ndarray(Natm, 3, dtype=float)
+        Array of atomic coordinates.
+
+    Methods
+    -------
+    make_int1e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
+        Make an instance-bound 1-electron integral method from a ``libcint`` function.
+    make_int2e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
+        Make an instance-bound 2-electron integral method from a ``libcint`` function.
+    overlap(self)
+        Compute the overlap integrals.
+    kinetic_energy(self)
+        Compute the kinetic energy integrals.
+    nuclear_attraction(self)
+        Compute the nuclear attraction integrals.
+    electron_repulsion(self)
+        Compute the electron repulsion integrals.
+    r_inv(self, origin=None)
+        Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
+    momentum(self, origin=None)
+        Compute the momentum integrals.
+    angular_momentum(self, origin=None)
+        Compute the angular momentum integrals.
+    point_charge(self, point_coords, point_charges)
+        Compute the point charge integrals.
+    moment(self, orders, origin=None)
+        Compute the moment integrals.
+
     """
+
     def __init__(self, basis, atnums, atcoords, coord_type="spherical"):
         r"""
         Initialize a ``CBasis`` instance.
@@ -289,15 +336,15 @@ class CBasis:
         nbas = 0
         nbfn = 0
         nenv = 20 + 4 * natm
-        mults = []
+        offs = []
         atm_offs = np.zeros(natm + 1, dtype=int)
         for shell in basis:
-            mults.extend([num_angmom(shell)] * shell.num_seg_cont)
+            offs.extend([num_angmom(shell)] * shell.num_seg_cont)
             atm_offs[shell.icenter + 1] += num_angmom(shell) * shell.num_seg_cont
             nbas += shell.num_seg_cont
             nbfn += num_angmom(shell) * shell.num_seg_cont
             nenv += shell.exps.size + shell.coeffs.size
-        mults = np.asarray(mults, dtype=c_int)
+        offs = np.asarray(offs, dtype=c_int)
         atm_offs = np.cumsum(atm_offs)
 
         # Allocate and fill C input arrays
@@ -341,8 +388,8 @@ class CBasis:
             env[icoef:ienv] = normalized_coeffs(shell).reshape(-1, order="F")
             # Unpack generalized contractions
             for iprim in range(icoef, icoef + shell.coeffs.size, nprim):
-                # Basis function mult
-                mults[ibas] = nl
+                # Basis function offset
+                offs[ibas] = nl
                 # Index of corresponding atom
                 bas[ibas, 0] = shell.icenter
                 # Angular momentum
@@ -373,29 +420,31 @@ class CBasis:
         self.bas = bas
         self.env = env
 
-        # Save basis function mults
-        self.mults = mults
-        self.max_mult = max(mults)
-
         # Save atom coordinates and atom shell offsets
+        self.atnums = atnums.copy()
         self.atcoords = atcoords.copy()
-        self.atm_offs = atm_offs
+        self._atm_offs = atm_offs
+
+        # Save basis function offsets
+        self._offs = offs
+        self._max_off = max(offs)
 
         # Set inverse sqrt of overlap integral (temporarily, for __init__)
-        self._olp_minhalf = np.ones(nbfn)
+        self._ovlp_minhalf = np.ones(nbfn)
 
         # Integrals
-        self.olp = self.make_int1e("int1e_ovlp")
-        self.kin = self.make_int1e("int1e_kin")
-        self.nuc = self.make_int1e("int1e_nuc")
-        self.eri = self.make_int2e("int2e")
-
-        self.rinv = self.make_int1e("int1e_rinv", inv_origin=True)
-
-        self.mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True)
-
-        self.amom = self.make_int1e("int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True)
-
+        self._ovlp = self.make_int1e("int1e_ovlp")
+        self._kin = self.make_int1e("int1e_kin")
+        self._nuc = self.make_int1e("int1e_nuc")
+        self._eri = self.make_int2e("int2e")
+        self._rinv = self.make_int1e("int1e_rinv", inv_origin=True)
+        self._mom = self.make_int1e("int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True)
+        self._amom = self.make_int1e("int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True)
+        self._d_ovlp = self.make_int1e("int1e_ipovlp", components=(3,))
+        self._d_kin = self.make_int1e("int1e_ipkin", components=(3,))
+        self._d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
+        self._d_eri = self.make_int2e("int2e_ip1", components=(3,))
+        self._d_rinv = self.make_int1e("int1e_iprinv", components=(3,), inv_origin=True)
         self._moments = {}
         for nx in range(5):
             for ny in range(5):
@@ -406,22 +455,10 @@ class CBasis:
                             origin=True,
                         )
 
-        self.d_olp = self.make_int1e("int1e_ipovlp", components=(3,))
-        self.d_kin = self.make_int1e("int1e_ipkin", components=(3,))
-        self.d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
-        self.d_eri = self.make_int2e("int2e_ip1", components=(3,))
-
-        self.d_rinv = self.make_int1e("int1e_iprinv", components=(3,), inv_origin=True)
-
-        self.d2_olp = self.make_int1e("int1e_ipipovlp", components=(3, 3))
-        self.d2_nuc = self.make_int1e("int1e_ipipnuc", components=(3, 3))
-        self.d2_kin = self.make_int1e("int1e_ipipkin", components=(3, 3))
-        self.d2_eri = self.make_int2e("int2e_ipip1", components=(3, 3))
-
         # Set proper value for inverse sqrt of overlap integral
         # for cartesian basis sets
         if coord_type == "cartesian":
-            self._olp_minhalf = 1 / np.sqrt(np.diag(self.olp()))
+            self._ovlp_minhalf = 1 / np.sqrt(np.diag(self._ovlp()))
 
     @contextmanager
     def optimizer(self, opt_func):
@@ -485,7 +522,7 @@ class CBasis:
             components += (2,)
         prod_comp = np.prod(components, dtype=int)
         out_shape = (self.nbfn, self.nbfn) + components
-        buf_shape = prod_comp * self.max_mult ** 2
+        buf_shape = prod_comp * self._max_off ** 2
 
         # Handle [inv_]origin argument (prevent shadowing)
         has_origin_arg = bool(origin)
@@ -532,21 +569,17 @@ class CBasis:
                 ipos = 0
                 for ishl in range(self.nbas):
                     shls[0] = ishl
-                    # p_conv = convs[self.bas[ishl, 1]]
-                    p_off = self.mults[ishl]
+                    p_off = self._offs[ishl]
                     jpos = 0
                     for jshl in range(ishl + 1):
                         shls[1] = jshl
-                        # q_conv = convs[self.bas[jshl, 1]]
-                        q_off = self.mults[jshl]
+                        q_off = self._offs[jshl]
                         # Call the C function to fill `buf`
                         func(buf, None, shls, self.atm, self.natm, self.bas, self.nbas, self.env, opt, None)
                         # Fill `out` array
                         buf_array = buf[:p_off * q_off * prod_comp].reshape(p_off, q_off, *components, order="F")
-                        # for p in p_conv:
                         for p in range(p_off):
                             i_off = p + ipos
-                            # for q in q_conv:
                             for q in range(q_off):
                                 j_off = q + jpos
                                 out[i_off, j_off] = buf_array[p, q]
@@ -572,7 +605,7 @@ class CBasis:
 
             # Return normalized integrals
             if self.coord_type == "cartesian":
-                return np.einsum(norm_einsum, self._olp_minhalf, self._olp_minhalf, out)
+                return np.einsum(norm_einsum, self._ovlp_minhalf, self._ovlp_minhalf, out)
             else:
                 return out
 
@@ -617,7 +650,7 @@ class CBasis:
             components += (2,)
         prod_comp = np.prod(components, dtype=int)
         out_shape = (self.nbfn, self.nbfn, self.nbfn, self.nbfn) + components
-        buf_shape = prod_comp * self.max_mult ** 4
+        buf_shape = prod_comp * self._max_off ** 4
 
         # Handle [inv_]origin argument (prevent shadowing)
         has_origin_arg = bool(origin)
@@ -668,25 +701,21 @@ class CBasis:
                 ipos = 0
                 for ishl in range(self.nbas):
                     shls[0] = ishl
-                    # p_conv = convs[self.bas[ishl, 1]]
-                    p_off = self.mults[ishl]
+                    p_off = self._offs[ishl]
                     jpos = 0
                     for jshl in range(ishl + 1):
                         ij = ((ishl + 1) * ishl) // 2 + jshl
                         shls[1] = jshl
-                        # q_conv = convs[self.bas[jshl, 1]]
-                        q_off = self.mults[jshl]
+                        q_off = self._offs[jshl]
                         kpos = 0
                         for kshl in range(self.nbas):
                             shls[2] = kshl
-                            # r_conv = convs[self.bas[kshl, 1]]
-                            r_off = self.mults[kshl]
+                            r_off = self._offs[kshl]
                             lpos = 0
                             for lshl in range(kshl + 1):
                                 kl = ((kshl + 1) * kshl) // 2 + lshl
                                 shls[3] = lshl
-                                # s_conv = convs[self.bas[lshl, 1]]
-                                s_off = self.mults[lshl]
+                                s_off = self._offs[lshl]
                                 if ij < kl:
                                     lpos += s_off
                                     continue
@@ -695,16 +724,12 @@ class CBasis:
                                 # Fill `out` array
                                 buf_array = buf[:p_off * q_off * r_off * s_off * prod_comp].reshape(p_off, q_off, r_off, s_off, *components, order="F")
                                 for p in range(p_off):
-                                # for p in p_conv:
                                     i_off = p + ipos
                                     for q in range(q_off):
-                                    # for q in q_conv:
                                         j_off = q + jpos
                                         for r in range(r_off):
-                                        # for r in r_conv:
                                             k_off = r + kpos
                                             for s in range(s_off):
-                                            # for s in s_conv:
                                                 l_off = s + lpos
                                                 out[i_off, j_off, k_off, l_off] = buf_array[p, q, r, s]
                                                 out[i_off, j_off, l_off, k_off] = buf_array[p, q, r, s]
@@ -745,7 +770,7 @@ class CBasis:
             if self.coord_type == "cartesian":
                 return np.einsum(
                     norm_einsum,
-                    self._olp_minhalf, self._olp_minhalf, self._olp_minhalf, self._olp_minhalf,
+                    self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf,
                     out,
                 )
             else:
@@ -754,13 +779,127 @@ class CBasis:
         # Return instance-bound integral method
         return int2e
 
-    def pntchrg(self, point_coords, point_charges):
-        r"""Point charge integral."""
+    def overlap(self):
+        r"""
+        Compute the overlap integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        return self._ovlp()
+
+    def kinetic_energy(self):
+        r"""
+        Compute the kinetic energy integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        return self._kin()
+
+    def nuclear_attraction(self):
+        r"""
+        Compute the nuclear attraction integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        return self._nuc()
+
+    def electron_repulsion(self):
+        r"""
+        Compute the electron repulsion integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        return self._eri()
+
+    def r_inv(self, origin=None):
+        r"""
+        Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
+
+        Parameters
+        ----------
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        return self._rinv(inv_origin=origin)
+
+    def momentum(self, origin=None):
+        r"""
+        Compute the momentum integrals.
+
+        Parameters
+        ----------
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
+            Integral array.
+
+        """
+        return self._mom(origin=origin)
+
+    def angular_momentum(self, origin=None):
+        r"""
+        Compute the angular momentum integrals.
+
+        Parameters
+        ----------
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
+            Integral array.
+
+        """
+        return self._amom(origin=origin)
+
+    def point_charge(self, point_coords, point_charges):
+        r"""
+        Compute the point charge integrals.
+
+        Parameters
+        ----------
+        point_coords : np.ndarray(N, 3, dtype=float)
+            Coordinates of point charges.
+        point_charges : np.ndarray(N, dtype=float)
+            Charges of point charges.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
+            Integral array.
+
+        """
         # Make output array
         out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order="F")
         # Compute 1/|r - r_{inv}| for each charge
         for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
-            val = self.rinv(inv_origin=coord)
+            val = self._rinv(inv_origin=coord)
             val *= -charge
             out[:, :, icharge] = val
         # Return integrals in `out` array
@@ -768,7 +907,19 @@ class CBasis:
 
     def moment(self, orders, origin=None):
         r"""
-        Moment integral.
+        Compute the moment integrals.
+
+        Parameters
+        ----------
+        orders : np.ndarray(N, 3, dtype=int)
+            Moment orders :math:`\left[x, y, z\right\]` to evaluate.
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
+            Integral array.
 
         Notes
         -----
@@ -783,7 +934,7 @@ class CBasis:
         try:
             for i, order in enumerate(orders):
                 if sum(order) == 0:
-                    out[:, :, i] = self.olp()
+                    out[:, :, i] = self._ovlp()
                 else:
                     out[:, :, i] = self._moments[tuple(order)](origin=origin)
         except KeyError:
@@ -796,6 +947,19 @@ class CBasis:
 def normalized_coeffs(shell):
     r"""
     Normalize the GeneralizedContractionShell coefficients.
+
+    Parameters
+    ----------
+    shell : GeneralizedContractionShell
+
+    Returns
+    -------
+    coeffs : np.ndarray(K, M, dtype=float)
+        Normalized contraction coefficients.
+
+    Notes
+    -----
+    Adapted from `https://github.com/pyscf/pyscf/blob/master/pyscf/gto/mole.py`.
 
     """
     def gaussian_int(l, a):
