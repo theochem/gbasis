@@ -22,8 +22,8 @@ def electrostatic_potential(
         \right)
         \end{equation}
 
-    where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A` is the 
-    coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}` is the 
+    where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A` is the
+    coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}` is the
     one-electron density matrix.
 
     Parameters
