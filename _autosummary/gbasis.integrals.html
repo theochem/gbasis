@@ -451,7 +451,7 @@ associated with the second index.</p>
 the given coordinate system.
 <span class="math notranslate nohighlight">\(K_cont\)</span> is the total number of contractions within the given basis set.</p>
 </dd>
-<dt>construct_array_spherical_lincomb(self, transform)<span class="classifier">np.ndarray(K_orbs, K_orbs, 3)</span></dt><dd><p>Return the integral over the angular momentum operator associated with linear combinations
+<dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, K_orbs, 3)</span></dt><dd><p>Return the integral over the angular momentum operator associated with linear combinations
 of spherical Gaussians (linear combinations of atomic orbitals).
 <span class="math notranslate nohighlight">\(K_orbs\)</span> is the number of basis functions produced after the linear combinations.</p>
 </dd>
@@ -497,7 +497,7 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.angular_momentum.angular_momentum_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.angular_momentum.</span></span><span class="sig-name descname"><span class="pre">angular_momentum_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.angular_momentum.angular_momentum_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.angular_momentum.</span></span><span class="sig-name descname"><span class="pre">angular_momentum_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.angular_momentum.angular_momentum_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the integral over <span class="math notranslate nohighlight">\(hat{L}\)</span> of the given basis set.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -507,13 +507,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -696,7 +689,7 @@ respectively.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.electron_repulsion.electron_repulsion_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.electron_repulsion.</span></span><span class="sig-name descname"><span class="pre">electron_repulsion_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'physicist'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.electron_repulsion.electron_repulsion_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.electron_repulsion.</span></span><span class="sig-name descname"><span class="pre">electron_repulsion_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'physicist'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.electron_repulsion.electron_repulsion_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the electron repulsion integrals fo the given basis set.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -706,13 +699,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 <dt>notation<span class="classifier">{“physicist”, “chemist”}</span></dt><dd><p>Convention with which the integrals are ordered.
 Default is Physicists’ notation.</p>
@@ -773,7 +759,7 @@ associated with the second index.</p>
 system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
-<dt>construct_array_spherical_lincomb(self, transform)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the kinetic energy integral associated with linear combinations of spherical
+<dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the kinetic energy integral associated with linear combinations of spherical
 Gaussians (linear combinations of atomic orbitals).
 <cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
 </dd>
@@ -818,7 +804,7 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.kinetic_energy.kinetic_energy_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.kinetic_energy.</span></span><span class="sig-name descname"><span class="pre">kinetic_energy_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.kinetic_energy.kinetic_energy_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.kinetic_energy.</span></span><span class="sig-name descname"><span class="pre">kinetic_energy_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.kinetic_energy.kinetic_energy_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return kinetic energy integral of the given basis set.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -828,13 +814,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -886,7 +865,7 @@ associated with the second index.</p>
 system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
-<dt>construct_array_lincomb(self, transform)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the moment integrals associated with the linear combinations of contractions in the
+<dt>construct_array_lincomb(self, transform, coord_type, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the moment integrals associated with the linear combinations of contractions in the
 given coordinate system.
 <cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
 </dd>
@@ -947,7 +926,7 @@ to change the order.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.moment.moment_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.moment.</span></span><span class="sig-name descname"><span class="pre">moment_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment_orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.moment.moment_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.moment.</span></span><span class="sig-name descname"><span class="pre">moment_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment_orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.moment.moment_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return moment integral of the given basis set.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -963,13 +942,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1028,7 +1000,7 @@ orbitals).
 coordinate system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
-<dt>construct_array_spherical_lincomb(self, transform)<span class="classifier">np.ndarray(K_orbs, K_orbs, 3)</span></dt><dd><p>Return the integral over the momentum operator associated with linear combinations of
+<dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, K_orbs, 3)</span></dt><dd><p>Return the integral over the momentum operator associated with linear combinations of
 spherical Gaussians (linear combinations of atomic orbitals).
 <cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
 </dd>
@@ -1074,7 +1046,7 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.momentum.momentum_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.momentum.</span></span><span class="sig-name descname"><span class="pre">momentum_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.momentum.momentum_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.momentum.</span></span><span class="sig-name descname"><span class="pre">momentum_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.momentum.momentum_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return integral over momentum operator of the given basis set.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -1084,13 +1056,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1107,7 +1072,7 @@ number of basis functions in the basis set.</p>
 <p>Module for computing the nuclear electron attraction.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.nuclear_electron_attraction.</span></span><span class="sig-name descname"><span class="pre">nuclear_electron_attraction_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_charges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.nuclear_electron_attraction.</span></span><span class="sig-name descname"><span class="pre">nuclear_electron_attraction_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_charges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the nuclear electron attraction integrals of the basis set in the Cartesian form.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.</p>
@@ -1121,13 +1086,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1174,10 +1132,10 @@ associated with the second index.</p>
 <dt>construct_array_spherical(self)<span class="classifier">np.ndarray(K_sph, K_sph)</span></dt><dd><p>Return the overlap integrals associated with spherical Gaussians (atomic orbitals).
 <cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
 </dd>
-<dt>construct_array_mix(self, coord_types, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the overlap integrals associated with the contraction in the given coordinate system.
+<dt>construct_array_mix(self, coord_types, <a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the overlap integrals associated with the contraction in the given coordinate system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
-<dt>construct_array_lincomb(self, transform)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the overlap integrals associated with the linear combinations of contractions in the
+<dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the overlap integrals associated with the linear combinations of contractions in the
 given coordinate system.
 <cite>K_orbs</cite> is the number of basis functions produced after the linear combinations.</p>
 </dd>
@@ -1220,8 +1178,35 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="gbasis.integrals.overlap.is_overlap_included">
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">is_overlap_included</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.is_overlap_included" title="Permalink to this definition">#</a></dt>
+<dd><p>Return True or False in response to whether overlap integral is required.</p>
+<div class="math notranslate nohighlight">
+\[d_{A_s;B_t} &gt; \sqrt{-\frac{\alpha_{ min(\alpha_{s,A})} +
+\alpha_{ min(\alpha_{t,B})} }{ \alpha_{ min(\alpha_{s,A})}
+ \alpha_{ min(\alpha_{t,B})} } \ln \varepsilon }\]</div>
+<p>where <span class="math notranslate nohighlight">\(d\)</span> is the cut-off distance at which shells do not interact with each other.
+<span class="math notranslate nohighlight">\(A\)</span> and <cite>B</cite> are the atoms each contraction are respectively centered on.
+:math: <cite>alpha</cite> is the gaussian exponent
+:math: <cite>s</cite> and <cite>t</cite> index the primitive gaussians in shells centered
+on atom <cite>A</cite> and <cite>B</cite> respectively.</p>
+<dl class="simple">
+<dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
+the overlap.</p>
+</dd>
+<dt>contractions_two<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the second index of
+the overlap.</p>
+</dd>
+</dl>
+<dl>
+<dt>value<span class="classifier"><cite>bool</cite></span></dt><dd><p>If overlap integral is required, return <cite>True</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.overlap.overlap_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">overlap_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.overlap_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">overlap_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.overlap_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return overlap integral of the given basis set.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -1231,13 +1216,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1344,7 +1322,7 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.overlap_asymm.overlap_integral_asymmetric">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap_asymm.</span></span><span class="sig-name descname"><span class="pre">overlap_integral_asymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_two</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type_two</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.overlap_integral_asymmetric" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap_asymm.</span></span><span class="sig-name descname"><span class="pre">overlap_integral_asymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_two</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.overlap_integral_asymmetric" title="Permalink to this definition">#</a></dt>
 <dd><p>Return overlap integrals between two basis sets.</p>
 <dl class="simple">
 <dt>basis_one<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -1362,20 +1340,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type_one<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions in <cite>basis_one</cite>.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
-</dd>
-<dt>coord_type_two<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions in <cite>basis_two</cite>.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1434,7 +1398,7 @@ associated with the second index.</p>
 <dt>construct_array_spherical(self)<span class="classifier">np.ndarray(K_sph, K_sph)</span></dt><dd><p>Return the one-electron integrals associated with spherical Gaussians (atomic orbitals).
 <cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
 </dd>
-<dt>construct_array_mix(self, coord_types, <a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the one-electron integrals associated with the contraction in the given coordinate
+<dt>construct_array_mix(self, coord_types, <a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the one-electron integrals associated with the contraction in the given coordinate
 system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
@@ -1536,7 +1500,7 @@ If <cite>points_charge</cite> is not a one-dimensional <cite>numpy</cite> array 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.point_charge.point_charge_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.point_charge.</span></span><span class="sig-name descname"><span class="pre">point_charge_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_charge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.point_charge.point_charge_integral" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.point_charge.</span></span><span class="sig-name descname"><span class="pre">point_charge_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_charge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.point_charge.point_charge_integral" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the point-charge interaction integrals of basis set in the given coordinate systems.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -1552,13 +1516,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">

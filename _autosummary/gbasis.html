@@ -516,11 +516,11 @@ be fixed, in which case, an arbitrary number of <cite>contractions</cite> should
 contractions.
 Note that multiple instances may be needed to construct the array.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+<dt>coord_type<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each GeneralizedContractionShell.
+Each entry must be one of “cartesian” or “spherical”. If multiple
+instances of GeneralizedContractionShell are given but only one string
+(“cartesian” or “spherical”) is provided in the list/tuple, all of the
+contractions will be treated according to that string.</p>
 </dd>
 <dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.</p>
 </dd>
@@ -727,11 +727,11 @@ Transformation is applied to the left.
 Rows correspond to the linear combinations (i.e. MO) and the columns correspond to the
 contractions (i.e. AO).</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+<dt>coord_type<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each GeneralizedContractionShell.
+Each entry must be one of “cartesian” or “spherical”. If multiple
+instances of GeneralizedContractionShell are given but only one string
+(“cartesian” or “spherical”) is provided in the list/tuple, all of the
+contractions will be treated according to that string.</p>
 </dd>
 <dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
 These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
@@ -748,8 +748,7 @@ linear combinations.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not one of “cartesian”, “spherical”, or a list/tuple of these
-strings.</p>
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not a list/tuple of the strings ‘cartesian’ or ‘spherical’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -925,11 +924,11 @@ Transformation is applied to the left.
 Rows correspond to the linear combinationes (i.e. MO) and the columns correspond to the
 contractions (i.e. AO).</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each GeneralizedContractionShell instance.</p>
+<dt>coord_type<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each GeneralizedContractionShell.
+Each entry must be one of “cartesian” or “spherical”. If multiple
+instances of GeneralizedContractionShell are given but only one string
+(“cartesian” or “spherical”) is provided in the list/tuple, all of the
+contractions will be treated according to that string.</p>
 </dd>
 <dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
 These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
@@ -943,8 +942,7 @@ for details on the keyword arguments.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not one of “cartesian”, “spherical”, or a list/tuple of these
-strings.</p>
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not a list/tuple of the strings ‘cartesian’ or ‘spherical’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1145,17 +1143,17 @@ If None, then transformation is skipped.</p>
 with the second index.
 If None, then transformation is skipped.</p>
 </dd>
-<dt>coord_type_one<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions associated with the first index.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+<dt>coord_type_one<span class="classifier">list/tuple of string</span></dt><dd><p>Types of the coordinate system for the contractions associated with the first index.
+Each entry must be one of “cartesian” or “spherical”. If multiple
+instances of GeneralizedContractionShell are given but only one string
+(“cartesian” or “spherical”) is provided in the list/tuple, all of the
+contractions will be treated according to that string.</p>
 </dd>
-<dt>coord_type_two<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions associated with the second index.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+<dt>coord_type_two<span class="classifier">list/tuple of string</span></dt><dd><p>Types of the coordinate system for the contractions associated with the second index.
+Each entry must be one of “cartesian” or “spherical”. If multiple
+instances of GeneralizedContractionShell are given but only one string
+(“cartesian” or “spherical”) is provided in the list/tuple, all of the
+contractions will be treated according to that string.</p>
 </dd>
 <dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
 These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
@@ -1176,8 +1174,7 @@ functions produced by linear combinations of the spherical contractions associat
 </dd>
 </dl>
 <dl class="simple">
-<dt>TypeError</dt><dd><p>If <cite>coord_type_one</cite> and <cite>coord_type_two</cite> are not one of “cartesian”, “spherical”, or a
-list/tuple of these strings.</p>
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not a list/tuple of the strings ‘cartesian’ or ‘spherical’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1386,11 +1383,11 @@ Transformation is applied to the left.
 Rows correspond to the linear combinations (i.e. MO) and the columns correspond to the
 contractions (i.e. AO).</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
+<dt>coord_type<span class="classifier">list/tuple of str</span></dt><dd><p>Types of the coordinate system for each GeneralizedContractionShell.
+Each entry must be one of “cartesian” or “spherical”. If multiple
+instances of GeneralizedContractionShell are given but only one string
+(“cartesian” or “spherical”) is provided in the list/tuple, all of the
+contractions will be treated according to that string.</p>
 </dd>
 <dt>kwargs<span class="classifier">dict</span></dt><dd><p>Other keyword arguments that will be used to construct the array.
 These keyword arguments are passed directly to <cite>construct_array_spherical</cite>, which will
@@ -1407,8 +1404,7 @@ combinations.</p>
 </dd>
 </dl>
 <dl class="simple">
-<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not one of “cartesian”, “spherical”, or a list/tuple of these
-strings.</p>
+<dt>TypeError</dt><dd><p>If <cite>coord_type</cite> is not a list/tuple of the strings ‘cartesian’ or ‘spherical’.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1483,7 +1479,7 @@ respect to the swapping of the first two axes.</p>
 <p>Data class for contractions of Gaussian-type primitives.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ovr_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data class for generalized contractions.</p>
 <p>Generalized contractions are defined to be a set of contractions that have the same angular
@@ -1552,6 +1548,8 @@ Property of <cite>GeneralizedContractionShell</cite>.</p>
 <dt>coeffs<span class="classifier">np.ndarray(K, M)</span></dt><dd><p>Contraction coefficients, <span class="math notranslate nohighlight">\(\{d_{ij}\}\)</span>, of the primitives.
 First axis corresponds to the primitive and the second axis corresponds to the segmented
 contraction shell.</p>
+</dd>
+<dt>coord_type<span class="classifier">str</span></dt><dd><p>Type of the coordinate system used to specify the contractions.</p>
 </dd>
 <dt>norm_cont<span class="classifier">np.ndarray(M, L)</span></dt><dd><p>Normalization constants of the Cartesian contractions of different angular momentum
 components and segmented contraction shells.</p>
@@ -1667,6 +1665,16 @@ segmented contraction shell.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.coord_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coord_type</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.coord_type" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the coordinate type.</p>
+<dl class="simple">
+<dt>coord_type<span class="classifier">str</span></dt><dd><p>Coordinate type of the contraction.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.exps">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exps</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.exps" title="Permalink to this definition">#</a></dt>
 <dd><p>Exponents of the Gaussian primitives.</p>
@@ -1728,6 +1736,26 @@ momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell +
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.ovr_screen">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ovr_screen</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.ovr_screen" title="Permalink to this definition">#</a></dt>
+<dd><p>Flag for performing overlap screening.</p>
+<dl class="simple">
+<dt>ovr_screen<span class="classifier">bool</span></dt><dd><p>Flag for using overlap screening.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.ovr_tol">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ovr_tol</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.ovr_tol" title="Permalink to this definition">#</a></dt>
+<dd><p>Tolerance used in overlap screening.</p>
+<dl class="simple">
+<dt>ovr_stol<span class="classifier">float</span></dt><dd><p>Tolerance for using overlap screening</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1736,7 +1764,7 @@ momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell +
 <p>Parsers for reading basis set files.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.parsers.make_contractions">
-<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">make_contractions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.make_contractions" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">make_contractions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.make_contractions" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the contractions that correspond to the given atoms for the given basis.</p>
 <dl class="simple">
 <dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Output of the parsers from gbasis.parsers.</p>
@@ -1744,6 +1772,17 @@ momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell +
 <dt>atoms<span class="classifier">N-list/tuple of str</span></dt><dd><p>Atoms at which the contractions are centered.</p>
 </dd>
 <dt>coords<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Coordinates of each atom.</p>
+</dd>
+<dt>coord_types<span class="classifier">{“cartesian”/”c”, list/tuple of “cartesian”/”c” or “spherical”/”p”, “spherical”/”p”}</span></dt><dd><p>Types of the coordinate system for the contractions.
+If “cartesian” or “c”, then all of the contractions are treated as Cartesian contractions.
+If “spherical” or “p”, then all of the contractions are treated as spherical contractions.
+If list/tuple, then each entry must be a “cartesian” (or “c”) or “spherical” (or “p”) to specify the
+coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
+Default value is “spherical”.</p>
+</dd>
+<dt>ovr<span class="classifier">bool</span></dt><dd><p>Flag for performing overlap screening between contractions.</p>
+</dd>
+<dt>tol<span class="classifier">float</span></dt><dd><p>Tolerance used in overlap screening.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1753,7 +1792,9 @@ Contractions are ordered in the same order as in the values of <cite>basis_dict<
 </dl>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>atoms</cite> is not a list or tuple of strings.
-If <cite>coords</cite> is not a two-dimensional <cite>numpy</cite> array with 3 columns.</p>
+If <cite>coords</cite> is not a two-dimensional <cite>numpy</cite> array with 3 columns.
+If <cite>tol</cite> is not a float.
+If <cite>ovr</cite> is not boolean</p>
 </dd>
 <dt>ValueError</dt><dd><p>If the length of atoms is not equal to the number of rows of <cite>coords</cite>.</p>
 </dd>
@@ -1989,17 +2030,12 @@ To learn more, see <a class="github reference external" href="https://github.com
 <dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Basis set object used within the <cite>gbasis</cite> module.
 <cite>GeneralizedContractionShell</cite> corresponds to the <cite>Shell</cite> object within <cite>iodata.basis</cite>.</p>
 </dd>
-<dt>coord_types<span class="classifier">list of str</span></dt><dd><p>A list of strings, each on being either <code class="docutils literal notranslate"><span class="pre">&quot;cartesian&quot;</span></code> or
-<code class="docutils literal notranslate"><span class="pre">&quot;spherical&quot;</span></code>, which needs to be passed into integral and eval
-functions. This part of the basis set is not stored in the <code class="docutils literal notranslate"><span class="pre">basis</span></code>
-return value. Users need to keep track of this in a separate variable.</p>
-</dd>
 </dl>
 <dl class="simple">
-<dt>NotImplementedError</dt><dd><p>If any contractions in the given <cite>IOData</cite> instance is spherical.</p>
-</dd>
 <dt>ValueError</dt><dd><p>If <cite>mol</cite> is not an <cite>iodata.iodata.IOData</cite> instance.
 If the primitive normalization scheme of the shells in <cite>IOData</cite> instance is not “L2”.</p>
+</dd>
+<dt>AssertionError</dt><dd><p>If generalized contractions are found in the shells in <cite>IOData</cite> instance.</p>
 </dd>
 </dl>
 <p>The version of the module <cite>iodata</cite> must be greater than 0.1.7.</p>

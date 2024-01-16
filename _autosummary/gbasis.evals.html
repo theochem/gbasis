@@ -412,7 +412,7 @@ document.write(`
 <p>Density Evaluation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the density of the given basis set at the given points.</p>
 <dl class="simple">
 <dt>one_density_matrix<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
@@ -432,12 +432,8 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>threshold<span class="classifier">float, optional</span></dt><dd><p>The absolute value below which negative density values are acceptable. Any negative density
+value with an absolute value smaller than this threshold will be set to zero.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -448,7 +444,7 @@ Default value is “spherical”.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_gradient">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_gradient" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_gradient" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the gradient of the density evaluated at the given points.</p>
 <dl class="simple">
 <dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
@@ -468,12 +464,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -484,7 +478,7 @@ Default value is “spherical”.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_hessian">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_hessian" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_hessian" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the Hessian of the density evaluated at the given points.</p>
 <dl class="simple">
 <dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
@@ -504,12 +498,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -523,7 +515,7 @@ was calculated.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_laplacian">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_laplacian" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_laplacian" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the Laplacian of the density evaluated at the given points.</p>
 <dl class="simple">
 <dt>one_density_matrix<span class="classifier">np.ndarray(K_orb, K_orb)</span></dt><dd><p>One-electron density matrix in terms of the given basis set.
@@ -543,12 +535,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -586,7 +576,7 @@ rows of the orbital evaluations.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_deriv_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_density" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_density" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the derivative of density of the given transformed basis set at the given points.</p>
 <dl class="simple">
 <dt>orders<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative.</p>
@@ -608,12 +598,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -624,7 +612,7 @@ Default value is “spherical”.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_deriv_reduced_density_matrix">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_reduced_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_reduced_density_matrix" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_reduced_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_reduced_density_matrix" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the derivative of the first-order reduced density matrix at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\left.
@@ -665,12 +653,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -681,7 +667,7 @@ Default value is “spherical”.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_general_kinetic_energy_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_general_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_general_kinetic_energy_density" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_general_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_general_kinetic_energy_density" title="Permalink to this definition">#</a></dt>
 <dd><p>Return evaluations of general form of the kinetic energy density at the given points.</p>
 <div class="math notranslate nohighlight">
 \[t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)\]</div>
@@ -706,12 +692,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -727,7 +711,7 @@ grid points.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_posdef_kinetic_energy_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_posdef_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_posdef_kinetic_energy_density" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_posdef_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_posdef_kinetic_energy_density" title="Permalink to this definition">#</a></dt>
 <dd><p>Return evaluations of positive definite kinetic energy density at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}t_+ (\mathbf{r}_n)
@@ -751,18 +735,18 @@ are evaluated.
 Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
 components.</p>
 </dd>
-<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont), optional</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
 combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
-and index 0 of the array for contractions.
-Default is no transformation.</p>
+and index 0 of the array for contractions.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”, optional</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
+</dd>
+<dt>threshold<span class="classifier">float, optional</span></dt><dd><p>The absolute value below which negative density values are acceptable. Any negative density
+value with an absolute value smaller than this threshold will be set to zero.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -778,7 +762,7 @@ Default value is “spherical”.</p>
 <p>Module for computing electrostatic potential integrals.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.electrostatic_potential.electrostatic_potential">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.electrostatic_potential.</span></span><span class="sig-name descname"><span class="pre">electrostatic_potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_charges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.electrostatic_potential.electrostatic_potential" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.electrostatic_potential.</span></span><span class="sig-name descname"><span class="pre">electrostatic_potential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_charges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.electrostatic_potential.electrostatic_potential" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the electrostatic potentials of the basis set in the Cartesian form.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -803,12 +787,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, “spherical”, list/tuple of “cartesian” or “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.</p>
 </dd>
 <dt>threshold_dist<span class="classifier">{float, 0.0}</span></dt><dd><p>Threshold for rejecting nuclei whose distances to the points are less than the provided
 value. i.e. nuclei that are closer to the point than the threshold are discarded when
@@ -922,7 +900,7 @@ down to this method, all of the mentioned methods must be called with the keywor
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.eval.evaluate_basis">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval.</span></span><span class="sig-name descname"><span class="pre">evaluate_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.evaluate_basis" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval.</span></span><span class="sig-name descname"><span class="pre">evaluate_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.evaluate_basis" title="Permalink to this definition">#</a></dt>
 <dd><p>Evaluate the basis set in the given coordinate system at the given points.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -937,13 +915,6 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1006,7 +977,7 @@ given coordinate system.
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the array associated with a set of contracted Cartesian Gaussians.</p>
 <dl class="simple">
 <dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an
@@ -1018,6 +989,12 @@ Rows correspond to the points and columns correspond to the <span class="math no
 components.</p>
 </dd>
 <dt>orders<span class="classifier">np.ndarray(3,)</span></dt><dd><p>Orders of the derivative.</p>
+</dd>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general”
+makes reference to general implementation of any order derivative
+function (_eval_deriv_contractions()) and “direct” makes reference to specific
+implementation of first and second order derivatives for generalized
+contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1050,7 +1027,7 @@ down to this method, all of the mentioned methods must be called with the keywor
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.eval_deriv.evaluate_deriv_basis">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval_deriv.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.evaluate_deriv_basis" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval_deriv.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.evaluate_deriv_basis" title="Permalink to this definition">#</a></dt>
 <dd><p>Evaluate the derivative of the basis set in the given coordinate system at the given points.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
@@ -1071,12 +1048,10 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each GeneralizedContractionShell instance.
-Default value is “spherical”.</p>
+<dt>deriv_type<span class="classifier">“general” or “direct”</span></dt><dd><p>Specification of derivative of contraction function in _deriv.py. “general” makes reference
+to general implementation of any order derivative function (_eval_deriv_contractions())
+and “direct” makes reference to specific implementation of first and second order
+derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -1095,7 +1070,7 @@ evaluated at the given points.
 <p>Module for computing properties related to the stress tensor.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.stress_tensor.evaluate_ehrenfest_force">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_ehrenfest_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_ehrenfest_force" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_ehrenfest_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_ehrenfest_force" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the Ehrenfest force.</p>
 <p>Ehrenfest force is the negative of the divergence of the stress tensor:</p>
 <div class="math notranslate nohighlight">
@@ -1152,13 +1127,6 @@ Default value is 1.</p>
 <dt>beta<span class="classifier">{int, float}</span></dt><dd><p>Second parameter of the stress tensor.
 Default value is 0.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
-</dd>
 </dl>
 <dl class="simple">
 <dt>ehrenfest_force<span class="classifier">np.ndarray(N, 3)</span></dt><dd><p>Ehrenfest force of the given density matrix evaluated at the given coordinates.</p>
@@ -1173,7 +1141,7 @@ If <cite>beta</cite> is not an integer or float.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_ehrenfest_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_ehrenfest_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the Ehrenfest Hessian.</p>
 <p>Ehrenfest Hessian is the gradient of the Ehrenfest force:</p>
 <div class="math notranslate nohighlight">
@@ -1240,13 +1208,6 @@ Default value is 1.</p>
 <dt>beta<span class="classifier">{int, float}</span></dt><dd><p>Second parameter of the stress tensor.
 Default value is 0.</p>
 </dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
-</dd>
 <dt>symmetric<span class="classifier">{True, False}</span></dt><dd><p>Flag for symmetrizing the Hessian.
 If True, then the Hessian is symmetrized by averaging it with its transpose.
 Default value is False.</p>
@@ -1266,7 +1227,7 @@ If <cite>beta</cite> is not an integer or float.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.stress_tensor.evaluate_stress_tensor">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_stress_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spherical'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_stress_tensor" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.stress_tensor.</span></span><span class="sig-name descname"><span class="pre">evaluate_stress_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.stress_tensor.evaluate_stress_tensor" title="Permalink to this definition">#</a></dt>
 <dd><p>Return the stress tensor evaluated at the given coordinates.</p>
 <p>Stress tensor is defined here as:</p>
 <div class="math notranslate nohighlight">
@@ -1324,13 +1285,6 @@ Default value is 1.</p>
 </dd>
 <dt>beta<span class="classifier">{int, float}</span></dt><dd><p>Second parameter of the stress tensor.
 Default value is 0.</p>
-</dd>
-<dt>coord_type<span class="classifier">{“cartesian”, list/tuple of “cartesian” or “spherical”, “spherical”}</span></dt><dd><p>Types of the coordinate system for the contractions.
-If “cartesian”, then all of the contractions are treated as Cartesian contractions.
-If “spherical”, then all of the contractions are treated as spherical contractions.
-If list/tuple, then each entry must be a “cartesian” or “spherical” to specify the
-coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
-Default value is “spherical”.</p>
 </dd>
 </dl>
 <dl class="simple">
