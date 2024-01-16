@@ -38,6 +38,10 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["gbasis"]  # package names should match these glob patterns (["*"] by default)
+
 [project.urls]
 Documentation = "https://gbasis.qcdevs.org"
 Issues = "https://github.com/theochem/gbasis/issues"
