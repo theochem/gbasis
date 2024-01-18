@@ -17,27 +17,27 @@ class GeneralizedContractionShell:
 
     .. math::
 
-        g_i (\mathbf{r} | \vec{a}, \vec{R}_A) =
-        N_g (\alpha, \vec{a})
+        g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a}) =
+        N_g (\alpha, \mathbf{a})
         (x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}
-        \exp{-\alpha_i |\vec{r} - \vec{R}_A|^2}
+        \exp{-\alpha_i |\mathbf{r} - \mathbf{R}_A|^2}
 
-    where :math:`\vec{a} = (a_x, a_y, az)` is the angular momentum components in Cartesian
-    coordinates, :math:`\vec{R}_A` is the coordinate of the center :math:`A`, :math:`N_g` is the
+    where :math:`\mathbf{a} = (a_x, a_y, az)` is the angular momentum components in Cartesian
+    coordinates, :math:`\mathbf{R}_A` is the coordinate of the center :math:`A`, :math:`N_g` is the
     normalization constant of the primitive, and :math:`\alpha_i` is the exponent of the primitive.
 
     A **Cartesian contraction** is a linear combination of Cartesian primitives:
 
     .. math::
 
-        \phi_{\vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}} (\mathbf{r}) =
-        N_{\phi} (\vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_i g_i (\vec{r} | \vec{a}, \vec{R}_A)
+        \phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) =
+        N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_i g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})
 
     where :math:`d_i` is the contraction coefficient of the primitive and :math:`N_{\phi}` is the
     normalization constant of the contraction.
 
     Note that the Cartesian contraction depends on the angular momentum components in the Cartesian
-    coordinate, :math:`\vec{a}`. At a given angular momentum, :math:`\ell`, we have
+    coordinate, :math:`\mathbf{a}`. At a given angular momentum, :math:`\ell`, we have
     :math:`\frac{(\ell + 1) (\ell + 2)}{2}` different components. We can linearly transform these
     contractions to obtain the :math:`2 \ell + 1` **spherical contractions**. Since we can convert
     the contractions in one coordinate system to another, we use the term **contraction** to
@@ -62,8 +62,8 @@ class GeneralizedContractionShell:
 
     .. math::
 
-        \phi_{j, \vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}} (\mathbf{r}) =
-        N_{\phi} (\vec{a}, \vec{R}_A, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)
+        \phi_j (\mathbf{r} | \mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) =
+        N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_{ij} g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})
 
     Attributes
     ----------
@@ -73,11 +73,11 @@ class GeneralizedContractionShell:
         Angular momentum of the contractions.
 
         .. math::
-            \ell = \sum_i (\vec{a})_i = a_x + a_y + a_z
+            \ell = \sum_i (\mathbf{a})_i = a_x + a_y + a_z
 
     angmom_components_cart : np.ndarray(L, 3)
         The x, y, and z components of the angular momentum vectors
-        (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
+        (:math:`\mathbf{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
         `L` is the number of Cartesian contracted Gaussian functions for the given angular
         momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`.
         Property of `GeneralizedContractionShell`.
@@ -123,7 +123,7 @@ class GeneralizedContractionShell:
         angmom : int
             Angular momentum of the set of contractions.
 
-            :math:`\sum_i \vec{a} = a_x + a_y + a_z`
+            :math:`\sum_i \mathbf{a} = a_x + a_y + a_z`
 
         coord : np.ndarray(3,)
             Coordinate of the center of the contractions.
@@ -229,7 +229,7 @@ class GeneralizedContractionShell:
         angmom : int
             Angular momentum of the set of contractions.
 
-            :math:`\sum_i (\vec{a})_i = a_x + a_y + a_z`
+            :math:`\sum_i (\mathbf{a})_i = a_x + a_y + a_z`
 
         """
         return self._angmom
@@ -243,7 +243,7 @@ class GeneralizedContractionShell:
         angmom : int
             Angular momentum of the set of contractions.
 
-            :math:`\sum_i (\vec{a})_i = a_x + a_y + a_z`
+            :math:`\sum_i (\mathbf{a})_i = a_x + a_y + a_z`
 
         Raises
         ------
@@ -365,7 +365,7 @@ class GeneralizedContractionShell:
         -------
         angmom_components_cart : np.ndarray(L, 3)
             The x, y, and z components of the angular momentum vectors
-            (:math:`\vec{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
+            (:math:`\mathbf{a} = (a_x, a_y, a_z)` where :math:`a_x + a_y + a_z = \ell`).
             `L` is the number of Cartesian contracted Gaussian functions for the given
             angular momentum, i.e. :math:`(\ell + 1) * (\ell + 2) / 2`
 
@@ -439,7 +439,7 @@ class GeneralizedContractionShell:
         For a Cartesian primitive with exponent :math:`\alpha_i`, the normalization constant is:
 
         .. math::
-           N(\alpha_i, \vec{a}) = \sqrt {
+           N(\alpha_i, \mathbf{a}) = \sqrt {
            \left(\frac{2\alpha_i}{\pi}\right)^\frac{3}{2}
            \frac{(4\alpha_i)^{a_x + a_y + a_z}}{(2a_x - 1)!! (2a_y - 1)!! (2a_z - 1)!!}}
 
