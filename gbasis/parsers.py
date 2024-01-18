@@ -97,7 +97,7 @@ def parse_gbs(gbs_basis_file):
 
     """
     # pylint: disable=R0914
-    with open(gbs_basis_file, "r") as basis_fh:
+    with open(gbs_basis_file) as basis_fh:
         gbs_basis = basis_fh.read()
     # splits file into 'element', 'basis stuff', 'element',' basis stuff'
     # e.g., ['H','stuff with exponents & coefficients\n', 'C', 'stuff with etc\n']
