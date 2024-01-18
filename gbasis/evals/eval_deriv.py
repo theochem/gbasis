@@ -152,7 +152,7 @@ def evaluate_deriv_basis(
     .. math::
     
         \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
-        \phi(\mathbf{r}_n | \mathbf{R}_{A}, \mathbf{a}_j, \mathbf{d}_k, \boldsymbol{\alpha})
+        \phi (\mathbf{r})
     
     where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z, 
     :math:`\phi` is the basis function (a generalized contraction shell), and :math:`\mathbf{r}_n` are
