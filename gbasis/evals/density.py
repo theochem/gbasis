@@ -498,12 +498,12 @@ def evaluate_density_hessian(
             \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n) &
             \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
             \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\\\
-            \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
+            \frac{\partial^2}{\partial y \partial x} \rho(\mathbf{r}_n) &
             \frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)&
             \frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r}_n)\\\\
-            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n) &
-            \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)&
-            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\
+            \frac{\partial^2}{\partial z \partial x} \rho(\mathbf{r}_n) &
+            \frac{\partial^2}{\partial z \partial y} \rho(\mathbf{r}_n)&
+            \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)\\
         \end{bmatrix}\\
         \end{equation}
 

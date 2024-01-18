@@ -855,19 +855,19 @@ output = evaluate_density_laplacian(
 \end{itemize}
 \subsubsection{Hessian of density}
 \begin{equation}
-  H[\rho(\mathbf{r}_n)]
-  =
-  \begin{bmatrix}
-    \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n) &
-    \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
-    \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\\\
-    \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
-    \frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)&
-    \frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r}_n)\\\\
-    \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n) &
-    \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)&
-    \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\
-  \end{bmatrix}\\
+	H[\rho(\mathbf{r}_n)]
+	=
+	\begin{bmatrix}
+		\frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n) &
+		\frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
+		\frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\\\
+		\frac{\partial^2}{\partial y \partial x} \rho(\mathbf{r}_n) &
+		\frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)&
+		\frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r}_n)\\\\
+		\frac{\partial^2}{\partial z \partial x} \rho(\mathbf{r}_n) &
+		\frac{\partial^2}{\partial z \partial y} \rho(\mathbf{r}_n)&
+		\frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)\\
+	\end{bmatrix}\\
 \end{equation}
 
 Example:
