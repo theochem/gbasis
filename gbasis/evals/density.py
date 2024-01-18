@@ -67,9 +67,9 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
 
     .. math::
 
-        \rho(\mathbf{r}_n) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}_n) \phi_j(\mathbf{r}_n)
+        \rho(\mathbf{r}) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}) \phi_j(\mathbf{r})
 
-    where :math:`\mathbf{r}_n` is the point at which the density is evaluated, :math:`\gamma_{ij}`
+    where :math:`\mathbf{r}` is the point at which the density is evaluated, :math:`\gamma_{ij}`
     is the one-electron density matrix, and :math:`\phi_i` is the :math:`i`-th basis function.
 
     Parameters
@@ -212,14 +212,14 @@ def evaluate_deriv_density(
     .. math::
         \begin{align}
             &\frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
-            \rho(\mathbf{r}_n)\\
+            \rho(\mathbf{r})\\\\
             &=
             \sum_{l_x=0}^{L_x} \sum_{l_y=0}^{L_y} \sum_{l_z=0}^{L_z}
             \binom{L_x}{l_x} \binom{L_y}{l_y} \binom{L_z}{l_z}
             \sum_{ij} \gamma_{ij}
-            \frac{\partial^{l_x + l_y + l_z} \rho(\mathbf{r}_n)}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
+            \frac{\partial^{l_x + l_y + l_z} \rho(\mathbf{r})}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
             \frac{
-                \partial^{L_x + L_y + L_z - l_x - l_y - l_z} \rho(\mathbf{r}_n)
+                \partial^{L_x + L_y + L_z - l_x - l_y - l_z} \rho(\mathbf{r})
             }{
                 \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
             }
@@ -314,12 +314,12 @@ def evaluate_density_gradient(
 
     .. math::
         \begin{equation}
-            \nabla \rho(\mathbf{r}_n)
+            \nabla \rho(\mathbf{r})
             =
             \begin{bmatrix}
-            \frac{\partial}{\partial x} \rho(\mathbf{r}_n)\\\\
-            \frac{\partial}{\partial y} \rho(\mathbf{r}_n)\\\\
-            \frac{\partial}{\partial z} \rho(\mathbf{r}_n)
+            \frac{\partial}{\partial x} \rho(\mathbf{r})\\\\
+            \frac{\partial}{\partial y} \rho(\mathbf{r})\\\\
+            \frac{\partial}{\partial z} \rho(\mathbf{r})
             \end{bmatrix}\\
         \end{equation}
 
@@ -392,11 +392,11 @@ def evaluate_density_laplacian(
 
     .. math::
         \begin{equation}
-            \nabla^2 \rho(\mathbf{r}_n)
+            \nabla^2 \rho(\mathbf{r})
             =
-            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n)
-            + \frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)
-            + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)
+            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r})
+            + \frac{\partial^2}{\partial y^2} \rho(\mathbf{r})
+            + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r})
         \end{equation}
 
     Parameters
@@ -492,18 +492,18 @@ def evaluate_density_hessian(
 
     .. math::
         \begin{equation}
-        H[\rho(\mathbf{r}_n)]
+        H[\rho(\mathbf{r})]
         =
         \begin{bmatrix}
-            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}_n) &
-            \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}_n) &
-            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r}_n)\\\\
-            \frac{\partial^2}{\partial y \partial x} \rho(\mathbf{r}_n) &
-            \frac{\partial^2}{\partial y^2} \rho(\mathbf{r}_n)&
-            \frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r}_n)\\\\
-            \frac{\partial^2}{\partial z \partial x} \rho(\mathbf{r}_n) &
-            \frac{\partial^2}{\partial z \partial y} \rho(\mathbf{r}_n)&
-            \frac{\partial^2}{\partial z^2} \rho(\mathbf{r}_n)\\
+            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r})\\\\
+            \frac{\partial^2}{\partial y \partial x} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial y^2} \rho(\mathbf{r})&
+            \frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r})\\\\
+            \frac{\partial^2}{\partial z \partial x} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial z \partial y} \rho(\mathbf{r})&
+            \frac{\partial^2}{\partial z^2} \rho(\mathbf{r})\\
         \end{bmatrix}\\
         \end{equation}
 
@@ -704,7 +704,7 @@ def evaluate_general_kinetic_energy_density(
 
     .. math::
 
-        t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)
+        t_{\alpha} (\mathbf{r}) = t_+(\mathbf{r}) + \alpha \nabla^2 \rho(\mathbf{r})
 
     where :math:`t_+` is the positive definite kinetic energy density.
 
