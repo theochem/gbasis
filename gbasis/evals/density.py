@@ -629,15 +629,17 @@ def evaluate_posdef_kinetic_energy_density(
 
     .. math::
 
-        t_+ (\mathbf{r}_n)
+        \begin{split}
+        t_+ (\mathbf{r})
         &= \frac{1}{2} \left.
           \nabla_{\mathbf{r}} \cdot \nabla_{\mathbf{r}'} \gamma(\mathbf{r}, \mathbf{r}')
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}}\\
         &= \frac{1}{2} \left(
           \frac{\partial^2}{\partial x \partial x'} \gamma(\mathbf{r}, \mathbf{r}')
           + \frac{\partial^2}{\partial y \partial y'} \gamma(\mathbf{r}, \mathbf{r}')
           + \frac{\partial^2}{\partial z \partial z'} \gamma(\mathbf{r}, \mathbf{r}')
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}}\\
+        \end{split}
 
     Parameters
     ----------
