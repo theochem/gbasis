@@ -1054,7 +1054,8 @@ class CBasis:
             Integral array.
 
         """
-        return self._amom(origin=origin)
+        raise NotImplementedError("Angular momentum integral doesn't work; see Issue #149")
+        # return self._amom(origin=origin)
 
     def point_charge(self, point_coords, point_charges):
         r"""
