@@ -939,7 +939,7 @@ class CBasis:
 
             # Transpose integrals in `out` array to proper notation
             if physicist:
-                out = out.transpose(0, 2, 1, 3)
+                out = out.transpose(0, 2, 1, 3, *range(4, out.ndim))
 
             # Return normalized integrals
             if self.coord_type == "cartesian":
@@ -1123,6 +1123,76 @@ class CBasis:
             )
         # Return integrals in `out` array
         return out
+
+    def grad_overlap(self):
+        r"""
+        Compute the nuclear gradient of the overlap integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, 3, dtype=float)
+            Gradient array.
+
+        """
+        # Allocate output array
+        d_ovlp = np.zeros((self.nbfn, self.nbfn, self.natm, 3))
+        # Compute nuclear gradient
+        d_s = self._d_ovlp()
+        for iatm, icoords in enumerate(self.atcoords):
+            start, end = self._atm_offs[iatm:iatm + 2]
+            d_ovlp[start:end, :, iatm, :] -= d_s[start:end, :, :]
+            d_ovlp[:, :, iatm, :] += d_ovlp[:, :, iatm, :].transpose(1, 0, 2)
+        # Return output array
+        return d_ovlp
+
+    def grad_core_hamiltonian(self):
+        r"""
+        Compute the nuclear gradient of the core Hamiltonian (T + V) integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, 3, dtype=float)
+            Gradient array.
+
+        """
+        # Allocate output array
+        d_hcore = np.zeros((self.nbfn, self.nbfn, self.natm, 3))
+        # Compute nuclear gradient
+        d_h = self._d_kin()
+        d_h += self._d_nuc()
+        for iatm, (iz, icoords) in enumerate(zip(self.atnums, self.atcoords)):
+            start, end = self._atm_offs[iatm:iatm + 2]
+            d_rinv = -iz * self._d_rinv(inv_origin=icoords)
+            d_rinv[start:end, :, :] -= d_h[start:end, :, :]
+            d_rinv += d_rinv.transpose(1, 0, 2)
+            d_hcore[:, :, iatm, :] = d_rinv
+        # Return output array
+        return d_hcore
+
+    def grad_electron_repulsion(self):
+        r"""
+        Compute the nuclear gradient of the electron repulsion integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, N, 3, dtype=float)
+            Gradient array.
+
+        """
+        # Allocate output array
+        d_eri = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn, self.natm, 3))
+        # Compute nuclear gradient
+        d_i = self._d_eri()
+        for iatm, icoords in enumerate(self.atcoords):
+            start, end = self._atm_offs[iatm:iatm + 2]
+            d_eri[start:end, :, :, :, iatm, :] -= d_i[start:end, :, :, :, :]
+            d_eri[:, :, :, :, iatm, :] += d_eri[:, :, :, :, iatm, :].transpose(2, 3, 0, 1, 4)
+            d_eri[:, :, :, :, iatm, :] += d_eri[:, :, :, :, iatm, :].transpose(1, 0, 2, 3, 4)
+            d_eri[:, :, :, :, iatm, :] += d_eri[:, :, :, :, iatm, :].transpose(0, 1, 3, 2, 4)
+            d_eri[:, :, :, :, iatm, :] += d_eri[:, :, :, :, iatm, :].transpose(1, 0, 3, 2, 4)
+        d_eri *= 0.25
+        # Return output array
+        return d_eri
 
 
 def normalized_coeffs(shell):
