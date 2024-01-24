@@ -33,6 +33,14 @@ gbasis.integrals.kinetic\_energy module
    :undoc-members:
    :show-inheritance:
 
+gbasis.integrals.libcint module
+-------------------------------
+
+.. automodule:: gbasis.integrals.libcint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gbasis.integrals.moment module
 ------------------------------
 

@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
@@ -38,9 +38,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
-  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -82,7 +82,6 @@ const thebe_selector_output = ".output, .cell_output"
   <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -122,13 +121,10 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
-
-  <header>
   
-    <div class="bd-header navbar navbar-expand-lg bd-navbar">
-    </div>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
-  </header>
 
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
@@ -428,6 +424,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.angular_momentum">gbasis.integrals.angular_momentum module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.electron_repulsion">gbasis.integrals.electron_repulsion module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.kinetic_energy">gbasis.integrals.kinetic_energy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#gbasis-integrals-libcint-module">gbasis.integrals.libcint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.moment">gbasis.integrals.moment module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.momentum">gbasis.integrals.momentum module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gbasis.integrals.html#module-gbasis.integrals.nuclear_electron_attraction">gbasis.integrals.nuclear_electron_attraction module</a></li>
@@ -1479,7 +1476,7 @@ respect to the swapping of the first two axes.</p>
 <p>Data class for contractions of Gaussian-type primitives.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ovr_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ovr_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data class for generalized contractions.</p>
 <p>Generalized contractions are defined to be a set of contractions that have the same angular
@@ -1540,8 +1537,6 @@ Property of <cite>GeneralizedContractionShell</cite>.</p>
 <dt>angmom_components_sph<span class="classifier">tuple of int</span></dt><dd><p>Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
 transforming the contractions from the Cartesian to spherical coordinate system.
 Property of <cite>GeneralizedContractionShell</cite>.</p>
-</dd>
-<dt>charge<span class="classifier">float</span></dt><dd><p>Charge at the center of the Gaussian primitives.</p>
 </dd>
 <dt>exps<span class="classifier">np.ndarray(K,)</span></dt><dd><p>Exponents of the primitives, <span class="math notranslate nohighlight">\(\{\alpha_i\}_{i=1}^K\)</span>.</p>
 </dd>
@@ -1680,6 +1675,19 @@ segmented contraction shell.</p>
 <dd><p>Exponents of the Gaussian primitives.</p>
 <dl class="simple">
 <dt>exps<span class="classifier">np.ndarray(K,)</span></dt><dd><p>Exponents of the primitives, <span class="math notranslate nohighlight">\(\{\alpha_i\}_{i=1}^K\)</span>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.icenter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icenter</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.icenter" title="Permalink to this definition">#</a></dt>
+<dd><p>Atom center index for the contractions.</p>
+<dl class="simple">
+<dt>Returns</dt><dd><dl class="simple">
+<dt>icenter<span class="classifier">int or None</span></dt><dd><p>Index for the corresponding atom center of the contractions.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -2190,8 +2198,8 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
