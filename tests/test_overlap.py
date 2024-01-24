@@ -222,12 +222,18 @@ def test_overlap_screening_vs_without_screening():
 
     # Test 1 uses default overlap tolerance of 1e-20
     contraction = make_contractions(
-        basis_dict, ["H", "C", "Kr"],
-        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]), "spherical", overlap=True
+        basis_dict,
+        ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+        "spherical",
+        overlap=True,
     )
     contraction_without_screen = make_contractions(
-        basis_dict, ["H", "C", "Kr"],
-        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]), "spherical", overlap=False
+        basis_dict,
+        ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+        "spherical",
+        overlap=False,
     )
 
     overlaps = overlap_integral(contraction)
@@ -254,8 +260,11 @@ def test_overlap_screening_with_fail():
         overlap=True,
     )
     contraction_without_screen = make_contractions(
-        basis_dict, ["H", "C", "Kr"],
-        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]), "cartesian", overlap=False
+        basis_dict,
+        ["H", "C", "Kr"],
+        np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+        "cartesian",
+        overlap=False,
     )
 
     overlaps = overlap_integral(contraction)

@@ -65,7 +65,6 @@ doc = [
 "iodata" = ["iodata>0.1.7"]
 "pyscf" = ["pyscf>=1.6.1"]
 
-
 [tool.black]
 line-length = 100
 
@@ -92,3 +91,6 @@ addopts = "-v"
 #write_to = "src/gbasis/_version.py"
 #version_scheme = "post-release"
 #local_scheme = "no-local-version"
+
+[tool.setuptools.package-data]
+"gbasis.integrals.lib" = ["libcint.so*"]

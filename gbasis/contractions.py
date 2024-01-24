@@ -1,6 +1,7 @@
 """Data class for contractions of Gaussian-type primitives."""
-from gbasis.utils import factorial2
+from numbers import Integral
 import numpy as np
+from gbasis.utils import factorial2
 
 
 class GeneralizedContractionShell:
@@ -83,8 +84,6 @@ class GeneralizedContractionShell:
         Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
         transforming the contractions from the Cartesian to spherical coordinate system.
         Property of `GeneralizedContractionShell`.
-    charge : float
-        Charge at the center of the Gaussian primitives.
     exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
     coeffs : np.ndarray(K, M)
@@ -113,10 +112,11 @@ class GeneralizedContractionShell:
     assign_norm_contr(self)
         Assign normalization constants for the contractions.
 
-
     """
 
-    def __init__(self, angmom, coord, coeffs, exps, coord_type, tol=1e-15, ovr_screen=False):
+    def __init__(
+        self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False
+    ):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -139,11 +139,12 @@ class GeneralizedContractionShell:
         coord_type : str
             Coordinate type of the contraction. Options include "cartesian" or "c" and
             "spherical" or "p".
+        icenter : np.int64 or None (optional)
+            Index for the atomic center for the contraction
         ovr_tol : float
             Tolerance used in overlap screening.
         ovr_screen : boolean
             Flag used for activating overlap screening.
-
         """
         self.angmom = angmom
         self.coord = coord
@@ -153,6 +154,41 @@ class GeneralizedContractionShell:
         self.ovr_screen = ovr_screen
         self.assign_norm_cont()
         self.coord_type = coord_type
+        self.icenter = icenter
+
+    @property
+    def icenter(self):
+        """Atom center index for the contractions.
+
+        Returns
+         -------
+         icenter : int or None
+             Index for the corresponding atom center of the contractions.
+
+        """
+        return self._icenter
+
+    @icenter.setter
+    def icenter(self, icenter):
+        """Atom center index for the contractions.
+
+        Parameters
+        ----------
+        icenter : int or None
+            Index for the corresponding atom center of the contractions.
+
+        Raises
+        ------
+        TypeError
+            If `center` is not an `Integral` or `None` type.
+
+        """
+        if isinstance(icenter, Integral):
+            self._icenter = int(icenter)
+        elif icenter is None:
+            self._icenter = None
+        else:
+            raise TypeError(f"Center should be of `numbers.Integral` type. Got {type(icenter)}")
 
     @property
     def coord(self):
