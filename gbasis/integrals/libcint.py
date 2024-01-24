@@ -1139,7 +1139,7 @@ class CBasis:
         # Compute nuclear gradient
         d_s = self._d_ovlp()
         for iatm, icoords in enumerate(self.atcoords):
-            start, end = self._atm_offs[iatm:iatm + 2]
+            start, end = self._atm_offs[iatm : iatm + 2]
             d_ovlp[start:end, :, iatm, :] -= d_s[start:end, :, :]
             d_ovlp[:, :, iatm, :] += d_ovlp[:, :, iatm, :].transpose(1, 0, 2)
         # Return output array
@@ -1161,7 +1161,7 @@ class CBasis:
         d_h = self._d_kin()
         d_h += self._d_nuc()
         for iatm, (iz, icoords) in enumerate(zip(self.atnums, self.atcoords)):
-            start, end = self._atm_offs[iatm:iatm + 2]
+            start, end = self._atm_offs[iatm : iatm + 2]
             d_rinv = -iz * self._d_rinv(inv_origin=icoords)
             d_rinv[start:end, :, :] -= d_h[start:end, :, :]
             d_rinv += d_rinv.transpose(1, 0, 2)
@@ -1184,7 +1184,7 @@ class CBasis:
         # Compute nuclear gradient
         d_i = self._d_eri()
         for iatm, icoords in enumerate(self.atcoords):
-            start, end = self._atm_offs[iatm:iatm + 2]
+            start, end = self._atm_offs[iatm : iatm + 2]
             d_eri[start:end, :, :, :, iatm, :] -= d_i[start:end, :, :, :, :]
             d_eri[:, :, :, :, iatm, :] += d_eri[:, :, :, :, iatm, :].transpose(2, 3, 0, 1, 4)
             d_eri[:, :, :, :, iatm, :] += d_eri[:, :, :, :, iatm, :].transpose(1, 0, 2, 3, 4)
