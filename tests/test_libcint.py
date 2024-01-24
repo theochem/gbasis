@@ -58,6 +58,13 @@ TEST_INTEGRALS = [
 ]
 
 
+TEST_NUCLEAR_GRADIENTS = [
+    pytest.param("overlap", id="Overlap"),
+    pytest.param("core_hamiltonian", id="CoreHamiltonian"),
+    pytest.param("electron_repulsion", id="ElectronRepulsion"),
+]
+
+
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
 @pytest.mark.parametrize("coord_type", TEST_COORD_TYPES)
 @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
@@ -156,3 +163,40 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         raise ValueError("Invalid integral name '{integral}' passed")
 
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+
+@pytest.mark.parametrize("gradient", TEST_NUCLEAR_GRADIENTS)
+@pytest.mark.parametrize("coord_type", TEST_COORD_TYPES)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_nuclear_gradient(basis, atsyms, atcoords, coord_type, gradient):
+    r"""
+    Test gbasis.integrals.libcint.CBasis nuclear gradients.
+
+    """
+    atol, rtol = 1e-4, 1e-4
+
+    atcoords = atcoords / 0.5291772083
+
+    atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+
+    if gradient == "overlap":
+        grad = lc_basis.grad_overlap()
+        npt.assert_array_equal(grad.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
+
+    if gradient == "core_hamiltonian":
+        grad = lc_basis.grad_core_hamiltonian()
+        npt.assert_array_equal(grad.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
+
+    if gradient == "electron_repulsion":
+        grad = lc_basis.grad_electron_repulsion()
+        npt.assert_array_equal(
+            grad.shape,
+            (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3),
+        )
