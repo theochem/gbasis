@@ -20,6 +20,8 @@ from gbasis.parsers import make_contractions, parse_nwchem
 
 from utils import find_datafile
 
+from derivcheck import assert_deriv
+
 
 TEST_BASIS_SETS = [
     pytest.param("data_sto6g.nwchem", id="STO-6G"),
@@ -55,6 +57,13 @@ TEST_INTEGRALS = [
     pytest.param("electron_repulsion", id="ElectronRepulsion"),
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
+]
+
+
+TEST_NUCLEAR_GRADIENTS = [
+    pytest.param("overlap", id="Overlap"),
+    pytest.param("core_hamiltonian", id="CoreHamiltonian"),
+    pytest.param("electron_repulsion", id="ElectronRepulsion"),
 ]
 
 
@@ -156,3 +165,41 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         raise ValueError("Invalid integral name '{integral}' passed")
 
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+
+@pytest.mark.parametrize("gradient", TEST_NUCLEAR_GRADIENTS)
+@pytest.mark.parametrize("coord_type", TEST_COORD_TYPES)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_nuclear_gradient(basis, atsyms, atcoords, coord_type, gradient):
+    r"""
+    Test gbasis.integrals.libcint.CBasis nuclear gradients.
+
+    """
+    basis_dict = parse_nwchem(find_datafile(basis))
+
+    def f(x):
+        atcoords = x.reshape(len(atsyms), 3) / 0.5291772083
+        atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+        py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+        lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+        if gradient == "overlap":
+            return lc_basis.overlap().reshape(-1)
+        elif gradient == "core_hamiltonian":
+            return lc_basis.kinetic_energy().reshape(-1) + lc_basis.nuclear_attraction().reshape(-1)
+        elif gradient == "electron_repulsion":
+            return lc_basis.electron_repulsion().reshape(-1)
+
+    def g(x):
+        atcoords = x.reshape(len(atsyms), 3) / 0.5291772083
+        atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+        py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+        lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+        if gradient == "overlap":
+            return lc_basis.grad_overlap().reshape(lc_basis.nbfn**2, -1)
+        elif gradient == "core_hamiltonian":
+            return lc_basis.grad_core_hamiltonian().reshape(lc_basis.nbfn**2, -1)
+        elif gradient == "electron_repulsion":
+            return lc_basis.grad_electron_repulsion().reshape(lc_basis.nbfn**4, -1)
+
+    assert_deriv(f, g, atcoords.reshape(-1))
