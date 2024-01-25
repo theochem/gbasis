@@ -20,6 +20,8 @@ from gbasis.parsers import make_contractions, parse_nwchem
 
 from utils import find_datafile
 
+from derivcheck import assert_deriv
+
 
 TEST_BASIS_SETS = [
     pytest.param("data_sto6g.nwchem", id="STO-6G"),
@@ -174,29 +176,30 @@ def test_nuclear_gradient(basis, atsyms, atcoords, coord_type, gradient):
     Test gbasis.integrals.libcint.CBasis nuclear gradients.
 
     """
-    atol, rtol = 1e-4, 1e-4
-
-    atcoords = atcoords / 0.5291772083
-
-    atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
-
     basis_dict = parse_nwchem(find_datafile(basis))
 
-    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+    def f(x):
+        atcoords = x.reshape(len(atsyms), 3) / 0.5291772083
+        atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+        py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+        lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+        if gradient == "overlap":
+            return lc_basis.overlap().reshape(-1)
+        elif gradient == "core_hamiltonian":
+            return lc_basis.kinetic_energy().reshape(-1) + lc_basis.nuclear_attraction().reshape(-1)
+        elif gradient == "electron_repulsion":
+            return lc_basis.electron_repulsion().reshape(-1)
 
-    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+    def g(x):
+        atcoords = x.reshape(len(atsyms), 3) / 0.5291772083
+        atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+        py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+        lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
+        if gradient == "overlap":
+            return lc_basis.grad_overlap().reshape(lc_basis.nbfn ** 2, -1)
+        elif gradient == "core_hamiltonian":
+            return lc_basis.grad_core_hamiltonian().reshape(lc_basis.nbfn ** 2, -1)
+        elif gradient == "electron_repulsion":
+            return lc_basis.grad_electron_repulsion().reshape(lc_basis.nbfn ** 4, -1)
 
-    if gradient == "overlap":
-        grad = lc_basis.grad_overlap()
-        npt.assert_array_equal(grad.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
-
-    if gradient == "core_hamiltonian":
-        grad = lc_basis.grad_core_hamiltonian()
-        npt.assert_array_equal(grad.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3))
-
-    if gradient == "electron_repulsion":
-        grad = lc_basis.grad_electron_repulsion()
-        npt.assert_array_equal(
-            grad.shape,
-            (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.natm, 3),
-        )
+    assert_deriv(f, g, atcoords.reshape(-1))
