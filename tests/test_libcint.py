@@ -196,10 +196,10 @@ def test_nuclear_gradient(basis, atsyms, atcoords, coord_type, gradient):
         py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
         lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
         if gradient == "overlap":
-            return lc_basis.grad_overlap().reshape(lc_basis.nbfn ** 2, -1)
+            return lc_basis.grad_overlap().reshape(lc_basis.nbfn**2, -1)
         elif gradient == "core_hamiltonian":
-            return lc_basis.grad_core_hamiltonian().reshape(lc_basis.nbfn ** 2, -1)
+            return lc_basis.grad_core_hamiltonian().reshape(lc_basis.nbfn**2, -1)
         elif gradient == "electron_repulsion":
-            return lc_basis.grad_electron_repulsion().reshape(lc_basis.nbfn ** 4, -1)
+            return lc_basis.grad_electron_repulsion().reshape(lc_basis.nbfn**4, -1)
 
     assert_deriv(f, g, atcoords.reshape(-1))
