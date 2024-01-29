@@ -3,6 +3,7 @@ from gbasis.evals.density import (
     evaluate_density,
     evaluate_dm_using_evaluated_orbs,
     evaluate_dm_density,
+    evaluate_hole_x2,
     evaluate_density_gradient,
     evaluate_density_hessian,
     evaluate_density_laplacian,
@@ -101,6 +102,21 @@ def test_evaluate_dm_density():
     evaluate_orbs = evaluate_basis(basis, points, transform)
     dens = evaluate_dm_density(density, basis, [points], transform)
     assert np.allclose(np.einsum('iikl->i',dens), np.einsum("ij,ik,jk->k", density, evaluate_orbs, evaluate_orbs))
+
+
+def test_evaluate_hole_x2():
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
+    basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
+    transform = np.ones((18, 18))
+    density = np.load(find_datafile("data_rdm_kr_sto6g.npy"))
+
+    points = np.random.rand(10, 3)
+
+    eh = evaluate_hole_x2(density, basis, points_list=[points,points],transform=transform)
+    ed = evaluate_density(density,basis,points,transform=transform)
+
+    assert np.allclose(np.einsum('ijkl,j->',eh,ed)/np.sum(ed)/len(points)*len(transform), -1)
+
 
 def test_evaluate_deriv_density():
     """Test gbasis.evals.density.evaluate_deriv_density."""
@@ -477,3 +493,4 @@ def test_evaluate_general_kinetic_energy_density():
         + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40)),
     )
 
+test_evaluate_hole_x2()
