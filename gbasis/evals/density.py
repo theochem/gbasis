@@ -255,7 +255,7 @@ def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
     dm_eval = evaluate_dm_density(one_density_matrix, basis, points_list, transform=transform)
 
     #evaluate hole function
-    numerator = np.einsum('ijkl,jikl->ijkl',dm_eval,dm_eval)
+    numerator = np.einsum('ijkl,ijkl->ijkl',dm_eval,dm_eval)
     hole_x2 = -1*np.einsum('ijkl,i,j->ijkl',numerator,1/dens_evals[0],1/dens_evals[1])
 
     return hole_x2
