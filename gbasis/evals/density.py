@@ -92,15 +92,15 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
     -------
     density : np.ndarray(N,)
         Density evaluated at `N` grid points.
-
+        
     """
     orb_eval = evaluate_basis(basis, points, transform=transform)
-    output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
+    density = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
     # Fix #117: check magnitude of small negative density values, then use clip to remove them
-    min_output = np.min(output)
-    if min_output < 0.0 and abs(min_output) > threshold:
-        raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
-    return output.clip(min=0.0)
+    min_density = np.min(density)
+    if min_density < 0.0 and abs(min_density) > threshold:
+        raise ValueError(f"Found negative density <= {-threshold}, got {min_density}.")
+    return density.clip(min=0.0)
 
 def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
     """Return the evaluation of the density matrix given the evaluated orbitals.
@@ -122,8 +122,8 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
     Raises
     ------
     TypeError
-        If `orb_eval` is not a 2-dimensional `numpy` array with `dtype` float.
-        If `one_density_matrix` is not a 2-dimensional `numpy` array with `dtype` float.
+        If `orb_eval_list` does not consist of 2-dimensional `numpy` arrays with `dtype` float.
+        If `one_density_matrix` is not a symmetric, 2-dimensional `numpy` array with `dtype` float.
 
 
 """
@@ -149,10 +149,10 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
     
 
     #Tensor product for \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
-    tensor_product = np.einsum('ij,ik,jl->klij',one_density_matrix, orb_eval_list[0],orb_eval_list[1])
+    density = np.einsum('ij,ik,jl->klij',one_density_matrix, orb_eval_list[0],orb_eval_list[1])
 
     #returns dm evaluated on each grid point
-    return tensor_product
+    return density
 
 
 def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
@@ -345,8 +345,8 @@ def evaluate_deriv_reduced_density_matrix(
         )
     density = one_density_matrix.dot(deriv_orb_eval_two)
     density *= deriv_orb_eval_one
-    density = np.sum(density, axis=0)
-    return density
+    deriv_reduced_density_matrix = np.sum(density, axis=0)
+    return deriv_reduced_density_matrix
 
 
 def evaluate_deriv_density(
@@ -395,7 +395,7 @@ def evaluate_deriv_density(
     # pylint: disable=R0914
     total_l_x, total_l_y, total_l_z = orders
 
-    output = np.zeros(points.shape[0])
+    density_deriv = np.zeros(points.shape[0])
     for l_x in range(total_l_x // 2 + 1):
         # prevent double counting for the middle of the even total_l_x
         # e.g. If total_l_x == 4, then l_x is in [0, 1, 2, 3, 4]. Exploiting symmetry we only need
@@ -430,8 +430,8 @@ def evaluate_deriv_density(
                         transform=transform,
                         deriv_type=deriv_type,
                     )
-                output += factor * num_occurence * density
-    return output
+                density_deriv += factor * num_occurence * density
+    return density_deriv
 
 
 def evaluate_density_gradient(
@@ -475,7 +475,7 @@ def evaluate_density_gradient(
 
     """
     orders_one = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
-    output = np.zeros((3, len(points)))
+    density_gradient = np.zeros((3, len(points)))
     # Evaluation of generalized contraction shell for zeroth order = 0,0,0
     zeroth_deriv = evaluate_deriv_basis(
         basis,
@@ -497,8 +497,8 @@ def evaluate_density_gradient(
         # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
         density = one_density_matrix.dot(zeroth_deriv)
         density *= deriv_comp
-        output[ind] = 2 * 1 * np.sum(density, axis=0)
-    return output.T
+        density_gradient[ind] = 2 * 1 * np.sum(density, axis=0)
+    return density_gradient.T
 
 
 def evaluate_density_laplacian(
@@ -544,7 +544,7 @@ def evaluate_density_laplacian(
     orders_one_second = np.array(([2, 0, 0], [0, 2, 0], [0, 0, 2]))
     orders_one_first = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
     orders_two = np.array(([1, 0, 0], [0, 1, 0], [0, 0, 1]))
-    output = np.zeros(points.shape[0])
+    density_laplacian = np.zeros(points.shape[0])
     # Evaluation of generalized contraction shell for zeroth order = 0,0,0
     zeroth_deriv = evaluate_deriv_basis(
         basis,
@@ -566,7 +566,7 @@ def evaluate_density_laplacian(
 
         density = one_density_matrix.dot(zeroth_deriv)
         density *= deriv_one
-        output += 2 * 1 * np.sum(density, axis=0)
+        density_laplacian += 2 * 1 * np.sum(density, axis=0)
 
     for orders in zip(orders_one_first, orders_two):
         deriv_one = evaluate_deriv_basis(
@@ -587,9 +587,9 @@ def evaluate_density_laplacian(
         # output[ind] = 2*(np.einsum('ij,ik,jk -> k',one_density_matrix, zeroth_deriv, deriv_comp))
         density = one_density_matrix.dot(deriv_two)
         density *= deriv_one
-        output += 2 * 1 * np.sum(density, axis=0)
+        density_laplacian += 2 * 1 * np.sum(density, axis=0)
 
-    return output
+    return density_laplacian
 
 
 def evaluate_density_hessian(
@@ -702,13 +702,13 @@ def evaluate_density_hessian(
     density_2 = np.einsum("ijkm,ijmk -> ijkm", one_two_arr_1, raw_density_2)
 
     # factors and sum over basis functions
-    output = 2 * 1 * np.sum(density_1, axis=2)
-    output += 2 * 1 * np.sum(density_2, axis=2)
+    density_hessian = 2 * 1 * np.sum(density_1, axis=2)
+    density_hessian += 2 * 1 * np.sum(density_2, axis=2)
 
     # copying lower matrix to upper matrix
-    upp = np.swapaxes(output, 0, 1)
+    upp = np.swapaxes(density_hessian, 0, 1)
     upp = np.triu(upp.T, 1)
-    return output.T + upp
+    return density_hessian.T + upp
 
 
 def evaluate_posdef_kinetic_energy_density(
@@ -767,9 +767,9 @@ def evaluate_posdef_kinetic_energy_density(
         `N` grid points.
 
     """
-    output = np.zeros(points.shape[0])
+    posdef_kindetic_energy_density = np.zeros(points.shape[0])
     for orders in np.identity(3, dtype=int):
-        output += evaluate_deriv_reduced_density_matrix(
+        posdef_kindetic_energy_density += evaluate_deriv_reduced_density_matrix(
             orders,
             orders,
             one_density_matrix,
@@ -782,7 +782,7 @@ def evaluate_posdef_kinetic_energy_density(
     min_output = np.min(output)
     if min_output < 0.0 and abs(min_output) > threshold:
         raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
-    return (0.5 * output).clip(min=0.0)
+    return (0.5 * posdef_kindetic_energy_density).clip(min=0.0)
 
 
 # TODO: test against a reference
