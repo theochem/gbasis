@@ -92,7 +92,7 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
     -------
     density : np.ndarray(N,)
         Density evaluated at `N` grid points.
-        
+
     """
     orb_eval = evaluate_basis(basis, points, transform=transform)
     density = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
@@ -101,6 +101,7 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
     if min_density < 0.0 and abs(min_density) > threshold:
         raise ValueError(f"Found negative density <= {-threshold}, got {min_density}.")
     return density.clip(min=0.0)
+
 
 def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
     """Return the evaluation of the density matrix given the evaluated orbitals.
@@ -125,8 +126,7 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
         If `orb_eval_list` does not consist of 2-dimensional `numpy` arrays with `dtype` float.
         If `one_density_matrix` is not a symmetric, 2-dimensional `numpy` array with `dtype` float.
 
-
-"""
+    """
     if not (
         isinstance(one_density_matrix, np.ndarray)
         and one_density_matrix.ndim == 2
@@ -143,15 +143,14 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
             )
     if one_density_matrix.shape[0] != one_density_matrix.shape[1]:
         raise ValueError("One-electron density matrix must be a square matrix.")
-    
+
     if not np.allclose(one_density_matrix, one_density_matrix.T):
         raise ValueError("One-electron density matrix must be symmetric.")
-    
 
-    #Tensor product for \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
-    density = np.einsum('ij,ik,jl->klij',one_density_matrix, orb_eval_list[0],orb_eval_list[1])
+    # Tensor product for \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
+    density = np.einsum("ij,ik,jl->klij", one_density_matrix, orb_eval_list[0], orb_eval_list[1])
 
-    #returns dm evaluated on each grid point
+    # returns dm evaluated on each grid point
     return density
 
 
@@ -171,7 +170,7 @@ def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-        This function can take a list of points at which basis functions are evaluated. If only one 
+        This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     transform : np.ndarray(K_orbs, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
@@ -189,18 +188,19 @@ def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
     """
 
     orb_evals = []
-    #evaluate basi(e)s on the point set(s) 
+    # evaluate basi(e)s on the point set(s)
     for grid in points_list:
         orb_eval = evaluate_basis(basis, grid, transform=transform)
         orb_evals.append(orb_eval)
-    #if only one set of points is supplied, it is duplicated
-    if len(points_list)==1:
+    # if only one set of points is supplied, it is duplicated
+    if len(points_list) == 1:
         orb_evals.append(orb_eval)
 
-    #Calulated performed using the evaluated orbitals
+    # Calulated performed using the evaluated orbitals
     dm_on_grid = evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_evals)
 
     return dm_on_grid
+
 
 def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
     r"""Return the two-body hole correlation function.
@@ -208,7 +208,7 @@ def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
     .. math ::
 
         \left.
-        h(\mathbf{r}_1,\mathbf{r}_2) = 
+        h(\mathbf{r}_1,\mathbf{r}_2) =
         \right.
         -\frac{|\gamma(\mathbf{r}_1,\mathbf{r}_2)|^2}
         {\rho({\mathbf{r}_1})\rho({\mathbf{r}_2})}
@@ -226,7 +226,7 @@ def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-        This function can take a list of points at which basis functions are evaluated. If only one 
+        This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     transform : np.ndarray(K_orbs, K_cont)
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
@@ -245,20 +245,21 @@ def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
     dens_evals = []
 
     for grid in points_list:
-        dens_eval = evaluate_density(one_density_matrix,basis, grid, transform=transform)
+        dens_eval = evaluate_density(one_density_matrix, basis, grid, transform=transform)
         dens_evals.append(dens_eval)
 
-    if len(points_list)==1:
+    if len(points_list) == 1:
         dens_evals.append(dens_eval)
 
-    #build density matrix on grid
+    # build density matrix on grid
     dm_eval = evaluate_dm_density(one_density_matrix, basis, points_list, transform=transform)
 
-    #evaluate hole function
-    numerator = np.einsum('ijkl,ijkl->ijkl',dm_eval,dm_eval)
-    hole_x2 = -1*np.einsum('ijkl,i,j->ijkl',numerator,1/dens_evals[0],1/dens_evals[1])
+    # evaluate hole function
+    numerator = np.einsum("ijkl,ijkl->ijkl", dm_eval, dm_eval)
+    hole_x2 = -1 * np.einsum("ijkl,i,j->ijkl", numerator, 1 / dens_evals[0], 1 / dens_evals[1])
 
     return hole_x2
+
 
 def evaluate_deriv_reduced_density_matrix(
     orders_one,
