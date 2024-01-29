@@ -102,6 +102,105 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
         raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
     return output.clip(min=0.0)
 
+def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
+    """Return the evaluation of the density matrix given the evaluated orbitals.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orb, K_orb)
+        One-electron density matrix in terms of the given orbitals.
+    orb_eval_list : list of orbitals evaluated on grid points [np.ndarray(K_orb, N) ...]
+        Orbitals evaluated at :math:`N` grid points.
+        The set of orbitals must be the same basis set used to build the one-electron density
+        matrix.
+
+    Returns
+    -------
+    density : np.ndarray(N1,N2,K_orb,K_orb)
+        Density Matrix evaluated at `N1,N2` grid points.
+
+    Raises
+    ------
+    TypeError
+        If `orb_eval` is not a 2-dimensional `numpy` array with `dtype` float.
+        If `one_density_matrix` is not a 2-dimensional `numpy` array with `dtype` float.
+
+
+"""
+    if not (
+        isinstance(one_density_matrix, np.ndarray)
+        and one_density_matrix.ndim == 2
+        and one_density_matrix.dtype == float
+    ):
+        raise TypeError(
+            "One-electron density matrix must be a two-dimensional `numpy` array with `dtype`"
+            " float."
+        )
+    for orb in orb_eval_list:
+        if not (isinstance(orb, np.ndarray) and orb.ndim == 2 and orb.dtype == float):
+            raise TypeError(
+                "Evaluation of orbitals must be a two-dimensional `numpy` array with `dtype` float."
+            )
+    if one_density_matrix.shape[0] != one_density_matrix.shape[1]:
+        raise ValueError("One-electron density matrix must be a square matrix.")
+    
+    if not np.allclose(one_density_matrix, one_density_matrix.T):
+        raise ValueError("One-electron density matrix must be symmetric.")
+    
+    
+    #Tensor product for \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
+    tensor_product = np.einsum('ij,ik,jl->klij',one_density_matrix, orb_eval_list[0],orb_eval_list[1])
+
+    #returns dm evaluated on each grid point
+    return tensor_product
+
+
+def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
+    r"""Return the density of the given basis set at the given points.
+
+    Parameters
+    ----------
+    one_density_matrix : np.ndarray(K_orbs, K_orbs)
+        One-electron density matrix in terms of the given basis set.
+        If the basis is transformed using `transform` keyword, then the density matrix is assumed to
+        be expressed with respect to the transformed basis set.
+    basis : list/tuple of GeneralizedContractionShell
+        Shells of generalized contractions.
+    points_list : list of points [np.ndarray(N, 3)...]
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
+        This function can take a list of points at which basis functions are evaluated. If only one 
+        set of points is given, it will be duplicated.
+    transform : np.ndarray(K_orbs, K_cont)
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
+        and index 0 of the array for contractions.
+        Default is no transformation.
+
+
+    Returns
+    -------
+    dm_on_grid : np.ndarray(N1,N2,K_orb,K_orb)
+        Density Matrix evaluated at `N1,N2` grid points.
+
+    """
+
+    orb_evals = []
+    #evaluate basi(e)s on the point set(s) 
+    for grid in points_list:
+        orb_eval = evaluate_basis(basis, grid, transform=transform)
+        orb_evals.append(orb_eval)
+    #if only one set of points is supplied, it is duplicated
+    if len(points_list)==1:
+        orb_evals.append(orb_eval)
+
+    #Calulated performed using the evaluated orbitals
+    dm_on_grid = evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_evals)
+
+    return dm_on_grid
 
 def evaluate_deriv_reduced_density_matrix(
     orders_one,
