@@ -271,9 +271,11 @@ def point_charge_integral(basis, points_coords, points_charge, transform=None):
 
     .. math::
 
-        \sum_C \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
+        \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
 
-    where :math:`\mathbf{R}_C` is the position of the point charge :math:`C`.
+    where :math:`\mathbf{R}_C` is the position of the point charge :math:`C`. 
+    For every point charge, the matrix elements of a Coulomb interaction one-electron integral are 
+    evaluated.
 
     Parameters
     ----------
@@ -294,7 +296,7 @@ def point_charge_integral(basis, points_coords, points_charge, transform=None):
 
     Returns
     -------
-    eval_array : np.ndarray(K, N)
+    eval_array : np.ndarray(K, K, N)
         Evaluations of the basis functions at the given coordinates.
         If keyword argument `transform` is provided, then the transformed basis functions will be
         evaluted at the given points.
