@@ -60,6 +60,7 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     density = np.sum(orb_eval * (one_density_matrix.dot(orb_eval)), axis=0)
     return density
 
+
 def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
     r"""Return the density of the given basis set at the given points.
 
