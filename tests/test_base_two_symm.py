@@ -1,16 +1,17 @@
 """Test gbasis.base_two_symm."""
-from gbasis.base_two_asymm import BaseTwoIndexAsymmetric
-from gbasis.base_two_symm import BaseTwoIndexSymmetric
-from gbasis.contractions import GeneralizedContractionShell
-from gbasis.spherical import generate_transformation
 import numpy as np
 import pytest
 from utils import disable_abstract, skip_init
 
+from gbasis.base_two_asymm import BaseTwoIndexAsymmetric
+from gbasis.base_two_symm import BaseTwoIndexSymmetric
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.spherical import generate_transformation
+
 
 def test_init():
     """Test BaseTwoIndexSymmetric.__init__."""
-    Test = disable_abstract(BaseTwoIndexSymmetric)  # noqa: N806
+    Test = disable_abstract(BaseTwoIndexSymmetric)
     test = skip_init(Test)
     contractions = GeneralizedContractionShell(
         1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
@@ -23,7 +24,7 @@ def test_init():
 
 def test_contractions():
     """Test BaseTwoIndexSymmetric.constractions."""
-    Test = disable_abstract(BaseTwoIndexSymmetric)  # noqa: N806
+    Test = disable_abstract(BaseTwoIndexSymmetric)
     cont = GeneralizedContractionShell(1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical")
     test = Test([cont])
     assert test.contractions[0] == cont
@@ -32,7 +33,7 @@ def test_contractions():
 def test_contruct_array_contraction():
     """Test BaseTwoIndexSymmetric.construct_array_contraction."""
     # enable only the abstract method construct_array_contraction
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": BaseTwoIndexSymmetric.construct_array_contraction
@@ -56,7 +57,7 @@ def test_contruct_array_cartesian():
     contractions = GeneralizedContractionShell(
         1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
     )
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont1, cont2, a=2: np.ones((1, 2, 1, 2)) * a
@@ -79,7 +80,7 @@ def test_contruct_array_cartesian():
     cont_two = GeneralizedContractionShell(
         2, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
     )
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -112,7 +113,7 @@ def test_contruct_array_cartesian():
         ),
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -166,7 +167,7 @@ def test_contruct_array_cartesian():
         ),
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             # NOTE: assume that cont_one and cont_two will always be cont_one and cont_two defined
@@ -246,7 +247,7 @@ def test_contruct_array_spherical():
         1, contractions.angmom_components_cart, contractions.angmom_components_sph, "left"
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": (
@@ -281,7 +282,7 @@ def test_contruct_array_spherical():
         2, cont_two.angmom_components_cart, cont_two.angmom_components_sph, "left"
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -342,7 +343,7 @@ def test_contruct_array_spherical():
         ),
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -420,7 +421,7 @@ def test_contruct_array_mix():
         1, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": (
@@ -446,7 +447,7 @@ def test_contruct_array_mix():
         2, np.array([1, 2, 3]), np.ones(1), np.ones(1), "spherical"
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -471,7 +472,7 @@ def test_contruct_array_mix():
         test.construct_array_cartesian(a=3), test.construct_array_mix(["cartesian"] * 2, a=3)
     )
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -519,7 +520,7 @@ def test_contruct_array_lincomb():
     )
     orb_transform = np.random.rand(3, 3)
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": (
@@ -561,7 +562,7 @@ def test_contruct_array_lincomb():
     with pytest.raises(TypeError):
         test.construct_array_lincomb(orb_transform, "bad", keyword=3)
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": lambda self, cont_one, cont_two, a=2: (
@@ -757,7 +758,7 @@ def test_construct_array_mix():
                 )
         return output
 
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={"construct_array_contraction": construct_array_cont},
     )
@@ -829,11 +830,11 @@ def test_compare_two_asymm():
         ).astype(float)
         return output * a
 
-    TestSymmetric = disable_abstract(  # noqa: N806
+    TestSymmetric = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={"construct_array_contraction": construct_array_contraction},
     )
-    TestAsymmetric = disable_abstract(  # noqa: N806
+    TestAsymmetric = disable_abstract(
         BaseTwoIndexAsymmetric,
         dict_overwrite={"construct_array_contraction": construct_array_contraction},
     )
@@ -889,7 +890,7 @@ def test_construct_array_mix_missing_conventions():
             raise NotImplementedError
 
     contractions = SpecialShell(1, np.array([1, 2, 3]), np.ones((1, 2)), np.ones(1), "spherical")
-    Test = disable_abstract(  # noqa: N806
+    Test = disable_abstract(
         BaseTwoIndexSymmetric,
         dict_overwrite={
             "construct_array_contraction": (

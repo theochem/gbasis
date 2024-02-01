@@ -1,10 +1,11 @@
 """Test gbasis.integrals._diff_operator_int."""
 import itertools as it
 
-from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
 import numpy as np
-from scipy.special import factorial2
 from test_moment_int import answer_prim as answer_prim_overlap
+
+from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.utils import factorial2
 
 
 def answer_prim(coord_type, i, j, k):
@@ -296,6 +297,7 @@ def test_compute_differential_operator_integrals_multiarray():
         ),
         axis=1,
     )
+
     test = _compute_differential_operator_integrals(
         orders_diff,
         coord_a,
@@ -310,19 +312,22 @@ def test_compute_differential_operator_integrals_multiarray():
         norm_b,
     )
     assert test.shape == (orders_diff.shape[0], 1, angmoms_a.shape[0], 1, angmoms_b.shape[0])
-    for i, order_diff in enumerate(orders_diff):
+    for i, single_order in enumerate(orders_diff):
         for j, angmom_a in enumerate(angmoms_a):
             for k, angmom_b in enumerate(angmoms_b):
-                _compute_differential_operator_integrals(
-                    np.array([order_diff]),
-                    coord_a,
-                    np.array([angmom_a]),
-                    exps_a,
-                    coeffs_a,
-                    norm_a,
-                    coord_b,
-                    np.array([angmom_b]),
-                    exps_b,
-                    coeffs_b,
-                    norm_b,
-                ) == test[i, 0, j, 0, k]
+                assert np.allclose(
+                    _compute_differential_operator_integrals(
+                        np.array([single_order]),
+                        coord_a,
+                        np.array([angmom_a]),
+                        exps_a,
+                        coeffs_a,
+                        norm_a,
+                        coord_b,
+                        np.array([angmom_b]),
+                        exps_b,
+                        coeffs_b,
+                        norm_b,
+                    )[0, 0, j, 0, k],
+                    test[i, 0, j, 0, k],
+                )

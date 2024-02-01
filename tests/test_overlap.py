@@ -1,13 +1,13 @@
 """Test gbasis.integrals.overlap."""
+import numpy as np
+import pytest
+from utils import HortonContractions, find_datafile
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.overlap import Overlap, overlap_integral
 from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 from gbasis.utils import factorial2
-import numpy as np
-import pytest
-
-from utils import find_datafile, HortonContractions
 
 
 def test_overlap_construct_array_contraction():

@@ -1,17 +1,18 @@
 """Test gbasis.integrals.electron_repulsion."""
+import numpy as np
+import pytest
+from utils import HortonContractions, find_datafile
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
 )
 from gbasis.integrals.electron_repulsion import (
-    electron_repulsion_integral,
     ElectronRepulsionIntegral,
+    electron_repulsion_integral,
 )
 from gbasis.parsers import make_contractions, parse_nwchem
-import numpy as np
-import pytest
-from utils import find_datafile, HortonContractions
 
 
 def test_construct_array_contraction():

@@ -1,11 +1,12 @@
 """Test gbasis.integrals.point_charge."""
-from gbasis.contractions import GeneralizedContractionShell
-from gbasis.integrals.point_charge import point_charge_integral, PointChargeIntegral
-from gbasis.parsers import make_contractions, parse_nwchem
 import numpy as np
 import pytest
 from scipy.special import factorial
 from utils import find_datafile
+
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals.point_charge import PointChargeIntegral, point_charge_integral
+from gbasis.parsers import make_contractions, parse_nwchem
 
 
 def boys_helgaker(n, x):

@@ -1,4 +1,8 @@
 """Test gbasis.evals.density."""
+import numpy as np
+import pytest
+from utils import HortonContractions, find_datafile
+
 from gbasis.evals.density import (
     evaluate_density,
     evaluate_density_gradient,
@@ -12,9 +16,6 @@ from gbasis.evals.density import (
 from gbasis.evals.eval import evaluate_basis
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 from gbasis.parsers import make_contractions, parse_nwchem
-import numpy as np
-import pytest
-from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_density_using_evaluated_orbs():

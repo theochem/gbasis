@@ -3,6 +3,8 @@ from numbers import Integral
 import numpy as np
 from gbasis.utils import factorial2
 
+from gbasis.utils import factorial2
+
 
 class GeneralizedContractionShell:
     r"""Data class for generalized contractions.
@@ -496,8 +498,7 @@ class GeneralizedContractionShell:
 
         """
         return tuple(
-            ["s{}".format(m) for m in range(self.angmom, 0, -1)]
-            + ["c{}".format(m) for m in range(self.angmom + 1)]
+            [f"s{m}" for m in range(self.angmom, 0, -1)] + [f"c{m}" for m in range(self.angmom + 1)]
         )
 
     @property

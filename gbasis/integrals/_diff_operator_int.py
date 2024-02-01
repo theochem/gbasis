@@ -1,9 +1,10 @@
 """Integrals over differential operator involving contracted Cartesian Gaussians."""
+import numpy as np
+
 from gbasis.integrals._moment_int import (
     _cleanup_intermediate_integrals,
     _compute_multipole_moment_integrals_intermediate,
 )
-import numpy as np
 
 
 # FIXME: returns nan when exponent is zero

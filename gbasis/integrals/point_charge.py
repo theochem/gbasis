@@ -1,9 +1,10 @@
 """Module for computing point charge integrals."""
+import numpy as np
+from scipy.special import hyp1f1  # pylint: disable=E0611
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
-import numpy as np
-from scipy.special import hyp1f1  # pylint: disable=E0611
 
 
 class PointChargeIntegral(BaseTwoIndexSymmetric):
@@ -37,7 +38,9 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         Boys function used to evaluate the one-electron integral.
         `M` is the number of orders that will be evaluated.
         `K_a` and `K_b` are the number of primitives on the left and right side, respectively.
-    construct_array_contraction(self, contractions_one, contractions_two, points_coords, points_charge)
+    construct_array_contraction(self, contractions_one, contractions_two, points_coords,
+        **points_charge)**
+
         Return the point charge integrals for the given `GeneralizedContractionShell` instances.
         `M_1` is the number of segmented contractions with the same exponents (and angular
         momentum) associated with the first index.

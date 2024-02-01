@@ -9,14 +9,17 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  pytest:
     name: "Python ${{ matrix.py }} on OS ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
+    env:
+      COVERAGE_SINGLE: 80
+      COVERAGE_TOTAL: 90
 
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        py: ["3.7", "3.9", "3.10", "3.11"]
+        py: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
       - uses: "actions/checkout@v3"
@@ -36,18 +39,6 @@ jobs:
           # Need editable mode in order to include the test files
           pip install -e .
 
-      - name: Run pytest
-        uses: pavelzw/pytest-action@v2
-        with:
-          verbose: true
-          emoji: true
-          job-summary: true
-          click-to-expand: true
-          custom-arguments: "--junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=gbasis"
-          report-title: 'Test Report'
-
-      - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@main
-        with:
-          pytest-coverage-path: ./pytest-coverage.txt
-          junitxml-path: ./pytest.xml
+      - name: Run Pytest
+        run: |
+          pytest --cov=./gbasis/ --cov-fail-under=90 --cov-report term .

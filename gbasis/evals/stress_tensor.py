@@ -1,10 +1,11 @@
 """Module for computing properties related to the stress tensor."""
+import numpy as np
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
     evaluate_deriv_reduced_density_matrix,
 )
-import numpy as np
 
 
 # TODO: need to be tested against reference
@@ -149,7 +150,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
             - (1 - 2\alpha)
             \sum_i
             \left.
-              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
+            \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r},
+            \mathbf{r})
             \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
             &+ \frac{1}{2} \beta
             \left.

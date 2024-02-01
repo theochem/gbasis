@@ -1,9 +1,10 @@
 """Test gbasis.integrals.nuclear_electron_attraction."""
+import numpy as np
+from utils import HortonContractions, find_datafile
+
 from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attraction_integral
 from gbasis.integrals.point_charge import point_charge_integral
 from gbasis.parsers import make_contractions, parse_nwchem
-import numpy as np
-from utils import find_datafile, HortonContractions
 
 
 def test_nuclear_electron_attraction_horton_anorcc_hhe():

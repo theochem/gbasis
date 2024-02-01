@@ -1,9 +1,12 @@
 """Functions for evaluating Gaussian primitives."""
+import numpy as np
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.evals._deriv import _eval_deriv_contractions
-from gbasis.evals._deriv import _eval_first_second_order_deriv_contractions
-import numpy as np
+from gbasis.evals._deriv import (
+    _eval_deriv_contractions,
+    _eval_first_second_order_deriv_contractions,
+)
 
 
 class EvalDeriv(BaseOneIndex):

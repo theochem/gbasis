@@ -1,4 +1,6 @@
 """Electron-electron repulsion integral."""
+import numpy as np
+
 from gbasis.base_four_symm import BaseFourIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._two_elec_int import (
@@ -6,7 +8,6 @@ from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals_angmom_zero,
 )
 from gbasis.integrals.point_charge import PointChargeIntegral
-import numpy as np
 
 
 class ElectronRepulsionIntegral(BaseFourIndexSymmetric):

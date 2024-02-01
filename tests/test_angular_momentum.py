@@ -1,14 +1,15 @@
 """Test gbasis.integrals.angular_momentum."""
+import numpy as np
+import pytest
+from utils import find_datafile
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
 )
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
-from gbasis.integrals.angular_momentum import angular_momentum_integral, AngularMomentumIntegral
+from gbasis.integrals.angular_momentum import AngularMomentumIntegral, angular_momentum_integral
 from gbasis.parsers import make_contractions, parse_nwchem
-import numpy as np
-import pytest
-from utils import find_datafile
 
 
 def test_angular_momentum_construct_array_contraction():

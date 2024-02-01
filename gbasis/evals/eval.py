@@ -1,8 +1,9 @@
 """Functions for evaluating Gaussian contractions."""
+import numpy as np
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
-import numpy as np
 
 
 class Eval(BaseOneIndex):

@@ -1,8 +1,9 @@
 """Parsers for reading basis set files."""
 import re
 
-from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
+
+from gbasis.contractions import GeneralizedContractionShell
 
 
 def parse_nwchem(nwchem_basis_file):
@@ -26,7 +27,7 @@ def parse_nwchem(nwchem_basis_file):
 
     """
     # pylint: disable=R0914
-    with open(nwchem_basis_file, "r") as basis_fh:
+    with open(nwchem_basis_file) as basis_fh:
         nwchem_basis = basis_fh.read()
 
     data = re.split(r"\n\s*(\w[\w]?)[ ]+(\w+)\s*\n", nwchem_basis)
@@ -176,12 +177,12 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
         Atoms at which the contractions are centered.
     coords : np.ndarray(N, 3)
         Coordinates of each atom.
-    coord_types : {"cartesian"/"c", list/tuple of "cartesian"/"c" or "spherical"/"p", "spherical"/"p"}
+    coord_types: {"cartesian"/"c", list/tuple of "cartesian"/"c", "spherical"/"p", "spherical"/"p"}
         Types of the coordinate system for the contractions.
         If "cartesian" or "c", then all of the contractions are treated as Cartesian contractions.
         If "spherical" or "p", then all of the contractions are treated as spherical contractions.
-        If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to specify the
-        coordinate type of each `GeneralizedContractionShell` instance.
+        If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to
+        specify the coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
     ovr : bool
         Flag for performing overlap screening between contractions.
@@ -233,8 +234,8 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
 
     if len(coord_types) != num_coord_types:
         raise ValueError(
-            f"If coord_types is a list, it must be the same length as the total number of contractions."
-            f"got {len(coord_types)}"
+            f"If coord_types is a list, it must be the same length "
+            f"as the total number of contractions. got {len(coord_types)}"
         )
 
     # make shells

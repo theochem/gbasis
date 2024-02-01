@@ -1,9 +1,10 @@
 """Test gbasis.integrals._moment_int."""
 import itertools as it
 
+import numpy as np
+
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.utils import factorial2
-import numpy as np
 
 
 def answer_prim(coord_type, i, j, k):
@@ -798,20 +799,23 @@ def test_compute_multipole_moment_integrals_multiarray():
     for i, order_moment in enumerate(orders_moment):
         for j, angmom_a in enumerate(angmoms_a):
             for k, angmom_b in enumerate(angmoms_b):
-                _compute_multipole_moment_integrals(
-                    coord_moment,
-                    np.array([order_moment]),
-                    coord_a,
-                    np.array([angmom_a]),
-                    exps_a,
-                    coeffs_a,
-                    norm_a,
-                    coord_b,
-                    np.array([angmom_b]),
-                    exps_b,
-                    coeffs_b,
-                    norm_b,
-                ) == test[i, 0, j, 0, k]
+                assert np.allclose(
+                    _compute_multipole_moment_integrals(
+                        coord_moment,
+                        np.array([order_moment]),
+                        coord_a,
+                        np.array([angmom_a]),
+                        exps_a,
+                        coeffs_a,
+                        norm_a,
+                        coord_b,
+                        np.array([angmom_b]),
+                        exps_b,
+                        coeffs_b,
+                        norm_b,
+                    )[0, 0, j, 0, k],
+                    test[i, 0, j, 0, k],
+                )
 
 
 def test_compute_multipole_moment_integrals_generalized_contraction():

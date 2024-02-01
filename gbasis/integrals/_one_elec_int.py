@@ -1,5 +1,6 @@
 """One-electron integrals involving Contracted Cartesian Gaussians."""
 import numpy as np
+
 from gbasis.utils import factorial2
 
 
