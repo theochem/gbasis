@@ -102,7 +102,8 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
         raise ValueError(f"Found negative density <= {-threshold}, got {min_density}.")
     return density.clip(min=0.0)
 
-def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1,orb_eval_2):
+
+def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1, orb_eval_2):
     """Return the evaluation of the density matrix given the evaluated orbitals.
 
     Parameters
@@ -140,11 +141,15 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1,orb_eval_2):
             " float."
         )
 
-    if not (isinstance(orb_eval_1, np.ndarray) and orb_eval_1.ndim == 2 and orb_eval_1.dtype == float):
+    if not (
+        isinstance(orb_eval_1, np.ndarray) and orb_eval_1.ndim == 2 and orb_eval_1.dtype == float
+    ):
         raise TypeError(
             "Evaluation of orbitals must be a two-dimensional `numpy` array with `dtype` float."
         )
-    if not (isinstance(orb_eval_2, np.ndarray) and orb_eval_2.ndim == 2 and orb_eval_2.dtype == float):
+    if not (
+        isinstance(orb_eval_2, np.ndarray) and orb_eval_2.ndim == 2 and orb_eval_2.dtype == float
+    ):
         raise TypeError(
             "Evaluation of orbitals must be a two-dimensional `numpy` array with `dtype` float."
         )
@@ -154,17 +159,17 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1,orb_eval_2):
     if not np.allclose(one_density_matrix, one_density_matrix.T):
         raise ValueError("One-electron density matrix must be symmetric.")
 
-    #Evaluation of \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
-    dm_on_grid=0
+    # Evaluation of \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
+    dm_on_grid = 0
     for ii, orb1 in enumerate(one_density_matrix):
         for jj, orb2 in enumerate(one_density_matrix):
-            dm_on_grid += one_density_matrix[ii][jj]* np.outer(orb_eval_1[ii],orb_eval_2[jj])
+            dm_on_grid += one_density_matrix[ii][jj] * np.outer(orb_eval_1[ii], orb_eval_2[jj])
 
-    #returns dm evaluated on each grid point summed over the orbitals
+    # returns dm evaluated on each grid point summed over the orbitals
     return dm_on_grid
 
 
-def evaluate_dm_density(one_density_matrix, basis, point1, point2 = np.array(None), transform=None):
+def evaluate_dm_density(one_density_matrix, basis, point1, point2=np.array(None), transform=None):
     r"""Return the density matrix of the given basis set evaluated on the given points.
 
     Parameters
@@ -180,14 +185,14 @@ def evaluate_dm_density(one_density_matrix, basis, point1, point2 = np.array(Non
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-        This function can take a list of points at which basis functions are evaluated. If only one 
+        This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-        This function can take a list of points at which basis functions are evaluated. If only one 
+        This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
@@ -211,23 +216,19 @@ def evaluate_dm_density(one_density_matrix, basis, point1, point2 = np.array(Non
 
     """
 
-    #evaluate basi(e)s on the point set(s) 
+    # evaluate basi(e)s on the point set(s)
     orb_eval_1 = evaluate_basis(basis, point1, transform=transform)
 
-    #if only one set of points is supplied, it is duplicated
+    # if only one set of points is supplied, it is duplicated
     if point2.all() == None:
         orb_eval_2 = orb_eval_1
     else:
-        orb_eval_2 = evaluate_basis(basis, point2, transform=transform) 
-    
-    
-    #Calulated performed using the evaluated orbitals
-    dm_on_grid = evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1,orb_eval_2)
+        orb_eval_2 = evaluate_basis(basis, point2, transform=transform)
+
+    # Calulated performed using the evaluated orbitals
+    dm_on_grid = evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1, orb_eval_2)
 
     return dm_on_grid
-
-
-
 
 
 def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), transform=None):
@@ -254,14 +255,14 @@ def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), t
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-        This function can take a list of points at which basis functions are evaluated. If only one 
+        This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-        This function can take a list of points at which basis functions are evaluated. If only one 
+        This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
@@ -285,22 +286,21 @@ def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), t
 
     """
 
-    dens_eval_1 = evaluate_density(one_density_matrix,basis, point1, transform=transform)
+    dens_eval_1 = evaluate_density(one_density_matrix, basis, point1, transform=transform)
 
-    #if only one set of points is supplied, density evaluation is duplicated
+    # if only one set of points is supplied, density evaluation is duplicated
     if point2.all() == None:
         dens_eval_2 = dens_eval_1
     else:
-        dens_eval_2 = evaluate_density(one_density_matrix,basis, point2, transform=transform) 
+        dens_eval_2 = evaluate_density(one_density_matrix, basis, point2, transform=transform)
 
-    #build density matrix on grid
+    # build density matrix on grid
     dm_eval = evaluate_dm_density(one_density_matrix, basis, point1, point2, transform=transform)
 
-    #evaluate hole function
-    numerator = dm_eval*dm_eval
+    # evaluate hole function
+    numerator = dm_eval * dm_eval
 
-    hole_x2 = -1*np.einsum('ij,i,j->ij',numerator,1/dens_eval_1,1/dens_eval_2)
-
+    hole_x2 = -1 * np.einsum("ij,i,j->ij", numerator, 1 / dens_eval_1, 1 / dens_eval_2)
 
     return hole_x2
 
