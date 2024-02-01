@@ -53,6 +53,7 @@ def test_construct_array_cartesian():
     cont_two = GeneralizedContractionShell(
         2, np.array([2, 3, 4]), np.ones((1, 1)), 2 * np.ones(1), "spherical"
     )
+
     Test = disable_abstract(
         BaseFourIndexSymmetric,
         dict_overwrite={

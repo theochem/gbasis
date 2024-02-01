@@ -20,11 +20,11 @@ def from_iodata(mol):
 
     Raises
     ------
-    NotImplementedError
-        If any contractions in the given `IOData` instance is spherical.
     ValueError
         If `mol` is not an `iodata.iodata.IOData` instance.
         If the primitive normalization scheme of the shells in `IOData` instance is not "L2".
+    AssertionError
+        If generalized contractions are found in the shells in `IOData` instance.
 
     Notes
     -----
@@ -98,14 +98,8 @@ def from_iodata(mol):
 
             Raises
             ------
-            NotImplementedError
-                If convention requires multiplication by a negative sign for some of the harmonics.
-                If convention does not have angular momentum character that matches up with the
-                angular momentum.
             ValueError
                 If convention does not support given angular momentum.
-                If convention for the sign of the magnetic quantum number is not cosine (+1) or sine
-                (-1).
 
             """
             if self.angmom not in sph_conventions:
@@ -134,7 +128,12 @@ def from_iodata(mol):
         # pylint: disable=E1136
         basis.append(
             IODataShell(
-                angmom, mol.atcoords[shell.icenter], shell.coeffs, shell.exponents, shell.kinds[0]
+                angmom,
+                mol.atcoords[shell.icenter],
+                shell.coeffs,
+                shell.exponents,
+                shell.kinds[0],
+                icenter=shell.icenter,
             )
         )
 

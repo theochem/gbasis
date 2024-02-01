@@ -63,7 +63,7 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def evaluate_density(one_density_matrix, basis, points, transform=None):
+def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
     r"""Return the density of the given basis set at the given points.
 
     Parameters
@@ -85,6 +85,9 @@ def evaluate_density(one_density_matrix, basis, points, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    threshold : float, optional
+        The absolute value below which negative density values are acceptable. Any negative density
+        value with an absolute value smaller than this threshold will be set to zero.
 
     Returns
     -------
@@ -93,8 +96,12 @@ def evaluate_density(one_density_matrix, basis, points, transform=None):
 
     """
     orb_eval = evaluate_basis(basis, points, transform=transform)
-    # Fix: # 117; to avoid small negative density values, the array is clipped
-    return evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval).clip(min=0.0)
+    output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
+    # Fix #117: check magnitude of small negative density values, then use clip to remove them
+    min_output = np.min(output)
+    if min_output < 0.0 and abs(min_output) > threshold:
+        raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
+    return output.clip(min=0.0)
 
 
 def evaluate_deriv_reduced_density_matrix(
@@ -554,6 +561,7 @@ def evaluate_posdef_kinetic_energy_density(
     points,
     transform=None,
     deriv_type="general",
+    threshold=1.0e-8,
 ):
     r"""Return evaluations of positive definite kinetic energy density at the given points.
 
@@ -582,17 +590,19 @@ def evaluate_posdef_kinetic_energy_density(
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-    transform : np.ndarray(K_orbs, K_cont)
+    transform : np.ndarray(K_orbs, K_cont), optional
         Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
         combinations of contractions (e.g. MO).
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
-        Default is no transformation.
-    deriv_type : "general" or "direct"
+    deriv_type : "general" or "direct", optional
         Specification of derivative of contraction function in _deriv.py. "general" makes reference
         to general implementation of any order derivative function (_eval_deriv_contractions())
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
+    threshold : float, optional
+        The absolute value below which negative density values are acceptable. Any negative density
+        value with an absolute value smaller than this threshold will be set to zero.
 
     Returns
     -------
@@ -612,7 +622,10 @@ def evaluate_posdef_kinetic_energy_density(
             transform=transform,
             deriv_type=deriv_type,
         )
-    # Fix: #117; to avoid small negative values, the array is clipped
+    # Fix #117: check magnitude of small negative density values, then use clip to remove them
+    min_output = np.min(output)
+    if min_output < 0.0 and abs(min_output) > threshold:
+        raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
     return (0.5 * output).clip(min=0.0)
 
 

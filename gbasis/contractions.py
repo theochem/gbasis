@@ -1,5 +1,7 @@
 """Data class for contractions of Gaussian-type primitives."""
+from numbers import Integral
 import numpy as np
+from gbasis.utils import factorial2
 
 from gbasis.utils import factorial2
 
@@ -84,8 +86,6 @@ class GeneralizedContractionShell:
         Tuple of magnetic quantum numbers of the contractions that specifies the ordering after
         transforming the contractions from the Cartesian to spherical coordinate system.
         Property of `GeneralizedContractionShell`.
-    charge : float
-        Charge at the center of the Gaussian primitives.
     exps : np.ndarray(K,)
         Exponents of the primitives, :math:`\{\alpha_i\}_{i=1}^K`.
     coeffs : np.ndarray(K, M)
@@ -114,10 +114,11 @@ class GeneralizedContractionShell:
     assign_norm_contr(self)
         Assign normalization constants for the contractions.
 
-
     """
 
-    def __init__(self, angmom, coord, coeffs, exps, coord_type):
+    def __init__(
+        self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False
+    ):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -140,14 +141,56 @@ class GeneralizedContractionShell:
         coord_type : str
             Coordinate type of the contraction. Options include "cartesian" or "c" and
             "spherical" or "p".
-
+        icenter : np.int64 or None (optional)
+            Index for the atomic center for the contraction
+        ovr_tol : float
+            Tolerance used in overlap screening.
+        ovr_screen : boolean
+            Flag used for activating overlap screening.
         """
         self.angmom = angmom
         self.coord = coord
         self.coeffs = coeffs
         self.exps = exps
+        self.ovr_tol = tol
+        self.ovr_screen = ovr_screen
         self.assign_norm_cont()
         self.coord_type = coord_type
+        self.icenter = icenter
+
+    @property
+    def icenter(self):
+        """Atom center index for the contractions.
+
+        Returns
+         -------
+         icenter : int or None
+             Index for the corresponding atom center of the contractions.
+
+        """
+        return self._icenter
+
+    @icenter.setter
+    def icenter(self, icenter):
+        """Atom center index for the contractions.
+
+        Parameters
+        ----------
+        icenter : int or None
+            Index for the corresponding atom center of the contractions.
+
+        Raises
+        ------
+        TypeError
+            If `center` is not an `Integral` or `None` type.
+
+        """
+        if isinstance(icenter, Integral):
+            self._icenter = int(icenter)
+        elif icenter is None:
+            self._icenter = None
+        else:
+            raise TypeError(f"Center should be of `numbers.Integral` type. Got {type(icenter)}")
 
     @property
     def coord(self):
@@ -322,6 +365,70 @@ class GeneralizedContractionShell:
             self._coeffs = coeffs[:, np.newaxis]
         else:
             self._coeffs = coeffs
+
+    @property
+    def ovr_screen(self):
+        """Flag for performing overlap screening.
+
+        Returns
+        -------
+        ovr_screen : bool
+            Flag for using overlap screening.
+
+        """
+        return self._ovr_screen
+
+    @ovr_screen.setter
+    def ovr_screen(self, ovr_screen):
+        """Flag for performing overlap screening.
+
+        Parameters
+        ----------
+        ovr_screen : bool
+            Flag for using overlap screening.
+
+        Raises
+        ------
+        TypeError
+            If `ovr_screen` is not a `bool`.
+
+        """
+        if not isinstance(ovr_screen, bool):
+            raise TypeError("The overlap screening flag must be True or False.")
+
+        self._ovr_screen = ovr_screen
+
+    @property
+    def ovr_tol(self):
+        """Tolerance used in overlap screening.
+
+        Returns
+        -------
+        ovr_stol : float
+            Tolerance for using overlap screening
+
+        """
+        return self._ovr_tol
+
+    @ovr_tol.setter
+    def ovr_tol(self, ovr_tol):
+        """Tolerance used in overlap screening.
+
+        Parameters
+        ----------
+        ovr_stol : float
+            Tolerance for using overlap screening.
+
+        Raises
+        ------
+        TypeError
+            If `ovr_tol` is not a `float`.
+
+        """
+        if not isinstance(ovr_tol, float):
+            raise TypeError("The overlap screening tolerance must be float.")
+
+        self._ovr_tol = ovr_tol
 
     @property
     def angmom_components_cart(self):

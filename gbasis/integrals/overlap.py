@@ -91,22 +91,34 @@ class Overlap(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
-        return _compute_multipole_moment_integrals(
-            np.zeros(3),
-            np.zeros((1, 3), dtype=int),
-            # contraction on the left hand side
-            contractions_one.coord,
-            contractions_one.angmom_components_cart,
-            contractions_one.exps,
-            contractions_one.coeffs,
-            contractions_one.norm_prim_cart,
-            # contraction on the right hand side
-            contractions_two.coord,
-            contractions_two.angmom_components_cart,
-            contractions_two.exps,
-            contractions_two.coeffs,
-            contractions_two.norm_prim_cart,
-        )[0]
+        # screen these contractions to see if overlap calculation is required or can be set to zero
+        if is_overlap_included(contractions_one, contractions_two):
+            # calculate overlaps
+            return _compute_multipole_moment_integrals(
+                np.zeros(3),
+                np.zeros((1, 3), dtype=int),
+                # contraction on the left hand side
+                contractions_one.coord,
+                contractions_one.angmom_components_cart,
+                contractions_one.exps,
+                contractions_one.coeffs,
+                contractions_one.norm_prim_cart,
+                # contraction on the right hand side
+                contractions_two.coord,
+                contractions_two.angmom_components_cart,
+                contractions_two.exps,
+                contractions_two.coeffs,
+                contractions_two.norm_prim_cart,
+            )[0]
+        # return zeros for these overlaps
+        return np.zeros(
+            (
+                contractions_one.num_seg_cont,
+                len(contractions_one.norm_prim_cart),
+                contractions_two.num_seg_cont,
+                len(contractions_two.norm_prim_cart),
+            )
+        )
 
 
 def overlap_integral(basis, transform=None):
@@ -140,3 +152,44 @@ def overlap_integral(basis, transform=None):
     if all(ct == "spherical" for ct in coord_type):
         return Overlap(basis).construct_array_spherical()
     return Overlap(basis).construct_array_mix(coord_type)
+
+
+def is_overlap_included(contractions_one, contractions_two):
+    r"""Return True or False in response to whether overlap integral is required.
+
+    .. math::
+           d_{A_s;B_t} > \sqrt{-\frac{\alpha_{ min(\alpha_{s,A})} +
+           \alpha_{ min(\alpha_{t,B})} }{ \alpha_{ min(\alpha_{s,A})}
+            \alpha_{ min(\alpha_{t,B})} } \ln \varepsilon }
+    where :math:`d` is the cut-off distance at which shells do not interact with each other.
+    :math:`A` and `B` are the atoms each contraction are respectively centered on.
+    :math: `\alpha` is the gaussian exponent
+    :math: `s` and `t` index the primitive gaussians in shells centered
+    on atom `A` and `B` respectively.
+
+    Parameters
+    ----------
+    contractions_one : GeneralizedContractionShell
+        Contracted Cartesian Gaussians (of the same shell) associated with the first index of
+        the overlap.
+    contractions_two : GeneralizedContractionShell
+        Contracted Cartesian Gaussians (of the same shell) associated with the second index of
+        the overlap.
+
+    Returns
+    -------
+    value : `bool`
+        If overlap integral is required, return `True`
+    """
+
+    # test if screening is required
+    if not contractions_one.ovr_screen:
+        # if screening is not required, calculate the overlaps
+        return True
+    # Screening is desired, now test if these two overlaps pass the screen
+    alpha_a = min(contractions_one.exps)
+    alpha_b = min(contractions_two.exps)
+    r_12 = contractions_two.coord - contractions_one.coord
+    tol = contractions_one.ovr_tol
+    cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(tol))
+    return np.linalg.norm(r_12) < cutoff
