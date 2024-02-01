@@ -529,9 +529,5 @@ def test_evaluate_general_kinetic_energy_density():
         evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40))
         + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40)),
     )
-<<<<<<< HEAD
 
 
-test_evaluate_hole_x2()
-=======
->>>>>>> 59c34a5 (code changes+update functions)

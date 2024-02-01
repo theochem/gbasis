@@ -187,6 +187,13 @@ def evaluate_dm_density(one_density_matrix, basis, point1, point2 = np.array(Non
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
+        This function can take a list of points at which basis functions are evaluated. If only one 
+        set of points is given, it will be duplicated.
+    point2 : optional set of points np.ndarray(N, 3) --> default None
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
         This function can take a list of points at which basis functions are evaluated. If only one
         set of points is given, it will be duplicated.
     transform : np.ndarray(K_orbs, K_cont)
@@ -220,6 +227,9 @@ def evaluate_dm_density(one_density_matrix, basis, point1, point2 = np.array(Non
     return dm_on_grid
 
 
+
+
+
 def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), transform=None):
     r"""Return the two-body hole correlation function.
 
@@ -240,6 +250,13 @@ def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), t
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
     point1 : set of points np.ndarray(N, 3)
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
+        This function can take a list of points at which basis functions are evaluated. If only one 
+        set of points is given, it will be duplicated.
+    point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
@@ -283,6 +300,7 @@ def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), t
     numerator = dm_eval*dm_eval
 
     hole_x2 = -1*np.einsum('ij,i,j->ij',numerator,1/dens_eval_1,1/dens_eval_2)
+
 
     return hole_x2
 
