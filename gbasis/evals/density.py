@@ -102,21 +102,25 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
         raise ValueError(f"Found negative density <= {-threshold}, got {min_density}.")
     return density.clip(min=0.0)
 
-def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
+def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1,orb_eval_2):
     """Return the evaluation of the density matrix given the evaluated orbitals.
 
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
         One-electron density matrix in terms of the given orbitals.
-    orb_eval_list : list of orbitals evaluated on grid points [np.ndarray(K_orb, N) ...]
+    orb_eval_1 : orbital evaluated on grid points np.ndarray(K_orb, N)
+        Orbitals evaluated at :math:`N` grid points.
+        The set of orbitals must be the same basis set used to build the one-electron density
+        matrix.
+    orb_eval_2 : orbital evaluated on grid points np.ndarray(K_orb, N)
         Orbitals evaluated at :math:`N` grid points.
         The set of orbitals must be the same basis set used to build the one-electron density
         matrix.
 
     Returns
     -------
-    density : np.ndarray(N1,N2,K_orb,K_orb)
+    dm_on_grid : np.ndarray(N1,N2)
         Density Matrix evaluated at `N1,N2` grid points.
 
     Raises
@@ -136,11 +140,15 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
             "One-electron density matrix must be a two-dimensional `numpy` array with `dtype`"
             " float."
         )
-    for orb in orb_eval_list:
-        if not (isinstance(orb, np.ndarray) and orb.ndim == 2 and orb.dtype == float):
-            raise TypeError(
-                "Evaluation of orbitals must be a two-dimensional `numpy` array with `dtype` float."
-            )
+
+    if not (isinstance(orb_eval_1, np.ndarray) and orb_eval_1.ndim == 2 and orb_eval_1.dtype == float):
+        raise TypeError(
+            "Evaluation of orbitals must be a two-dimensional `numpy` array with `dtype` float."
+        )
+    if not (isinstance(orb_eval_2, np.ndarray) and orb_eval_2.ndim == 2 and orb_eval_2.dtype == float):
+        raise TypeError(
+            "Evaluation of orbitals must be a two-dimensional `numpy` array with `dtype` float."
+        )
     if one_density_matrix.shape[0] != one_density_matrix.shape[1]:
         raise ValueError("One-electron density matrix must be a square matrix.")
     
@@ -148,15 +156,18 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_list):
         raise ValueError("One-electron density matrix must be symmetric.")
     
 
-    #Tensor product for \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
-    density = np.einsum('ij,ik,jl->klij',one_density_matrix, orb_eval_list[0],orb_eval_list[1])
+    #Evaluation of \gamma(\mathbf{r}_1,\mathbf{r}_2) = \sum_{pq} \gamma_{pq} \chi_p(\mathbf{r}_1) \chi_q(\mathbf{r}_2)
+    dm_on_grid=0
+    for ii, orb1 in enumerate(one_density_matrix):
+        for jj, orb2 in enumerate(one_density_matrix):
+            dm_on_grid += one_density_matrix[ii][jj]* np.outer(orb_eval_1[ii],orb_eval_2[jj])
 
-    #returns dm evaluated on each grid point
-    return density
+    #returns dm evaluated on each grid point summed over the orbitals
+    return dm_on_grid
 
 
-def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
-    r"""Return the density of the given basis set at the given points.
+def evaluate_dm_density(one_density_matrix, basis, point1, point2 = np.array(None), transform=None):
+    r"""Return the density matrix of the given basis set evaluated on the given points.
 
     Parameters
     ----------
@@ -166,7 +177,14 @@ def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    points_list : list of points [np.ndarray(N, 3)...]
+    point1 : set of points np.ndarray(N, 3)
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
+        This function can take a list of points at which basis functions are evaluated. If only one 
+        set of points is given, it will be duplicated.
+    point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
@@ -183,26 +201,31 @@ def evaluate_dm_density(one_density_matrix, basis, points_list, transform=None):
 
     Returns
     -------
-    dm_on_grid : np.ndarray(N1,N2,K_orb,K_orb)
-        Density Matrix evaluated at `N1,N2` grid points.
+    dm_on_grid : np.ndarray(N1,N2)
+        Density Matrix evaluated at `N1,N2` grid points summed over orbitals.
 
     """
 
-    orb_evals = []
     #evaluate basi(e)s on the point set(s) 
-    for grid in points_list:
-        orb_eval = evaluate_basis(basis, grid, transform=transform)
-        orb_evals.append(orb_eval)
-    #if only one set of points is supplied, it is duplicated
-    if len(points_list)==1:
-        orb_evals.append(orb_eval)
+    orb_eval_1 = evaluate_basis(basis, point1, transform=transform)
 
+    #if only one set of points is supplied, it is duplicated
+    if point2.all() == None:
+        orb_eval_2 = orb_eval_1
+    else:
+        orb_eval_2 = evaluate_basis(basis, point2, transform=transform) 
+    
+    
     #Calulated performed using the evaluated orbitals
-    dm_on_grid = evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_evals)
+    dm_on_grid = evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1,orb_eval_2)
 
     return dm_on_grid
 
-def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
+
+
+
+
+def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), transform=None):
     r"""Return the two-body hole correlation function.
 
     .. math ::
@@ -221,7 +244,14 @@ def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
         be expressed with respect to the transformed basis set.
     basis : list/tuple of GeneralizedContractionShell
         Shells of generalized contractions.
-    points_list : list of points [np.ndarray(N, 3)]
+    point1 : set of points np.ndarray(N, 3)
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
+        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
+        components.
+        This function can take a list of points at which basis functions are evaluated. If only one 
+        set of points is given, it will be duplicated.
+    point2 : optional set of points np.ndarray(N, 3) --> default None
         Cartesian coordinates of the points in space (in atomic units) where the basis functions
         are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
@@ -238,25 +268,27 @@ def evaluate_hole_x2(one_density_matrix, basis, points_list, transform=None):
 
     Returns
     -------
-    hole_x2 : np.ndarray(N1,N2,K_orb,K_orb)
+    hole_x2 : np.ndarray(N1,N2)
         Two-body Exchange Hole evaluated at `N1,N2` grid points.
 
     """
-    dens_evals = []
 
-    for grid in points_list:
-        dens_eval = evaluate_density(one_density_matrix,basis, grid, transform=transform)
-        dens_evals.append(dens_eval)
+    dens_eval_1 = evaluate_density(one_density_matrix,basis, point1, transform=transform)
 
-    if len(points_list)==1:
-        dens_evals.append(dens_eval)
+    #if only one set of points is supplied, density evaluation is duplicated
+    if point2.all() == None:
+        dens_eval_2 = dens_eval_1
+    else:
+        dens_eval_2 = evaluate_density(one_density_matrix,basis, point2, transform=transform) 
 
     #build density matrix on grid
-    dm_eval = evaluate_dm_density(one_density_matrix, basis, points_list, transform=transform)
+    dm_eval = evaluate_dm_density(one_density_matrix, basis, point1, point2, transform=transform)
 
     #evaluate hole function
-    numerator = np.einsum('ijkl,ijkl->ijkl',dm_eval,dm_eval)
-    hole_x2 = -1*np.einsum('ijkl,i,j->ijkl',numerator,1/dens_evals[0],1/dens_evals[1])
+    numerator = dm_eval*dm_eval
+
+    hole_x2 = -1*np.einsum('ij,i,j->ij',numerator,1/dens_eval_1,1/dens_eval_2)
+
 
     return hole_x2
 
@@ -762,14 +794,14 @@ def evaluate_posdef_kinetic_energy_density(
 
     Returns
     -------
-    posdef_kindetic_energy_density : np.ndarray(N,)
+    posdef_kinetic_energy_density : np.ndarray(N,)
         Positive definite kinetic energy density of the given transformed basis set evaluated at
         `N` grid points.
 
     """
-    posdef_kindetic_energy_density = np.zeros(points.shape[0])
+    posdef_kinetic_energy_density = np.zeros(points.shape[0])
     for orders in np.identity(3, dtype=int):
-        posdef_kindetic_energy_density += evaluate_deriv_reduced_density_matrix(
+        posdef_kinetic_energy_density += evaluate_deriv_reduced_density_matrix(
             orders,
             orders,
             one_density_matrix,
@@ -779,10 +811,10 @@ def evaluate_posdef_kinetic_energy_density(
             deriv_type=deriv_type,
         )
     # Fix #117: check magnitude of small negative density values, then use clip to remove them
-    min_output = np.min(output)
+    min_output = np.min(posdef_kinetic_energy_density)
     if min_output < 0.0 and abs(min_output) > threshold:
         raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
-    return (0.5 * posdef_kindetic_energy_density).clip(min=0.0)
+    return (0.5 * posdef_kinetic_energy_density).clip(min=0.0)
 
 
 # TODO: test against a reference
