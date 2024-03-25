@@ -1,4 +1,5 @@
 """Multipole moment integrals involving Contracted Cartesian Gaussians."""
+
 import numpy as np
 
 

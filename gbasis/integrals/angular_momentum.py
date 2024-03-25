@@ -1,4 +1,5 @@
 """Module for evaluating the integral over the angular momentum operator."""
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (

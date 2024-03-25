@@ -1,4 +1,5 @@
 """Test gbasis.integrals.nuclear_electron_attraction."""
+
 from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attraction_integral
 from gbasis.integrals.point_charge import point_charge_integral
 from gbasis.parsers import make_contractions, parse_nwchem

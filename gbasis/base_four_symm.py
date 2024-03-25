@@ -1,4 +1,5 @@
 """Base class for arrays that depend on four contracted Gaussians."""
+
 import abc
 import itertools as it
 

@@ -1,4 +1,5 @@
 """Test gbasis.parsers."""
+
 from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 import numpy as np
 import pytest

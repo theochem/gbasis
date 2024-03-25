@@ -1,4 +1,5 @@
 """Test gbasis.integrals.overlap."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.overlap import Overlap, overlap_integral
