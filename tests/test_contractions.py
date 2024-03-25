@@ -1,4 +1,5 @@
 """Test gbasis.contractions."""
+
 from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 import pytest

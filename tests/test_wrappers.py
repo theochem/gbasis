@@ -1,4 +1,5 @@
 """Test gbasis.wrapper."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.wrappers import from_iodata, from_pyscf

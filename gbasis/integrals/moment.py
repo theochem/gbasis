@@ -1,4 +1,5 @@
 """Module for computing the moments of a basis set."""
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals

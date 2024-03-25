@@ -1,4 +1,5 @@
 """Test gbasis.base_two_symm."""
+
 from gbasis.base_two_asymm import BaseTwoIndexAsymmetric
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell

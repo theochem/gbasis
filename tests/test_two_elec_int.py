@@ -1,4 +1,5 @@
 """Test gbasis.integrals._two_elec_int."""
+
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,

@@ -1,4 +1,5 @@
 """Test gbasis.integrals.electron_repulsion."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,

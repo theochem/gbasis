@@ -1,4 +1,5 @@
 """Test gbasis.base_one."""
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.spherical import generate_transformation

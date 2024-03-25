@@ -1,4 +1,5 @@
 """Derivative of a Gaussian Contraction."""
+
 import numpy as np
 from scipy.special import comb, eval_hermite, perm
 
@@ -129,9 +130,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         # to evaluate multiple orders at the same time. Creating/finding a better function for
         # evaluating the hermite polynomial at different orders (in sequence) may be nice in the
         # future.
-        hermite = np.sum(
-            coeffs * eval_hermite(indices_herm, alphas**0.5 * nonzero_coords), axis=0
-        )
+        hermite = np.sum(coeffs * eval_hermite(indices_herm, alphas**0.5 * nonzero_coords), axis=0)
         hermite = np.prod(hermite, axis=1)
 
         # NOTE: `hermite` now has axis 0 for primitives, 1 for angular momentum vector, and axis 2
