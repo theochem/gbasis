@@ -1,11 +1,11 @@
-neutral optimization                                                    
-FOpt      UB3LYP                                                      Aug-CC-pVTZ         
+neutral optimization
+FOpt      UB3LYP                                                      Aug-CC-pVTZ
 Number of atoms                            I                6
 Info1-9                                    I   N=           9
           22          15           0           0           0         110
            2          18        -502
 Full Title                                 C   N=           2
-neutral optimization    
+neutral optimization
 Route                                      C   N=           2
 # opt ub3lyp/aug-cc-pvtz
 Charge                                     I                0
@@ -32,8 +32,8 @@ Int Atom Types                             I   N=           6
            0           0           0           0           0           0
 Force Field                                I                0
 Atom Types                                 C   N=           6
-                                                            
-            
+
+
 MM charges                                 R   N=           6
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00
@@ -27598,8 +27598,8 @@ Int Atom Modified Types                    I   N=           6
            0           0           0           0           0           0
 Force Field                                I                0
 Atom Modified Types                        C   N=           6
-                                                            
-            
+
+
 Link Atoms                                 I   N=           6
            0           0           0           0           0           0
 Atom Modified MM Charges                   R   N=           6
@@ -28499,4 +28499,4 @@ ClPar Real Params                          R   N=        3200
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
   0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00  0.00000000E+00
 Gaussian Version                           C   N=           2
-ES64L-G16RevC.01        
+ES64L-G16RevC.01
