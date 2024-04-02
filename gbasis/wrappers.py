@@ -142,7 +142,7 @@ def from_iodata(mol, tol=1e-20, overlap=False):
                 shell.kinds[0],
                 icenter=shell.icenter,
                 tol=tol,
-                ovr_screen=overlap
+                ovr_screen=overlap,
             )
         )
 

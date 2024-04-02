@@ -123,8 +123,9 @@ def test_from_iodata():
         mol.obasis.primitive_normalization = "L1"
         basis, coord_types = from_iodata(mol)
 
+
 def test_from_iodata_ovlp():
-    """Test gbasis.wrapper.from_iodata only for the ovr_screen and tol attributes """
+    """Test gbasis.wrapper.from_iodata only for the ovr_screen and tol attributes"""
     pytest.importorskip("iodata")
     from iodata import load_one
 
