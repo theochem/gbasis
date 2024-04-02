@@ -214,7 +214,7 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
     if not isinstance(tol, float):
         raise TypeError("Tolerance must be provided as a float.")
     if not isinstance(overlap, bool):
-        raise TypeError("Tolerance must be provided as True or False.")
+        raise TypeError("Overlap must be provided as True or False.")
     if len(atoms) != coords.shape[0]:
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 

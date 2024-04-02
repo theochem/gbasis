@@ -3,13 +3,17 @@ from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
 
-def from_iodata(mol):
+def from_iodata(mol, tol=1e-20, overlap=False):
     """Return basis set stored within the `IOData` instance in `iodata`.
 
     Parameters
     ----------
     mol : iodata.iodata.IOData
         `IOData` instance from `iodata` module.
+    tol : float
+        Tolerance used in overlap screening.
+    ovrlap : bool
+        Flag for performing overlap screening between contractions.
 
     Returns
     -------
@@ -114,6 +118,10 @@ def from_iodata(mol):
             "Only L2 normalization scheme is supported in `gbasis`. Given `IOData` instance uses "
             "primitive normalization scheme, {}".format(molbasis.primitive_normalization)
         )
+    if not isinstance(tol, float):
+        raise TypeError("Tolerance must be provided as a float.")
+    if not isinstance(overlap, bool):
+        raise TypeError("Overlap must be provided as True or False.")
 
     basis = []
     for shell in molbasis.shells:
@@ -133,6 +141,8 @@ def from_iodata(mol):
                 shell.exponents,
                 shell.kinds[0],
                 icenter=shell.icenter,
+                tol=tol,
+                ovr_screen=overlap
             )
         )
 
