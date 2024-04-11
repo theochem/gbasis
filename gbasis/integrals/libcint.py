@@ -458,6 +458,17 @@ class CBasis:
         offs = np.asarray(offs, dtype=c_int)
         atm_offs = np.cumsum(atm_offs)
 
+        # Get permutation vector for ordering convention
+        permutations = []
+        for shell in basis:
+            if hasattr(shell, "permutation_libcint"):
+                permutation = shell.permutation_libcint()
+            else:
+                permutation = list(range(num_angmom(shell)))
+            for _ in range(shell.num_seg_cont):
+                perm_off = len(permutations)
+                permutations.extend(p + perm_off for p in permutation)
+
         # Allocate and fill C input arrays
         ienv = 20
         atm = np.zeros((natm, 6), dtype=c_int)
@@ -536,9 +547,10 @@ class CBasis:
         self.atcoords = atcoords.copy()
         self._atm_offs = atm_offs
 
-        # Save basis function offsets
+        # Save basis function offsets and ordering permutation
         self._offs = offs
         self._max_off = max(offs)
+        self._permutations = permutations
 
         # Set inverse sqrt of overlap integral (temporarily, for __init__)
         self._ovlp_minhalf = np.ones(nbfn)
@@ -740,6 +752,9 @@ class CBasis:
             if constant is not None:
                 out *= constant
 
+            # Apply permutation
+            out = out[self._permutations, :][:, self._permutations]
+
             # Return normalized integrals
             if self.coord_type == "cartesian":
                 return np.einsum(norm_einsum, self._ovlp_minhalf, self._ovlp_minhalf, out)
@@ -940,6 +955,12 @@ class CBasis:
             # Transpose integrals in `out` array to proper notation
             if physicist:
                 out = out.transpose(0, 2, 1, 3)
+
+            # Apply permutation
+            out = out[self._permutations]
+            out = out[:, self._permutations]
+            out = out[:, :, self._permutations]
+            out = out[:, :, :, self._permutations]
 
             # Return normalized integrals
             if self.coord_type == "cartesian":
