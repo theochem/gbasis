@@ -141,7 +141,7 @@ class GeneralizedContractionShell:
             "spherical" or "p".
         icenter : np.int64 or None (optional)
             Index for the atomic center for the contraction
-        ovr_tol : float
+        tol : float
             Tolerance used in overlap screening.
         ovr_screen : boolean
             Flag used for activating overlap screening.

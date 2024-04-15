@@ -12,7 +12,7 @@ def from_iodata(mol, tol=1e-20, overlap=False):
         `IOData` instance from `iodata` module.
     tol : float
         Tolerance used in overlap screening.
-    ovrlap : bool
+    overlap : bool
         Flag for performing overlap screening between contractions.
 
     Returns
