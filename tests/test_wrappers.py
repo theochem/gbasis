@@ -18,6 +18,8 @@ def test_from_iodata():
     coord_types = [type for type in [shell.coord_type for shell in basis]]
 
     assert coord_types == ["cartesian"] * 5
+    assert basis[0].ovr_screen == False
+    assert basis[0].ovr_tol == 1e-20
     assert all(isinstance(i, GeneralizedContractionShell) for i in basis)
     assert basis[0].angmom == 0
     assert np.allclose(basis[0].coord, mol.atcoords[0])
@@ -28,6 +30,8 @@ def test_from_iodata():
     assert np.allclose(basis[0].norm_cont, 1.0)
 
     assert basis[1].angmom == 0
+    assert basis[1].ovr_screen == False
+    assert basis[1].ovr_tol == 1e-20
     assert np.allclose(basis[1].coord, mol.atcoords[0])
     assert np.allclose(basis[1].exps, np.array([5.033151319, 1.169596125, 0.3803889600]))
     assert np.allclose(
@@ -36,6 +40,8 @@ def test_from_iodata():
     assert np.allclose(basis[1].norm_cont, 1.0)
 
     assert basis[2].angmom == 1
+    assert basis[2].ovr_screen == False
+    assert basis[2].ovr_tol == 1e-20
     assert np.allclose(basis[2].coord, mol.atcoords[0])
     assert np.allclose(basis[2].exps, np.array([5.033151319, 1.169596125, 0.3803889600]))
     assert np.allclose(
@@ -44,6 +50,8 @@ def test_from_iodata():
     assert np.allclose(basis[2].norm_cont, 1.0)
 
     assert basis[3].angmom == 0
+    assert basis[3].ovr_screen == False
+    assert basis[3].ovr_tol == 1e-20
     assert np.allclose(basis[3].coord, mol.atcoords[1])
     assert np.allclose(basis[3].exps, np.array([3.425250914, 0.6239137298, 0.1688554040]))
     assert np.allclose(
@@ -52,6 +60,8 @@ def test_from_iodata():
     assert np.allclose(basis[3].norm_cont, 1.0)
 
     assert basis[4].angmom == 0
+    assert basis[4].ovr_screen == False
+    assert basis[4].ovr_tol == 1e-20
     assert np.allclose(basis[4].coord, mol.atcoords[2])
     assert np.allclose(basis[4].exps, np.array([3.425250914, 0.6239137298, 0.1688554040]))
     assert np.allclose(
@@ -112,6 +122,27 @@ def test_from_iodata():
     with pytest.raises(ValueError):
         mol.obasis.primitive_normalization = "L1"
         basis, coord_types = from_iodata(mol)
+
+
+def test_from_iodata_ovlp():
+    """Test gbasis.wrapper.from_iodata only for the ovr_screen and tol attributes"""
+    pytest.importorskip("iodata")
+    from iodata import load_one
+
+    mol = load_one(find_datafile("data_iodata_water_sto3g_hf_g03.fchk"))
+
+    basis = from_iodata(mol, tol=0.001, overlap=True)
+
+    assert basis[0].ovr_screen == True
+    assert basis[0].ovr_tol == 0.001
+    assert basis[1].ovr_screen == True
+    assert basis[1].ovr_tol == 0.001
+    assert basis[2].ovr_screen == True
+    assert basis[2].ovr_tol == 0.001
+    assert basis[3].ovr_screen == True
+    assert basis[3].ovr_tol == 0.001
+    assert basis[4].ovr_screen == True
+    assert basis[4].ovr_tol == 0.001
 
 
 def test_from_pyscf():
