@@ -215,7 +215,7 @@ def test_angmom_components_sph():
     test._angmom = 0
     assert test.angmom_components_sph == ("c0",)
     test._angmom = 1
-    assert test.angmom_components_sph == ("s1", "c0", "c1")
+    assert test.angmom_components_sph == ("c1", "s1", "c0")
     test._angmom = 2
     assert test.angmom_components_sph == ("s2", "s1", "c0", "c1", "c2")
     test._angmom = 3
