@@ -5,7 +5,7 @@ import numpy as np
 
 CONVENTIONS_LIBCINT = {
     (5, 'p'): ['s5','s4', 's3', 's2', 's1', 'c0', 'c1', 'c2', 'c3', 'c4','c5'],
-    (4, 'p'): ['s3', 's2', 's1', 'c0', 'c1', 'c2', 'c3'],
+    (4, 'p'): ['s4','s3', 's2', 's1', 'c0', 'c1', 'c2', 'c3', 'c4'],
     (3, 'p'): ['s3', 's2', 's1', 'c0', 'c1', 'c2', 'c3'],
     (2, 'p'): ['s2', 's1', 'c0', 'c1', 'c2'],
     (0, 'c'): ['1'],
@@ -14,8 +14,9 @@ CONVENTIONS_LIBCINT = {
     (3, 'c'): ['xxx', 'xxy', 'xxz', 'xyy', 'xyz', 'xzz', 'yyy', 'yyz', 'yzz', 'zzz'],
     (4, 'c'): ['xxxx', 'xxxy', 'xxxz', 'xxyy', 'xxyz', 'xxzz', 'xyyy', 'xyyz', 'xyzz',
                'xzzz', 'yyyy', 'yyyz', 'yyzz', 'yzzz', 'zzzz'],
-    (5, 'c'): ['xxxxx', 'xxxxy', 'xxxxz', 'xxxyy', 'xxxyz', 'xxxzz', 'xxyyy', 'xxyyz', 'xxyzz', 'xxzzz', 'xyyyy', 'xyyyz', 'xyyzz', 'xyzzz',
-               'xzzzz', 'yyyyy', 'yyyyz', 'yyyzz', 'yyzzz', 'yzzzz', 'zzzzz'],
+    (5, 'c'): ['xxxxx', 'xxxxy', 'xxxxz', 'xxxyy', 'xxxyz', 'xxxzz', 'xxyyy', 'xxyyz', 'xxyzz',
+               'xxzzz', 'xyyyy', 'xyyyz', 'xyyzz', 'xyzzz', 'xzzzz', 'yyyyy', 'yyyyz', 'yyyzz',
+               'yyzzz', 'yzzzz', 'zzzzz'],
     (6, 'c'): ['xxxxxx', 'xxxxxy', 'xxxxxz', 'xxxxyy', 'xxxxyz', 'xxxxzz', 'xxxyyy',
                'xxxyyz', 'xxxyzz', 'xxxzzz', 'xxyyyy', 'xxyyyz', 'xxyyzz', 'xxyzzz',
                'xxzzzz', 'xyyyyy', 'xyyyyz', 'xyyyzz', 'xyyzzz', 'xyzzzz', 'xzzzzz',
@@ -160,7 +161,6 @@ def from_iodata(mol, tol=1e-20, overlap=False):
                 iodata_shell_convention = sph_conventions[angmom]
 
             # Get libcint convention
-            print(angmom, coord_type)
             libcint_convention = CONVENTIONS_LIBCINT[(angmom, coord_type)]
             # Generate permutation
             permutation = [libcint_convention.index(conv1) for conv1 in iodata_shell_convention]
