@@ -1,4 +1,8 @@
 """Test gbasis.evals.stress_tensor."""
+import numpy as np
+import pytest
+from utils import HortonContractions, find_datafile
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
@@ -10,9 +14,6 @@ from gbasis.evals.stress_tensor import (
     evaluate_stress_tensor,
 )
 from gbasis.parsers import make_contractions, parse_nwchem
-import numpy as np
-import pytest
-from utils import find_datafile, HortonContractions
 
 
 def test_evaluate_stress_tensor():

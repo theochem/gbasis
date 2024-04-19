@@ -4,6 +4,7 @@ from collections import defaultdict
 
 import numpy as np
 from scipy.special import comb, factorial
+
 from gbasis.utils import factorial2
 
 
@@ -45,7 +46,8 @@ def expansion_coeff(angmom, mag, i, j, k):
         C^{angmom,mag,i,j,k} = -1^{i + k - \text{shift_factor}} * (1/4)^i * {angmom \choose i}
         * {(angmom - i) \choose (|mag| + i)} * {i \choose j} * {|mag| \choose 2 * k},
 
-    where :math:`shift_factor = 0` if :math:`mag >= 0` and :math:`shift_factor = 1/2` if :math:`mag < 0`    .
+    where :math:`shift_factor = 0` if :math:`mag >= 0` and :math:`shift_factor = 1/2`
+    if :math:`mag < 0`.
 
     Parameters
     ----------
@@ -122,7 +124,8 @@ def harmonic_norm(angmom, mag):
     Calculate the normalization constant of a real solid harmonic.
 
     .. math::
-        N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! / 2^{\delta_0^m}},
+        N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! /
+        2^{\delta_0^m}},
 
     where :math: `del{0, m}` is the Kronecker delta of 0 and m.
 
@@ -300,10 +303,7 @@ def generate_transformation(angmom, cartesian_order, spherical_order, apply_from
         len(spherical_order) == 2 * angmom + 1
         # Strip out "-" from the ordering to make sure the right components are there
         and {x.replace("-", "") for x in spherical_order}
-        == set(
-            ["s{}".format(m) for m in range(angmom, 0, -1)]
-            + ["c{}".format(m) for m in range(angmom + 1)]
-        )
+        == set([f"s{m}" for m in range(angmom, 0, -1)] + [f"c{m}" for m in range(angmom + 1)])
     ):
         raise ValueError(
             "`spherical_order` must contain exactly 2 * `angmom` + 1 pure function strings, with "

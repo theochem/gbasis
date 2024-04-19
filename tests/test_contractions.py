@@ -1,8 +1,9 @@
 """Test gbasis.contractions."""
-from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 import pytest
 from utils import skip_init
+
+from gbasis.contractions import GeneralizedContractionShell
 
 
 def test_coord_setter():

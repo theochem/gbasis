@@ -1,12 +1,13 @@
 """Test gbasis.integrals.kinetic_energy."""
-from gbasis.contractions import GeneralizedContractionShell
-from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
-from gbasis.integrals.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
-from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.utils import factorial2
 import numpy as np
 import pytest
-from utils import find_datafile, HortonContractions
+from utils import HortonContractions, find_datafile
+
+from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
+from gbasis.integrals.kinetic_energy import KineticEnergyIntegral, kinetic_energy_integral
+from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.utils import factorial2
 
 
 def test_kinetic_energy_construct_array_contraction():
@@ -205,7 +206,7 @@ def test_kinetic_energy_integral_lincomb():
 
 
 def test_kinetic_energy_integral_horton_anorcc_hhe():
-    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
 
@@ -227,7 +228,7 @@ def test_kinetic_energy_integral_horton_anorcc_hhe():
 
 
 def test_kinetic_energy_integral_horton_anorcc_bec():
-    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON's results.
+    """Test gbasis.integrals.kinetic_energy.kinetic_energy_integral_cartesian against HORTON.
 
     The test case is diatomic with Be and C separated by 1.0 angstroms with basis set ANO-RCC.
 

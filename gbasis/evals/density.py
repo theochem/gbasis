@@ -1,8 +1,9 @@
 """Density Evaluation."""
-from gbasis.evals.eval import evaluate_basis
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
 import numpy as np
 from scipy.special import comb
+
+from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.eval_deriv import evaluate_deriv_basis
 
 
 def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
@@ -696,6 +697,10 @@ def evaluate_general_kinetic_energy_density(
     )
     if alpha != 0:
         general_kinetic_energy_density += alpha * evaluate_density_laplacian(
-            one_density_matrix, basis, points, transform=transform, deriv_type=deriv_type
+            one_density_matrix,
+            basis,
+            points,
+            transform=transform,
+            deriv_type=deriv_type,
         )
     return general_kinetic_energy_density

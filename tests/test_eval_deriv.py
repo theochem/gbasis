@@ -1,14 +1,15 @@
 """Test gbasis.evals.evaluate_deriv."""
 import itertools as it
 
+import numpy as np
+import pytest
+from utils import find_datafile
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval_deriv import EvalDeriv, evaluate_deriv_basis
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.utils import factorial2
-import numpy as np
-import pytest
-from utils import find_datafile
 
 
 def test_evaluate_deriv_construct_array_contraction():
