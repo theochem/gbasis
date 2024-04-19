@@ -38,6 +38,7 @@ jobs:
 
       - name: Install Libcint library
         run: |
+          sudo apt-get install -y sbcl
           USE_LIBCINT=1 ./tools/install_libcint.sh
 
       - name: Run pytest
