@@ -36,6 +36,10 @@ jobs:
           # Need editable mode in order to include the test files
           pip install -e .
 
+      - name: Install Libcint library
+        run: |
+          ./tools/install_libcint.sh
+
       - name: Run pytest
         uses: pavelzw/pytest-action@v2
         with:
