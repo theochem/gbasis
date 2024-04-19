@@ -38,7 +38,7 @@ jobs:
 
       - name: Install Libcint library
         run: |
-          ./tools/install_libcint.sh
+          USE_LIBCINT=1 ./tools/install_libcint.sh
 
       - name: Run pytest
         uses: pavelzw/pytest-action@v2
