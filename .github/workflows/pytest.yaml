@@ -37,7 +37,7 @@ jobs:
           pip install -e .
 
       - name: Install Libcint library
-        if: matrix.os == "ubuntu-latest"
+        if: ${{ matrix.os }} == "ubuntu-latest"
         run: |
           sudo apt-get install -y sbcl
           USE_LIBCINT=1 ./tools/install_libcint.sh
