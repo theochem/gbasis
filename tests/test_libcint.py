@@ -16,8 +16,6 @@ from gbasis.integrals.nuclear_electron_attraction import nuclear_electron_attrac
 from gbasis.integrals.overlap import overlap_integral
 from gbasis.integrals.point_charge import point_charge_integral
 
-from gbasis.integrals.libcint import ELEMENTS, LIBCINT, CBasis
-
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.wrappers import from_iodata
 
@@ -68,6 +66,8 @@ TEST_INTEGRALS = [
 @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
 @pytest.mark.parametrize("basis", TEST_BASIS_SETS)
 def test_integral(basis, atsyms, atcoords, coord_type, integral):
+    from gbasis.integrals.libcint import ELEMENTS, LIBCINT, CBasis
+
     r"""
     Test gbasis.integrals.libcint.CBasis integrals
     against the GBasis Python integrals.
@@ -187,6 +187,7 @@ TEST_INTEGRALS_IODATA = [
 def test_integral_iodata(fname, elements, coord_type, integral):
     pytest.importorskip("iodata")
     from iodata import load_one
+    from gbasis.integrals.libcint import ELEMENTS, LIBCINT, CBasis
 
     atol, rtol = 1e-4, 1e-4
 
