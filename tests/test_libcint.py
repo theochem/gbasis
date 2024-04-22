@@ -1,6 +1,7 @@
 """Test gbasis.integrals.libcint."""
 
 import pytest
+import os as os
 
 import numpy as np
 import numpy.testing as npt
@@ -58,7 +59,8 @@ TEST_INTEGRALS = [
     pytest.param("moment", id="Moment"),
 ]
 
-
+@pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
+                    reason="Libcint build not found")
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
 @pytest.mark.parametrize("coord_type", TEST_COORD_TYPES)
 @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
@@ -175,7 +177,8 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
-
+@pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
+                    reason="Libcint build not found")
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
 @pytest.mark.parametrize("integral", TEST_INTEGRALS_IODATA)
 def test_integral_iodata(fname, elements, coord_type, integral):
