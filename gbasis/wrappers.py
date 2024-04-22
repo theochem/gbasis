@@ -4,27 +4,88 @@ import numpy as np
 
 
 CONVENTIONS_LIBCINT = {
-    (5, 'p'): ['s5','s4', 's3', 's2', 's1', 'c0', 'c1', 'c2', 'c3', 'c4','c5'],
-    (4, 'p'): ['s4','s3', 's2', 's1', 'c0', 'c1', 'c2', 'c3', 'c4'],
-    (3, 'p'): ['s3', 's2', 's1', 'c0', 'c1', 'c2', 'c3'],
-    (2, 'p'): ['s2', 's1', 'c0', 'c1', 'c2'],
-    (0, 'c'): ['1'],
-    (1, 'c'): ['x', 'y', 'z'],
-    (2, 'c'): ['xx', 'xy', 'xz', 'yy', 'yz', 'zz'],
-    (3, 'c'): ['xxx', 'xxy', 'xxz', 'xyy', 'xyz', 'xzz', 'yyy', 'yyz', 'yzz', 'zzz'],
-    (4, 'c'): ['xxxx', 'xxxy', 'xxxz', 'xxyy', 'xxyz', 'xxzz', 'xyyy', 'xyyz', 'xyzz',
-               'xzzz', 'yyyy', 'yyyz', 'yyzz', 'yzzz', 'zzzz'],
-    (5, 'c'): ['xxxxx', 'xxxxy', 'xxxxz', 'xxxyy', 'xxxyz', 'xxxzz', 'xxyyy', 'xxyyz', 'xxyzz',
-               'xxzzz', 'xyyyy', 'xyyyz', 'xyyzz', 'xyzzz', 'xzzzz', 'yyyyy', 'yyyyz', 'yyyzz',
-               'yyzzz', 'yzzzz', 'zzzzz'],
-    (6, 'c'): ['xxxxxx', 'xxxxxy', 'xxxxxz', 'xxxxyy', 'xxxxyz', 'xxxxzz', 'xxxyyy',
-               'xxxyyz', 'xxxyzz', 'xxxzzz', 'xxyyyy', 'xxyyyz', 'xxyyzz', 'xxyzzz',
-               'xxzzzz', 'xyyyyy', 'xyyyyz', 'xyyyzz', 'xyyzzz', 'xyzzzz', 'xzzzzz',
-               'yyyyyy', 'yyyyyz', 'yyyyzz', 'yyyzzz', 'yyzzzz', 'yzzzzz', 'zzzzzz'],
+    (5, "p"): ["s5", "s4", "s3", "s2", "s1", "c0", "c1", "c2", "c3", "c4", "c5"],
+    (4, "p"): ["s4", "s3", "s2", "s1", "c0", "c1", "c2", "c3", "c4"],
+    (3, "p"): ["s3", "s2", "s1", "c0", "c1", "c2", "c3"],
+    (2, "p"): ["s2", "s1", "c0", "c1", "c2"],
+    (0, "c"): ["1"],
+    (1, "c"): ["x", "y", "z"],
+    (2, "c"): ["xx", "xy", "xz", "yy", "yz", "zz"],
+    (3, "c"): ["xxx", "xxy", "xxz", "xyy", "xyz", "xzz", "yyy", "yyz", "yzz", "zzz"],
+    (4, "c"): [
+        "xxxx",
+        "xxxy",
+        "xxxz",
+        "xxyy",
+        "xxyz",
+        "xxzz",
+        "xyyy",
+        "xyyz",
+        "xyzz",
+        "xzzz",
+        "yyyy",
+        "yyyz",
+        "yyzz",
+        "yzzz",
+        "zzzz",
+    ],
+    (5, "c"): [
+        "xxxxx",
+        "xxxxy",
+        "xxxxz",
+        "xxxyy",
+        "xxxyz",
+        "xxxzz",
+        "xxyyy",
+        "xxyyz",
+        "xxyzz",
+        "xxzzz",
+        "xyyyy",
+        "xyyyz",
+        "xyyzz",
+        "xyzzz",
+        "xzzzz",
+        "yyyyy",
+        "yyyyz",
+        "yyyzz",
+        "yyzzz",
+        "yzzzz",
+        "zzzzz",
+    ],
+    (6, "c"): [
+        "xxxxxx",
+        "xxxxxy",
+        "xxxxxz",
+        "xxxxyy",
+        "xxxxyz",
+        "xxxxzz",
+        "xxxyyy",
+        "xxxyyz",
+        "xxxyzz",
+        "xxxzzz",
+        "xxyyyy",
+        "xxyyyz",
+        "xxyyzz",
+        "xxyzzz",
+        "xxzzzz",
+        "xyyyyy",
+        "xyyyyz",
+        "xyyyzz",
+        "xyyzzz",
+        "xyzzzz",
+        "xzzzzz",
+        "yyyyyy",
+        "yyyyyz",
+        "yyyyzz",
+        "yyyzzz",
+        "yyzzzz",
+        "yzzzzz",
+        "zzzzzz",
+    ],
 }
 
-def from_iodata(mol, tol=1e-20, overlap=False):
 
+def from_iodata(mol, tol=1e-20, overlap=False):
     """Return basis set stored within the `IOData` instance in `iodata`.
 
     Parameters
@@ -154,10 +215,10 @@ def from_iodata(mol, tol=1e-20, overlap=False):
 
             angmom = self.angmom
             if self.coord_type == "cartesian":
-                coord_type = 'c'
+                coord_type = "c"
                 iodata_shell_convention = cart_conventions[angmom]
-            elif self.coord_type == 'spherical':
-                coord_type = 'p'
+            elif self.coord_type == "spherical":
+                coord_type = "p"
                 iodata_shell_convention = sph_conventions[angmom]
 
             # Get libcint convention
@@ -166,7 +227,6 @@ def from_iodata(mol, tol=1e-20, overlap=False):
             permutation = [libcint_convention.index(conv1) for conv1 in iodata_shell_convention]
 
             return permutation
-
 
     if molbasis.primitive_normalization != "L2":  # pragma: no cover
         raise ValueError(
