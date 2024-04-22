@@ -62,7 +62,6 @@ doc = [
 ]
 "dev" = ["tox"]
 "test" = ["tox", "pytest", "pytest-cov"]
-"iodata" = ["iodata>0.1.7"]
 "pyscf" = ["pyscf>=1.6.1"]
 
 [tool.black]
