@@ -38,7 +38,7 @@ jobs:
         run: |
           # Need editable mode in order to include the test files
           pip install --user git+https://github.com/theochem/iodata.git@master
-          pip install -e .[dev,iodata]
+          pip install -e .[dev,iodata,pyscf]
 
       - name: Install Libcint library
         if: ${{ matrix.os  != 'windows-latest' }}
