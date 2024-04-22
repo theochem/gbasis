@@ -37,16 +37,11 @@ jobs:
           pip install -e .
 
       - name: Install Libcint library
+        if: ${{ matrix.os  != 'windows-latest' }}
         run: |
-          if [[ ${{ matrix.os }} == "windows-latest" ]]
-          then
-          echo "${{ matrix.os }}"
-          exit 0
-          else
           echo "${{ matrix.os }}"
           sudo apt-get install -y sbcl
           USE_LIBCINT=1 ./tools/install_libcint.sh
-          fi
 
       - name: Run pytest
         uses: pavelzw/pytest-action@v2
