@@ -2,6 +2,7 @@
 
 import pytest
 import os as os
+import sys as sys
 
 import numpy as np
 import numpy.testing as npt
@@ -59,6 +60,7 @@ TEST_INTEGRALS = [
     pytest.param("moment", id="Moment"),
 ]
 
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
                     reason="Libcint build not found")
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
@@ -177,6 +179,7 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
                     reason="Libcint build not found")
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
