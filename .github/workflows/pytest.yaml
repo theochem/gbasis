@@ -9,14 +9,17 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  pytest:
     name: "Python ${{ matrix.py }} on OS ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
+    env:
+      COVERAGE_SINGLE: 78
+      COVERAGE_TOTAL: 78
 
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        py: ["3.7", "3.9", "3.10", "3.11"]
+        py: ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
     steps:
       - uses: "actions/checkout@v3"
@@ -34,20 +37,16 @@ jobs:
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
-          pip install -e .
+          pip install --user git+https://github.com/theochem/iodata.git@master
+          pip install -e .[dev,iodata]
 
-      - name: Run pytest
-        uses: pavelzw/pytest-action@v2
-        with:
-          verbose: true
-          emoji: true
-          job-summary: true
-          click-to-expand: true
-          custom-arguments: "--junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=gbasis"
-          report-title: 'Test Report'
+      - name: Install Libcint library
+        if: ${{ matrix.os  != 'windows-latest' }}
+        run: |
+          echo "${{ matrix.os }}"
+          sudo apt-get install -y sbcl
+          USE_LIBCINT=1 ./tools/install_libcint.sh
 
-      - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@main
-        with:
-          pytest-coverage-path: ./pytest-coverage.txt
-          junitxml-path: ./pytest.xml
+      - name: Run Pytest
+        run: |
+            pytest --cov=./gbasis/ --cov-fail-under=78 --cov-report term .

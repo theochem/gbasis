@@ -495,10 +495,13 @@ class GeneralizedContractionShell:
         ['s2', 's1', 'c0', 'c1', 'c2'].
 
         """
-        return tuple(
-            ["s{}".format(m) for m in range(self.angmom, 0, -1)]
-            + ["c{}".format(m) for m in range(self.angmom + 1)]
-        )
+        if self.angmom == 1:
+            return tuple(["c1", "s1", "c0"])
+        else:
+            return tuple(
+                ["s{}".format(m) for m in range(self.angmom, 0, -1)]
+                + ["c{}".format(m) for m in range(self.angmom + 1)]
+            )
 
     @property
     def norm_prim_cart(self):
