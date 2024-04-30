@@ -670,7 +670,7 @@ class CBasis:
         )
 
         # Make instance-bound integral method
-        def int1e(notation="physicist", origin=None, inv_origin=None):
+        def int1e(notation="physicist", transform=None, origin=None, inv_origin=None):
             # Handle ``notation`` argument
             if notation not in ("physicist", "chemist"):
                 raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
@@ -755,11 +755,17 @@ class CBasis:
             # Apply permutation
             out = out[self._permutations, :][:, self._permutations]
 
-            # Return normalized integrals
+            # Normalize integrals
             if self.coord_type == "cartesian":
-                return np.einsum(norm_einsum, self._ovlp_minhalf, self._ovlp_minhalf, out)
-            else:
-                return out
+                out = np.einsum(norm_einsum, self._ovlp_minhalf, self._ovlp_minhalf, out)
+
+            # Apply transformation
+            if transform is not None:
+                out = np.tensordot(transform, out, (1, 0))
+                out = np.tensordot(transform, out, (1, 1))
+                out = np.swapaxes(out, 0, 1)
+
+            return out
 
         # Return instance-bound integral method
         return int1e
@@ -823,7 +829,7 @@ class CBasis:
         )
 
         # Make instance-bound integral method
-        def int2e(notation="physicist", origin=None, inv_origin=None):
+        def int2e(notation="physicist", transform=None, origin=None, inv_origin=None):
             # Handle ``notation`` argument
             if notation == "physicist":
                 physicist = True
@@ -962,9 +968,9 @@ class CBasis:
             out = out[:, :, self._permutations]
             out = out[:, :, :, self._permutations]
 
-            # Return normalized integrals
+            # Normalize integrals
             if self.coord_type == "cartesian":
-                return np.einsum(
+                out = np.einsum(
                     norm_einsum,
                     self._ovlp_minhalf,
                     self._ovlp_minhalf,
@@ -972,8 +978,16 @@ class CBasis:
                     self._ovlp_minhalf,
                     out,
                 )
-            else:
-                return out
+
+            # Apply transformation
+            if transform is not None:
+                out = np.tensordot(transform, out, (1, 0))
+                out = np.tensordot(transform, out, (1, 1))
+                out = np.tensordot(transform, out, (1, 2))
+                out = np.tensordot(transform, out, (1, 3))
+                out = np.swapaxes(np.swapaxes(out, 0, 3), 1, 2)
+
+            return out
 
         # Return instance-bound integral method
         return int2e
