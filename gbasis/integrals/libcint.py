@@ -978,45 +978,65 @@ class CBasis:
         # Return instance-bound integral method
         return int2e
 
-    def overlap_integral(self):
+    def overlap_integral(self, notation="physicist"):
         r"""
         Compute the overlap integrals.
 
+        Parameters
+        ----------
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
+
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Integral array.
 
         """
-        return self._ovlp()
+        return self._ovlp(notation=notation)
 
-    def kinetic_energy_integral(self):
+    def kinetic_energy_integral(self, notation="physicist"):
         r"""
         Compute the kinetic energy integrals.
 
+        Parameters
+        ----------
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
+
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Integral array.
 
         """
-        return self._kin()
+        return self._kin(notation=notation)
 
-    def nuclear_attraction_integral(self):
+    def nuclear_attraction_integral(self, notation="physicist"):
         r"""
         Compute the nuclear attraction integrals.
 
+        Parameters
+        ----------
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
+
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Integral array.
 
         """
-        return self._nuc()
+        return self._nuc(notation=notation)
 
-    def electron_repulsion_integral(self):
+    def electron_repulsion_integral(self, notation="physicist"):
         r"""
         Compute the electron repulsion integrals.
+
+        Parameters
+        ----------
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
 
         Returns
         -------
@@ -1024,9 +1044,9 @@ class CBasis:
             Integral array.
 
         """
-        return self._eri()
+        return self._eri(notation=notation)
 
-    def r_inv_integral(self, origin=None):
+    def r_inv_integral(self, origin=None, notation="physicist"):
         r"""
         Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
 
@@ -1034,6 +1054,8 @@ class CBasis:
         ----------
         origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
             Origin about which to evaluate integrals.
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
 
         Returns
         -------
@@ -1041,9 +1063,9 @@ class CBasis:
             Integral array.
 
         """
-        return self._rinv(inv_origin=origin)
+        return self._rinv(inv_origin=origin, notation=notation)
 
-    def momentum_integral(self, origin=None):
+    def momentum_integral(self, origin=None, notation="physicist"):
         r"""
         Compute the momentum integrals.
 
@@ -1051,6 +1073,8 @@ class CBasis:
         ----------
         origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
             Origin about which to evaluate integrals.
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
 
         Returns
         -------
@@ -1058,9 +1082,9 @@ class CBasis:
             Integral array.
 
         """
-        return self._mom(origin=origin)
+        return self._mom(origin=origin, notation=notation)
 
-    def angular_momentum_integral(self, origin=None):
+    def angular_momentum_integral(self, origin=None, notation="physicist"):
         r"""
         Compute the angular momentum integrals.
 
@@ -1068,6 +1092,8 @@ class CBasis:
         ----------
         origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
             Origin about which to evaluate integrals.
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
 
         Returns
         -------
@@ -1076,9 +1102,9 @@ class CBasis:
 
         """
         raise NotImplementedError("Angular momentum integral doesn't work; see Issue #149")
-        # return self._amom(origin=origin)
+        # return self._amom(origin=origin, notation=notation)
 
-    def point_charge_integral(self, point_coords, point_charges):
+    def point_charge_integral(self, point_coords, point_charges, notation="physicist"):
         r"""
         Compute the point charge integrals.
 
@@ -1088,6 +1114,8 @@ class CBasis:
             Coordinates of point charges.
         point_charges : np.ndarray(N, dtype=float)
             Charges of point charges.
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
 
         Returns
         -------
@@ -1099,13 +1127,13 @@ class CBasis:
         out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order="F")
         # Compute 1/|r - r_{inv}| for each charge
         for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
-            val = self._rinv(inv_origin=coord)
+            val = self._rinv(inv_origin=coord, notation=notation)
             val *= -charge
             out[:, :, icharge] = val
         # Return integrals in `out` array
         return out
 
-    def moment_integral(self, orders, origin=None):
+    def moment_integral(self, orders, origin=None, notation="physicist"):
         r"""
         Compute the moment integrals.
 
@@ -1115,6 +1143,8 @@ class CBasis:
             Moment orders :math:`\left[x, y, z\right\]` to evaluate.
         origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
             Origin about which to evaluate integrals.
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
 
         Returns
         -------
@@ -1134,9 +1164,9 @@ class CBasis:
         try:
             for i, order in enumerate(orders):
                 if sum(order) == 0:
-                    out[:, :, i] = self._ovlp()
+                    out[:, :, i] = self._ovlp(notation=notation)
                 else:
-                    out[:, :, i] = self._moments[tuple(order)](origin=origin)
+                    out[:, :, i] = self._moments[tuple(order)](origin=origin, notation=notation)
         except KeyError:
             raise ValueError(
                 "Invalid order; can use up to order 4 for any XYZ component,"
