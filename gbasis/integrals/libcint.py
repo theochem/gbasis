@@ -978,7 +978,7 @@ class CBasis:
         # Return instance-bound integral method
         return int2e
 
-    def overlap(self):
+    def overlap_integral(self):
         r"""
         Compute the overlap integrals.
 
@@ -990,7 +990,7 @@ class CBasis:
         """
         return self._ovlp()
 
-    def kinetic_energy(self):
+    def kinetic_energy_integral(self):
         r"""
         Compute the kinetic energy integrals.
 
@@ -1002,7 +1002,7 @@ class CBasis:
         """
         return self._kin()
 
-    def nuclear_attraction(self):
+    def nuclear_attraction_integral(self):
         r"""
         Compute the nuclear attraction integrals.
 
@@ -1014,7 +1014,7 @@ class CBasis:
         """
         return self._nuc()
 
-    def electron_repulsion(self):
+    def electron_repulsion_integral(self):
         r"""
         Compute the electron repulsion integrals.
 
@@ -1026,7 +1026,7 @@ class CBasis:
         """
         return self._eri()
 
-    def r_inv(self, origin=None):
+    def r_inv_integral(self, origin=None):
         r"""
         Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
 
@@ -1043,7 +1043,7 @@ class CBasis:
         """
         return self._rinv(inv_origin=origin)
 
-    def momentum(self, origin=None):
+    def momentum_integral(self, origin=None):
         r"""
         Compute the momentum integrals.
 
@@ -1060,7 +1060,7 @@ class CBasis:
         """
         return self._mom(origin=origin)
 
-    def angular_momentum(self, origin=None):
+    def angular_momentum_integral(self, origin=None):
         r"""
         Compute the angular momentum integrals.
 
@@ -1078,7 +1078,7 @@ class CBasis:
         raise NotImplementedError("Angular momentum integral doesn't work; see Issue #149")
         # return self._amom(origin=origin)
 
-    def point_charge(self, point_coords, point_charges):
+    def point_charge_integral(self, point_coords, point_charges):
         r"""
         Compute the point charge integrals.
 
@@ -1105,7 +1105,7 @@ class CBasis:
         # Return integrals in `out` array
         return out
 
-    def moment(self, orders, origin=None):
+    def moment_integral(self, orders, origin=None):
         r"""
         Compute the moment integrals.
 
