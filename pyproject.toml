@@ -92,4 +92,4 @@ addopts = "-v"
 #local_scheme = "no-local-version"
 
 [tool.setuptools.package-data]
-"gbasis.integrals.lib" = ["libcint.so*"]
+gbasis = ["integrals/include/cint*.h", "integrals/lib/libcint.so*"]
