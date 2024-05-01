@@ -1160,7 +1160,9 @@ class CBasis:
         raise NotImplementedError("Angular momentum integral doesn't work; see Issue #149")
         # return self._amom(origin=origin, notation=notation, transform=transform)
 
-    def point_charge_integral(self, point_coords, point_charges, notation="physicist", transform=None):
+    def point_charge_integral(
+        self, point_coords, point_charges, notation="physicist", transform=None
+    ):
         r"""
         Compute the point charge integrals.
 
@@ -1234,7 +1236,9 @@ class CBasis:
                 if sum(order) == 0:
                     out[:, :, i] = self._ovlp(notation=notation, transform=transform)
                 else:
-                    out[:, :, i] = self._moments[tuple(order)](origin=origin, notation=notation, transform=transform)
+                    out[:, :, i] = self._moments[tuple(order)](
+                        origin=origin, notation=notation, transform=transform
+                    )
         except KeyError:
             raise ValueError(
                 "Invalid order; can use up to order 4 for any XYZ component,"
