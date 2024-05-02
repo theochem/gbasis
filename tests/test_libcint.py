@@ -1,11 +1,16 @@
 """Test gbasis.integrals.libcint."""
 
 import pytest
-import os as os
-import sys as sys
+import os
+import sys
+
+from os.path import dirname, join
+from glob import glob
 
 import numpy as np
 import numpy.testing as npt
+
+import gbasis
 
 from gbasis.integrals.angular_momentum import angular_momentum_integral
 from gbasis.integrals.electron_repulsion import electron_repulsion_integral
@@ -59,8 +64,10 @@ TEST_INTEGRALS = [
 ]
 
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
-@pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
-                    reason="Libcint build not found")
+@pytest.mark.skipif(
+    len(glob("libcint.so*", root_dir=join(dirname(gbasis.__file__), "integrals", "lib"))) == 0,
+    reason="The libcint shared library object was not found",
+)
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
 @pytest.mark.parametrize("coord_type", TEST_COORD_TYPES)
 @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
@@ -180,8 +187,10 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("moment", id="Moment"),
 ]
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
-@pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
-                    reason="Libcint build not found")
+@pytest.mark.skipif(
+    len(glob("libcint.so*", root_dir=join(dirname(gbasis.__file__), "integrals", "lib"))) == 0,
+    reason="The libcint shared library object was not found",
+)
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
 @pytest.mark.parametrize("integral", TEST_INTEGRALS_IODATA)
 def test_integral_iodata(fname, elements, coord_type, integral):
