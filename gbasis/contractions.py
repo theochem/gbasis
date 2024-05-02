@@ -392,10 +392,9 @@ class GeneralizedContractionShell:
         We define spherical components as regular solid harmonics :math:`R_{\ell, m}` such that
 
         .. math::
-            \begin{align}
-                R_{\ell, m} &= C_{\ell, m}, \quad &m = 0 ... \ell
-                R_{\ell, -m} &= S_{\ell, m}, \quad &m = 1 ... \ell
-            \end{align}
+
+                R_{\ell, m} = C_{\ell, m}, \quad m = 0 ... \ell\\
+                R_{\ell, -m} = S_{\ell, m}, \quad m = 1 ... \ell
 
         where :math:`C_{\ell, m}` and :math:`S_{\ell, m}` are Cosine- and Sine-like real
         regular solid harmonics (respectively).

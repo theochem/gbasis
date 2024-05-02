@@ -15,12 +15,11 @@ def electrostatic_potential(
     r"""Return the electrostatic potentials of the basis set in the Cartesian form.
 
     .. math::
-        \begin{equation}
+
         - \left(
             - \sum_A \frac{Z_A}{|\mathbf{R}_C - \mathbf{R}_A|}
             + \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{-1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
         \right)
-        \end{equation}
 
     where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A` is the
     coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}` is the

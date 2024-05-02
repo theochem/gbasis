@@ -14,7 +14,7 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
     Stress tensor is defined here as:
 
     .. math::
-        \begin{align}
+
             \boldsymbol{\sigma}_{ij}(\mathbf{r} | \alpha, \beta)
             =&
             -\frac{1}{2} \alpha
@@ -43,8 +43,7 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
             - \frac{1}{2} \delta_{ij} \beta
             \left.
                 \nabla^2 \rho(\mathbf{r})
-            \right)\\
-        \end{align}
+            \right)
 
     Parameters
     ----------
@@ -132,7 +131,7 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
     Ehrenfest force is the negative of the divergence of the stress tensor:
 
     .. math::
-        \begin{align}
+
             F_{j}(\mathbf{r} | \alpha, \beta)
             =&- \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
             =&
@@ -157,8 +156,7 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
             + \frac{\partial^3}{\partial r_j \partial y^2}
             + \frac{\partial^3}{\partial r_j \partial z^2}
             \right)
-            \rho(\mathbf{r})\\
-        \end{align}
+            \rho(\mathbf{r})
 
     Parameters
     ----------
@@ -262,7 +260,7 @@ def evaluate_ehrenfest_hessian(
     Ehrenfest Hessian is the gradient of the Ehrenfest force:
 
     .. math::
-        \begin{align}
+
             H_{jk}(\mathbf{r} | \alpha, \beta)
             =&
             - \frac{\partial}{\partial r_k} F_j(\mathbf{r} | \alpha, \beta)\\
@@ -297,8 +295,7 @@ def evaluate_ehrenfest_hessian(
                     + \frac{\partial^4}{\partial r_j \partial r_k \partial y^2}
                     + \frac{\partial^4}{\partial r_j \partial r_k \partial z^2}
                 \right)
-                \rho(\mathbf{r})\\
-        \end{align}
+                \rho(\mathbf{r})
 
     Parameters
     ----------

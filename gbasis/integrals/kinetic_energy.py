@@ -120,10 +120,11 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
 
 
 def kinetic_energy_integral(basis, transform=None):
-    """Return kinetic energy integral of the given basis set.
+    r"""Return kinetic energy integral of the given basis set.
 
     .. math::
-        \begin{align}
+
+        \begin{split}
         \left< \hat{T} \right>
         &= \int \phi_a(\mathbf{r}) \left( -\frac{1}{2} \nabla^2 \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
         &= -\frac{1}{2}
@@ -132,7 +133,7 @@ def kinetic_energy_integral(basis, transform=None):
         + \int \phi_a(\mathbf{r}) \frac{\partial^2}{\partial y^2} \phi_b(\mathbf{r}) d\mathbf{r}
         + \int \phi_a(\mathbf{r}) \frac{\partial^2}{\partial z^2} \phi_b(\mathbf{r}) d\mathbf{r}
         \right)
-        \end{align}
+        \end{split}
 
     Parameters
     ----------

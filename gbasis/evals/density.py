@@ -210,7 +210,7 @@ def evaluate_deriv_density(
     r"""Return the derivative of density of the given transformed basis set at the given points.
 
     .. math::
-        \begin{align}
+
             &\frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
             \rho(\mathbf{r})\\\\
             &=
@@ -223,7 +223,6 @@ def evaluate_deriv_density(
             }{
                 \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
             }
-        \end{align}
 
     where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the :math:`x, y, \text{and} z` components,
     respectively.
@@ -313,15 +312,14 @@ def evaluate_density_gradient(
     r"""Return the gradient of the density evaluated at the given points.
 
     .. math::
-        \begin{equation}
+
             \nabla \rho(\mathbf{r})
             =
             \begin{bmatrix}
             \frac{\partial}{\partial x} \rho(\mathbf{r})\\\\
             \frac{\partial}{\partial y} \rho(\mathbf{r})\\\\
             \frac{\partial}{\partial z} \rho(\mathbf{r})
-            \end{bmatrix}\\
-        \end{equation}
+            \end{bmatrix}      
 
     Parameters
     ----------
@@ -391,13 +389,12 @@ def evaluate_density_laplacian(
     r"""Return the Laplacian of the density evaluated at the given points.
 
     .. math::
-        \begin{equation}
+
             \nabla^2 \rho(\mathbf{r})
             =
             \frac{\partial^2}{\partial x^2} \rho(\mathbf{r})
             + \frac{\partial^2}{\partial y^2} \rho(\mathbf{r})
             + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r})
-        \end{equation}
 
     Parameters
     ----------
@@ -491,7 +488,7 @@ def evaluate_density_hessian(
     r"""Return the Hessian of the density evaluated at the given points.
 
     .. math::
-        \begin{equation}
+        
         H[\rho(\mathbf{r})]
         =
         \begin{bmatrix}
@@ -504,8 +501,7 @@ def evaluate_density_hessian(
             \frac{\partial^2}{\partial z \partial x} \rho(\mathbf{r}) &
             \frac{\partial^2}{\partial z \partial y} \rho(\mathbf{r})&
             \frac{\partial^2}{\partial z^2} \rho(\mathbf{r})\\
-        \end{bmatrix}\\
-        \end{equation}
+        \end{bmatrix}
 
     Parameters
     ----------
