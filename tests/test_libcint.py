@@ -169,6 +169,11 @@ TEST_SYSTEMS_IODATA = [
     pytest.param("h2o_hf_ccpv5z_sph.fchk", ["O", "H", "H"], "Spherical", id="h2o_sph"),
     ]
 
+TEST_COORD_TRANSFORM = [
+    pytest.param(False, id="no-transform"),
+    pytest.param(True, id="transform"),
+]
+
 TEST_INTEGRALS_IODATA = [
     pytest.param("overlap", id="Overlap"),
     pytest.param("kinetic_energy", id="KineticEnergy"),
@@ -183,8 +188,9 @@ TEST_INTEGRALS_IODATA = [
 @pytest.mark.skipif(os.path.exists(f"{os.path.dirname(os.path.abspath(__file__).split('tests')[0])}/build") == False,
                     reason="Libcint build not found")
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
+@pytest.mark.parametrize("transform", TEST_COORD_TRANSFORM)
 @pytest.mark.parametrize("integral", TEST_INTEGRALS_IODATA)
-def test_integral_iodata(fname, elements, coord_type, integral):
+def test_integral_iodata(fname, elements, coord_type, integral, transform):
     pytest.importorskip("iodata")
     from iodata import load_one
     from gbasis.integrals.libcint import ELEMENTS, LIBCINT, CBasis
@@ -197,22 +203,41 @@ def test_integral_iodata(fname, elements, coord_type, integral):
     lc_basis = CBasis(py_basis, elements, mol.atcoords, coord_type=coord_type)
 
     if integral == "overlap":
-        py_int = overlap_integral(py_basis)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.overlap_integral()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        if transform:
+            py_int = overlap_integral(py_basis, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+            lc_int = lc_basis.overlap_integral(transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        else:
+            py_int = overlap_integral(py_basis)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+            lc_int = lc_basis.overlap_integral()
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "kinetic_energy":
-        py_int = kinetic_energy_integral(py_basis)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.kinetic_energy_integral()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        if transform:
+            py_int = kinetic_energy_integral(py_basis, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+            lc_int = lc_basis.kinetic_energy_integral(transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        else:
+            py_int = kinetic_energy_integral(py_basis)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+            lc_int = lc_basis.kinetic_energy_integral()
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "nuclear_attraction":
-        py_int = nuclear_electron_attraction_integral(py_basis, mol.atcoords, mol.atnums)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
-        lc_int = lc_basis.nuclear_attraction_integral()
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        if transform:
+            py_int = nuclear_electron_attraction_integral(py_basis, mol.atcoords,
+                                                          mol.atnums, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+            lc_int = lc_basis.nuclear_attraction_integral(transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        else:
+            py_int = nuclear_electron_attraction_integral(py_basis, mol.atcoords, mol.atnums)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+            lc_int = lc_basis.nuclear_attraction_integral()
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "angular_momentum":
         # py_int = angular_momentum_integral(py_basis)
@@ -223,29 +248,55 @@ def test_integral_iodata(fname, elements, coord_type, integral):
         return
 
     elif integral == "momentum":
-        py_int = momentum_integral(py_basis)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        lc_int = lc_basis.momentum_integral(origin=np.zeros(3))
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        if transform:
+            py_int = momentum_integral(py_basis, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+            lc_int = lc_basis.momentum_integral(origin=np.zeros(3), transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        else:
+            py_int = momentum_integral(py_basis)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+            lc_int = lc_basis.momentum_integral(origin=np.zeros(3))
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
     elif integral == "electron_repulsion":
-        py_int = electron_repulsion_integral(py_basis)
-        npt.assert_array_equal(
-            py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
-        )
-        lc_int = lc_basis.electron_repulsion_integral()
-        npt.assert_array_equal(
-            lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
-        )
+        if transform:
+            py_int = electron_repulsion_integral(py_basis, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(
+                py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+            )
+            lc_int = lc_basis.electron_repulsion_integral(transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(
+                lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+            )
+        else:
+            py_int = electron_repulsion_integral(py_basis)
+            npt.assert_array_equal(
+                py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+            )
+            lc_int = lc_basis.electron_repulsion_integral()
+            npt.assert_array_equal(
+                lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+            )
 
     elif integral == "point_charge":
         charge_coords = np.asarray([[2.0, 2.0, 2.0], [-3.0, -3.0, -3.0], [-1.0, 2.0, -3.0]])
         charges = np.asarray([1.0, 0.666, -3.1415926])
-        for i in range(1, len(charges) + 1):
-            py_int = point_charge_integral(py_basis, charge_coords[:i], charges[:i])
-            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
-            lc_int = lc_basis.point_charge_integral(charge_coords[:i], charges[:i])
-            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+        if transform:
+            for i in range(1, len(charges) + 1):
+                py_int = point_charge_integral(py_basis, charge_coords[:i],
+                                               charges[:i], transform=mol.mo.coeffs.T)
+                npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+                lc_int = lc_basis.point_charge_integral(charge_coords[:i],
+                                                        charges[:i], transform=mol.mo.coeffs.T)
+                npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+
+        else:
+            for i in range(1, len(charges) + 1):
+                py_int = point_charge_integral(py_basis, charge_coords[:i], charges[:i])
+                npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+                lc_int = lc_basis.point_charge_integral(charge_coords[:i], charges[:i])
+                npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
 
     elif integral == "moment":
         origin = np.zeros(3)
@@ -263,10 +314,16 @@ def test_integral_iodata(fname, elements, coord_type, integral):
                 [0, 1, 1],
             ]
         )
-        py_int = moment_integral(py_basis, origin, orders)
-        npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
-        lc_int = lc_basis.moment_integral(orders, origin=origin)
-        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+        if transform:
+            py_int = moment_integral(py_basis, origin, orders, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+            lc_int = lc_basis.moment_integral(orders, origin=origin, transform=mol.mo.coeffs.T)
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+        else:
+            py_int = moment_integral(py_basis, origin, orders)
+            npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+            lc_int = lc_basis.moment_integral(orders, origin=origin)
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
 
     else:
         raise ValueError("Invalid integral name '{integral}' passed")
