@@ -65,7 +65,7 @@ TEST_INTEGRALS = [
 
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob("libcint.so*", root_dir=join(dirname(gbasis.__file__), "integrals", "lib"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.so*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
@@ -188,7 +188,7 @@ TEST_INTEGRALS_IODATA = [
 ]
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob("libcint.so*", root_dir=join(dirname(gbasis.__file__), "integrals", "lib"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.so*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
