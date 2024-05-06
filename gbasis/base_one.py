@@ -1,4 +1,5 @@
 """Base class for arrays that depend on one contracted Gaussian."""
+
 import abc
 
 from gbasis.base import BaseGaussianRelatedArray

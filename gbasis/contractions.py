@@ -1,4 +1,5 @@
 """Data class for contractions of Gaussian-type primitives."""
+
 from numbers import Integral
 import numpy as np
 from gbasis.utils import factorial2

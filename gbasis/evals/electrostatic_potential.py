@@ -1,4 +1,5 @@
 """Module for computing electrostatic potential integrals."""
+
 from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
 
@@ -110,9 +111,11 @@ def electrostatic_potential(
     elif isinstance(coord_type, (list, tuple)):
         if (
             sum(
-                cont.num_sph * cont.num_seg_cont
-                if j == "spherical"
-                else cont.num_cart * cont.num_seg_cont
+                (
+                    cont.num_sph * cont.num_seg_cont
+                    if j == "spherical"
+                    else cont.num_cart * cont.num_seg_cont
+                )
                 for cont, j in zip(basis, coord_type)
             )
             != one_density_matrix.shape[0]

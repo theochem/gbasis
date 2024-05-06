@@ -1,4 +1,5 @@
 """Electron-electron repulsion integral."""
+
 from gbasis.base_four_symm import BaseFourIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._two_elec_int import (

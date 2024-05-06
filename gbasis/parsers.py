@@ -1,4 +1,5 @@
 """Parsers for reading basis set files."""
+
 import re
 
 from gbasis.contractions import GeneralizedContractionShell

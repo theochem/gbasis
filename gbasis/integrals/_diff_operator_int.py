@@ -1,4 +1,5 @@
 """Integrals over differential operator involving contracted Cartesian Gaussians."""
+
 from gbasis.integrals._moment_int import (
     _cleanup_intermediate_integrals,
     _compute_multipole_moment_integrals_intermediate,

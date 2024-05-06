@@ -1,4 +1,5 @@
 """Module for computing point charge integrals."""
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
