@@ -1,4 +1,5 @@
 """Module for interfacing to other quantum chemistry packages."""
+
 from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
