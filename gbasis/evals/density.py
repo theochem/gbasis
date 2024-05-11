@@ -123,23 +123,24 @@ def evaluate_deriv_reduced_density_matrix(
 
     .. math::
 
-        \left.
+        &\left.
         \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
         \frac{\partial^{q_x + q_y + q_z}}{\partial x_2^{q_x} \partial y_2^{q_y} \partial z_2^{q_z}}
         \gamma(\mathbf{r}_1, \mathbf{r}_2)
-        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}_n} =
+        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}}\\\\
+        &=
         \sum_{ij} \gamma_{ij}
         \left.
         \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
         \phi_i(\mathbf{r}_1)
-        \right|_{\mathbf{r}_1 = \mathbf{r}_n}
+        \right|_{\mathbf{r}_1 = \mathbf{r}}
         \left.
         \frac{\partial^{q_x + q_y + q_z}}{\partial x_2^{q_x} \partial y_2^{q_y} \partial z_2^{q_z}}
         \phi_j(\mathbf{r}_2)
-        \right|_{\mathbf{r}_2 = \mathbf{r}_n}
+        \right|_{\mathbf{r}_2 = \mathbf{r}}
 
     where :math:`\mathbf{r}_1` is the first point, :math:`\mathbf{r}_2` is the second point, and
-    :math:`\mathbf{r}_n` is the point at which the derivative is evaluated.
+    :math:`\mathbf{r}` is the point at which the derivative is evaluated.
 
     Parameters
     ----------
@@ -628,13 +629,13 @@ def evaluate_posdef_kinetic_energy_density(
         \begin{split}
         t_+ (\mathbf{r})
         &= \frac{1}{2} \left.
-          \nabla_{\mathbf{r}} \cdot \nabla_{\mathbf{r}'} \gamma(\mathbf{r}, \mathbf{r}')
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}}\\
+          \nabla_{\mathbf{r}_1} \cdot \nabla_{\mathbf{r}_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}}\\
         &= \frac{1}{2} \left(
-          \frac{\partial^2}{\partial x \partial x'} \gamma(\mathbf{r}, \mathbf{r}')
-          + \frac{\partial^2}{\partial y \partial y'} \gamma(\mathbf{r}, \mathbf{r}')
-          + \frac{\partial^2}{\partial z \partial z'} \gamma(\mathbf{r}, \mathbf{r}')
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}}\\
+          \frac{\partial^2}{\partial x_1 \partial x_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+          + \frac{\partial^2}{\partial y_1 \partial y_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+          + \frac{\partial^2}{\partial z_1 \partial z_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+        \right)_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}}\\
         \end{split}
 
     Parameters
