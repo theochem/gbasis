@@ -49,6 +49,13 @@ jobs:
         run: |
           sphinx-apidoc -o website/_autosummary gbasis -M -f
 
+      # make a soft link to the notebooks/tutorial folder
+      - name: Make a soft link to the notebooks
+        run: |
+          cd website
+          ln -s ../notebooks/tutorial ./tutorial
+          cd ../
+
       # Build the book
       - name: Build the website
         run: |
