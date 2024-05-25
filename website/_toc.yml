@@ -7,7 +7,20 @@ parts:
     - caption: User Documentation
       chapters:
       - file: installation
-      - file: tutorial
+    - caption: Tutorials
+      chapters:
+      - file: "tutorial/Tutorial 1 - Basis Sets.ipynb"
+        title: "Tutorial 1: Basis Sets"
+      - file: "tutorial/Tutorial 2 - Integrals.ipynb"
+        title: "Tutorial 2: Integrals"
+      - file: "tutorial/Evaluations_basis_and_potential.ipynb"
+        title: "Evaluations: Basis and Potential"
+      - file: "tutorial/Evaluations_electron_density.ipynb"
+        title: "Evaluations: Electron Density"
+      - file: "tutorial/Evaluations_1rdm_properties.ipynb"
+        title: "Evaluations: 1RDM Properties"
+      - file: "tutorial/JCP_paper.ipynb"
+        title: "JCP Paper examples"
 
     - caption: API
       chapters:
