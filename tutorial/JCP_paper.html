@@ -1,0 +1,1246 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Gbasis publication examples &#8212; Ayers Lab</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/JCP_paper';</script>
+    <link rel="icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="gbasis package" href="../_autosummary/gbasis.html" />
+    <link rel="prev" title="Evaluations: One-Electron Reduced Density Matrix (1RDM) Related Properties" href="Evaluations_1rdm_properties.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Ayers Lab - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Ayers Lab - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to GBasis’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial%201%20-%20Basis%20Sets.html">Tutorial 1: Basis Sets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial%202%20-%20Integrals.html">Tutorial 2: Integrals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_basis_and_potential.html">Evaluations: Basis and Potential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_electron_density.html">Evaluations: Electron Density</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_1rdm_properties.html">Evaluations: 1RDM Properties</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">JCP Paper examples</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../_autosummary/gbasis.html">gbasis package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/gbasis.evals.html">gbasis.evals package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/gbasis.integrals.html">gbasis.integrals package</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/theochem/gbasis/blob/master/website/tutorial/JCP_paper.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onColab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis/issues/new?title=Issue%20on%20page%20%2Ftutorial/JCP_paper.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorial/JCP_paper.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Gbasis publication examples</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-dependencies-and-download-data">Install dependencies and download data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-building-basis-functions">A. Building Basis Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-computing-integrals">B. Computing Integrals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">1. One-Electron Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals">1.1. Overlap Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals-between-two-different-basis-sets">1.2. Overlap Integrals Between Two Different Basis Sets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integral-over-arbitrary-differential-operator">1.3 Integral over arbitrary differential operator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kinetic-energy">1.3.1 Kinetic energy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuclear-electron-attraction-integral">1.4 Nuclear electron attraction integral</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-repulsion-integrals">2. Two-Electron Repulsion Integrals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#libcint-interface">3. Libcint interface</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#important">IMPORTANT:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-evaluations">C. Evaluations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basis-functions">1. Basis functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-related-properties">2. Density Related properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-matrix-related-properties">3. Density Matrix Related properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#electrostatic-potential">4. Electrostatic potential</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <a target="_blank" href="https://colab.research.google.com/github/theochem/gbasis/blob/master/notebooks/tutorial/JCP_paper.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a><section class="tex2jax_ignore mathjax_ignore" id="gbasis-publication-examples">
+<h1>Gbasis publication examples<a class="headerlink" href="#gbasis-publication-examples" title="Link to this heading">#</a></h1>
+<p>This notebook provides the examples of the use of <a class="reference external" href="https://gbasis.qcdevs.org/index.html"><code class="docutils literal notranslate"><span class="pre">Gbasis</span></code></a> provided in the publication article.</p>
+<section id="install-dependencies-and-download-data">
+<h2>Install dependencies and download data<a class="headerlink" href="#install-dependencies-and-download-data" title="Link to this heading">#</a></h2>
+<p>If this this notebook is used in google colab it requires several dependencies and data. The next cell will install the required dependencies if they are not already installed. It will also download the data required for the examples if it is not already downloaded. Uncomment the cell below and execute it.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! python -m pip install numpy</span>
+<span class="c1"># ! python -m pip install matplotlib</span>
+<span class="c1"># ! python -m pip install scipy</span>
+<span class="c1"># ! python -m pip install urllib3</span>
+<span class="c1"># ! python -m pip install git+https://github.com/theochem/grid.git</span>
+<span class="c1"># ! python -m pip install git+https://github.com/theochem/iodata.git</span>
+<span class="c1"># ! python -m pip install git+https://github.com/theochem/gbasis.git</span>
+
+<span class="c1"># import os</span>
+<span class="c1"># from urllib.request import urlretrieve</span>
+
+<span class="c1"># # download the required data files</span>
+<span class="c1"># file_path_1 = &quot;hydrogen_def2-svp.1.gbs&quot;</span>
+<span class="c1"># if not os.path.isfile(file_path_1):</span>
+<span class="c1">#   url = &quot;https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/hydrogen_def2-svp.1.gbs?raw=true&quot;</span>
+<span class="c1">#   urlretrieve(url, file_path_1)</span>
+<span class="c1"># file_path_2 = &quot;C2H4_hf_ccpvdz.fchk&quot;</span>
+<span class="c1"># if not os.path.isfile(file_path_2):</span>
+<span class="c1">#     url = &quot;https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/C2H4_hf_ccpvdz.fchk?raw=true&quot;</span>
+<span class="c1">#     urlretrieve(url, file_path_2)</span>
+
+<span class="c1"># file_path_3 = &quot;C2H4_hf_ccpvtz.fchk&quot;</span>
+<span class="c1"># if not os.path.isfile(file_path_3):</span>
+<span class="c1">#     url = &quot;https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/C2H4_hf_ccpvtz.fchk?raw=true&quot;</span>
+<span class="c1">#     urlretrieve(url, file_path_3)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-building-basis-functions">
+<h2>A. Building Basis Functions<a class="headerlink" href="#a-building-basis-functions" title="Link to this heading">#</a></h2>
+<p>Gbasis supports loading basis functions through two different ways:</p>
+<ol class="arabic simple">
+<li><p>Basis functions from basis set text files. Currently it supports Gaussian94 and NewChem type files. The <code class="docutils literal notranslate"><span class="pre">coord_type</span></code> argument allows the user to specify Cartesian (“c” or “cartesian”), spherical (“p” or “spherical”), or mixed coordinate (as a list) for each contraction.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
+
+<span class="c1"># Define atomic symbols and coordinates (i.e., basis function centers)</span>
+<span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
+<span class="n">atcoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="c1"># Obtain basis functions from the basis set files</span>
+<span class="n">basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">&quot;hydrogen_def2-svp.1.gbs&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">make_contractions</span><span class="p">(</span>
+<span class="n">basis_dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_types</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+
+<span class="c1"># To obtain the total number of AOs we compute the cartesian components for each angular momentum</span>
+<span class="n">total_ao</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of generalized shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output 6</span>
+<span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">basis</span><span class="p">:</span>
+    <span class="n">total_ao</span> <span class="o">+=</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom_components_cart</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of AOs: &quot;</span><span class="p">,</span> <span class="n">total_ao</span><span class="p">)</span> <span class="c1"># output 10</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of generalized shells: 6
+Total number of AOs:  10
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Quantum chemistry calculations through interfaces with <a class="reference external" href="https://github.com/theochem/iodata">IOData</a> and <a class="reference external" href="https://github.com/pyscf/pyscf">PySCF</a> packages. IOData provides unified access to various computational chemistry file formats (e.g. formatted checkpoint file, molden, and wfn/wfx wavefunction files). Basis set data stored in <code class="docutils literal notranslate"><span class="pre">iodata</span></code> object is converted to a list of <code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell</span></code> objects, as exemplified below.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+
+<span class="c1"># Load ethylene fchk</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;C2H4_hf_ccpvdz.fchk&quot;</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of generalized shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># output 24</span>
+
+<span class="c1"># To obtain the total number of AOs we check for each shell its angular momentum and coordinate type</span>
+<span class="n">total_ao</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">basis</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span> <span class="o">==</span> <span class="s2">&quot;cartesian&quot;</span><span class="p">:</span>
+        <span class="n">total_ao</span> <span class="o">+=</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom_components_cart</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span> <span class="o">==</span> <span class="s2">&quot;spherical&quot;</span><span class="p">:</span>
+        <span class="n">total_ao</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom_components_sph</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of AOs: &quot;</span><span class="p">,</span> <span class="n">total_ao</span><span class="p">)</span> <span class="c1"># output 48</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of generalized shells: 24
+Total number of AOs:  48
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each shell is an object of the base class <code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell</span></code>. This object contains all the information to perform calculations for the different quantities available in the package. For the first shell in the basis we can access them:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For shell 1</span>
+<span class="n">shell</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generalized contraction Shell = 1&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coordinates (Bohr):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; x,y,z coordinates&quot;</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Angular momentum: &quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exponents primitives:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; (K,) K=# primitives&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Contraction coefficients&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; (K, M) </span><span class="se">\</span>
+<span class="s2">K=# of primitives, M=# number segmented contraction shells&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalization constants:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; (M, L), </span><span class="se">\</span>
+<span class="s2">M=# number segmented contraction shells, </span><span class="se">\</span>
+<span class="s2">L=# different angular momentum components&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Generalized contraction Shell = 1
+Coordinates (Bohr):
+[-1.41331444e-15 -8.50766406e-17  1.24804461e+00]
+Shape: (3,) --&gt; x,y,z coordinates
+Angular momentum:  0
+Exponents primitives:
+[6.665e+03 1.000e+03 2.280e+02 6.471e+01 2.106e+01 7.495e+00 2.797e+00]
+Shape: (7,) --&gt; (K,) K=# primitives
+Contraction coefficients
+[[0.00069352]
+ [0.0053415 ]
+ [0.02713667]
+ [0.10199239]
+ [0.27550864]
+ [0.45108643]
+ [0.28756574]]
+Shape: (7, 1) --&gt; (K, M) K=# of primitives, M=# number segmented contraction shells
+Normalization constants:
+[[1.]]
+Shape: (1, 1) --&gt; (M, L), M=# number segmented contraction shells, L=# different angular momentum components
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can retrieve information from the molecular system as well as the wavefunction (i.e molecular orbtials) stored inside <code class="docutils literal notranslate"><span class="pre">iodata</span></code> object in the <code class="docutils literal notranslate"><span class="pre">mol</span></code> variables. With molecular orbitals coefficients and occupations it is possible to construct the density matrix in terms of atomic orbitals. This will be used to compute various quantities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get atomic numbers, atomic charges,</span>
+<span class="c1"># atomic masses and Cartesian coordinates</span>
+<span class="n">atnums</span><span class="p">,</span> <span class="n">atcharges</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span>
+<span class="n">atcoords</span><span class="p">,</span> <span class="n">atmasses</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atmasses</span>
+
+<span class="c1"># Get molecular orbitals coefficients and occupations</span>
+<span class="n">mo_coeffs</span><span class="p">,</span> <span class="n">mo_occs</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">occs</span>
+
+<span class="c1"># Calculate density matrix </span>
+<span class="n">dm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mo_coeffs</span> <span class="o">*</span> <span class="n">mo_occs</span><span class="p">,</span> <span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="b-computing-integrals">
+<h2>B. Computing Integrals<a class="headerlink" href="#b-computing-integrals" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">gbasis.integrals</span></code> module supports various 1- and 2-electron integrals as well as an interface to <a class="reference external" href="https://github.com/sunqm/libcint"><code class="docutils literal notranslate"><span class="pre">Libcint</span></code></a> library.</p>
+</section>
+<section id="one-electron-integrals">
+<h2>1. One-Electron Integrals<a class="headerlink" href="#one-electron-integrals" title="Link to this heading">#</a></h2>
+<section id="overlap-integrals">
+<h3>1.1. Overlap Integrals<a class="headerlink" href="#overlap-integrals" title="Link to this heading">#</a></h3>
+<p>The overlap integral is computed by <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.overlap.overlap_integral"><code class="docutils literal notranslate"><span class="pre">overlap_integral</span></code></a>. This returns a matrix of size (AOs, AOs). The molecular overlap can also be generated if the transformation matrix (i.e molecular coefficients) is passed through the <code class="docutils literal notranslate"><span class="pre">transform</span></code> attribute. To speed up overlap integral calculation a screening based on the exponents and the distance between
+their centers of the basis functions. To use this functionality the molecule neeeds to be loaded and the argument <code class="docutils literal notranslate"><span class="pre">overlap</span></code> set to <code class="docutils literal notranslate"><span class="pre">True</span></code> (default is <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap</span> <span class="kn">import</span> <span class="n">overlap_integral</span>
+
+<span class="c1"># compute overlap integrals in AO and MO basis</span>
+<span class="n">olp_ao</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="n">olp_mo</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="c1"># check whether overlap integrals are orthonormal</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is AO Overlap Normalized?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_ao</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is AO Overlap Orthogonal?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">total_ao</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is MO Overlap Orthonormal?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_mo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">total_ao</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">))</span>
+
+<span class="c1"># Load ethylene to Gbasis and set overlap screen set to True</span>
+<span class="n">basis_ovlp</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># compute overlap integrals in AO and MO basis wit screening</span>
+<span class="n">olp_ao_screening</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis_ovlp</span><span class="p">)</span>
+<span class="n">olp_mo_screening</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis_ovlp</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is Overlap_ao equal to Overlap screening?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">,</span> <span class="n">olp_ao_screening</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Is AO Overlap Normalized? True
+Is AO Overlap Orthogonal? False
+Is MO Overlap Orthonormal? True
+Is Overlap_ao equal to Overlap screening? True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="overlap-integrals-between-two-different-basis-sets">
+<h3>1.2. Overlap Integrals Between Two Different Basis Sets<a class="headerlink" href="#overlap-integrals-between-two-different-basis-sets" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals.overlap_asymm"><code class="docutils literal notranslate"><span class="pre">overlap_integral_asymmetric</span></code></a> function computes the overlap integrals between two different basis sets, each denoted by a list of generalized contraction shells. The following example showcase how to use this feature to compute the overlap integrals between the <code class="docutils literal notranslate"><span class="pre">CC-pVDZ</span></code> and <code class="docutils literal notranslate"><span class="pre">CC-pTDZ</span></code> basis sets:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
+<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap_asymm</span> <span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
+
+<span class="c1"># load ethylene with basis set cc-pTDZ</span>
+<span class="n">mol_extended_basis</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;C2H4_hf_ccpvtz.fchk&quot;</span><span class="p">)</span>
+<span class="n">basis_extended_basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol_extended_basis</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of shells in CC-pVDZ basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_extended_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of shells in CC-pTDZ basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute overlap of two different basis sets</span>
+<span class="n">olp_asym</span> <span class="o">=</span> <span class="n">overlap_integral_asymmetric</span><span class="p">(</span><span class="n">basis_extended_basis</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of overlap matrix: </span><span class="si">{</span><span class="n">olp_asym</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of shells in CC-pVDZ basis: 44
+Number of shells in CC-pTDZ basis: 24
+
+Shape of overlap matrix: (116, 48)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="integral-over-arbitrary-differential-operator">
+<h3>1.3 Integral over arbitrary differential operator<a class="headerlink" href="#integral-over-arbitrary-differential-operator" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals"><code class="docutils literal notranslate"><span class="pre">gbasis.integrals</span></code></a> module supports the computation of integrals over arbitrary differential operators.</p>
+</section>
+<section id="kinetic-energy">
+<h3>1.3.1 Kinetic energy<a class="headerlink" href="#kinetic-energy" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.kinetic_energy.kinetic_energy_integral"><code class="docutils literal notranslate"><span class="pre">kinetic_energy_integral</span></code></a> computes the kinetic energy integrals between pairs of basis functions in AO basis, unless <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument is provided.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.kinetic_energy</span> <span class="kn">import</span> <span class="n">kinetic_energy_integral</span>
+
+<span class="c1"># compute kinetic energy integrals in AO basis</span>
+<span class="n">k_int1e</span> <span class="o">=</span> <span class="n">kinetic_energy_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape kinetic energy integral: &quot;</span><span class="p">,</span> <span class="n">k_int1e</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;(#AO, #AO)&quot;</span><span class="p">)</span>
+
+<span class="n">kin_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">k_int1e</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kinetic energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">kin_e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape kinetic energy integral:  (48, 48) (#AO, #AO)
+Kinetic energy (Hartree): 77.9285467708042
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="nuclear-electron-attraction-integral">
+<h3>1.4 Nuclear electron attraction integral<a class="headerlink" href="#nuclear-electron-attraction-integral" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=nuclear_electron_attraction#module-gbasis.integrals.nuclear_electron_attraction"><code class="docutils literal notranslate"><span class="pre">nuclear_electron_attraction</span></code></a> function computes the nuclear attraction integrals to a set of nuclei of <span class="math notranslate nohighlight">\(\{Z_C\}\)</span> located at <span class="math notranslate nohighlight">\(\{\mathbf{R}_{C}\}\)</span> for pairs of AO or MO basis functions. Its computation is build upon the The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.point_charge.point_charge_integral"><code class="docutils literal notranslate"><span class="pre">point_charge_integral</span></code></a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.nuclear_electron_attraction</span> <span class="kn">import</span> \
+<span class="n">nuclear_electron_attraction_integral</span>
+
+<span class="c1"># compute nuclear-electron attraction integrals in AO basis</span>
+<span class="n">nuc_int1e</span> <span class="o">=</span> <span class="n">nuclear_electron_attraction_integral</span><span class="p">(</span>
+        <span class="n">basis</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">atnums</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape Nuclear-electron integral: &quot;</span><span class="p">,</span> <span class="n">nuc_int1e</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;(#AO, #AO)&quot;</span><span class="p">)</span>
+<span class="n">ne_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">nuc_int1e</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-electron energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">ne_e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape Nuclear-electron integral:  (48, 48) (#AO, #AO)
+Nuclear-electron energy (Hartree): -248.2770425530744
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="two-electron-repulsion-integrals">
+<h2>2. Two-Electron Repulsion Integrals<a class="headerlink" href="#two-electron-repulsion-integrals" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=electron#gbasis.integrals.electron_repulsion.electron_repulsion_integral"><code class="docutils literal notranslate"><span class="pre">electron_repulsion</span></code></a> function compute the electron-electron repulsion integrals in AO or MO basis for a pair of basis functions. This integrals can be used to compute Coulomb(J) and Exchange(K)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.electron_repulsion</span> <span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
+
+<span class="c1">#Compute e-e repulsion integral in MO basis, shape=(#MO, #MO, #MO, #MO)</span>
+<span class="n">int2e_mo</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">&#39;chemist&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shape e-e repulsion integrals:&#39;</span><span class="p">,</span><span class="n">int2e_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="s1">&#39;(#MO, #MO, #MO, #MO)&#39;</span><span class="p">)</span>
+<span class="n">j_coul</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">k_ex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># Mask only occupied Molecular orbitals</span>
+<span class="n">occ_mo</span> <span class="o">=</span> <span class="n">mo_occs</span><span class="p">[</span><span class="n">mo_occs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">):</span> 
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">):</span> 
+        <span class="n">j_coul</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">int2e_mo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">k_ex</span> <span class="o">+=</span> <span class="n">int2e_mo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coulomb energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">j_coul</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exchange energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">k_ex</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape e-e repulsion integrals: (48, 48, 48, 48) (#MO, #MO, #MO, #MO)
+Coulomb energy (Hartree): 70.53719756188356
+Exchange energy (Hartree): 11.756060443132313
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute Nucleus-Nucleus repulsion</span>
+<span class="n">rab</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">atcoords</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span><span class="o">-</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">at_charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">atnums</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atnums</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">rab</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)]</span>
+<span class="n">nn_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">at_charges</span> <span class="o">/</span> <span class="n">rab</span><span class="p">[</span><span class="n">rab</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># Combine all terms to obtain total energy at Restricted HF level</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">nn_e</span> <span class="o">+</span> <span class="n">ne_e</span> <span class="o">+</span> <span class="n">kin_e</span> <span class="o">+</span> <span class="n">j_coul</span> <span class="o">-</span> <span class="n">k_ex</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total energy - Gbasis (Hartree): , </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># SCF energy is stored in iodata object</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total energy - Gaussian16 (Hartre): &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">energy</span> <span class="p">)</span> <span class="c1">#-78.0401652</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total energy - Gbasis (Hartree): , -78.04016522086
+Total energy - Gaussian16 (Hartre):  -78.04016529602737
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="libcint-interface">
+<h2>3. Libcint interface<a class="headerlink" href="#libcint-interface" title="Link to this heading">#</a></h2>
+<p>Gbasis includes a python interface to <a class="reference external" href="https://github.com/sunqm/libcint"><code class="docutils literal notranslate"><span class="pre">Libcint</span></code></a> library. To access the interface a <code class="docutils literal notranslate"><span class="pre">CBasis</span></code> objects needs to be initialized, which needs as arguments <code class="docutils literal notranslate"><span class="pre">basis</span></code>, list of atom elements and coordinates in atomic units (Bohr). Different from native functionality in Gbasis, Libcint does not work with mix type basis, meaning that all shells passed have to be in either cartesian or spherical coordinates. To showcase its functionality below we compute again the same energy terms. Note: To execute the code Libcint must be installed.</p>
+<section id="important">
+<h3>IMPORTANT:<a class="headerlink" href="#important" title="Link to this heading">#</a></h3>
+<p>This block deals with Libcint installation. This needs to be uncommented if you are executing this notebook on Google colab and want to use Libcint interface. Do not uncoment if you are using this notebook locally, Libcint should be installed using bash in a terminal following <code class="docutils literal notranslate"><span class="pre">README.md</span></code> instructions. If Python version is not 3.10 this will most likely break.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># %%shell</span>
+<span class="c1"># git clone https://github.com/theochem/gbasis.git</span>
+<span class="c1"># cp -r gbasis/tools /usr/local/lib/python3.10/dist-packages/gbasis/</span>
+<span class="c1"># sudo apt-get install -y sbcl</span>
+<span class="c1"># cd /usr/local/lib/python3.10/dist-packages/gbasis/;  ./tools/install_libcint.sh</span>
+<span class="c1"># mv /usr/local/lib/python3.10/dist-packages/gbasis/gbasis/integrals/include/ /usr/local/lib/python3.10/dist-packages/gbasis/integrals</span>
+<span class="c1"># mv /usr/local/lib/python3.10/dist-packages/gbasis/gbasis/integrals/lib/ /usr/local/lib/python3.10/dist-packages/gbasis/integrals/</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.libcint</span> <span class="kn">import</span> <span class="n">CBasis</span>
+
+<span class="c1"># Define atomic elements matching atom numbers</span>
+<span class="n">atoms_ethylene</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
+<span class="n">cbasis</span> <span class="o">=</span> <span class="n">CBasis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">atoms_ethylene</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">)</span>
+<span class="n">kin_int1e_c</span><span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">kinetic_energy</span><span class="p">()</span>
+<span class="n">kin_e_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">kin_int1e_c</span><span class="p">))</span>
+<span class="n">nuc_int1e_c</span> <span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">nuclear_attraction</span><span class="p">()</span>
+<span class="n">ne_e_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">nuc_int1e_c</span><span class="p">))</span>
+<span class="n">int2e_ao_c</span> <span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">electron_repulsion</span><span class="p">()</span> <span class="c1"># physicist notation</span>
+<span class="c1"># Transform from AO basis to MO basis</span>
+<span class="n">int2e_mo_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ai, abdc-&gt;ibdc&#39;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">int2e_ao_c</span><span class="p">)</span>
+<span class="n">int2e_mo_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;bj, ibdc-&gt;ijdc&#39;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">int2e_mo_raw</span><span class="p">)</span>
+<span class="n">int2e_mo_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;dk, ijdc-&gt;ijkc&#39;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">int2e_mo_raw</span><span class="p">)</span>
+<span class="n">int2e_mo_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;cl, ijkc-&gt;ijkl&#39;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">int2e_mo_raw</span><span class="p">)</span>
+
+<span class="n">j_coul_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">k_ex_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># Mask only occupied Molecular orbitals</span>
+<span class="n">occ_mo</span> <span class="o">=</span> <span class="n">mo_occs</span><span class="p">[</span><span class="n">mo_occs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+<span class="n">occ_mo</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">occs</span><span class="p">[</span><span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">occs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">):</span> 
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">):</span> 
+        <span class="n">j_coul_c</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">int2e_mo_c</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">k_ex_c</span> <span class="o">+=</span> <span class="n">int2e_mo_c</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kinetic energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">kin_e_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-electron energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">ne_e_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coulomb energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">j_coul_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exchange energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">k_ex_c</span><span class="p">)</span>
+<span class="c1"># Combine all terms to obtain total energy at Restricted HF level</span>
+<span class="n">e_cbasis</span> <span class="o">=</span> <span class="n">nn_e</span> <span class="o">+</span> <span class="n">ne_e_c</span> <span class="o">+</span> <span class="n">kin_e_c</span> <span class="o">+</span> <span class="n">j_coul_c</span> <span class="o">-</span> <span class="n">k_ex_c</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total energy - Gbasis (Hartree): , </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total energy - Cbasis (Hartree): , </span><span class="si">{</span><span class="n">e_cbasis</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># SCF energy is stored in iodata object</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total energy - Gaussian16 (Hartree): &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">energy</span> <span class="p">)</span> <span class="c1">#-78.0401652</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kinetic energy (CBasis/Hartree)): 77.92854683833846
+Nuclear-electron energy (CBasis/Hartree)): -248.27704265438183
+Coulomb energy (CBasis/Hartree)): 70.5371975684723
+Exchange energy (CBasis/Hartree)): 11.756060454118147
+Total energy - Gbasis (Hartree): , -78.04016522086
+Total energy - Cbasis (Hartree): , -78.04016525903
+Total energy - Gaussian16 (Hartree):  -78.04016529602737
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="c-evaluations">
+<h2>C. Evaluations<a class="headerlink" href="#c-evaluations" title="Link to this heading">#</a></h2>
+</section>
+<section id="basis-functions">
+<h2>1. Basis functions<a class="headerlink" href="#basis-functions" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.evals.html"><code class="docutils literal notranslate"><span class="pre">gbasis.evals</span></code></a> module supports evaluating functions that are expanded in
+Gaussian basis set on a set of points.For the following examples, we use the <a class="reference external" href="https://github.com/theochem/grid"><code class="docutils literal notranslate"><span class="pre">Grid</span></code></a> library to
+generate the Becke-Lebedev molecular grid:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.molgrid</span> <span class="kn">import</span> <span class="n">MolGrid</span>
+
+<span class="n">grid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
+        <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of grid points = &quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of grid points =  16796
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following example show how to evaluate atomic and molecular orbitals and their derivatives</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.eval</span> <span class="kn">import</span> <span class="n">evaluate_basis</span>
+<span class="kn">from</span> <span class="nn">gbasis.evals.eval_deriv</span> <span class="kn">import</span> <span class="n">evaluate_deriv_basis</span>
+
+<span class="c1"># Evaluate the MOs on the grid points</span>
+<span class="n">basis_mo</span> <span class="o">=</span> <span class="n">evaluate_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape MOs evaluated in a Molecular grid: &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;(#MOs, #Grid points)&quot;</span><span class="p">)</span>
+
+<span class="c1"># Integration MO</span>
+<span class="c1"># Mask only occupied Molecular orbitals</span>
+<span class="n">occ_mo</span> <span class="o">=</span> <span class="n">mo_occs</span><span class="p">[</span><span class="n">mo_occs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">):</span> <span class="c1"># Only occupied MOs</span>
+    <span class="n">eval_mo</span> <span class="o">=</span> <span class="n">basis_mo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">basis_mo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MO </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> integrated squared: &quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">eval_mo</span><span class="p">))</span>
+
+<span class="c1"># evaluate 6th derivative w.r.t. y for MOs on the grid points</span>
+<span class="n">deriv_6_mo</span> <span class="o">=</span> <span class="n">evaluate_deriv_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> 
+        <span class="n">orders</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape MOs evaluated in a Molecular grid: 
+(48, 16796) (#MOs, #Grid points)
+MO 1 integrated squared:  1.0000027687589634
+MO 2 integrated squared:  1.0000027654426193
+MO 3 integrated squared:  0.9999978011521944
+MO 4 integrated squared:  0.9999860542308123
+MO 5 integrated squared:  0.9999893708000488
+MO 6 integrated squared:  0.9999931468746739
+MO 7 integrated squared:  0.99997589380213
+MO 8 integrated squared:  0.9999976856899412
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="density-related-properties">
+<h2>2. Density Related properties<a class="headerlink" href="#density-related-properties" title="Link to this heading">#</a></h2>
+<p>Gbasis supports evaluating the electron density and arbitrary-order derivatives</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
+
+<span class="c1"># compute electronic density</span>
+<span class="n">dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+<span class="c1"># integrate density and compare to the number of electrons in the system</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of electrons: &quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">))</span> <span class="c1"># Total number of electrons ethylene = 16</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total number of electrons:  15.99989097350276
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the special case of the gradient, Hessian, and the Laplacian of the electron
+density, Gbasis has high-level functions implementing the calculation and combination of the necessary derivatives orders. Up to second order, the user has the option
+to choose between the arbitrary-order-derivative implementation, or the explicitly
+coded 1st and 2nd derivatives.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density_laplacian</span>
+
+<span class="c1"># compute Laplacian of electron density</span>
+<span class="c1"># general arbitrary-order-derivative implementation</span>
+<span class="n">lap_gen</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv_type</span><span class="o">=</span><span class="s1">&#39;general&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">lap_gen</span><span class="p">))</span> <span class="c1"># Expected value: 0</span>
+<span class="c1"># Direct implementation of 1s and 2nd order derivatives</span>
+<span class="n">lap_dir</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv_type</span><span class="o">=</span><span class="s1">&#39;direct&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">lap_dir</span><span class="p">))</span> <span class="c1"># Expected value: 0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Are General and Direct implementation the same?&quot;</span><span class="p">,</span> 
+      <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lap_gen</span><span class="p">,</span> <span class="n">lap_dir</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.0049650299404096635
+-0.004965029940581106
+Are General and Direct implementation the same? True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="density-matrix-related-properties">
+<h2>3. Density Matrix Related properties<a class="headerlink" href="#density-matrix-related-properties" title="Link to this heading">#</a></h2>
+<p>GBasis also supports the evaluation of the one-electron reduced density matrix
+and arbitrary order derivatives on a set of grid points. Supported related properties are the stress tensor, the Ehrenfest force and the Ehrenfest Hessian. Below we show an example on how to use the Ehrenfest force. Other properties are accessed similarly with their corresponding high level function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.stress_tensor</span> <span class="kn">import</span> <span class="n">evaluate_ehrenfest_force</span>
+
+<span class="c1">#center of mass ethylene</span>
+<span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">atmasses</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">atmasses</span><span class="p">))[</span><span class="kc">None</span><span class="p">,:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Center of mass of ethylene: </span><span class="si">{</span><span class="n">com</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ehrenfest force (alpha = </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2"> and beta = </span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+<span class="n">ef_com</span> <span class="o">=</span> <span class="n">evaluate_ehrenfest_force</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> 
+                                  <span class="n">basis</span><span class="p">,</span> 
+                                  <span class="n">com</span><span class="p">,</span> 
+                                  <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> 
+                                  <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of a Ehrenfest force at one point: </span><span class="si">{</span><span class="n">ef_com</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ehrenfest force at center of mass:</span><span class="se">\n</span><span class="si">{</span><span class="n">ef_com</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ehrenfest force at center of mass is 0: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ef_com</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(should be zero, it is Lorentz point)&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Center of mass of ethylene: [[ 5.03790449e-17  5.93301676e-18 -5.93301676e-18]]
+
+Ehrenfest force (alpha = 1 and beta = 0):
+Shape of a Ehrenfest force at one point: (3,)
+Ehrenfest force at center of mass:
+[[-8.59906292e-17 -3.88840561e-17  8.51183409e-18]]
+Ehrenfest force at center of mass is 0: True
+(should be zero, it is Lorentz point)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="electrostatic-potential">
+<h2>4. Electrostatic potential<a class="headerlink" href="#electrostatic-potential" title="Link to this heading">#</a></h2>
+<p>An high-level function for computing the molecular electrostatic potential is also provided. It is more suitable to use a cubic grid for this computation, which is typically used for visualizing molecular surface properties.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">UniformGrid</span>
+<span class="kn">from</span> <span class="nn">gbasis.evals.electrostatic_potential</span> <span class="kn">import</span> <span class="n">electrostatic_potential</span>
+
+<span class="c1"># construct a cubic grid</span>
+<span class="n">cube_grid</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="o">.</span><span class="n">from_molecule</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span>
+                                      <span class="n">atcoords</span><span class="p">,</span> 
+                                      <span class="n">spacing</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> 
+                                      <span class="n">extension</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> 
+                                      <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># compute electrostatic potential on the grid point</span>
+<span class="n">esp</span> <span class="o">=</span> <span class="n">electrostatic_potential</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span>
+                              <span class="n">one_density_matrix</span><span class="o">=</span><span class="n">dm</span><span class="p">,</span>
+                              <span class="n">points</span><span class="o">=</span><span class="n">cube_grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span>
+                              <span class="n">nuclear_coords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span>
+                              <span class="n">nuclear_charges</span><span class="o">=</span><span class="n">atcharges</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape electrostatic potential output: &quot;</span><span class="p">,</span> <span class="n">esp</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;#Grid points&quot;</span><span class="p">)</span>
+
+<span class="c1"># generate a cube</span>
+<span class="n">cube_grid</span><span class="o">.</span><span class="n">generate_cube</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="s2">&quot;ethylene.cube&quot;</span><span class="p">,</span>
+                        <span class="n">data</span><span class="o">=</span><span class="n">esp</span><span class="p">,</span>
+                        <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span>
+                        <span class="n">atnums</span><span class="o">=</span><span class="n">atnums</span><span class="p">,</span>
+                        <span class="n">pseudo_numbers</span><span class="o">=</span><span class="n">atcharges</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape electrostatic potential output:  (5040,) #Grid points
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/gbasis",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorial"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Evaluations_1rdm_properties.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Evaluations: One-Electron Reduced Density Matrix (1RDM) Related Properties</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../_autosummary/gbasis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">gbasis package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-dependencies-and-download-data">Install dependencies and download data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-building-basis-functions">A. Building Basis Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-computing-integrals">B. Computing Integrals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">1. One-Electron Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals">1.1. Overlap Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals-between-two-different-basis-sets">1.2. Overlap Integrals Between Two Different Basis Sets</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integral-over-arbitrary-differential-operator">1.3 Integral over arbitrary differential operator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kinetic-energy">1.3.1 Kinetic energy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuclear-electron-attraction-integral">1.4 Nuclear electron attraction integral</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-repulsion-integrals">2. Two-Electron Repulsion Integrals</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#libcint-interface">3. Libcint interface</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#important">IMPORTANT:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c-evaluations">C. Evaluations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basis-functions">1. Basis functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-related-properties">2. Density Related properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-matrix-related-properties">3. Density Matrix Related properties</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#electrostatic-potential">4. Electrostatic potential</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Dev Community with the support of Digital Research Alliance of Canada and The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

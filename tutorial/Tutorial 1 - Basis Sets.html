@@ -1,0 +1,1011 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>GBasis Tutorial - Basis Sets &#8212; Ayers Lab</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/Tutorial 1 - Basis Sets';</script>
+    <link rel="icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="GBasis Tutorial - Integrals" href="Tutorial%202%20-%20Integrals.html" />
+    <link rel="prev" title="Installation" href="../installation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Ayers Lab - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Ayers Lab - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to GBasis’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tutorial 1: Basis Sets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial%202%20-%20Integrals.html">Tutorial 2: Integrals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_basis_and_potential.html">Evaluations: Basis and Potential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_electron_density.html">Evaluations: Electron Density</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_1rdm_properties.html">Evaluations: 1RDM Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JCP_paper.html">JCP Paper examples</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../_autosummary/gbasis.html">gbasis package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/gbasis.evals.html">gbasis.evals package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/gbasis.integrals.html">gbasis.integrals package</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/theochem/gbasis/blob/master/website/tutorial/Tutorial 1 - Basis Sets.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onColab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis/issues/new?title=Issue%20on%20page%20%2Ftutorial/Tutorial 1 - Basis Sets.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorial/Tutorial 1 - Basis Sets.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>GBasis Tutorial - Basis Sets</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-basis-sets-from-basis-set-file-formats">1. Building Basis Sets from Basis Set File Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-gaussian94-basis-set-file-formats-parse-gbs">1.1. Loading Gaussian94 Basis Set File Formats: <code class="docutils literal notranslate"><span class="pre">parse_gbs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-nwchem-basis-set-file-formats-parse-nwchem">1.2. Loading NWChem Basis Set File Formats: <code class="docutils literal notranslate"><span class="pre">parse_nwchem</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#making-contraction-shells-make-contractions">1.3. Making Contraction Shells: <code class="docutils literal notranslate"><span class="pre">make_contractions</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-cartesian-contraction-shells">Example: Cartesian Contraction Shells</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-spherical-contraction-shells">Example: Spherical Contraction Shells</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-mixed-contraction-shells">Example: Mixed Contraction Shells</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-basis-sets-from-quantum-chemistry-calculations">2. Building Basis Sets from Quantum Chemistry Calculations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interfacing-with-iodata-library-from-iodata">2.1. Interfacing with IOData Library: <code class="docutils literal notranslate"><span class="pre">from_iodata</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interfacing-with-pyscf-library-from-pyscf">2.2. Interfacing with pySCF Library: <code class="docutils literal notranslate"><span class="pre">from_pyscf</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="gbasis-tutorial-basis-sets">
+<h1>GBasis Tutorial - Basis Sets<a class="headerlink" href="#gbasis-tutorial-basis-sets" title="Link to this heading">#</a></h1>
+<p>In <a class="reference external" href="http://gbasis.qcdevs.org/intro.html">gbasis</a>, a basis is defined as a list of <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#module-gbasis.contractions"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell</span></code></a> objects, each one representing a linear combination of primitives. Each <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#module-gbasis.contractions"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell</span></code></a> instances contains information about the angular momentum and center of the shell as well as the exponents and the contraction coefficients of the primitives and their normalization coefficients.</p>
+<p>This notebook showcases the different ways to define a basis set for a molecule using <code class="docutils literal notranslate"><span class="pre">gabsis</span></code>.</p>
+<section id="building-basis-sets-from-basis-set-file-formats">
+<h2>1. Building Basis Sets from Basis Set File Formats<a class="headerlink" href="#building-basis-sets-from-basis-set-file-formats" title="Link to this heading">#</a></h2>
+<p>Basis set information is typically accessible in text format, such as those provided by the the <a class="reference external" href="https://www.basissetexchange.org/">Basis Set Exchange</a>. <a class="reference external" href="http://gbasis.qcdevs.org/intro.html">gbasis</a> supports two of the most popular formats: <strong>Gaussian94</strong> (.gbs) and <strong>NWChem</strong> (.nw). The following examples show how to load a basis set from these files, and how to build a basis set instance from them.</p>
+<section id="loading-gaussian94-basis-set-file-formats-parse-gbs">
+<h3>1.1. Loading Gaussian94 Basis Set File Formats: <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.parsers.parse_gbs"><code class="docutils literal notranslate"><span class="pre">parse_gbs</span></code></a><a class="headerlink" href="#loading-gaussian94-basis-set-file-formats-parse-gbs" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span>
+
+<span class="c1"># load hydrogen atom def2-SVP basis set information with the Gaussian94 format</span>
+<span class="n">gbs_basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">&quot;hydrogen_def2-svp.1.gbs&quot;</span><span class="p">)</span>
+
+<span class="c1"># basis set information is stored as</span>
+<span class="c1"># {&#39;Atom Symbol&#39;: [(Angular Momentum, [Exponents], [Coefficients]), ...]}</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;def2-SVP Basis Set Loaded from Gaussian94 Format:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">gbs_basis_dict</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atom: </span><span class="si">{</span><span class="n">atom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Number of shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">gbs_basis_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gbs_basis_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">]):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has angular momentum </span><span class="si">{</span><span class="n">shell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has exponents </span><span class="si">{</span><span class="n">shell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has coefficients </span><span class="si">{</span><span class="n">shell</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>def2-SVP Basis Set Loaded from Gaussian94 Format:
+Atom: H
+   Number of shells: 3
+   Shell 0 has angular momentum 0
+   Shell 0 has exponents [13.010701    1.9622572   0.44453796]
+   Shell 0 has coefficients [0.01968216 0.13796524 0.47831935]
+   Shell 1 has angular momentum 0
+   Shell 1 has exponents [0.12194962]
+   Shell 1 has coefficients [1.]
+   Shell 2 has angular momentum 1
+   Shell 2 has exponents [0.8]
+   Shell 2 has coefficients [1.]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="loading-nwchem-basis-set-file-formats-parse-nwchem">
+<h3>1.2. Loading NWChem Basis Set File Formats: <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.parsers.parse_nwchem"><code class="docutils literal notranslate"><span class="pre">parse_nwchem</span></code></a><a class="headerlink" href="#loading-nwchem-basis-set-file-formats-parse-nwchem" title="Link to this heading">#</a></h3>
+<p>Checking that the basis set information loaded from Gaussian and NWChem are the same.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_nwchem</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;def2-SVP Basis Set Loaded from NwChem Format:&quot;</span><span class="p">)</span>
+<span class="n">nw_basis_dict</span> <span class="o">=</span> <span class="n">parse_nwchem</span><span class="p">(</span><span class="s2">&quot;hydrogen_def2-svp.1.nw&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Checking that the Gaussian94 and NWChem loaded basis sets are the same:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">gbs_basis_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atom </span><span class="si">{</span><span class="n">atom</span><span class="si">}</span><span class="s2"> exist in NWChem basis: </span><span class="si">{</span><span class="n">atom</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">nw_basis_dict</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Are the number of shells the same? </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">nw_basis_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># check that the angular momentum, exponents, and coefficients are the same for each shell</span>
+    <span class="n">contractions_pair</span> <span class="o">=</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">nw_basis_dict</span><span class="p">[</span><span class="n">atom</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">gb_shell</span><span class="p">,</span> <span class="n">nw_shell</span><span class="p">)</span> <span class="ow">in</span> <span class="n">contractions_pair</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has the same angular momentum: </span><span class="si">{</span><span class="n">gb_shell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">nw_shell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has the same exponents: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">gb_shell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">nw_shell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shell </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> has the same coefficients: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">gb_shell</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">nw_shell</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>def2-SVP Basis Set Loaded from NwChem Format:
+
+Checking that the Gaussian94 and NWChem loaded basis sets are the same:
+Atom H exist in NWChem basis: True
+Are the number of shells the same? True
+Shell 0 has the same angular momentum: True
+Shell 0 has the same exponents: True
+Shell 0 has the same coefficients: True
+
+Shell 1 has the same angular momentum: True
+Shell 1 has the same exponents: True
+Shell 1 has the same coefficients: True
+
+Shell 2 has the same angular momentum: True
+Shell 2 has the same exponents: True
+Shell 2 has the same coefficients: True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="making-contraction-shells-make-contractions">
+<h3>1.3. Making Contraction Shells: <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.parsers.make_contractions"><code class="docutils literal notranslate"><span class="pre">make_contractions</span></code></a><a class="headerlink" href="#making-contraction-shells-make-contractions" title="Link to this heading">#</a></h3>
+<p>Once the data for a basis set are loaded as a dictionary, the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.parsers.make_contractions"><code class="docutils literal notranslate"><span class="pre">make_contractions</span></code></a> function is used to build the basis set given a list of atoms, their atomic coordinates, and <code class="docutils literal notranslate"><span class="pre">coord_types</span></code>. The latter specifies the coordinate system for building the contraction shells. Setting the <code class="docutils literal notranslate"><span class="pre">coord_types='cartesian'</span></code> or <code class="docutils literal notranslate"><span class="pre">coord_types='c'</span></code> uses a Cartesian coordinate system, and setting <code class="docutils literal notranslate"><span class="pre">coord_types='spherical'</span></code> or <code class="docutils literal notranslate"><span class="pre">coord_types='p'</span></code> (for pure), the contraction shells are built in the spherical coordinate system.</p>
+<p>The following example shows how to use this function to build a basis set for <span class="math notranslate nohighlight">\(\mathrm{H}_{2}\)</span> with different contraction shells.</p>
+<section id="example-cartesian-contraction-shells">
+<h4>Example: Cartesian Contraction Shells<a class="headerlink" href="#example-cartesian-contraction-shells" title="Link to this heading">#</a></h4>
+<p>Setting <code class="docutils literal notranslate"><span class="pre">coord_types='cartesian'</span></code> or <code class="docutils literal notranslate"><span class="pre">coord_types='c'</span></code> uses a Cartesian coordinate system for <strong>all</strong> contraction shells.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">make_contractions</span>
+
+<span class="c1"># Define atomic symbols and coordinates</span>
+<span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
+<span class="n">atcoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="c1"># Make contractions at def2-SVP basis set</span>
+<span class="n">gbs_basis</span> <span class="o">=</span> <span class="n">make_contractions</span><span class="p">(</span><span class="n">gbs_basis_dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_types</span><span class="o">=</span><span class="s2">&quot;cartesian&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">))</span>  <span class="c1"># 3 for each H atom</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Types of contractions: </span><span class="si">{</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">coord_type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">gbs_basis</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Showing the first three contraction shells:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contraction shell #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Center: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Angular momentum: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive coefficients </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive exponents </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive normalization constant </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 6
+Types of contractions: [&#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;]
+
+Showing the first three contraction shells:
+
+Contraction shell #0
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[0.01968216 0.13796524 0.47831935]]
+   Primitive exponents [13.010701    1.9622572   0.44453796]
+   Primitive normalization constant [[1.70131166]]
+Contraction shell #1
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[1.]]
+   Primitive exponents [0.12194962]
+   Primitive normalization constant [[1.]]
+Contraction shell #2
+   Center: [0. 0. 0.]
+   Angular momentum: 1
+   Primitive coefficients [[1.]]
+   Primitive exponents [0.8]
+   Primitive normalization constant [[1. 1. 1.]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-spherical-contraction-shells">
+<h4>Example: Spherical Contraction Shells<a class="headerlink" href="#example-spherical-contraction-shells" title="Link to this heading">#</a></h4>
+<p>Setting <code class="docutils literal notranslate"><span class="pre">coord_types='spherical'</span></code> or <code class="docutils literal notranslate"><span class="pre">coord_types='p'</span></code> (where <code class="docutils literal notranslate"><span class="pre">&quot;p&quot;</span></code> stands for pure) uses a Spherical coordinate system for <strong>all</strong> contraction shells.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># make contractions for the hydrogen def2-SVP basis set</span>
+<span class="n">gbs_basis</span> <span class="o">=</span> <span class="n">make_contractions</span><span class="p">(</span><span class="n">gbs_basis_dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_types</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">))</span>  <span class="c1"># 3 for each H atom</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Types of contractions: </span><span class="si">{</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">coord_type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">gbs_basis</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Showing the first three contraction shells:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contraction shell #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Center: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Angular momentum: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive coefficients </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive exponents </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive normalization constant </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 6
+Types of contractions: [&#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;]
+
+Showing the first three contraction shells:
+
+Contraction shell #0
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[0.01968216 0.13796524 0.47831935]]
+   Primitive exponents [13.010701    1.9622572   0.44453796]
+   Primitive normalization constant [[1.70131166]]
+Contraction shell #1
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[1.]]
+   Primitive exponents [0.12194962]
+   Primitive normalization constant [[1.]]
+Contraction shell #2
+   Center: [0. 0. 0.]
+   Angular momentum: 1
+   Primitive coefficients [[1.]]
+   Primitive exponents [0.8]
+   Primitive normalization constant [[1. 1. 1.]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-mixed-contraction-shells">
+<h4>Example: Mixed Contraction Shells<a class="headerlink" href="#example-mixed-contraction-shells" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">coord_type</span></code> can be specified as a list of strings, each representing the <code class="docutils literal notranslate"><span class="pre">coord_type</span></code> of a contraction shell, which allows mixed contraction shell types. Obviously, the length of this list must be equal to the number of contraction shells in the molecule.</p>
+<p>The following example shows how to build mixed contraction shells for <span class="math notranslate nohighlight">\(\mathrm{H}_{2}\)</span> molecule. The first 3 contraction shells (corresponding to the first atom) are built in the Cartesian coordinate system, while the last 3 contraction shells (corresponding to the second atom) are built in the spherical coordinate system.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># list of coordinate types, one for each shell</span>
+<span class="n">coord_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cartesian&quot;</span><span class="p">,</span> <span class="s2">&quot;cartesian&quot;</span><span class="p">,</span> <span class="s2">&quot;cartesian&quot;</span><span class="p">,</span> <span class="s2">&quot;spherical&quot;</span><span class="p">,</span> <span class="s2">&quot;spherical&quot;</span><span class="p">,</span> <span class="s2">&quot;spherical&quot;</span><span class="p">]</span>
+
+<span class="c1"># make contractions for the hydrogen def2-SVP basis set</span>
+<span class="n">gbs_basis</span> <span class="o">=</span> <span class="n">make_contractions</span><span class="p">(</span><span class="n">gbs_basis_dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_types</span><span class="o">=</span><span class="n">coord_types</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of contracted basis functions:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">))</span>  <span class="c1"># 3 for each H atom</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Types of contractions: </span><span class="si">{</span><span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">coord_type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">gbs_basis</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of Contracted Basis Functions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Showing the first three contraction shells:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gbs_basis</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contraction Shell #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Center: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Angular momentum: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive coefficients </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive exponents </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive normalization constant </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Coordinate type: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 6
+Types of contractions: [&#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;]
+
+Number of Contracted Basis Functions: 6
+
+Showing the first three contraction shells:
+
+Contraction Shell #0
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[0.01968216 0.13796524 0.47831935]]
+   Primitive exponents [13.010701    1.9622572   0.44453796]
+   Primitive normalization constant [[1.70131166]]
+
+   Coordinate type: cartesian
+Contraction Shell #1
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[1.]]
+   Primitive exponents [0.12194962]
+   Primitive normalization constant [[1.]]
+
+   Coordinate type: cartesian
+Contraction Shell #2
+   Center: [0. 0. 0.]
+   Angular momentum: 1
+   Primitive coefficients [[1.]]
+   Primitive exponents [0.8]
+   Primitive normalization constant [[1. 1. 1.]]
+
+   Coordinate type: cartesian
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="building-basis-sets-from-quantum-chemistry-calculations">
+<h2>2. Building Basis Sets from Quantum Chemistry Calculations<a class="headerlink" href="#building-basis-sets-from-quantum-chemistry-calculations" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="http://gbasis.qcdevs.org/intro.html">gbasis</a> supports obtaining basis function information from quantum chemistry calculations by interfacing with <a class="reference external" href="https://iodata.readthedocs.io/en/latest/">iodata</a> and <a class="reference external" href="https://pyscf.org/">pySCF</a>.</p>
+<section id="interfacing-with-iodata-library-from-iodata">
+<h3>2.1. Interfacing with <a class="reference external" href="https://iodata.readthedocs.io/en/latest/">IOData</a> Library: <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.wrappers.from_iodata"><code class="docutils literal notranslate"><span class="pre">from_iodata</span></code></a><a class="headerlink" href="#interfacing-with-iodata-library-from-iodata" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://iodata.readthedocs.io/en/latest/">IOData</a> supports parsing various quantum chemistry file formats, like Gaussian formatted checkpoint files (.fchk), molden (.molden), and wave-function files (.wfn and .wfx), and provides a unified interface to access the data in these files through <code class="docutils literal notranslate"><span class="pre">IOData</span></code> object. This object is passed to <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.wrappers.from_iodata"><code class="docutils literal notranslate"><span class="pre">from_iodata</span></code></a> function to obtain the basis set information.</p>
+<p>The following example loads basis functions from a FCHK file, but other formats supported by <a class="reference external" href="https://iodata.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">iodata</span></code></a> can also be used.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+
+<span class="c1"># load basis functions from a fchk file of water at uwB97XD/def2-TZVPD level</span>
+<span class="n">iodata_mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;water.fchk&quot;</span><span class="p">)</span>
+<span class="n">iodata_basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">iodata_mol</span><span class="p">)</span>
+
+<span class="c1"># print the basis set information</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of Contracted Basis Functions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">iodata_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Types of contractions: </span><span class="si">{</span><span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">coord_type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">iodata_basis</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Showing the first three contraction shells:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">iodata_basis</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contraction Shell #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Center: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Angular momentum: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive coefficients: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive exponents: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive normalization constant: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of Contracted Basis Functions: 24
+Types of contractions: [&#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;spherical&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;]
+
+Showing the first three contraction shells:
+
+Contraction Shell #0
+   Center: [ 0.01418428  0.01049743 -0.00741906]
+   Angular momentum: 0
+   Primitive coefficients: [[5.72273352e-04 4.43532335e-03 2.30201077e-02 9.28224907e-02
+  2.93785000e-01 6.74016045e-01]]
+   Primitive exponents: [27032.3826     4052.38714     922.327227    261.24071      85.3546414
+    31.0350352]
+   Primitive normalization constant: [[1.]]
+
+Contraction Shell #1
+   Center: [ 0.01418428  0.01049743 -0.00741906]
+   Angular momentum: 0
+   Primitive coefficients: [[0.63839937 0.39534587]]
+   Primitive exponents: [12.2608607  4.9987076]
+   Primitive normalization constant: [[1.]]
+
+Contraction Shell #2
+   Center: [ 0.01418428  0.01049743 -0.00741906]
+   Angular momentum: 0
+   Primitive coefficients: [[1.]]
+   Primitive exponents: [1.17031082]
+   Primitive normalization constant: [[1.]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="interfacing-with-pyscf-library-from-pyscf">
+<h3>2.2. Interfacing with <a class="reference external" href="https://pyscf.org/">pySCF</a> Library: <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.wrappers.from_pyscf"><code class="docutils literal notranslate"><span class="pre">from_pyscf</span></code></a><a class="headerlink" href="#interfacing-with-pyscf-library-from-pyscf" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.wrappers.from_pyscf"><code class="docutils literal notranslate"><span class="pre">from_pyscf</span></code></a> function supports building basis functions directly from <a class="reference external" href="https://pyscf.org/pyscf_api_docs/pyscf.gto.html#pyscf.gto.mole.Mole"><code class="docutils literal notranslate"><span class="pre">pyscf.gto.mole.Mole</span></code></a> object. Setting <code class="docutils literal notranslate"><span class="pre">cart=False</span></code> when creating an instance of <code class="docutils literal notranslate"><span class="pre">Mole</span></code>, spherical coordinates are used.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span>
+<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_pyscf</span>
+
+<span class="c1"># build an STO-3G basis for water using PySCF</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">O 0 0 0;</span>
+<span class="s2">H 0 1 0;</span>
+<span class="s2">H 0 0 1</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">pyscf_mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Mole</span><span class="p">(</span><span class="n">cart</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pyscf_mol</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">atom</span><span class="o">=</span><span class="n">molecule</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="s2">&quot;sto-3g&quot;</span><span class="p">)</span>
+<span class="n">pyscf_basis</span> <span class="o">=</span> <span class="n">from_pyscf</span><span class="p">(</span><span class="n">pyscf_mol</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of contracted basis functions: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">pyscf_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Types of contractions: </span><span class="si">{</span><span class="p">[</span><span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">shell</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">pyscf_basis</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Showing the first three contraction shells:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">shell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pyscf_basis</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contraction Shell #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Center: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Angular momentum: </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive coefficients </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">T</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive exponents </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Primitive normalization constant </span><span class="si">{</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of contracted basis functions: 5
+Types of contractions: [&#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;, &#39;cartesian&#39;]
+
+Showing the first three contraction shells:
+
+Contraction Shell #0
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[0.15432897 0.53532814 0.44463454]]
+   Primitive exponents [130.70932    23.808861    6.4436083]
+   Primitive normalization constant [[0.99999999]]
+
+Contraction Shell #1
+   Center: [0. 0. 0.]
+   Angular momentum: 0
+   Primitive coefficients [[-0.09996723  0.39951283  0.70011547]]
+   Primitive exponents [5.0331513 1.1695961 0.380389 ]
+   Primitive normalization constant [[0.99999999]]
+
+Contraction Shell #2
+   Center: [0. 0. 0.]
+   Angular momentum: 1
+   Primitive coefficients [[0.15591627 0.60768372 0.39195739]]
+   Primitive exponents [5.0331513 1.1695961 0.380389 ]
+   Primitive normalization constant [[0.99999999 0.99999999 0.99999999]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/gbasis",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorial"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../installation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Installation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Tutorial%202%20-%20Integrals.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">GBasis Tutorial - Integrals</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-basis-sets-from-basis-set-file-formats">1. Building Basis Sets from Basis Set File Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-gaussian94-basis-set-file-formats-parse-gbs">1.1. Loading Gaussian94 Basis Set File Formats: <code class="docutils literal notranslate"><span class="pre">parse_gbs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#loading-nwchem-basis-set-file-formats-parse-nwchem">1.2. Loading NWChem Basis Set File Formats: <code class="docutils literal notranslate"><span class="pre">parse_nwchem</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#making-contraction-shells-make-contractions">1.3. Making Contraction Shells: <code class="docutils literal notranslate"><span class="pre">make_contractions</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-cartesian-contraction-shells">Example: Cartesian Contraction Shells</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-spherical-contraction-shells">Example: Spherical Contraction Shells</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-mixed-contraction-shells">Example: Mixed Contraction Shells</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-basis-sets-from-quantum-chemistry-calculations">2. Building Basis Sets from Quantum Chemistry Calculations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interfacing-with-iodata-library-from-iodata">2.1. Interfacing with IOData Library: <code class="docutils literal notranslate"><span class="pre">from_iodata</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interfacing-with-pyscf-library-from-pyscf">2.2. Interfacing with pySCF Library: <code class="docutils literal notranslate"><span class="pre">from_pyscf</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Dev Community with the support of Digital Research Alliance of Canada and The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
@@ -52,7 +52,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="_static/design-tabs.js?v=36754332"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -183,7 +183,15 @@
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Getting started</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="tutorial/Tutorial%201%20-%20Basis%20Sets.html">Tutorial 1: Basis Sets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/Tutorial%202%20-%20Integrals.html">Tutorial 2: Integrals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/Evaluations_basis_and_potential.html">Evaluations: Basis and Potential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/Evaluations_electron_density.html">Evaluations: Electron Density</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/Evaluations_1rdm_properties.html">Evaluations: 1RDM Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/JCP_paper.html">JCP Paper examples</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="nav bd-sidenav">
@@ -416,6 +424,8 @@ Heidar-Zadeh, and Paul W. Ayers</p>
 <p>Since basis set manipulation is often slow, Quantum Chemistry packages in Python often interface to a lower-level lanaguage, such as C++ and Fortran, for these parts, resulting in a more difficult build process and limited distribution. The hope is that gbasis can fill in this gap without a significant difference in performance.</p>
 <!-- #endregion -->
 </section>
+<div class="toctree-wrapper compound">
+</div>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">

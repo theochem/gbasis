@@ -1,0 +1,1224 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>GBasis Tutorial - Integrals &#8212; Ayers Lab</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/Tutorial 2 - Integrals';</script>
+    <link rel="icon" href="../_static/favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Evaluations: Basis Functions and Electostatic potential" href="Evaluations_basis_and_potential.html" />
+    <link rel="prev" title="GBasis Tutorial - Basis Sets" href="Tutorial%201%20-%20Basis%20Sets.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Ayers Lab - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="Ayers Lab - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome to GBasis’s Documentation!
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Documentation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Tutorial%201%20-%20Basis%20Sets.html">Tutorial 1: Basis Sets</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Tutorial 2: Integrals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_basis_and_potential.html">Evaluations: Basis and Potential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_electron_density.html">Evaluations: Electron Density</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Evaluations_1rdm_properties.html">Evaluations: 1RDM Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JCP_paper.html">JCP Paper examples</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../_autosummary/gbasis.html">gbasis package</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/gbasis.evals.html">gbasis.evals package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/gbasis.integrals.html">gbasis.integrals package</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/theochem/gbasis/blob/master/website/tutorial/Tutorial 2 - Integrals.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onColab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="initThebeSBT()"
+  class="btn btn-sm btn-launch-thebe dropdown-item"
+  title="Launch Thebe"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-play"></i>
+  </span>
+<span class="btn__text-container">Live Code</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/theochem/gbasis/issues/new?title=Issue%20on%20page%20%2Ftutorial/Tutorial 2 - Integrals.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorial/Tutorial 2 - Integrals.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>GBasis Tutorial - Integrals</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-basis-set">Building Basis Set</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">1. One-Electron Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals">1.1. Overlap Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-overlap-integrals-in-mo-basis">Example: Overlap Integrals in MO Basis</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals-between-two-different-basis-sets">1.2. Overlap Integrals Between Two Different Basis Sets</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-project-mo-coefficients-from-one-basis-set-to-another">Example: Project MO Coefficients from One Basis Set to Another</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multipole-moment-integrals">1.3. Multipole Moment Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-compute-dipole-moment">Example: Compute Dipole Moment</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integrals-over-differential-operator">1.4. Integrals over Differential Operator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kinetic-energy-integrals">1.5. Kinetic Energy Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-integrals">1.6. Momentum Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#angular-momentum-integrals">1.7. Angular Momentum Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuclear-attraction-integrals">1.8. Nuclear Attraction Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#point-charge-integrals">1.9. Point Charge Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-computing-core-hamiltonian-matrix">Example: Computing Core Hamiltonian Matrix</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-repulsion-integrals">2. Two-Electron Repulsion Integrals</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="gbasis-tutorial-integrals">
+<h1>GBasis Tutorial - Integrals<a class="headerlink" href="#gbasis-tutorial-integrals" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="http://gbasis.qcdevs.org/intro.html">gbasis</a> supports computation of 1- and 2-electron integrals. See the using the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals"><code class="docutils literal notranslate"><span class="pre">gbasis.integrals</span></code></a> module for the complete list of integrals supported.</p>
+<p>This notebook provides examples for computing various integrals for the helium hydride ion (<span class="math notranslate nohighlight">\(\text{HeH}^{+}\)</span>) using the <code class="docutils literal notranslate"><span class="pre">6-31G</span></code> basis set, and <code class="docutils literal notranslate"><span class="pre">6-311G</span></code> when two basis sets are needed. When available reference values are included from the calculation’s output file for comparison.</p>
+<section id="building-basis-set">
+<h2>Building Basis Set<a class="headerlink" href="#building-basis-set" title="Link to this heading">#</a></h2>
+<p>Here, the basis set is built from a formatted checkpoint file (of a HF/6-31G calculation for the helium hydride ion) which is loaded using the <a class="reference external" href="https://iodata.readthedocs.io/en/latest/">IOData</a> package. For a detailed tutorial on building basis sets, see the <a class="reference internal" href="#"><span class="xref myst">Building Basis Set</span></a> tutorial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+
+<span class="c1"># load FCHK file and build basis set in atomic orbitals (AO) basis</span>
+<span class="c1"># Source:</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;HeHp.fchk&quot;</span><span class="p">)</span>
+<span class="n">ao_basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded: </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Basis: </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">obasis_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic numbers: </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Molecular charge: </span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">charge</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Atomic coordinates:</span><span class="se">\n</span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of contraction shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loaded: HeH+ ion experimental R
+Basis: 6-31g
+Atomic numbers: [1 2]
+Molecular charge: 1.0
+Atomic coordinates:
+[[ 3.12913779e-17  0.00000000e+00 -9.72579045e-01]
+ [ 3.10359322e-17  0.00000000e+00  4.86289523e-01]]
+Number of contraction shells: 4
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="one-electron-integrals">
+<h2>1. One-Electron Integrals<a class="headerlink" href="#one-electron-integrals" title="Link to this heading">#</a></h2>
+<section id="overlap-integrals">
+<h3>1.1. Overlap Integrals<a class="headerlink" href="#overlap-integrals" title="Link to this heading">#</a></h3>
+<p>Given a list of generalized contraction shells, the overlap matrix is computed by <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.overlap.overlap_integral"><code class="docutils literal notranslate"><span class="pre">overlap_integral</span></code></a> function. This result is the AO overlap integrals, unless the optional <code class="docutils literal notranslate"><span class="pre">transform</span></code> matrix is provided, which transforms the basis functions into a different basis set (e.g., from the atomic orbital basis to the molecular orbital basis) before computing the overlap integrals.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># From Gaussian16 Output File:
+# Overlap matrix (S) of atomic orbitals:
+#   1  0.100000D+01
+#   2  0.658292D+00  0.100000D+01
+#   3  0.300303D+00  0.334248D+00  0.100000D+01
+#   4  0.536094D+00  0.746564D+00  0.634148D+00  0.100000D+01
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap</span> <span class="kn">import</span> <span class="n">overlap_integral</span>
+
+<span class="c1"># compute overlap of atomic orbitals (AO)</span>
+<span class="n">int1e_overlap_ao</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlap matrix (S) of atomic orbitals:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_overlap_ao</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># check whether overlap matrix is identity matrix (i.e., atomic orbitals are orthonormal)</span>
+<span class="n">is_orthogonal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">int1e_overlap_ao</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">int1e_overlap_ao</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Are AOs orthogonal? </span><span class="si">{</span><span class="n">is_orthogonal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overlap matrix (S) of atomic orbitals:
+[[1.         0.65829197 0.30030322 0.53609401]
+ [0.65829197 1.         0.33424849 0.74656436]
+ [0.30030322 0.33424849 1.         0.63414774]
+ [0.53609401 0.74656436 0.63414774 1.        ]]
+
+Are AOs orthogonal? False
+</pre></div>
+</div>
+</div>
+</div>
+<section id="example-overlap-integrals-in-mo-basis">
+<h4>Example: Overlap Integrals in MO Basis<a class="headerlink" href="#example-overlap-integrals-in-mo-basis" title="Link to this heading">#</a></h4>
+<p>The transformation matrix from AO to MO basis is the transposed molecular orbital coefficient matrix. Providing this transformation as the <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument to the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.overlap.overlap_integral"><code class="docutils literal notranslate"><span class="pre">overlap_integral</span></code></a> function, results in the overlap integrals in the MO basis (i.e., transformed basis).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get MO coefficients from IOData object</span>
+<span class="n">mo_coeffs</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span>
+
+<span class="c1"># compute overlap of molecular orbitals (MO)</span>
+<span class="n">int1e_overlap_mo</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlap matrix (S) of molecular orbitals:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_overlap_mo</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># check whether overlap matrix is identity matrix (i.e., molecular orbitals are orthonormal)</span>
+<span class="n">is_orthogonal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">int1e_overlap_mo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">int1e_overlap_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Are MOs orthogonal? </span><span class="si">{</span><span class="n">is_orthogonal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Overlap matrix (S) of molecular orbitals:
+[[ 1.00000000e+00  2.38057226e-09 -1.60352739e-09  1.18604386e-09]
+ [ 2.38057211e-09  1.00000000e+00 -2.64133088e-09  1.11497621e-09]
+ [-1.60352734e-09 -2.64133095e-09  9.99999999e-01 -2.03584584e-09]
+ [ 1.18604397e-09  1.11497609e-09 -2.03584581e-09  1.00000000e+00]]
+
+Are MOs orthogonal? True
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="overlap-integrals-between-two-different-basis-sets">
+<h3>1.2. Overlap Integrals Between Two Different Basis Sets<a class="headerlink" href="#overlap-integrals-between-two-different-basis-sets" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals.overlap_asymm"><code class="docutils literal notranslate"><span class="pre">overlap_integral_asymmetric</span></code></a> function computes the overlap integrals between two different basis sets, each denoted by a list of generalized contraction shells. The following example showcase how to use this feature to compute the overlap integrals between the <code class="docutils literal notranslate"><span class="pre">6-31G</span></code> and <code class="docutils literal notranslate"><span class="pre">6-311G</span></code> basis sets:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
+<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap_asymm</span> <span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
+
+<span class="c1"># create an 6-311G basis set for the helium hydride ion in spherical coordinates</span>
+<span class="n">basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">&quot;HeH_6-311g.gbs&quot;</span><span class="p">)</span>
+<span class="n">ao_basis_new</span> <span class="o">=</span> <span class="n">make_contractions</span><span class="p">(</span><span class="n">basis_dict</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;He&quot;</span><span class="p">],</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of shells in 6-311G basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ao_basis_new</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of shells in 6-31G basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute overlap of two different basis sets</span>
+<span class="n">int1e_overlap_basis</span> <span class="o">=</span> <span class="n">overlap_integral_asymmetric</span><span class="p">(</span><span class="n">ao_basis_new</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of overlap matrix: </span><span class="si">{</span><span class="n">int1e_overlap_basis</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlap matrix (S) of atomic orbitals between old and new basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_overlap_basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number of shells in 6-311G basis: 6
+Number of shells in 6-31G basis: 4
+
+Shape of overlap matrix: (6, 4)
+Overlap matrix (S) of atomic orbitals between old and new basis:
+[[0.96216463 0.49156933 0.22083097 0.40624233]
+ [0.86422289 0.91312074 0.37721246 0.7169519 ]
+ [0.52114949 0.96290073 0.28035313 0.69362244]
+ [0.15725291 0.17901201 0.90190087 0.37318667]
+ [0.40988749 0.46228859 0.92666879 0.81268342]
+ [0.53245911 0.78732494 0.57381839 0.9927251 ]]
+</pre></div>
+</div>
+</div>
+</div>
+<section id="example-project-mo-coefficients-from-one-basis-set-to-another">
+<h4>Example: Project MO Coefficients from One Basis Set to Another<a class="headerlink" href="#example-project-mo-coefficients-from-one-basis-set-to-another" title="Link to this heading">#</a></h4>
+<p>Given a set of HF molecular orbitals (MO) <span class="math notranslate nohighlight">\(\psi_{i}\)</span> and basis functions (AOs) <span class="math notranslate nohighlight">\(\phi_{\mu}\)</span>, they are related by the MO coefficient matrix <span class="math notranslate nohighlight">\(C_{\mu i}\)</span> by:</p>
+<div class="math notranslate nohighlight">
+\[\psi_{i} = \sum_{\mu} C_{\mu i} \phi_{\mu}\]</div>
+<p>where <span class="math notranslate nohighlight">\(C_{\mu i}\)</span> can be seen as the transformation matrix from AOs to MOs. These MO coefficients <span class="math notranslate nohighlight">\(\{C_{\mu i}\}\)</span> are the elements of the overlap matrix between the MO basis <span class="math notranslate nohighlight">\(\{\psi\}\)</span> and the AO basis <span class="math notranslate nohighlight">\(\{\phi\}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[C_{\mu i} = \int  \phi_{\mu} \psi_{i} d\tau\]</div>
+<p>Given a different set of basis functions <span class="math notranslate nohighlight">\(\chi_{\nu}\)</span>, the MO coefficients in the new basis can be expressed (projected) as:</p>
+<div class="math notranslate nohighlight">
+\[C_{\mu i}^{\text{basis 2}} = \int \psi_{i} \phi_{\mu}^{\text{basis 2}} d\tau\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_{\mu}^{\text{basis 2}}\)</span> are the basis functions in the new basis set. This can be seen as the overlap matrix between the (transformed) MO basis <span class="math notranslate nohighlight">\(\{\psi\}\)</span> and the new basis set <span class="math notranslate nohighlight">\(\{\phi^{\text{basis 2}}\}\)</span>.</p>
+<p>In the following example we will use the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals.overlap_asymm"><code class="docutils literal notranslate"><span class="pre">overlap_integral_asymmetric</span></code></a> method to project the MO coefficient matrix of <span class="math notranslate nohighlight">\(\text{HeH}^{+}\)</span> from the <code class="docutils literal notranslate"><span class="pre">6-31G</span></code> basis set into the <code class="docutils literal notranslate"><span class="pre">6-311G</span></code> basis set. For this we will use the MO coefficient matrix from the <code class="docutils literal notranslate"><span class="pre">6-31G</span></code> basis set as the transformation matrix of this basis set into the MO basis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># project MO coefficients to new basis</span>
+<span class="n">mo_coeffs_new</span> <span class="o">=</span> <span class="n">overlap_integral_asymmetric</span><span class="p">(</span><span class="n">ao_basis_new</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">transform_two</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of MO coefficients: </span><span class="si">{</span><span class="n">mo_coeffs_new</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># (nmo, nbasis)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MO coefficients projected in the 6-311G basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mo_coeffs_new</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlap matrix (S) of projected MOs (in the 6-311G basis):&quot;</span><span class="p">)</span>
+<span class="n">int1e_ovlp_mo_new</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">ao_basis_new</span><span class="p">,</span> <span class="n">mo_coeffs_new</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_ovlp_mo_new</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">is_orthogonal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">int1e_ovlp_mo_new</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">int1e_ovlp_mo_new</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="c1"># check if overlap is I</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Projected MOs are orthogonal: </span><span class="si">{</span><span class="n">is_orthogonal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of MO coefficients: (6, 4)
+MO coefficients projected in the 6-311G basis:
+[[ 0.4989715   0.52890845  0.61951534  0.2238233 ]
+ [ 0.68472982  0.6781266   0.00950138  0.16895291]
+ [ 0.54023005  0.64980473 -0.47179196  0.11732507]
+ [ 0.71577532 -0.26824295  0.01070959 -0.55172329]
+ [ 0.94958022 -0.21177303 -0.05871831 -0.03034387]
+ [ 0.8306327   0.14545388 -0.31205797  0.43115268]]
+
+Overlap matrix (S) of projected MOs (in the 6-311G basis):
+[[10.47059879  3.68860314 -0.96422155  1.2625921 ]
+ [ 3.68860314  2.62984775 -0.24828188  1.1829303 ]
+ [-0.96422155 -0.24828188  0.57472127 -0.13061703]
+ [ 1.2625921   1.1829303  -0.13061703  0.69815484]]
+
+Projected MOs are orthogonal: False
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># project MO coefficients to new basis</span>
+<span class="n">mo_coeffs_new</span> <span class="o">=</span> <span class="n">overlap_integral_asymmetric</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">transform_one</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of MO coefficients: </span><span class="si">{</span><span class="n">mo_coeffs_new</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># (nmo, nbasis)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MO coefficients projected in the 6-311G basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mo_coeffs_new</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Overlap matrix (S) of projected MOs (in the 6-311G basis):&quot;</span><span class="p">)</span>
+<span class="n">int1e_ovlp_mo_new</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mo_coeffs_new</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_ovlp_mo_new</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">is_orthogonal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">int1e_ovlp_mo_new</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">int1e_ovlp_mo_new</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>  <span class="c1"># check if overlap is I</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Projected coefficients are orthogonal: </span><span class="si">{</span><span class="n">is_orthogonal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of MO coefficients: (4, 4)
+MO coefficients projected in the 6-311G basis:
+[[ 0.60290436  0.62310221  0.90324527  0.87056796]
+ [ 0.60630882  0.68647993 -0.2732068   0.07995231]
+ [ 0.47343187 -0.3462874  -0.01841626 -0.26148619]
+ [ 0.21156138  0.14343635 -0.3304041   0.40907705]]
+
+Overlap matrix (S) of projected MOs (in the 6-311G basis):
+[[2.29991242 1.53077726 0.3317762  1.46786878]
+ [1.53077726 1.4545096  0.39176399 1.27224729]
+ [0.3317762  0.39176399 0.49099634 0.46349437]
+ [1.46786878 1.27224729 0.46349437 1.23594644]]
+
+Projected coefficients are orthogonal: False
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="multipole-moment-integrals">
+<h3>1.3. Multipole Moment Integrals<a class="headerlink" href="#multipole-moment-integrals" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.moment.moment_integral">moment_integral</a> function computes the multipole moment integrals for two pairs of basis functions in AO basis, unless <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument is provided. The center and order of multipole moments are specified by the <code class="docutils literal notranslate"><span class="pre">moment_center</span></code> and <code class="docutils literal notranslate"><span class="pre">moment_orders</span></code> arguments.</p>
+<section id="example-compute-dipole-moment">
+<h4>Example: Compute Dipole Moment<a class="headerlink" href="#example-compute-dipole-moment" title="Link to this heading">#</a></h4>
+<p>The following example uses the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.moment.moment_integral">moment_integral</a> to compute molecular dipole moment. Given the atomic coordinates <span class="math notranslate nohighlight">\(\{\mathbf{R}\}\)</span> for <span class="math notranslate nohighlight">\(N\)</span> atoms, and the center of mass by <span class="math notranslate nohighlight">\(\mathbf{R_c}\)</span>, the molecular dipole moment is given by:</p>
+<div class="math notranslate nohighlight">
+\[
+\vec{\mu} = \sum_{i=1}^{N} Z_i (\mathbf{R}_i - \mathbf{R}_c) -
+        \int (\mathbf{r} - \mathbf{R}_c) \rho(\mathbf{r}) d\mathbf{r}
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.moment</span> <span class="kn">import</span> <span class="n">moment_integral</span>
+
+<span class="c1"># extract the 1-RDM from the IOData object</span>
+<span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s1">&#39;scf&#39;</span><span class="p">]</span>
+
+<span class="c1"># set the orders of the moment integrals</span>
+<span class="n">p_ord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="c1"># compute center of nuclear charge of the molecule</span>
+<span class="n">mol_cm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span> <span class="o">@</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">)</span>
+
+<span class="c1"># calculate the nuclear moment of the molecule</span>
+<span class="n">mol_np_111</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span> <span class="o">@</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span> <span class="o">-</span> <span class="n">mol_cm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Nuclear Dipole Moment of the molecule: &#39;</span><span class="si">:</span><span class="s2">&gt;40s</span><span class="si">}{</span><span class="n">mol_np_111</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute moment integrals of a set of molecular orbitals</span>
+<span class="n">int1e_mol_ep_111</span> <span class="o">=</span> <span class="n">moment_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol_cm</span><span class="p">,</span> <span class="n">p_ord</span><span class="p">)</span>
+
+<span class="c1"># compute electric moments of the molecule \mu_k = sum rdm_ij * p_ijk</span>
+<span class="n">mol_ep_111</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ijk-&gt;k&quot;</span><span class="p">,</span> <span class="n">rdm</span><span class="p">,</span> <span class="n">int1e_mol_ep_111</span><span class="p">)</span>
+
+<span class="c1"># gbasis electric moment of the molecule</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Electric Dipole Moment of the molecule: &#39;</span><span class="si">:</span><span class="s2">&gt;40s</span><span class="si">}{</span><span class="n">mol_ep_111</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># calculate the total moment of the molecule</span>
+<span class="n">mol_tp_111</span> <span class="o">=</span> <span class="n">mol_np_111</span> <span class="o">-</span> <span class="n">mol_ep_111</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Dipole Moment of the molecule: &#39;</span><span class="si">:</span><span class="s2">&gt;40s</span><span class="si">}{</span><span class="n">mol_tp_111</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Reference value: &#39;</span><span class="si">:</span><span class="s2">&gt;40s</span><span class="si">}{</span><span class="n">mol</span><span class="o">.</span><span class="n">moments</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">)]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Nuclear Dipole Moment of the molecule: [-1.23259516e-32  0.00000000e+00  0.00000000e+00]
+Electric Dipole Moment of the molecule: [-9.81527656e-20  0.00000000e+00  5.60557428e-01]
+         Dipole Moment of the molecule: [ 9.81527656e-20  0.00000000e+00 -5.60557428e-01]
+                       Reference value: [ 7.13633937e-18  0.00000000e+00 -5.60557427e-01]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="integrals-over-differential-operator">
+<h3>1.4. Integrals over Differential Operator<a class="headerlink" href="#integrals-over-differential-operator" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals"><code class="docutils literal notranslate"><span class="pre">gbasis.integrals</span></code></a> module supports the computation of integrals over arbitrary differential operators.</p>
+<div class="math notranslate nohighlight">
+\[\int\phi_\mu(\mathbf{r}) \frac{\partial^{i+j+k}}{\partial x^{i} \partial y^{j} \partial z^{k}} \phi_\nu(\mathbf{r})d \mathbf{r}\]</div>
+<p>Examples of these integrals are the kinetic energy integrals, and the momentum integrals.</p>
+</section>
+<section id="kinetic-energy-integrals">
+<h3>1.5. Kinetic Energy Integrals<a class="headerlink" href="#kinetic-energy-integrals" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.kinetic_energy.kinetic_energy_integral"><code class="docutils literal notranslate"><span class="pre">kinetic_energy_integral</span></code></a> computes the kinetic energy integrals between pairs of basis functions in AO basis, unless <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument is provided.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># From Gaussian16 Output File:
+# Kinetic energy integral matrix in AO basis:
+#   1  0.139568D+01
+#   2  0.259735D+00  0.241917D+00
+#   3  0.105657D+00  0.115030D+00  0.292565D+01
+#   4  0.236735D+00  0.199566D+00  0.467227D+00  0.446946D+00
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.kinetic_energy</span> <span class="kn">import</span> <span class="n">kinetic_energy_integral</span>
+
+<span class="c1"># compute kinetic energy integrals in AO basis</span>
+<span class="n">int1e_kin_ao</span> <span class="o">=</span> <span class="n">kinetic_energy_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of kinetic energy integral matrix in AO basis: </span><span class="si">{</span><span class="n">int1e_kin_ao</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Kinetic energy integral matrix in AO basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_kin_ao</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute kinetic energy integrals in MO basis</span>
+<span class="n">int1e_kin_mo</span> <span class="o">=</span> <span class="n">kinetic_energy_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of Kinetic Energy Integral matrix in MO basis: </span><span class="si">{</span><span class="n">int1e_kin_mo</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Kinetic energy integral matrix in MO basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_kin_mo</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of kinetic energy integral matrix in AO basis: (4, 4)
+
+Kinetic energy integral matrix in AO basis:
+[[1.39567838 0.259735   0.10565728 0.23673475]
+ [0.259735   0.24191664 0.1150301  0.19956551]
+ [0.10565728 0.1150301  2.92565486 0.46722685]
+ [0.23673475 0.19956551 0.46722685 0.446946  ]]
+
+Shape of Kinetic Energy Integral matrix in MO basis: (4, 4)
+
+Kinetic energy integral matrix in MO basis:
+[[ 1.46668936 -0.49993274  0.43649829 -1.52368766]
+ [-0.49993274  0.7947671   0.50202239  0.83209984]
+ [ 0.43649829  0.50202239  1.73387267  0.16632084]
+ [-1.52368766  0.83209984  0.16632084  3.39093136]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="momentum-integrals">
+<h3>1.6. Momentum Integrals<a class="headerlink" href="#momentum-integrals" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.momentum.momentum_integral"><code class="docutils literal notranslate"><span class="pre">momentum_integral</span></code></a> function computes the momentum integrals between pairs of basis functions in AO basis, unless <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument is provided. This matrix corresponds to the unitary transformation from the <strong>position space</strong> to the <strong>momentum space</strong> representation. In the example below, the momentum vector for each AO and MO orbital is computed.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.momentum</span> <span class="kn">import</span> <span class="n">momentum_integral</span>
+
+<span class="c1"># compute momentum integrals in AO basis</span>
+<span class="n">int1_p_ao</span> <span class="o">=</span> <span class="n">momentum_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of Momentum Integral matrix in AO basis: </span><span class="si">{</span><span class="n">int1_p_ao</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Momentum for shell # </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">int1_p_ao</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute momentum integrals in MO basis</span>
+<span class="n">int1_p_mo</span> <span class="o">=</span> <span class="n">momentum_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
+<span class="nb">round</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Shape of Momentum Integral matrix in MO basis: </span><span class="si">{</span><span class="n">int1_p_mo</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Momentum for shell # </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">int1_p_mo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of Momentum Integral matrix in AO basis: (4, 4, 3)
+Momentum for shell # 1: [0.+0.0e+00j 0.+0.0e+00j 0.+1.6e-16j]
+Momentum for shell # 2: [0.+0.00e+00j 0.+0.00e+00j 0.-3.58e-17j]
+Momentum for shell # 3: [0.+0.00e+00j 0.+0.00e+00j 0.+1.65e-16j]
+Momentum for shell # 4: [0.+0.00e+00j 0.+0.00e+00j 0.+3.31e-17j]
+
+Shape of Momentum Integral matrix in MO basis: (4, 4, 3)
+Momentum for shell # 1: [0.+0.0e+00j 0.+0.0e+00j 0.+1.6e-16j]
+Momentum for shell # 2: [0.+0.00e+00j 0.+0.00e+00j 0.-3.58e-17j]
+Momentum for shell # 3: [0.+0.00e+00j 0.+0.00e+00j 0.+1.65e-16j]
+Momentum for shell # 4: [0.+0.00e+00j 0.+0.00e+00j 0.+3.31e-17j]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="angular-momentum-integrals">
+<h3>1.7. Angular Momentum Integrals<a class="headerlink" href="#angular-momentum-integrals" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.angular_momentum.angular_momentum_integral"><code class="docutils literal notranslate"><span class="pre">angular_momentum_integral</span></code></a> function computes the angular momentum integral matrix for the AO and MO basis functions. The example below shows how to compute the angular momentum vector and norm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.angular_momentum</span> <span class="kn">import</span> <span class="n">angular_momentum_integral</span>
+
+<span class="c1"># compute angular momentum integrals in AO basis</span>
+<span class="n">int1_l_ao</span> <span class="o">=</span> <span class="n">angular_momentum_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|</span><span class="si">{:^14}</span><span class="s2">|</span><span class="si">{:^9}</span><span class="s2">|</span><span class="si">{:^36}</span><span class="s2">|&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;Contraction #&quot;</span><span class="p">,</span> <span class="s2">&quot;Shell L&quot;</span><span class="p">,</span> <span class="s2">&quot;Angular Momentum (x,y,z)&quot;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ao_b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">^14</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">ao_b</span><span class="o">.</span><span class="n">angmom</span><span class="si">:</span><span class="s2">^9</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">int1_l_ao</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">precision</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="c1"># compute angular momentum integrals in MO basis</span>
+<span class="n">int1_l_mo</span> <span class="o">=</span> <span class="n">angular_momentum_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;|</span><span class="si">{:^14}</span><span class="s2">|</span><span class="si">{:^36}</span><span class="s2">|&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;MO #&quot;</span><span class="p">,</span> <span class="s2">&quot;Angular Momentum (x,y,z)&quot;</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;|</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">^14</span><span class="si">}</span><span class="s2">| </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="n">int1_l_mo</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">precision</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|Contraction # | Shell L |      Angular Momentum (x,y,z)      |
+|      1       |    0    | [0.+0.e+00j 0.-5.e-33j 0.+0.e+00j] |
+|      2       |    0    | [0.+0.e+00j 0.+1.e-33j 0.+0.e+00j] |
+|      3       |    0    | [0.+0.e+00j 0.-5.e-33j 0.+0.e+00j] |
+|      4       |    0    | [0.+0.e+00j 0.-1.e-33j 0.+0.e+00j] |
+
+|     MO #     |      Angular Momentum (x,y,z)      |
+|      1       | [0.+0.e+00j 0.+5.e-18j 0.+0.e+00j] |
+|      2       | [0.+0.e+00j 0.-2.e-17j 0.+0.e+00j] |
+|      3       | [0.+0.e+00j 0.-2.e-19j 0.+0.e+00j] |
+|      4       | [0.+0.e+00j 0.-1.e-17j 0.+0.e+00j] |
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="nuclear-attraction-integrals">
+<h3>1.8. Nuclear Attraction Integrals<a class="headerlink" href="#nuclear-attraction-integrals" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=nuclear_electron_attraction#module-gbasis.integrals.nuclear_electron_attraction"><code class="docutils literal notranslate"><span class="pre">nuclear_electron_attraction</span></code></a> function computes the nuclear attraction integrals to a set of nuclei of <span class="math notranslate nohighlight">\(\{Z_A\}\)</span> located at <span class="math notranslate nohighlight">\(\{\mathbf{R}_{A}\}\)</span> for pairs of AO and MO basis functions.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># From Gaussian16 Output File:
+# Reference values:
+#             1             2             3             4
+#   1  0.300634D+01
+#   2  0.159287D+01  0.168097D+01
+#   3  0.118941D+01  0.124482D+01  0.549025D+01
+#   4  0.149451D+01  0.159886D+01  0.244432D+01  0.235135D+01
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.nuclear_electron_attraction</span> <span class="kn">import</span> <span class="n">nuclear_electron_attraction_integral</span>
+
+<span class="c1"># compute nuclear-electron attraction integral in AO basis</span>
+<span class="n">int1e_nuc_ao</span> <span class="o">=</span> <span class="n">nuclear_electron_attraction_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-Electron Attraction Integral of AOs (6-31G):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_nuc_ao</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute nuclear-electron attraction integral in MO basis</span>
+<span class="n">int1e_nuc_mo</span> <span class="o">=</span> <span class="n">nuclear_electron_attraction_integral</span><span class="p">(</span>
+    <span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-Electron Attraction Integral of MOs (6-31G):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_nuc_mo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Nuclear-Electron Attraction Integral of AOs (6-31G):
+[[-3.00634227 -1.59287383 -1.18941322 -1.49450521]
+ [-1.59287383 -1.68097365 -1.24481507 -1.59886117]
+ [-1.18941322 -1.24481507 -5.49024852 -2.44432492]
+ [-1.49450521 -1.59886117 -2.44432492 -2.35135264]]
+
+Nuclear-Electron Attraction Integral of MOs (6-31G):
+[[-4.11469726  0.64655654 -0.48797471  1.78211817]
+ [ 0.64655654 -2.01806794 -0.72857371 -1.09274852]
+ [-0.48797471 -0.72857371 -2.34608045 -0.12666144]
+ [ 1.78211817 -1.09274852 -0.12666144 -3.74760623]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="point-charge-integrals">
+<h3>1.9. Point Charge Integrals<a class="headerlink" href="#point-charge-integrals" title="Link to this heading">#</a></h3>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.point_charge.point_charge_integral"><code class="docutils literal notranslate"><span class="pre">point_charge_integral</span></code></a> function computes the point charge integral matrix for pairs of AO and MO basis functions. The represents the projection of the interaction between a (number) point charge(s) and an electron density onto a basis set.</p>
+<p>In the example below, the nuclear attraction integrals (in the previous example) is reproduced by setting the point charge position and charge to the coordinates of the nucleus and their corresponding atomic number.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.point_charge</span> <span class="kn">import</span> <span class="n">point_charge_integral</span>
+
+<span class="c1"># compute integral for interaction between these point charges and the set of atomic orbitals</span>
+<span class="n">int1e_pc_ao</span> <span class="o">=</span> <span class="n">point_charge_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of Point Charge Integral matrix in AO basis: </span><span class="si">{</span><span class="n">int1e_pc_ao</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NOrbital, NOrbital, NAtom =&gt; Need to sum over NAtom&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-Electron Attraction Integral of AOs (6-31G):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_pc_ao</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute integral for interaction between these point charges and the set of molecular orbitals</span>
+<span class="n">int1e_pc_mo</span> <span class="o">=</span> <span class="n">point_charge_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-Electron Attraction Integral of MOs (6-31G):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_pc_mo</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of Point Charge Integral matrix in AO basis: (4, 4, 2)
+NOrbital, NOrbital, NAtom =&gt; Need to sum over NAtom
+
+Nuclear-Electron Attraction Integral of AOs (6-31G):
+[[-3.00634227 -1.59287383 -1.18941322 -1.49450521]
+ [-1.59287383 -1.68097365 -1.24481507 -1.59886117]
+ [-1.18941322 -1.24481507 -5.49024852 -2.44432492]
+ [-1.49450521 -1.59886117 -2.44432492 -2.35135264]]
+
+Nuclear-Electron Attraction Integral of MOs (6-31G):
+[[-4.11469726  0.64655654 -0.48797471  1.78211817]
+ [ 0.64655654 -2.01806794 -0.72857371 -1.09274852]
+ [-0.48797471 -0.72857371 -2.34608045 -0.12666144]
+ [ 1.78211817 -1.09274852 -0.12666144 -3.74760623]]
+</pre></div>
+</div>
+</div>
+</div>
+<section id="example-computing-core-hamiltonian-matrix">
+<h4>Example: Computing Core Hamiltonian Matrix<a class="headerlink" href="#example-computing-core-hamiltonian-matrix" title="Link to this heading">#</a></h4>
+<p>The core Hamiltonian matrix is defined as:</p>
+<div class="math notranslate nohighlight">
+\[
+H_{\mu\nu} = T_{\mu\nu} + V_{\mu\nu}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(T_{\mu\nu}\)</span> are the kinetic energy integral and <span class="math notranslate nohighlight">\(V_{\mu\nu}\)</span> are the nuclear attraction integral for basis functions <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\nu\)</span>. In the example below we will compute the core Hamiltonian matrix for the AO basis functions using the previously computed kinetic energy and nuclear attraction integral matrices.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># From Gaussian16 Output File (line 277 of HeHp.log):
+# Core Hamiltonian matrix (H_core) in AO basis:
+#   1 -0.161066D+01
+#   2 -0.133314D+01 -0.143906D+01
+#   3 -0.108376D+01 -0.112978D+01 -0.256459D+01
+#   4 -0.125777D+01 -0.139930D+01 -0.197710D+01 -0.190441D+01
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">int1e_core</span> <span class="o">=</span> <span class="n">int1e_nuc_ao</span> <span class="o">+</span> <span class="n">int1e_kin_ao</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Core Hamiltonian matrix (H_core) in AO basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">int1e_core</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Core Hamiltonian matrix (H_core) in AO basis:
+[[-1.6106639  -1.33313883 -1.08375595 -1.25777046]
+ [-1.33313883 -1.43905701 -1.12978497 -1.39929566]
+ [-1.08375595 -1.12978497 -2.56459366 -1.97709807]
+ [-1.25777046 -1.39929566 -1.97709807 -1.90440664]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="two-electron-repulsion-integrals">
+<h2>2. Two-Electron Repulsion Integrals<a class="headerlink" href="#two-electron-repulsion-integrals" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=electron#gbasis.integrals.electron_repulsion.electron_repulsion_integral"><code class="docutils literal notranslate"><span class="pre">electron_repulsion</span></code></a> function compute the electron-electron repulsion integrals in AO or MO basis for a pir of basis functions. In the example below, these integrals will be used to compute the Coulomb J energy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.electron_repulsion</span> <span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
+
+<span class="c1"># compute electron-electron repulsion integral in AO basis</span>
+<span class="n">int2e_ao</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">&quot;chemist&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of Electron-Electron Repulsion Integrals: </span><span class="si">{</span><span class="n">int2e_ao</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (#AO, #AO, #AO, #AO)&quot;</span><span class="p">)</span>
+
+<span class="c1"># compute electron-electron repulsion integral in MO basis</span>
+<span class="n">int2e_mo</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">&quot;chemist&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of Electron-Electron Repulsion Integrals: </span><span class="si">{</span><span class="n">int2e_mo</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> (#MO, #MO, #MO, #MO)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Shape of Electron-Electron Repulsion Integrals: (4, 4, 4, 4) (#AO, #AO, #AO, #AO)
+Shape of Electron-Electron Repulsion Integrals: (4, 4, 4, 4) (#MO, #MO, #MO, #MO)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "theochem/gbasis",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorial"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Tutorial%201%20-%20Basis%20Sets.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">GBasis Tutorial - Basis Sets</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Evaluations_basis_and_potential.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Evaluations: Basis Functions and Electostatic potential</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-basis-set">Building Basis Set</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-electron-integrals">1. One-Electron Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals">1.1. Overlap Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-overlap-integrals-in-mo-basis">Example: Overlap Integrals in MO Basis</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlap-integrals-between-two-different-basis-sets">1.2. Overlap Integrals Between Two Different Basis Sets</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-project-mo-coefficients-from-one-basis-set-to-another">Example: Project MO Coefficients from One Basis Set to Another</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multipole-moment-integrals">1.3. Multipole Moment Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-compute-dipole-moment">Example: Compute Dipole Moment</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integrals-over-differential-operator">1.4. Integrals over Differential Operator</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kinetic-energy-integrals">1.5. Kinetic Energy Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#momentum-integrals">1.6. Momentum Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#angular-momentum-integrals">1.7. Angular Momentum Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nuclear-attraction-integrals">1.8. Nuclear Attraction Integrals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#point-charge-integrals">1.9. Point Charge Integrals</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-computing-core-hamiltonian-matrix">Example: Computing Core Hamiltonian Matrix</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-electron-repulsion-integrals">2. Two-Electron Repulsion Integrals</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By The QC-Dev Community with the support of Digital Research Alliance of Canada and The Jupyter Book Community
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
