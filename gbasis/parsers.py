@@ -1,4 +1,5 @@
 """Parsers for reading basis set files."""
+
 import re
 
 from gbasis.contractions import GeneralizedContractionShell
@@ -165,7 +166,7 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
-def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap=False):
+def make_contractions(basis_dict, atoms, coords, coord_types):
     """Return the contractions that correspond to the given atoms for the given basis.
 
     Parameters
@@ -183,10 +184,6 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
         If list/tuple, then each entry must be a "cartesian" (or "c") or "spherical" (or "p") to specify the
         coordinate type of each `GeneralizedContractionShell` instance.
         Default value is "spherical".
-    ovr : bool
-        Flag for performing overlap screening between contractions.
-    tol : float
-        Tolerance used in overlap screening.
 
     Returns
     -------
@@ -211,10 +208,7 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
         raise TypeError(
             "Coordinates must be provided as a two-dimensional `numpy` array with three columns."
         )
-    if not isinstance(tol, float):
-        raise TypeError("Tolerance must be provided as a float.")
-    if not isinstance(overlap, bool):
-        raise TypeError("Overlap must be provided as True or False.")
+
     if len(atoms) != coords.shape[0]:
         raise ValueError("Number of atoms must be equal to the number of rows in the coordinates.")
 
@@ -248,8 +242,6 @@ def make_contractions(basis_dict, atoms, coords, coord_types, tol=1e-20, overlap
                     exps,
                     coord_types.pop(0),
                     icenter=icenter,
-                    tol=tol,
-                    ovr_screen=overlap,
                 )
             )
     return tuple(basis)
