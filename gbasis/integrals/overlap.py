@@ -153,7 +153,7 @@ def overlap_integral(basis, transform=None, tol_screen=None):
         number of basis functions in the basis set.
 
     """
-    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    coord_type = [shell.coord_type for shell in basis]
     kwargs = {"tol_screen": tol_screen}
     if transform is not None:
         return Overlap(basis).construct_array_lincomb(transform, coord_type, **kwargs)
