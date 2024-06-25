@@ -33,6 +33,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install pytest pytest-md pytest-emoji pytest-cov
+          pip install numpy==1.22 scipy==1.11.1 attrs==21.3.0
 
       - name: Install development version
         run: |
