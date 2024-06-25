@@ -1,4 +1,5 @@
 """Data class for contractions of Gaussian-type primitives."""
+
 from numbers import Integral
 import numpy as np
 from gbasis.utils import factorial2
@@ -114,9 +115,7 @@ class GeneralizedContractionShell:
 
     """
 
-    def __init__(
-        self, angmom, coord, coeffs, exps, coord_type, icenter=None, tol=1e-15, ovr_screen=False
-    ):
+    def __init__(self, angmom, coord, coeffs, exps, coord_type, icenter=None):
         r"""Initialize a GeneralizedContractionShell instance.
 
         Parameters
@@ -141,17 +140,11 @@ class GeneralizedContractionShell:
             "spherical" or "p".
         icenter : np.int64 or None (optional)
             Index for the atomic center for the contraction
-        tol : float
-            Tolerance used in overlap screening.
-        ovr_screen : boolean
-            Flag used for activating overlap screening.
         """
         self.angmom = angmom
         self.coord = coord
         self.coeffs = coeffs
         self.exps = exps
-        self.ovr_tol = tol
-        self.ovr_screen = ovr_screen
         self.assign_norm_cont()
         self.coord_type = coord_type
         self.icenter = icenter
@@ -363,70 +356,6 @@ class GeneralizedContractionShell:
             self._coeffs = coeffs[:, np.newaxis]
         else:
             self._coeffs = coeffs
-
-    @property
-    def ovr_screen(self):
-        """Flag for performing overlap screening.
-
-        Returns
-        -------
-        ovr_screen : bool
-            Flag for using overlap screening.
-
-        """
-        return self._ovr_screen
-
-    @ovr_screen.setter
-    def ovr_screen(self, ovr_screen):
-        """Flag for performing overlap screening.
-
-        Parameters
-        ----------
-        ovr_screen : bool
-            Flag for using overlap screening.
-
-        Raises
-        ------
-        TypeError
-            If `ovr_screen` is not a `bool`.
-
-        """
-        if not isinstance(ovr_screen, bool):
-            raise TypeError("The overlap screening flag must be True or False.")
-
-        self._ovr_screen = ovr_screen
-
-    @property
-    def ovr_tol(self):
-        """Tolerance used in overlap screening.
-
-        Returns
-        -------
-        ovr_stol : float
-            Tolerance for using overlap screening
-
-        """
-        return self._ovr_tol
-
-    @ovr_tol.setter
-    def ovr_tol(self, ovr_tol):
-        """Tolerance used in overlap screening.
-
-        Parameters
-        ----------
-        ovr_stol : float
-            Tolerance for using overlap screening.
-
-        Raises
-        ------
-        TypeError
-            If `ovr_tol` is not a `float`.
-
-        """
-        if not isinstance(ovr_tol, float):
-            raise TypeError("The overlap screening tolerance must be float.")
-
-        self._ovr_tol = ovr_tol
 
     @property
     def angmom_components_cart(self):

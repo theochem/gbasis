@@ -1,4 +1,5 @@
 """Module for interfacing to other quantum chemistry packages."""
+
 from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
@@ -85,17 +86,13 @@ CONVENTIONS_LIBCINT = {
 }
 
 
-def from_iodata(mol, tol=1e-20, overlap=False):
+def from_iodata(mol):
     """Return basis set stored within the `IOData` instance in `iodata`.
 
     Parameters
     ----------
     mol : iodata.iodata.IOData
         `IOData` instance from `iodata` module.
-    tol : float
-        Tolerance used in overlap screening.
-    overlap : bool
-        Flag for performing overlap screening between contractions.
 
     Returns
     -------
@@ -233,10 +230,6 @@ def from_iodata(mol, tol=1e-20, overlap=False):
             "Only L2 normalization scheme is supported in `gbasis`. Given `IOData` instance uses "
             "primitive normalization scheme, {}".format(molbasis.primitive_normalization)
         )
-    if not isinstance(tol, float):
-        raise TypeError("Tolerance must be provided as a float.")
-    if not isinstance(overlap, bool):
-        raise TypeError("Overlap must be provided as True or False.")
 
     basis = []
     for shell in molbasis.shells:
@@ -256,8 +249,6 @@ def from_iodata(mol, tol=1e-20, overlap=False):
                 shell.exponents,
                 shell.kinds[0],
                 icenter=shell.icenter,
-                tol=tol,
-                ovr_screen=overlap,
             )
         )
 
