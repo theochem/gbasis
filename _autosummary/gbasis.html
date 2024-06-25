@@ -472,8 +472,6 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.num_cart"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.num_cart</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.num_seg_cont"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.num_seg_cont</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.num_sph"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.num_sph</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.ovr_screen"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.ovr_screen</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.ovr_tol"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.ovr_tol</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -614,7 +612,7 @@ document.write(`
 <li class="toctree-l4"><a class="reference internal" href="gbasis.integrals.html#gbasis.integrals.overlap.Overlap.construct_array_contraction"><code class="docutils literal notranslate"><span class="pre">Overlap.construct_array_contraction()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="gbasis.integrals.html#gbasis.integrals.overlap.is_overlap_included"><code class="docutils literal notranslate"><span class="pre">is_overlap_included()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gbasis.integrals.html#gbasis.integrals.overlap.is_integral_screened"><code class="docutils literal notranslate"><span class="pre">is_integral_screened()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="gbasis.integrals.html#gbasis.integrals.overlap.overlap_integral"><code class="docutils literal notranslate"><span class="pre">overlap_integral()</span></code></a></li>
 </ul>
 </li>
@@ -1929,7 +1927,7 @@ respect to the swapping of the first two axes.</p>
 <p>Data class for contractions of Gaussian-type primitives.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ovr_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.contractions.</span></span><span class="sig-name descname"><span class="pre">GeneralizedContractionShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angmom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data class for generalized contractions.</p>
 <p>Generalized contractions are defined to be a set of contractions that have the same angular
@@ -2244,32 +2242,6 @@ momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell +
 </section>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.ovr_screen">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ovr_screen</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.ovr_screen" title="Link to this definition">#</a></dt>
-<dd><p>Flag for performing overlap screening.</p>
-<section id="id132">
-<h4>Returns<a class="headerlink" href="#id132" title="Link to this heading">#</a></h4>
-<dl class="simple">
-<dt>ovr_screen<span class="classifier">bool</span></dt><dd><p>Flag for using overlap screening.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="gbasis.contractions.GeneralizedContractionShell.ovr_tol">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ovr_tol</span></span><a class="headerlink" href="#gbasis.contractions.GeneralizedContractionShell.ovr_tol" title="Link to this definition">#</a></dt>
-<dd><p>Tolerance used in overlap screening.</p>
-<section id="id133">
-<h4>Returns<a class="headerlink" href="#id133" title="Link to this heading">#</a></h4>
-<dl class="simple">
-<dt>ovr_stol<span class="classifier">float</span></dt><dd><p>Tolerance for using overlap screening</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
 </section>
 </dd></dl>
 
@@ -2279,10 +2251,10 @@ momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell +
 <p>Parsers for reading basis set files.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.parsers.make_contractions">
-<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">make_contractions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.make_contractions" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">make_contractions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.make_contractions" title="Link to this definition">#</a></dt>
 <dd><p>Return the contractions that correspond to the given atoms for the given basis.</p>
-<section id="id134">
-<h3>Parameters<a class="headerlink" href="#id134" title="Link to this heading">#</a></h3>
+<section id="id132">
+<h3>Parameters<a class="headerlink" href="#id132" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Output of the parsers from gbasis.parsers.</p>
 </dd>
@@ -2297,22 +2269,18 @@ If list/tuple, then each entry must be a “cartesian” (or “c”) or “sphe
 coordinate type of each <cite>GeneralizedContractionShell</cite> instance.
 Default value is “spherical”.</p>
 </dd>
-<dt>ovr<span class="classifier">bool</span></dt><dd><p>Flag for performing overlap screening between contractions.</p>
-</dd>
-<dt>tol<span class="classifier">float</span></dt><dd><p>Tolerance used in overlap screening.</p>
-</dd>
 </dl>
 </section>
-<section id="id135">
-<h3>Returns<a class="headerlink" href="#id135" title="Link to this heading">#</a></h3>
+<section id="id133">
+<h3>Returns<a class="headerlink" href="#id133" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">tuple of GeneralizedContractionShell</span></dt><dd><p>Contractions for each atom.
 Contractions are ordered in the same order as in the values of <cite>basis_dict</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id136">
-<h3>Raises<a class="headerlink" href="#id136" title="Link to this heading">#</a></h3>
+<section id="id134">
+<h3>Raises<a class="headerlink" href="#id134" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>atoms</cite> is not a list or tuple of strings.
 If <cite>coords</cite> is not a two-dimensional <cite>numpy</cite> array with 3 columns.
@@ -2329,23 +2297,23 @@ If <cite>ovr</cite> is not boolean</p>
 <dt class="sig sig-object py" id="gbasis.parsers.parse_gbs">
 <span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_gbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gbs_basis_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.parse_gbs" title="Link to this definition">#</a></dt>
 <dd><p>Parse Gaussian94 basis set file.</p>
-<section id="id137">
-<h3>Parameters<a class="headerlink" href="#id137" title="Link to this heading">#</a></h3>
+<section id="id135">
+<h3>Parameters<a class="headerlink" href="#id135" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>gbs_basis_file<span class="classifier">str</span></dt><dd><p>Path to the Gaussian94 basis set file.</p>
 </dd>
 </dl>
 </section>
-<section id="id138">
-<h3>Returns<a class="headerlink" href="#id138" title="Link to this heading">#</a></h3>
+<section id="id136">
+<h3>Returns<a class="headerlink" href="#id136" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Dictionary of the element to the list of angular momentum, exponents, and contraction
 coefficients associated with each contraction at the given atom.</p>
 </dd>
 </dl>
 </section>
-<section id="id139">
-<h3>Notes<a class="headerlink" href="#id139" title="Link to this heading">#</a></h3>
+<section id="id137">
+<h3>Notes<a class="headerlink" href="#id137" title="Link to this heading">#</a></h3>
 <p>Angular momentum symbol is hard-coded into this function. This means that if the selected basis
 set has an angular momentum greater than “k”, an error will be raised.</p>
 <p>Since Gaussian94 basis format does not explicitly state which contractions are generalized, we
@@ -2359,23 +2327,23 @@ associated with more than one angular momentum, they are treated to be segmented
 <dt class="sig sig-object py" id="gbasis.parsers.parse_nwchem">
 <span class="sig-prename descclassname"><span class="pre">gbasis.parsers.</span></span><span class="sig-name descname"><span class="pre">parse_nwchem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nwchem_basis_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.parsers.parse_nwchem" title="Link to this definition">#</a></dt>
 <dd><p>Parse nwchem basis set file.</p>
-<section id="id140">
-<h3>Parameters<a class="headerlink" href="#id140" title="Link to this heading">#</a></h3>
+<section id="id138">
+<h3>Parameters<a class="headerlink" href="#id138" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>nwchem_basis_file<span class="classifier">str</span></dt><dd><p>Path to the nwchem basis set file.</p>
 </dd>
 </dl>
 </section>
-<section id="id141">
-<h3>Returns<a class="headerlink" href="#id141" title="Link to this heading">#</a></h3>
+<section id="id139">
+<h3>Returns<a class="headerlink" href="#id139" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis_dict<span class="classifier">dict of str to list of 3-tuple of (int, np.ndarray, np.ndarray)</span></dt><dd><p>Dictionary of the element to the list of angular momentum, exponents, and contraction
 coefficients associated with each contraction at the given atom.</p>
 </dd>
 </dl>
 </section>
-<section id="id142">
-<h3>Notes<a class="headerlink" href="#id142" title="Link to this heading">#</a></h3>
+<section id="id140">
+<h3>Notes<a class="headerlink" href="#id140" title="Link to this heading">#</a></h3>
 <p>Angular momentum symbol is hard-coded into this function. This means that if the selected basis
 set has an angular momentum greater than “k”, an error will be raised.</p>
 </section>
@@ -2393,8 +2361,8 @@ set has an angular momentum greater than “k”, an error will be raised.</p>
 \[C^{angmom,mag,i,j,k} = -1^{i + k - \text{shift_factor}} * (1/4)^i * {angmom \choose i}
 * {(angmom - i) \choose (|mag| + i)} * {i \choose j} * {|mag| \choose 2 * k},\]</div>
 <p>where <span class="math notranslate nohighlight">\(shift_factor = 0\)</span> if <span class="math notranslate nohighlight">\(mag &gt;= 0\)</span> and <span class="math notranslate nohighlight">\(shift_factor = 1/2\)</span> if <span class="math notranslate nohighlight">\(mag &lt; 0\)</span>    .</p>
-<section id="id143">
-<h3>Parameters<a class="headerlink" href="#id143" title="Link to this heading">#</a></h3>
+<section id="id141">
+<h3>Parameters<a class="headerlink" href="#id141" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the Gaussian primitive(s).</p>
 </dd>
@@ -2406,15 +2374,15 @@ set has an angular momentum greater than “k”, an error will be raised.</p>
 </dd>
 </dl>
 </section>
-<section id="id144">
-<h3>Returns<a class="headerlink" href="#id144" title="Link to this heading">#</a></h3>
+<section id="id142">
+<h3>Returns<a class="headerlink" href="#id142" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>coeff<span class="classifier">float</span></dt><dd><p>The real solid harmonic expansion coefficient.</p>
 </dd>
 </dl>
 </section>
-<section id="id145">
-<h3>Raises<a class="headerlink" href="#id145" title="Link to this heading">#</a></h3>
+<section id="id143">
+<h3>Raises<a class="headerlink" href="#id143" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>mag</cite> is not an integer.
@@ -2424,7 +2392,7 @@ If <cite>k</cite> is not a float.</p>
 </dd>
 <dt>ValueError</dt><dd><p>If <cite>angmom</cite> is negative.
 If <cite>mag</cite> has a greater magnitude than angmom.
-If <a href="#id146"><span class="problematic" id="id147">`</span></a>k is not either an integer (mag &gt;= 0) or a half integer (mag &lt; 0).</p>
+If <a href="#id144"><span class="problematic" id="id145">`</span></a>k is not either an integer (mag &gt;= 0) or a half integer (mag &lt; 0).</p>
 </dd>
 </dl>
 </section>
@@ -2436,8 +2404,8 @@ If <a href="#id146"><span class="problematic" id="id147">`</span></a>k is not ei
 <dd><p>Generate the transformation matrix for a given shell.</p>
 <p>The Cartesian contractions are ordered as given in <cite>cartesian_order</cite>. The spherical contractions
 are ordered as given in <cite>spherical_order</cite>.</p>
-<section id="id148">
-<h3>Parameters<a class="headerlink" href="#id148" title="Link to this heading">#</a></h3>
+<section id="id146">
+<h3>Parameters<a class="headerlink" href="#id146" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum <span class="math notranslate nohighlight">\(\ell\)</span> of the basis function(s).</p>
 </dd>
@@ -2454,15 +2422,15 @@ GeneralizedContractionShell.angmom_conventions_sph for details.</p>
 </dd>
 </dl>
 </section>
-<section id="id149">
-<h3>Returns<a class="headerlink" href="#id149" title="Link to this heading">#</a></h3>
+<section id="id147">
+<h3>Returns<a class="headerlink" href="#id147" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>transform<span class="classifier">np.ndarray((angmom + 1)*(angmom + 2) / 2, 2 * angmom + 1)</span></dt><dd><p>The transformation matrix from Cartesian primitives to spherical primitives.</p>
 </dd>
 </dl>
 </section>
-<section id="id150">
-<h3>Raises<a class="headerlink" href="#id150" title="Link to this heading">#</a></h3>
+<section id="id148">
+<h3>Raises<a class="headerlink" href="#id148" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>cartesian_order</cite> is not an array.
@@ -2487,8 +2455,8 @@ If <cite>spherical_order</cite> does not contain exactly <span class="math notra
 <div class="math notranslate nohighlight">
 \[N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! / 2^{\delta_0^m}},\]</div>
 <p>where :math: <cite>del{0, m}</cite> is the Kronecker delta of 0 and m.</p>
-<section id="id151">
-<h3>Parameters<a class="headerlink" href="#id151" title="Link to this heading">#</a></h3>
+<section id="id149">
+<h3>Parameters<a class="headerlink" href="#id149" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the basis function(s).</p>
 </dd>
@@ -2496,15 +2464,15 @@ If <cite>spherical_order</cite> does not contain exactly <span class="math notra
 </dd>
 </dl>
 </section>
-<section id="id152">
-<h3>Returns<a class="headerlink" href="#id152" title="Link to this heading">#</a></h3>
+<section id="id150">
+<h3>Returns<a class="headerlink" href="#id150" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>norm<span class="classifier">float</span></dt><dd><p>The normalization constant of the real solid harmonic.</p>
 </dd>
 </dl>
 </section>
-<section id="id153">
-<h3>Raises<a class="headerlink" href="#id153" title="Link to this heading">#</a></h3>
+<section id="id151">
+<h3>Raises<a class="headerlink" href="#id151" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>mag</cite> is not an integer.</p>
@@ -2525,8 +2493,8 @@ If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
 \sum_k={shift_factor}^{[(|{mag}|-1)/2] + 0.5} C^{angmom,m_i,j,k} x^a_x y^a_y z^a_z,\]</div>
 <p>where <span class="math notranslate nohighlight">\(a_x = 2t + |mag| - 2(u + v)\)</span>, <span class="math notranslate nohighlight">\(a_y = 2(u + v)\)</span>,
 and <span class="math notranslate nohighlight">\(a_z = angmom - 2t - |mag|\)</span>.</p>
-<section id="id154">
-<h3>Parameters<a class="headerlink" href="#id154" title="Link to this heading">#</a></h3>
+<section id="id152">
+<h3>Parameters<a class="headerlink" href="#id152" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the basis function(s).</p>
 </dd>
@@ -2534,15 +2502,15 @@ and <span class="math notranslate nohighlight">\(a_z = angmom - 2t - |mag|\)</sp
 </dd>
 </dl>
 </section>
-<section id="id155">
-<h3>Returns<a class="headerlink" href="#id155" title="Link to this heading">#</a></h3>
+<section id="id153">
+<h3>Returns<a class="headerlink" href="#id153" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>harmonic<span class="classifier">dict</span></dt><dd><p>The Cartesian components of a Gaussian primitive, linked to the associated coefficient.</p>
 </dd>
 </dl>
 </section>
-<section id="id156">
-<h3>Raises<a class="headerlink" href="#id156" title="Link to this heading">#</a></h3>
+<section id="id154">
+<h3>Raises<a class="headerlink" href="#id154" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>mag</cite> is not an integer.</p>
@@ -2562,22 +2530,22 @@ If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
 \[\begin{split}\mathrm{shift\_factor} = \begin{cases}
 0 &amp; \mathrm{mag} \geq 0\\
 \frac{1}{2} &amp; \mathrm{mag} &lt; 0 \end{cases}\end{split}\]</div>
-<section id="id157">
-<h3>Parameters<a class="headerlink" href="#id157" title="Link to this heading">#</a></h3>
+<section id="id155">
+<h3>Parameters<a class="headerlink" href="#id155" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>mag<span class="classifier">int</span></dt><dd><p>The magnetic quantum number of the basis function.</p>
 </dd>
 </dl>
 </section>
-<section id="id158">
-<h3>Returns<a class="headerlink" href="#id158" title="Link to this heading">#</a></h3>
+<section id="id156">
+<h3>Returns<a class="headerlink" href="#id156" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>shift_factor<span class="classifier">float</span></dt><dd><p>The shift factor for calculating solid harmonics.</p>
 </dd>
 </dl>
 </section>
-<section id="id159">
-<h3>Raises<a class="headerlink" href="#id159" title="Link to this heading">#</a></h3>
+<section id="id157">
+<h3>Raises<a class="headerlink" href="#id157" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>mag</cite> is not an integer.</p>
 </dd>
@@ -2595,8 +2563,8 @@ If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
 <dd><p>Wrap scipy.special.factorial2 to return 1.0 when the input is not positive.</p>
 <p>This is a temporary workaround to address issue #129, while we wait for Scipy’s update.
 To learn more, see <a class="github reference external" href="https://github.com/scipy/scipy/issues/18409">scipy/scipy#18409</a>.</p>
-<section id="id160">
-<h3>Parameters<a class="headerlink" href="#id160" title="Link to this heading">#</a></h3>
+<section id="id158">
+<h3>Parameters<a class="headerlink" href="#id158" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>n<span class="classifier">int or np.ndarray</span></dt><dd><p>Values to calculate n!! for. If n &lt;= 0, the return value is 1.</p>
 </dd>
@@ -2610,29 +2578,25 @@ To learn more, see <a class="github reference external" href="https://github.com
 <p>Module for interfacing to other quantum chemistry packages.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.wrappers.from_iodata">
-<span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_iodata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_iodata" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_iodata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_iodata" title="Link to this definition">#</a></dt>
 <dd><p>Return basis set stored within the <cite>IOData</cite> instance in <cite>iodata</cite>.</p>
-<section id="id161">
-<h3>Parameters<a class="headerlink" href="#id161" title="Link to this heading">#</a></h3>
+<section id="id159">
+<h3>Parameters<a class="headerlink" href="#id159" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>mol<span class="classifier">iodata.iodata.IOData</span></dt><dd><p><cite>IOData</cite> instance from <cite>iodata</cite> module.</p>
 </dd>
-<dt>tol<span class="classifier">float</span></dt><dd><p>Tolerance used in overlap screening.</p>
-</dd>
-<dt>overlap<span class="classifier">bool</span></dt><dd><p>Flag for performing overlap screening between contractions.</p>
-</dd>
 </dl>
 </section>
-<section id="id162">
-<h3>Returns<a class="headerlink" href="#id162" title="Link to this heading">#</a></h3>
+<section id="id160">
+<h3>Returns<a class="headerlink" href="#id160" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Basis set object used within the <cite>gbasis</cite> module.
 <cite>GeneralizedContractionShell</cite> corresponds to the <cite>Shell</cite> object within <cite>iodata.basis</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id163">
-<h3>Raises<a class="headerlink" href="#id163" title="Link to this heading">#</a></h3>
+<section id="id161">
+<h3>Raises<a class="headerlink" href="#id161" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ValueError</dt><dd><p>If <cite>mol</cite> is not an <cite>iodata.iodata.IOData</cite> instance.
 If the primitive normalization scheme of the shells in <cite>IOData</cite> instance is not “L2”.</p>
@@ -2641,8 +2605,8 @@ If the primitive normalization scheme of the shells in <cite>IOData</cite> insta
 </dd>
 </dl>
 </section>
-<section id="id164">
-<h3>Notes<a class="headerlink" href="#id164" title="Link to this heading">#</a></h3>
+<section id="id162">
+<h3>Notes<a class="headerlink" href="#id162" title="Link to this heading">#</a></h3>
 <p>The version of the module <cite>iodata</cite> must be greater than 0.1.7.</p>
 </section>
 </dd></dl>
@@ -2651,30 +2615,30 @@ If the primitive normalization scheme of the shells in <cite>IOData</cite> insta
 <dt class="sig sig-object py" id="gbasis.wrappers.from_pyscf">
 <span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_pyscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_pyscf" title="Link to this definition">#</a></dt>
 <dd><p>Return basis set stored within the <cite>Mole</cite> instance in <cite>pyscf</cite>.</p>
-<section id="id165">
-<h3>Parameters<a class="headerlink" href="#id165" title="Link to this heading">#</a></h3>
+<section id="id163">
+<h3>Parameters<a class="headerlink" href="#id163" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>mol<span class="classifier">pyscf.gto.mole.Mole</span></dt><dd><p><cite>Mole</cite> object in <cite>pyscf</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id166">
-<h3>Returns<a class="headerlink" href="#id166" title="Link to this heading">#</a></h3>
+<section id="id164">
+<h3>Returns<a class="headerlink" href="#id164" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Contractions for each atom.
 Contractions are ordered by the atom first, then the contractions as ordered in <cite>pyscf</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id167">
-<h3>Raises<a class="headerlink" href="#id167" title="Link to this heading">#</a></h3>
+<section id="id165">
+<h3>Raises<a class="headerlink" href="#id165" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ValueError</dt><dd><p>If <cite>mol</cite> is not a <cite>pyscf.gto.mole.Mole</cite> instance.</p>
 </dd>
 </dl>
 </section>
-<section id="id168">
-<h3>Notes<a class="headerlink" href="#id168" title="Link to this heading">#</a></h3>
+<section id="id166">
+<h3>Notes<a class="headerlink" href="#id166" title="Link to this heading">#</a></h3>
 <p>This function touches the internal components of <cite>pyscf</cite>, which may or may not be documented.
 This function will break as soon as the internal components change. If so, please raise an issue
 at <a class="github reference external" href="https://github.com/theochem/gbasis">theochem/gbasis</a>. It is supported for, at least, <cite>pyscf</cite> version 1.6.1.</p>
@@ -2825,8 +2789,6 @@ at <a class="github reference external" href="https://github.com/theochem/gbasis
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.num_cart"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.num_cart</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.num_seg_cont"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.num_seg_cont</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.num_sph"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.num_sph</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.ovr_screen"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.ovr_screen</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.contractions.GeneralizedContractionShell.ovr_tol"><code class="docutils literal notranslate"><span class="pre">GeneralizedContractionShell.ovr_tol</span></code></a></li>
 </ul>
 </li>
 </ul>

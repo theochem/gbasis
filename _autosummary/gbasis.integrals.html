@@ -446,7 +446,7 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.Overlap.construct_array_contraction"><code class="docutils literal notranslate"><span class="pre">Overlap.construct_array_contraction()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.is_overlap_included"><code class="docutils literal notranslate"><span class="pre">is_overlap_included()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.is_integral_screened"><code class="docutils literal notranslate"><span class="pre">is_integral_screened()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.overlap_integral"><code class="docutils literal notranslate"><span class="pre">overlap_integral()</span></code></a></li>
 </ul>
 </li>
@@ -1356,7 +1356,7 @@ given coordinate system.
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="gbasis.integrals.overlap.Overlap.construct_array_contraction">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.Overlap.construct_array_contraction" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.Overlap.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return the evaluations of the given contractions at the given coordinates.</p>
 <section id="id47">
 <h4>Parameters<a class="headerlink" href="#id47" title="Link to this heading">#</a></h4>
@@ -1366,6 +1366,11 @@ the overlap.</p>
 </dd>
 <dt>contractions_two<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the second index of
 the overlap.</p>
+</dd>
+<dt>tol_screen<span class="classifier">None or float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. The <cite>tol_screen</cite> is combined with the
+minimum contraction exponents to compute a cutoff which is compared to the distance between
+the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
+screened). If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
@@ -1402,8 +1407,8 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="gbasis.integrals.overlap.is_overlap_included">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">is_overlap_included</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.is_overlap_included" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="gbasis.integrals.overlap.is_integral_screened">
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">is_integral_screened</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.is_integral_screened" title="Link to this definition">#</a></dt>
 <dd><p>Return True or False in response to whether overlap integral is required.</p>
 <div class="math notranslate nohighlight">
 \[d_{A_s;B_t} &gt; \sqrt{-\frac{\alpha_{ min(\alpha_{s,A})} +
@@ -1412,8 +1417,7 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 <p>where <span class="math notranslate nohighlight">\(d\)</span> is the cut-off distance at which shells do not interact with each other.
 <span class="math notranslate nohighlight">\(A\)</span> and <cite>B</cite> are the atoms each contraction are respectively centered on.
 :math: <cite>alpha</cite> is the gaussian exponent
-:math: <cite>s</cite> and <cite>t</cite> index the primitive gaussians in shells centered
-on atom <cite>A</cite> and <cite>B</cite> respectively.</p>
+:math: <cite>s</cite> and <cite>t</cite> index the primitive Gaussian shells centered on atom <cite>A</cite> and <cite>B</cite> respectively.</p>
 <section id="id50">
 <h3>Parameters<a class="headerlink" href="#id50" title="Link to this heading">#</a></h3>
 <dl class="simple">
@@ -1422,6 +1426,11 @@ the overlap.</p>
 </dd>
 <dt>contractions_two<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the second index of
 the overlap.</p>
+</dd>
+<dt>tol_screen<span class="classifier">bool or float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. The <cite>tol_screen</cite> is combined with the
+minimum contraction exponents to compute a cutoff which is compared to the distance between
+the contraction centers to decide whether the overlap integral should be set to zero.
+If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
@@ -1436,18 +1445,23 @@ the overlap.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.integrals.overlap.overlap_integral">
-<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">overlap_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.overlap_integral" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">overlap_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.overlap_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return overlap integral of the given basis set.</p>
 <section id="id52">
 <h3>Parameters<a class="headerlink" href="#id52" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
 </dd>
-<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont)</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+<dt>transform<span class="classifier">np.ndarray(K_orbs, K_cont), optional</span></dt><dd><p>Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
 combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
+</dd>
+<dt>tol_screen<span class="classifier">None or float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. The <cite>tol_screen</cite> is combined with the
+minimum contraction exponents to compute a cutoff which is compared to the distance between
+the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
+screened). If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
@@ -1526,7 +1540,7 @@ the spherical contractions associated with <cite>contractions_two</cite>.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="gbasis.integrals.overlap_asymm.OverlapAsymmetric.construct_array_contraction">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.OverlapAsymmetric.construct_array_contraction" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.OverlapAsymmetric.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return the evaluations of the given contractions at the given coordinates.</p>
 <section id="id56">
 <h4>Parameters<a class="headerlink" href="#id56" title="Link to this heading">#</a></h4>
@@ -1536,6 +1550,11 @@ the overlap.</p>
 </dd>
 <dt>contractions_two<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the second index of
 the overlap.</p>
+</dd>
+<dt>tol_screen<span class="classifier">None or float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. The <cite>tol_screen</cite> is combined with the
+minimum contraction exponents to compute a cutoff which is compared to the distance between
+the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
+screened). If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
@@ -1925,7 +1944,7 @@ evaluted at the given points.
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.Overlap.construct_array_contraction"><code class="docutils literal notranslate"><span class="pre">Overlap.construct_array_contraction()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.is_overlap_included"><code class="docutils literal notranslate"><span class="pre">is_overlap_included()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.is_integral_screened"><code class="docutils literal notranslate"><span class="pre">is_integral_screened()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.integrals.overlap.overlap_integral"><code class="docutils literal notranslate"><span class="pre">overlap_integral()</span></code></a></li>
 </ul>
 </li>
