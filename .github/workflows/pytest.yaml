@@ -37,7 +37,7 @@ jobs:
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
-          pip install --user git+https://github.com/theochem/iodata.git@master
+          pip install --user git+https://github.com/theochem/iodata.git@main
           pip install -e .[dev,iodata]
 
       - name: Install Libcint library
