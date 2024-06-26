@@ -41,7 +41,7 @@ pip install --user -e .[dev,pyscf]
 To install `gbasis` with `iodata`,
 ```bash
 pip install --user cython
-pip install --user git+https://github.com/theochem/iodata.git@master
+pip install --user git+https://github.com/theochem/iodata.git@main
 git clone https://github.com/theochem/gbasis.git
 cd gbasis
 pip install --user -e .[dev,iodata]
