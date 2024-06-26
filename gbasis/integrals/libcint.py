@@ -742,7 +742,7 @@ class CBasis:
 
             # Cast `out` to complex if `is_complex` is set
             if is_complex:
-                out = out.reshape(*out.shape[:-2], -1).view(np.complex_)
+                out = out.reshape(*out.shape[:-2], -1).view(np.complex128)
 
             # Remove useless axis in `out` if no `components` was given
             if no_comp:
@@ -948,7 +948,7 @@ class CBasis:
 
             # Cast `out` to complex if `is_complex` is set
             if is_complex:
-                out = out.reshape(*out.shape[:-2], out.shape[-2] * 2).view(np.complex_)
+                out = out.reshape(*out.shape[:-2], out.shape[-2] * 2).view(np.complex128)
 
             # Remove useless axis in `out` if no `components` was given
             if no_comp:
