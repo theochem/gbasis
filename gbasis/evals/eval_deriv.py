@@ -147,6 +147,17 @@ def evaluate_deriv_basis(
 ):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
+    The derivative (to arbitrary orders) of a basis function is given by:
+
+    .. math::
+    
+        \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
+        \phi (\mathbf{r})
+    
+    where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z, 
+    :math:`\phi` is the basis function (a generalized contraction shell), and :math:`\mathbf{r}_n` are
+    the coordinate of the points in space where the basis function is evaluated.
+
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell

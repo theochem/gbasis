@@ -65,6 +65,13 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
 def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
     r"""Return the density of the given basis set at the given points.
 
+    .. math::
+
+        \rho(\mathbf{r}) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}) \phi_j(\mathbf{r})
+
+    where :math:`\mathbf{r}` is the point at which the density is evaluated, :math:`\gamma_{ij}`
+    is the one-electron density matrix, and :math:`\phi_i` is the :math:`i`-th basis function.
+
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orbs, K_orbs)
@@ -116,23 +123,24 @@ def evaluate_deriv_reduced_density_matrix(
 
     .. math::
 
-        \left.
+        &\left.
         \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
         \frac{\partial^{q_x + q_y + q_z}}{\partial x_2^{q_x} \partial y_2^{q_y} \partial z_2^{q_z}}
         \gamma(\mathbf{r}_1, \mathbf{r}_2)
-        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}_n} =
+        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}}\\\\
+        &=
         \sum_{ij} \gamma_{ij}
         \left.
         \frac{\partial^{p_x + p_y + p_z}}{\partial x_1^{p_x} \partial y_1^{p_y} \partial z_1^{p_z}}
         \phi_i(\mathbf{r}_1)
-        \right|_{\mathbf{r}_1 = \mathbf{r}_n}
+        \right|_{\mathbf{r}_1 = \mathbf{r}}
         \left.
         \frac{\partial^{q_x + q_y + q_z}}{\partial x_2^{q_x} \partial y_2^{q_y} \partial z_2^{q_z}}
         \phi_j(\mathbf{r}_2)
-        \right|_{\mathbf{r}_2 = \mathbf{r}_n}
+        \right|_{\mathbf{r}_2 = \mathbf{r}}
 
     where :math:`\mathbf{r}_1` is the first point, :math:`\mathbf{r}_2` is the second point, and
-    :math:`\mathbf{r}_n` is the point at which the derivative is evaluated.
+    :math:`\mathbf{r}` is the point at which the derivative is evaluated.
 
     Parameters
     ----------
@@ -201,6 +209,24 @@ def evaluate_deriv_density(
     deriv_type="general",
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
+
+    .. math::
+
+            &\frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
+            \rho(\mathbf{r})\\\\
+            &=
+            \sum_{l_x=0}^{L_x} \sum_{l_y=0}^{L_y} \sum_{l_z=0}^{L_z}
+            \binom{L_x}{l_x} \binom{L_y}{l_y} \binom{L_z}{l_z}
+            \sum_{ij} \gamma_{ij}
+            \frac{\partial^{l_x + l_y + l_z} \rho(\mathbf{r})}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
+            \frac{
+                \partial^{L_x + L_y + L_z - l_x - l_y - l_z} \rho(\mathbf{r})
+            }{
+                \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
+            }
+
+    where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the :math:`x, y, \text{and} z` components,
+    respectively.
 
     Parameters
     ----------
@@ -286,6 +312,16 @@ def evaluate_density_gradient(
 ):
     r"""Return the gradient of the density evaluated at the given points.
 
+    .. math::
+
+            \nabla \rho(\mathbf{r})
+            =
+            \begin{bmatrix}
+            \frac{\partial}{\partial x} \rho(\mathbf{r})\\\\
+            \frac{\partial}{\partial y} \rho(\mathbf{r})\\\\
+            \frac{\partial}{\partial z} \rho(\mathbf{r})
+            \end{bmatrix}      
+
     Parameters
     ----------
     one_density_matrix : np.ndarray(K_orb, K_orb)
@@ -352,6 +388,14 @@ def evaluate_density_laplacian(
     deriv_type="general",
 ):
     r"""Return the Laplacian of the density evaluated at the given points.
+
+    .. math::
+
+            \nabla^2 \rho(\mathbf{r})
+            =
+            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r})
+            + \frac{\partial^2}{\partial y^2} \rho(\mathbf{r})
+            + \frac{\partial^2}{\partial z^2} \rho(\mathbf{r})
 
     Parameters
     ----------
@@ -443,6 +487,22 @@ def evaluate_density_hessian(
     deriv_type="general",
 ):
     r"""Return the Hessian of the density evaluated at the given points.
+
+    .. math::
+        
+        H[\rho(\mathbf{r})]
+        =
+        \begin{bmatrix}
+            \frac{\partial^2}{\partial x^2} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial x \partial y} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial x \partial z} \rho(\mathbf{r})\\\\
+            \frac{\partial^2}{\partial y \partial x} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial y^2} \rho(\mathbf{r})&
+            \frac{\partial^2}{\partial y \partial z} \rho(\mathbf{r})\\\\
+            \frac{\partial^2}{\partial z \partial x} \rho(\mathbf{r}) &
+            \frac{\partial^2}{\partial z \partial y} \rho(\mathbf{r})&
+            \frac{\partial^2}{\partial z^2} \rho(\mathbf{r})\\
+        \end{bmatrix}
 
     Parameters
     ----------
@@ -566,15 +626,17 @@ def evaluate_posdef_kinetic_energy_density(
 
     .. math::
 
-        t_+ (\mathbf{r}_n)
+        \begin{split}
+        t_+ (\mathbf{r})
         &= \frac{1}{2} \left.
-          \nabla_{\mathbf{r}} \cdot \nabla_{\mathbf{r}'} \gamma(\mathbf{r}, \mathbf{r}')
-        \right|_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+          \nabla_{\mathbf{r}_1} \cdot \nabla_{\mathbf{r}_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+        \right|_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}}\\
         &= \frac{1}{2} \left(
-          \frac{\partial^2}{\partial x \partial x'} \gamma(\mathbf{r}, \mathbf{r}')
-          + \frac{\partial^2}{\partial y \partial y'} \gamma(\mathbf{r}, \mathbf{r}')
-          + \frac{\partial^2}{\partial z \partial z'} \gamma(\mathbf{r}, \mathbf{r}')
-        \right)_{\mathbf{r} = \mathbf{r}' = \mathbf{r}_n}\\
+          \frac{\partial^2}{\partial x_1 \partial x_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+          + \frac{\partial^2}{\partial y_1 \partial y_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+          + \frac{\partial^2}{\partial z_1 \partial z_2} \gamma(\mathbf{r}_1, \mathbf{r}_2)
+        \right)_{\mathbf{r}_1 = \mathbf{r}_2 = \mathbf{r}}\\
+        \end{split}
 
     Parameters
     ----------
@@ -641,7 +703,7 @@ def evaluate_general_kinetic_energy_density(
 
     .. math::
 
-        t_{\alpha} (\mathbf{r}_n) = t_+(\mathbf{r}_n) + \alpha \nabla^2 \rho(\mathbf{r}_n)
+        t_{\alpha} (\mathbf{r}) = t_+(\mathbf{r}) + \alpha \nabla^2 \rho(\mathbf{r})
 
     where :math:`t_+` is the positive definite kinetic energy density.
 

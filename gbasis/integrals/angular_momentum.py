@@ -159,6 +159,20 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
 def angular_momentum_integral(basis, transform=None):
     r"""Return the integral over :math:`hat{L}` of the given basis set.
 
+    .. math::
+
+            \left< \hat{\mathbf{L}} \right>
+            &= \int \phi_a(\mathbf{r}) \left( -i \mathbf{r} \times \nabla \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+            &= -i
+            \begin{bmatrix}
+            \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
+            - \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}
+            - \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}
+            - \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \end{bmatrix}
+
     Parameters
     ----------
     basis : list/tuple of GeneralizedContractionShell

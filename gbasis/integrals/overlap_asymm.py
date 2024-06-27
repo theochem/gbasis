@@ -71,6 +71,12 @@ def overlap_integral_asymmetric(
 ):
     """Return overlap integrals between two basis sets.
 
+    .. math::
+
+        \int \phi_a (\mathbf{r}) \psi_b (\mathbf{r}) d\mathbf{r}
+
+    where :math:`\phi_a` and :math:`\psi_b` are the basis functions in `basis_one` and `basis_two`.
+
     Parameters
     ----------
     basis_one : list/tuple of GeneralizedContractionShell
