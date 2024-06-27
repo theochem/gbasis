@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
-  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -142,6 +142,8 @@
         <div class="sidebar-primary-item">
 
   
+    
+  
 
 <a class="navbar-brand logo" href="../intro.html">
   
@@ -163,7 +165,7 @@
 
  <script>
  document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -356,10 +358,10 @@
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
@@ -367,7 +369,7 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
@@ -1936,21 +1938,21 @@ momentum, center, and the same set of exponents. To avoid confusion with the ter
 contractions.</p>
 <p>A Cartesian <strong>primitive</strong>, <span class="math notranslate nohighlight">\(g_i\)</span>, is</p>
 <div class="math notranslate nohighlight">
-\[g_i (\mathbf{r} | \vec{a}, \vec{R}_A) =
-N_g (\alpha, \vec{a})
+\[g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a}) =
+N_g (\alpha, \mathbf{a})
 (x - X_A)^{a_x} (y - Y_A)^{a_y} (z - Z_A)^{a_z}
-\exp{-\alpha_i |\vec{r} - \vec{R}_A|^2}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, az)\)</span> is the angular momentum components in Cartesian
-coordinates, <span class="math notranslate nohighlight">\(\vec{R}_A\)</span> is the coordinate of the center <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(N_g\)</span> is the
+\exp{-\alpha_i |\mathbf{r} - \mathbf{R}_A|^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{a} = (a_x, a_y, az)\)</span> is the angular momentum components in Cartesian
+coordinates, <span class="math notranslate nohighlight">\(\mathbf{R}_A\)</span> is the coordinate of the center <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(N_g\)</span> is the
 normalization constant of the primitive, and <span class="math notranslate nohighlight">\(\alpha_i\)</span> is the exponent of the primitive.</p>
 <p>A <strong>Cartesian contraction</strong> is a linear combination of Cartesian primitives:</p>
 <div class="math notranslate nohighlight">
-\[\phi_{\vec{a}, \vec{R}_A} (\mathbf{r}) =
-N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_i g_i (\vec{r} | \vec{a}, \vec{R}_A)\]</div>
+\[\phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) =
+N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_i g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})\]</div>
 <p>where <span class="math notranslate nohighlight">\(d_i\)</span> is the contraction coefficient of the primitive and <span class="math notranslate nohighlight">\(N_{\phi}\)</span> is the
 normalization constant of the contraction.</p>
 <p>Note that the Cartesian contraction depends on the angular momentum components in the Cartesian
-coordinate, <span class="math notranslate nohighlight">\(\vec{a}\)</span>. At a given angular momentum, <span class="math notranslate nohighlight">\(\ell\)</span>, we have
+coordinate, <span class="math notranslate nohighlight">\(\mathbf{a}\)</span>. At a given angular momentum, <span class="math notranslate nohighlight">\(\ell\)</span>, we have
 <span class="math notranslate nohighlight">\(\frac{(\ell + 1) (\ell + 2)}{2}\)</span> different components. We can linearly transform these
 contractions to obtain the <span class="math notranslate nohighlight">\(2 \ell + 1\)</span> <strong>spherical contractions</strong>. Since we can convert
 the contractions in one coordinate system to another, we use the term <strong>contraction</strong> to
@@ -1970,8 +1972,8 @@ the same angular momentum, center, and the same set of exponents. Now, the contr
 coefficients depend on the specific segmented contraction shell, <span class="math notranslate nohighlight">\(j\)</span>, to which the
 contraction belongs:</p>
 <div class="math notranslate nohighlight">
-\[\phi_{j, \vec{a}, \vec{R}_A} (\mathbf{r}) =
-N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)\]</div>
+\[\phi_j (\mathbf{r} | \mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) =
+N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_{ij} g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})\]</div>
 <section id="id116">
 <h3>Attributes<a class="headerlink" href="#id116" title="Link to this heading">#</a></h3>
 <dl>
@@ -1979,10 +1981,10 @@ N_{\phi} (\vec{a}, \vec{R}_A) \sum_i d_{ij} g_i (\vec{r} | \vec{a}, \vec{R}_A)\]
 </dd>
 <dt>angmom<span class="classifier">int</span></dt><dd><p>Angular momentum of the contractions.</p>
 <div class="math notranslate nohighlight">
-\[\ell = \sum_i (\vec{a})_i = a_x + a_y + a_z\]</div>
+\[\ell = \sum_i (\mathbf{a})_i = a_x + a_y + a_z\]</div>
 </dd>
 <dt>angmom_components_cart<span class="classifier">np.ndarray(L, 3)</span></dt><dd><p>The x, y, and z components of the angular momentum vectors
-(<span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, a_z)\)</span> where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
+(<span class="math notranslate nohighlight">\(\mathbf{a} = (a_x, a_y, a_z)\)</span> where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
 <cite>L</cite> is the number of Cartesian contracted Gaussian functions for the given angular
 momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell + 2) / 2\)</span>.
 Property of <cite>GeneralizedContractionShell</cite>.</p>
@@ -2029,7 +2031,7 @@ Property of <cite>GeneralizedContractionShell</cite>.</p>
 <h4>Returns<a class="headerlink" href="#id118" title="Link to this heading">#</a></h4>
 <dl>
 <dt>angmom<span class="classifier">int</span></dt><dd><p>Angular momentum of the set of contractions.</p>
-<p><span class="math notranslate nohighlight">\(\sum_i (\vec{a})_i = a_x + a_y + a_z\)</span></p>
+<p><span class="math notranslate nohighlight">\(\sum_i (\mathbf{a})_i = a_x + a_y + a_z\)</span></p>
 </dd>
 </dl>
 </section>
@@ -2043,7 +2045,7 @@ Property of <cite>GeneralizedContractionShell</cite>.</p>
 <h4>Returns<a class="headerlink" href="#id119" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>angmom_components_cart<span class="classifier">np.ndarray(L, 3)</span></dt><dd><p>The x, y, and z components of the angular momentum vectors
-(<span class="math notranslate nohighlight">\(\vec{a} = (a_x, a_y, a_z)\)</span> where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
+(<span class="math notranslate nohighlight">\(\mathbf{a} = (a_x, a_y, a_z)\)</span> where <span class="math notranslate nohighlight">\(a_x + a_y + a_z = \ell\)</span>).
 <cite>L</cite> is the number of Cartesian contracted Gaussian functions for the given
 angular momentum, i.e. <span class="math notranslate nohighlight">\((\ell + 1) * (\ell + 2) / 2\)</span></p>
 </dd>
@@ -2063,10 +2065,8 @@ characters appear. For example, <cite>(2, 1, 1)</cite> corresponds to <cite>XXYZ
 <dd><p>Return the ordering of the magnetic quantum numbers for the given angular momentum.</p>
 <p>We define spherical components as regular solid harmonics <span class="math notranslate nohighlight">\(R_{\ell, m}\)</span> such that</p>
 <div class="math notranslate nohighlight">
-\[\begin{align}
-    R_{\ell, m} &amp;= C_{\ell, m}, \quad &amp;m = 0 ... \ell
-    R_{\ell, -m} &amp;= S_{\ell, m}, \quad &amp;m = 1 ... \ell
-\end{align}\]</div>
+\[\begin{split}R_{\ell, m} = C_{\ell, m}, \quad m = 0 ... \ell\\
+R_{\ell, -m} = S_{\ell, m}, \quad m = 1 ... \ell\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(C_{\ell, m}\)</span> and <span class="math notranslate nohighlight">\(S_{\ell, m}\)</span> are Cosine- and Sine-like real
 regular solid harmonics (respectively).</p>
 <p>We will use these definitions to represent pure (spherical) functions as strings of the form
@@ -2184,7 +2184,7 @@ segmented contraction shell.</p>
 <dd><p>Return the normalization constants of the Cartesian Gaussian primitives.</p>
 <p>For a Cartesian primitive with exponent <span class="math notranslate nohighlight">\(\alpha_i\)</span>, the normalization constant is:</p>
 <div class="math notranslate nohighlight">
-\[N(\alpha_i, \vec{a}) = \sqrt {
+\[N(\alpha_i, \mathbf{a}) = \sqrt {
 \left(\frac{2\alpha_i}{\pi}\right)^\frac{3}{2}
 \frac{(4\alpha_i)^{a_x + a_y + a_z}}{(2a_x - 1)!! (2a_y - 1)!! (2a_z - 1)!!}}\]</div>
 <section id="id128">
@@ -2864,8 +2864,8 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
-  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -141,6 +141,8 @@
         <div class="sidebar-primary-item">
 
   
+    
+  
 
 <a class="navbar-brand logo" href="../intro.html">
   
@@ -162,7 +164,7 @@
 
  <script>
  document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass"></i>
     <span class="search-button__default-text">Search</span>
     <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -355,10 +357,10 @@
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
@@ -366,7 +368,7 @@ document.write(`
 
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
@@ -588,6 +590,18 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 <dt class="sig sig-object py" id="gbasis.integrals.angular_momentum.angular_momentum_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.angular_momentum.</span></span><span class="sig-name descname"><span class="pre">angular_momentum_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.angular_momentum.angular_momentum_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return the integral over <span class="math notranslate nohighlight">\(hat{L}\)</span> of the given basis set.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left&lt; \hat{\mathbf{L}} \right&gt;
+&amp;= \int \phi_a(\mathbf{r}) \left( -i \mathbf{r} \times \nabla \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+&amp;= -i
+\begin{bmatrix}
+\int \phi_a(\mathbf{r}) y\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
+- \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+\int \phi_a(\mathbf{r}) z\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}
+- \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+\int \phi_a(\mathbf{r}) x\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}
+- \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+\end{bmatrix}\end{split}\]</div>
 <section id="id1">
 <h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <dl class="simple">
@@ -813,6 +827,18 @@ respectively.</p>
 <dt class="sig sig-object py" id="gbasis.integrals.electron_repulsion.electron_repulsion_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.electron_repulsion.</span></span><span class="sig-name descname"><span class="pre">electron_repulsion_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'physicist'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.electron_repulsion.electron_repulsion_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return the electron repulsion integrals fo the given basis set.</p>
+<p>In the Chemists’ notation, the integrals are:</p>
+<div class="math notranslate nohighlight">
+\[\int \phi^*_a(\mathbf{r}_1) \phi_b(\mathbf{r}_1)
+\frac{1}{|\mathbf{r}_1 - \mathbf{r}_2|}
+\phi^*_c(\mathbf{r}_2) \phi_d(\mathbf{r}_2) d\mathbf{r}\]</div>
+<p>And in the Physicists’ notation:</p>
+<div class="math notranslate nohighlight">
+\[\int \phi^*_a(\mathbf{r}_1) \phi^*_b(\mathbf{r}_2)
+\frac{1}{|\mathbf{r}_1 - \mathbf{r}_2|}
+\phi_c(\mathbf{r}_1) \phi_d(\mathbf{r}_2) d\mathbf{r}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{r}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{r}_2\)</span> are the coordinates of the first and
+second electron.</p>
 <section id="id11">
 <h3>Parameters<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <dl class="simple">
@@ -952,6 +978,17 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 <dt class="sig sig-object py" id="gbasis.integrals.kinetic_energy.kinetic_energy_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.kinetic_energy.</span></span><span class="sig-name descname"><span class="pre">kinetic_energy_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.kinetic_energy.kinetic_energy_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return kinetic energy integral of the given basis set.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{split}
+\left&lt; \hat{T} \right&gt;
+&amp;= \int \phi_a(\mathbf{r}) \left( -\frac{1}{2} \nabla^2 \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+&amp;= -\frac{1}{2}
+\left(
+\int \phi_a(\mathbf{r}) \frac{\partial^2}{\partial x^2} \phi_b(\mathbf{r}) d\mathbf{r}
++ \int \phi_a(\mathbf{r}) \frac{\partial^2}{\partial y^2} \phi_b(\mathbf{r}) d\mathbf{r}
++ \int \phi_a(\mathbf{r}) \frac{\partial^2}{\partial z^2} \phi_b(\mathbf{r}) d\mathbf{r}
+\right)
+\end{split}\end{split}\]</div>
 <section id="id19">
 <h3>Parameters<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <dl class="simple">
@@ -1101,6 +1138,10 @@ to change the order.</p>
 <dt class="sig sig-object py" id="gbasis.integrals.moment.moment_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.moment.</span></span><span class="sig-name descname"><span class="pre">moment_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moment_orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.moment.moment_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return moment integral of the given basis set.</p>
+<div class="math notranslate nohighlight">
+\[\int \phi_a (\mathbf{r}) (x - X_C)^{c_x} (y - Y_C)^{c_y} (z - Z_C)^{c_z} \phi_b (\mathbf{r}) d\mathbf{r}\]</div>
+<p>where <span class="math notranslate nohighlight">\(X_C\)</span>, <span class="math notranslate nohighlight">\(Y_C\)</span>, and <span class="math notranslate nohighlight">\(Z_C\)</span> are the coordinates of the center of the moment, and
+<span class="math notranslate nohighlight">\(c_x\)</span>, <span class="math notranslate nohighlight">\(c_y\)</span>, and <span class="math notranslate nohighlight">\(c_z\)</span> are the orders of the moment.</p>
 <section id="id31">
 <h3>Parameters<a class="headerlink" href="#id31" title="Link to this heading">#</a></h3>
 <dl class="simple">
@@ -1245,6 +1286,15 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 <dt class="sig sig-object py" id="gbasis.integrals.momentum.momentum_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.momentum.</span></span><span class="sig-name descname"><span class="pre">momentum_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.momentum.momentum_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return integral over momentum operator of the given basis set.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left&lt; \hat{\mathbf{p}} \right&gt;
+&amp;= \int \phi_a(\mathbf{r}) \left( -i \nabla \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+&amp;= -i
+\begin{bmatrix}
+\int \phi_a(\mathbf{r}) \frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+\int \phi_a(\mathbf{r}) \frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+\int \phi_a(\mathbf{r}) \frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
+\end{bmatrix}\end{split}\]</div>
 <section id="id39">
 <h3>Parameters<a class="headerlink" href="#id39" title="Link to this heading">#</a></h3>
 <dl class="simple">
@@ -1277,8 +1327,13 @@ number of basis functions in the basis set.</p>
 <dt class="sig sig-object py" id="gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.nuclear_electron_attraction.</span></span><span class="sig-name descname"><span class="pre">nuclear_electron_attraction_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuclear_charges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return the nuclear electron attraction integrals of the basis set in the Cartesian form.</p>
-<section id="id41">
-<h3>Parameters<a class="headerlink" href="#id41" title="Link to this heading">#</a></h3>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[\sum_C \int \phi_a(\mathbf{r}) \]</div>
+</div></blockquote>
+<dl>
+<dt>rac{-Z_C}{<a href="#id71"><span class="problematic" id="id72">|\mathbf{r} - \mathbf{R}_C|</span></a>} phi_b(mathbf{r})</dt><dd><p>dmathbf{r}</p>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{R}_C\)</span> is the coordinate of the nucleus <span class="math notranslate nohighlight">\(C\)</span> and <span class="math notranslate nohighlight">\(Z_C\)</span> its charge.</p>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) that will be used to construct an array.</p>
 </dd>
@@ -1293,16 +1348,14 @@ and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
 </dl>
-</section>
-<section id="id42">
-<h3>Returns<a class="headerlink" href="#id42" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>array<span class="classifier">np.ndarray(K_cart, K_cart)</span></dt><dd><p>Array associated with the given set of contracted Cartesian Gaussians.
 Dimensions 0 and 1 are associated with the contracted Cartesian
 Gaussians. <cite>K_cart</cite> is the total number of Cartesian contractions within the instance.</p>
 </dd>
 </dl>
-</section>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -1314,8 +1367,8 @@ Gaussians. <cite>K_cart</cite> is the total number of Cartesian contractions wit
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">Overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.Overlap" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="gbasis.html#gbasis.base_two_symm.BaseTwoIndexSymmetric" title="gbasis.base_two_symm.BaseTwoIndexSymmetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTwoIndexSymmetric</span></code></a></p>
 <p>Class for obtaining the overlap for a set of Gaussian contractions.</p>
-<section id="id43">
-<h3>Attributes<a class="headerlink" href="#id43" title="Link to this heading">#</a></h3>
+<section id="id41">
+<h3>Attributes<a class="headerlink" href="#id41" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Sets of contractions associated with each axis of the array.</p>
 </dd>
@@ -1324,8 +1377,8 @@ Property of <cite>Overlap</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id44">
-<h3>Methods<a class="headerlink" href="#id44" title="Link to this heading">#</a></h3>
+<section id="id42">
+<h3>Methods<a class="headerlink" href="#id42" title="Link to this heading">#</a></h3>
 <dl>
 <dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
 </dd>
@@ -1346,7 +1399,7 @@ associated with the second index.</p>
 <dt>construct_array_spherical(self)<span class="classifier">np.ndarray(K_sph, K_sph)</span></dt><dd><p>Return the overlap integrals associated with spherical Gaussians (atomic orbitals).
 <cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
 </dd>
-<dt>construct_array_mix(self, coord_types, <a href="#id45"><span class="problematic" id="id46">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the overlap integrals associated with the contraction in the given coordinate system.
+<dt>construct_array_mix(self, coord_types, <a href="#id43"><span class="problematic" id="id44">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the overlap integrals associated with the contraction in the given coordinate system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
 <dt>construct_array_lincomb(self, transform, coord_type)<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Return the overlap integrals associated with the linear combinations of contractions in the
@@ -1358,8 +1411,8 @@ given coordinate system.
 <dt class="sig sig-object py" id="gbasis.integrals.overlap.Overlap.construct_array_contraction">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.Overlap.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return the evaluations of the given contractions at the given coordinates.</p>
-<section id="id47">
-<h4>Parameters<a class="headerlink" href="#id47" title="Link to this heading">#</a></h4>
+<section id="id45">
+<h4>Parameters<a class="headerlink" href="#id45" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
 the overlap.</p>
@@ -1374,8 +1427,8 @@ screened). If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
-<section id="id48">
-<h4>Returns<a class="headerlink" href="#id48" title="Link to this heading">#</a></h4>
+<section id="id46">
+<h4>Returns<a class="headerlink" href="#id46" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>array_contraction<span class="classifier">np.ndarray(M_1, L_cart_1, M_2, L_cart_2)</span></dt><dd><p>Overlap associated with the given instances of <cite>GeneralizedContractionShell</cite>.
 Dimension 0 corresponds to the segmented contraction within <cite>cont_one</cite>. <cite>M_1</cite> is
@@ -1393,8 +1446,8 @@ associated with the second index.</p>
 </dd>
 </dl>
 </section>
-<section id="id49">
-<h4>Raises<a class="headerlink" href="#id49" title="Link to this heading">#</a></h4>
+<section id="id47">
+<h4>Raises<a class="headerlink" href="#id47" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If contractions_one is not a <cite>GeneralizedContractionShell</cite> instance.
 If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.</p>
@@ -1418,8 +1471,8 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 <span class="math notranslate nohighlight">\(A\)</span> and <cite>B</cite> are the atoms each contraction are respectively centered on.
 :math: <cite>alpha</cite> is the gaussian exponent
 :math: <cite>s</cite> and <cite>t</cite> index the primitive Gaussian shells centered on atom <cite>A</cite> and <cite>B</cite> respectively.</p>
-<section id="id50">
-<h3>Parameters<a class="headerlink" href="#id50" title="Link to this heading">#</a></h3>
+<section id="id48">
+<h3>Parameters<a class="headerlink" href="#id48" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
 the overlap.</p>
@@ -1434,8 +1487,8 @@ If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
-<section id="id51">
-<h3>Returns<a class="headerlink" href="#id51" title="Link to this heading">#</a></h3>
+<section id="id49">
+<h3>Returns<a class="headerlink" href="#id49" title="Link to this heading">#</a></h3>
 <dl>
 <dt>value<span class="classifier"><cite>bool</cite></span></dt><dd><p>If overlap integral is required, return <cite>True</cite></p>
 </dd>
@@ -1447,8 +1500,11 @@ If <cite>None</cite>, no screening is performed.</p>
 <dt class="sig sig-object py" id="gbasis.integrals.overlap.overlap_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap.</span></span><span class="sig-name descname"><span class="pre">overlap_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap.overlap_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return overlap integral of the given basis set.</p>
-<section id="id52">
-<h3>Parameters<a class="headerlink" href="#id52" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\int \phi_a (\mathbf{r}) \phi_b (\mathbf{r}) d\mathbf{r}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_a(\mathbf{r})\)</span> and <span class="math notranslate nohighlight">\(\phi_b(\mathbf{r})\)</span> are the basis functions</p>
+<section id="id50">
+<h3>Parameters<a class="headerlink" href="#id50" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
 </dd>
@@ -1465,8 +1521,8 @@ screened). If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
-<section id="id53">
-<h3>Returns<a class="headerlink" href="#id53" title="Link to this heading">#</a></h3>
+<section id="id51">
+<h3>Returns<a class="headerlink" href="#id51" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>array<span class="classifier">np.ndarray(K_orbs, K_orbs)</span></dt><dd><p>Overlap integral of the given basis set.
 Dimensions 0 and 1 of the array correspond to the basis functions. <cite>K_orbs</cite> is the
@@ -1485,8 +1541,8 @@ number of basis functions in the basis set.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap_asymm.</span></span><span class="sig-name descname"><span class="pre">OverlapAsymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.OverlapAsymmetric" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="gbasis.html#gbasis.base_two_asymm.BaseTwoIndexAsymmetric" title="gbasis.base_two_asymm.BaseTwoIndexAsymmetric"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTwoIndexAsymmetric</span></code></a></p>
 <p>Class for obtaining the overlap between two sets of Gaussian contractions.</p>
-<section id="id54">
-<h3>Attributes<a class="headerlink" href="#id54" title="Link to this heading">#</a></h3>
+<section id="id52">
+<h3>Attributes<a class="headerlink" href="#id52" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Sets of contractions associated with each axis of the array.</p>
 </dd>
@@ -1498,8 +1554,8 @@ Property of <cite>OverlapAsymmetric</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id55">
-<h3>Methods<a class="headerlink" href="#id55" title="Link to this heading">#</a></h3>
+<section id="id53">
+<h3>Methods<a class="headerlink" href="#id53" title="Link to this heading">#</a></h3>
 <dl>
 <dt>__init__(self, contractions_one, contractions_two)</dt><dd><p>Initialize.</p>
 </dd>
@@ -1542,8 +1598,8 @@ the spherical contractions associated with <cite>contractions_two</cite>.</p>
 <dt class="sig sig-object py" id="gbasis.integrals.overlap_asymm.OverlapAsymmetric.construct_array_contraction">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.OverlapAsymmetric.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return the evaluations of the given contractions at the given coordinates.</p>
-<section id="id56">
-<h4>Parameters<a class="headerlink" href="#id56" title="Link to this heading">#</a></h4>
+<section id="id54">
+<h4>Parameters<a class="headerlink" href="#id54" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
 the overlap.</p>
@@ -1558,8 +1614,8 @@ screened). If <cite>None</cite>, no screening is performed.</p>
 </dd>
 </dl>
 </section>
-<section id="id57">
-<h4>Returns<a class="headerlink" href="#id57" title="Link to this heading">#</a></h4>
+<section id="id55">
+<h4>Returns<a class="headerlink" href="#id55" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>array_contraction<span class="classifier">np.ndarray(M_1, L_cart_1, M_2, L_cart_2)</span></dt><dd><p>Overlap associated with the given instances of <cite>GeneralizedContractionShell</cite>.
 Dimension 0 corresponds to the segmented contraction within <cite>cont_one</cite>. <cite>M_1</cite> is
@@ -1577,8 +1633,8 @@ associated with the second index.</p>
 </dd>
 </dl>
 </section>
-<section id="id58">
-<h4>Raises<a class="headerlink" href="#id58" title="Link to this heading">#</a></h4>
+<section id="id56">
+<h4>Raises<a class="headerlink" href="#id56" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If contractions_one is not a <cite>GeneralizedContractionShell</cite> instance.
 If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.</p>
@@ -1594,8 +1650,11 @@ If contractions_two is not a <cite>GeneralizedContractionShell</cite> instance.<
 <dt class="sig sig-object py" id="gbasis.integrals.overlap_asymm.overlap_integral_asymmetric">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.overlap_asymm.</span></span><span class="sig-name descname"><span class="pre">overlap_integral_asymmetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_two</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.overlap_asymm.overlap_integral_asymmetric" title="Link to this definition">#</a></dt>
 <dd><p>Return overlap integrals between two basis sets.</p>
-<section id="id59">
-<h3>Parameters<a class="headerlink" href="#id59" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[\int \phi_a (\mathbf{r}) \psi_b (\mathbf{r}) d\mathbf{r}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi_a\)</span> and <span class="math notranslate nohighlight">\(\psi_b\)</span> are the basis functions in <cite>basis_one</cite> and <cite>basis_two</cite>.</p>
+<section id="id57">
+<h3>Parameters<a class="headerlink" href="#id57" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis_one<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
 </dd>
@@ -1615,8 +1674,8 @@ Default is no transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id60">
-<h3>Returns<a class="headerlink" href="#id60" title="Link to this heading">#</a></h3>
+<section id="id58">
+<h3>Returns<a class="headerlink" href="#id58" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>array<span class="classifier">np.ndarray(K_orbs_1, K_orbs_2)</span></dt><dd><p>Overlap integral of the given basis set.
 Dimensions 0 of the array correspond to the basis functions in <cite>basis_one</cite>.
@@ -1644,8 +1703,8 @@ Dimensions 1 of the array correspond to the basis functions in <cite>basis_two</
 contraction on the right, <span class="math notranslate nohighlight">\(\mathbf{R}_C\)</span> is the position of the point charge, <span class="math notranslate nohighlight">\(Z\)</span> is
 the charge at the point charge, and <span class="math notranslate nohighlight">\(g(|\mathbf{r} - \mathbf{R}_C|, Z)\)</span> determines the
 type of the one-electorn integral.</p>
-<section id="id61">
-<h3>Attributes<a class="headerlink" href="#id61" title="Link to this heading">#</a></h3>
+<section id="id59">
+<h3>Attributes<a class="headerlink" href="#id59" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>_axes_contractions<span class="classifier">tuple of tuple of GeneralizedContractionShell</span></dt><dd><p>Sets of contractions associated with each axis of the array.</p>
 </dd>
@@ -1654,8 +1713,8 @@ Property of <cite>PointChargeIntegral</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id62">
-<h3>Methods<a class="headerlink" href="#id62" title="Link to this heading">#</a></h3>
+<section id="id60">
+<h3>Methods<a class="headerlink" href="#id60" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>__init__(self, contractions)</dt><dd><p>Initialize.</p>
 </dd>
@@ -1679,7 +1738,7 @@ associated with the second index.</p>
 <dt>construct_array_spherical(self)<span class="classifier">np.ndarray(K_sph, K_sph)</span></dt><dd><p>Return the one-electron integrals associated with spherical Gaussians (atomic orbitals).
 <cite>K_sph</cite> is the total number of spherical contractions within the instance.</p>
 </dd>
-<dt>construct_array_mix(self, coord_types, <a href="#id63"><span class="problematic" id="id64">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the one-electron integrals associated with the contraction in the given coordinate
+<dt>construct_array_mix(self, coord_types, <a href="#id61"><span class="problematic" id="id62">**</span></a>kwargs)<span class="classifier">np.ndarray(K_cont, K_cont)</span></dt><dd><p>Return the one-electron integrals associated with the contraction in the given coordinate
 system.
 <cite>K_cont</cite> is the total number of contractions within the given basis set.</p>
 </dd>
@@ -1694,8 +1753,8 @@ the given coordinate system.
 <dd><p>Return the value of Boys function for the given orders and weighted distances.</p>
 <p>The Coulombic Boys function can be written as a renormalized special case of the Kummer
 confluent hypergeometric function, as derived in Helgaker (eq. 9.8.39).</p>
-<section id="id65">
-<h4>Parameters<a class="headerlink" href="#id65" title="Link to this heading">#</a></h4>
+<section id="id63">
+<h4>Parameters<a class="headerlink" href="#id63" title="Link to this heading">#</a></h4>
 <dl>
 <dt>orders<span class="classifier">np.ndarray(M, 1, 1, 1)</span></dt><dd><p>Differentiation order of the helper function.
 Same as m in eq. 23, Aldrichs, R. Phys. Chem. Chem. Phys., 2006, 8, 3072-3077.
@@ -1714,16 +1773,16 @@ corresponds to the primitive on the left side.</p>
 </dd>
 </dl>
 </section>
-<section id="id66">
-<h4>Returns<a class="headerlink" href="#id66" title="Link to this heading">#</a></h4>
+<section id="id64">
+<h4>Returns<a class="headerlink" href="#id64" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>boys_eval<span class="classifier">np.ndarray(M, N, K_b, K_a)</span></dt><dd><p>Output is the Boys function evaluated for each order and the weighted interatomic
 distance.</p>
 </dd>
 </dl>
 </section>
-<section id="id67">
-<h4>Notes<a class="headerlink" href="#id67" title="Link to this heading">#</a></h4>
+<section id="id65">
+<h4>Notes<a class="headerlink" href="#id65" title="Link to this heading">#</a></h4>
 <p>There’s some documented instability for hyp1f1, mainly for large values or complex numbers.
 In this case it seems fine, since m should be less than 10 in most cases, and except for
 exceptional cases the input, while negative, shouldn’t be very large. In scipy &gt; 0.16, this
@@ -1741,8 +1800,8 @@ side.</p>
 <dt class="sig sig-object py" id="gbasis.integrals.point_charge.PointChargeIntegral.construct_array_contraction">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contractions_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_charge</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.point_charge.PointChargeIntegral.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return point charge interaction integral for the given contractions and point charges.</p>
-<section id="id68">
-<h4>Parameters<a class="headerlink" href="#id68" title="Link to this heading">#</a></h4>
+<section id="id66">
+<h4>Parameters<a class="headerlink" href="#id66" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
 the array.</p>
@@ -1758,8 +1817,8 @@ Rows correspond to the different point charges and columns correspond to the
 </dd>
 </dl>
 </section>
-<section id="id69">
-<h4>Returns<a class="headerlink" href="#id69" title="Link to this heading">#</a></h4>
+<section id="id67">
+<h4>Returns<a class="headerlink" href="#id67" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>array_contraction<span class="classifier">np.ndarray(M_1, L_cart_1, M_2, L_cart_2, N)</span></dt><dd><p>Point charge integral associated with the given instances of
 <cite>GeneralizedContractionShell</cite>.
@@ -1779,8 +1838,8 @@ Dimension 4 corresponds to the point charge. <cite>N</cite> is the number of poi
 </dd>
 </dl>
 </section>
-<section id="id70">
-<h4>Raises<a class="headerlink" href="#id70" title="Link to this heading">#</a></h4>
+<section id="id68">
+<h4>Raises<a class="headerlink" href="#id68" title="Link to this heading">#</a></h4>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>contractions_one</cite> is not a <cite>GeneralizedContractionShell</cite> instance.
 If <cite>contractions_two</cite> is not a <cite>GeneralizedContractionShell</cite> instance.
@@ -1802,8 +1861,13 @@ If <cite>points_charge</cite> is not a one-dimensional <cite>numpy</cite> array 
 <dt class="sig sig-object py" id="gbasis.integrals.point_charge.point_charge_integral">
 <span class="sig-prename descclassname"><span class="pre">gbasis.integrals.point_charge.</span></span><span class="sig-name descname"><span class="pre">point_charge_integral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_charge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.integrals.point_charge.point_charge_integral" title="Link to this definition">#</a></dt>
 <dd><p>Return the point-charge interaction integrals of basis set in the given coordinate systems.</p>
-<section id="id71">
-<h3>Parameters<a class="headerlink" href="#id71" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[V_{ab} = \int \phi_a(\mathbf{r}) \frac{1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{R}_C\)</span> is the position of the point charge <span class="math notranslate nohighlight">\(C\)</span> and <span class="math notranslate nohighlight">\(V_{ab}\)</span> is
+the interaction integral between the pair of basis functions <span class="math notranslate nohighlight">\(\phi_a\)</span> and <span class="math notranslate nohighlight">\(\phi_b\)</span>, and
+the point charge.</p>
+<section id="id69">
+<h3>Parameters<a class="headerlink" href="#id69" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">list/tuple of GeneralizedContractionShell</span></dt><dd><p>Shells of generalized contractions.</p>
 </dd>
@@ -1821,14 +1885,14 @@ Default is no transformation.</p>
 </dd>
 </dl>
 </section>
-<section id="id72">
-<h3>Returns<a class="headerlink" href="#id72" title="Link to this heading">#</a></h3>
+<section id="id70">
+<h3>Returns<a class="headerlink" href="#id70" title="Link to this heading">#</a></h3>
 <dl class="simple">
-<dt>eval_array<span class="classifier">np.ndarray(K, N)</span></dt><dd><p>Evaluations of the basis functions at the given coordinates.
+<dt>eval_array<span class="classifier">np.ndarray(K, K, N)</span></dt><dd><p>Evaluations of the basis functions at the given coordinates.
 If keyword argument <cite>transform</cite> is provided, then the transformed basis functions will be
 evaluted at the given points.
 <cite>K</cite> is the total number of basis functions within the given basis set.
-<cite>N</cite> is the number of coordinates at which the contractions are evaluated.</p>
+<cite>N</cite> is the number of point charges.</p>
 </dd>
 </dl>
 </section>
@@ -2013,8 +2077,8 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
