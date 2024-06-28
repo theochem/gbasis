@@ -57,9 +57,7 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
             " of the orbital evaluations."
         )
 
-    density = one_density_matrix.dot(orb_eval)
-    density *= orb_eval
-    return np.sum(density, axis=0)
+    return np.einsum("pq,qn,pn->n", one_density_matrix, orb_eval, orb_eval, optimize=True)
 
 
 def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
