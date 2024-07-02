@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        py: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        py: ["3.9", "3.10", "3.11"]
 
     steps:
       - uses: "actions/checkout@v3"
@@ -33,11 +33,12 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install pytest pytest-md pytest-emoji pytest-cov
+          pip install numpy==1.23 scipy==1.11.1 attrs==21.3.0
 
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
-          pip install --user git+https://github.com/theochem/iodata.git@master
+          pip install --user git+https://github.com/theochem/iodata.git@main
           pip install -e .[dev,iodata]
 
       - name: Install Libcint library
