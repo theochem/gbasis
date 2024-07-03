@@ -169,7 +169,7 @@ def evaluate_dm_using_evaluated_orbs(one_density_matrix, orb_eval_1, orb_eval_2)
     return dm_on_grid
 
 
-def evaluate_dm_density(one_density_matrix, basis, point1, point2=np.array(None), transform=None):
+def evaluate_dm_density(one_density_matrix, basis, point1, point2=None, transform=None):
     r"""Return the density matrix of the given basis set evaluated on the given points.
 
     Parameters
@@ -216,11 +216,11 @@ def evaluate_dm_density(one_density_matrix, basis, point1, point2=np.array(None)
 
     """
 
-    # evaluate basi(e)s on the point set(s)
+    # Evaluate basis on the point set
     orb_eval_1 = evaluate_basis(basis, point1, transform=transform)
 
-    # if only one set of points is supplied, it is duplicated
-    if point2.all() == None:
+    # If only one set of points is supplied, it is duplicated
+    if point2 is None:
         orb_eval_2 = orb_eval_1
     else:
         orb_eval_2 = evaluate_basis(basis, point2, transform=transform)
@@ -231,8 +231,8 @@ def evaluate_dm_density(one_density_matrix, basis, point1, point2=np.array(None)
     return dm_on_grid
 
 
-def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), transform=None):
-    r"""Return the two-body hole correlation function.
+def evaluate_hole_x2(one_density_matrix, basis, point1, point2=None, transform=None):
+    r"""Return the two-body exchange hole correlation function.
 
     .. math ::
 
@@ -289,7 +289,7 @@ def evaluate_hole_x2(one_density_matrix, basis, point1, point2=np.array(None), t
     dens_eval_1 = evaluate_density(one_density_matrix, basis, point1, transform=transform)
 
     # if only one set of points is supplied, density evaluation is duplicated
-    if point2.all() == None:
+    if point2 is None:
         dens_eval_2 = dens_eval_1
     else:
         dens_eval_2 = evaluate_density(one_density_matrix, basis, point2, transform=transform)
