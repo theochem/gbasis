@@ -204,7 +204,26 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
 
 
 def electron_repulsion_integral(basis, transform=None, notation="physicist"):
-    """Return the electron repulsion integrals fo the given basis set.
+    r"""Return the electron repulsion integrals fo the given basis set.
+
+    In the Chemists' notation, the integrals are:
+
+    .. math::
+
+        \int \phi^*_a(\mathbf{r}_1) \phi_b(\mathbf{r}_1)
+        \frac{1}{|\mathbf{r}_1 - \mathbf{r}_2|}
+        \phi^*_c(\mathbf{r}_2) \phi_d(\mathbf{r}_2) d\mathbf{r}
+
+    And in the Physicists' notation:
+
+    .. math::
+
+        \int \phi^*_a(\mathbf{r}_1) \phi^*_b(\mathbf{r}_2)
+        \frac{1}{|\mathbf{r}_1 - \mathbf{r}_2|}
+        \phi_c(\mathbf{r}_1) \phi_d(\mathbf{r}_2) d\mathbf{r}
+
+    where :math:`\mathbf{r}_1` and :math:`\mathbf{r}_2` are the coordinates of the first and
+    second electron.
 
     Parameters
     ----------
