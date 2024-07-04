@@ -44,6 +44,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
+    "tox",
     "pre-commit",
     "pytest",
     "pytest-cov",
@@ -55,9 +56,21 @@ dev = [
     "sphinx_autodoc_typehints",
     "sphinx-copybutton",
 ]
-
+doc = [
+    "numpydoc",
+    "sphinx_copybutton",
+    "sphinx-autoapi",
+    "nbsphinx",
+    "sphinx_rtd_theme",
+    "sphinx_autodoc_typehints",
+    "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
+    "nbsphinx-link"
+]
 iodata = [
- "qc-iodata@git+https://github.com/theochem/iodata.git@master",
+ "qc-iodata@git+https://github.com/theochem/iodata.git@master"
+]
+pyscf = [
+    "pyscf>=1.6.1"
 ]
 
 [tool.setuptools.packages.find]
@@ -70,21 +83,6 @@ Issues = "https://github.com/theochem/gbasis/issues"
 Source = "https://github.com/theochem/gbasis/"
 Changelog = "https://github.com/theochem/gbasis/blob/main/CHANGELOG.md"
 Organization = "https://github.com/theochem/"
-
-[project.optional-dependencies]
-doc = [
-    "numpydoc",
-    "sphinx_copybutton",
-    "sphinx-autoapi",
-    "nbsphinx",
-    "sphinx_rtd_theme",
-    "sphinx_autodoc_typehints",
-    "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
-    "nbsphinx-link"
-]
-"dev" = ["tox"]
-"test" = ["tox", "pytest", "pytest-cov"]
-"pyscf" = ["pyscf>=1.6.1"]
 
 [tool.black]
 line-length = 100
