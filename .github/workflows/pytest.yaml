@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest", "windows-latest"]
-        py: ["3.9", "3.11"]
+        py: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: "actions/checkout@v3"
@@ -29,24 +29,12 @@ jobs:
         with:
           python-version: ${{ matrix.py }}
 
-      - name: Install old dependencies for testing
+      - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}
-        run: |
-          pip install --upgrade pip
-          pip install pytest pytest-md pytest-emoji pytest-cov
-          pip install numpy==1.23 scipy==1.11.1 attrs==21.3.0
-
-      - name: Install new dependencies for testing
-        if: ${{ matrix.py == '3.11'}}
-        run: |
-          pip install --upgrade pip
-          pip install pytest pytest-md pytest-emoji pytest-cov
-          pip install numpy==1.26.0 scipy==1.14.0
-
+        run: pip install numpy==1.22 scipy==1.11.1 attrs==21.3.0
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
-          pip install --user git+https://github.com/theochem/iodata.git@main
           pip install -e .[dev,iodata]
 
       - name: Install Libcint library

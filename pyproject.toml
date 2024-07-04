@@ -10,12 +10,14 @@ authors = [
 description = "A module for evaluating, differentiating, and integrating Gaussian functions."
 readme = "README.md"
 license = {text = "GPL-3.0-or-later"}
-requires-python = ">=3.5"
+requires-python = ">=3.7"
 classifiers = [
    'Development Status :: 0 - Released',
     'Environment :: Console',
     'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
     'Operating System :: POSIX :: Linux',
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
     'Topic :: Scientific/Engineering :: Physics',
     'Topic :: Scientific/Engineering :: Chemistry',
     "Topic :: Scientific/Engineering :: Mathematics",
@@ -28,15 +30,35 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "numpy>=1.16",
+    "numpy >=1.20, <2.0.0, platform_system=='Windows'",
+    "numpy >=1.20, platform_system=='Linux'",
     "pytest >=2.6",
-    "scipy>=1.4",
+    "scipy>=1.5",
     "importlib_resources",
     "sympy",
 ]
 dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-timeout",
+    "pytest-xdist",
+    "pytest-md",
+    "setuptools_scm",
+    "sphinx",
+    "sphinx_autodoc_typehints",
+    "sphinx-copybutton",
+]
+
+iodata = [
+ "qc-iodata@git+https://github.com/theochem/iodata.git@master",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]  # list of folders that contain the packages (["."] by default)
