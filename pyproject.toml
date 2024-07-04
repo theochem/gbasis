@@ -33,8 +33,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "numpy >=1.20, <2.0.0, platform_system=='Windows'",
-    "numpy >=1.20, platform_system=='Linux'",
+    "numpy >=1.20, <2.0.0; platform_system=='Windows'",
+    "numpy >=1.20; platform_system=='Linux'",
     "pytest >=2.6",
     "scipy>=1.5",
     "importlib_resources",
@@ -67,7 +67,7 @@ doc = [
     "nbsphinx-link"
 ]
 iodata = [
- "qc-iodata@git+https://github.com/theochem/iodata.git@master"
+ "qc-iodata@git+https://github.com/theochem/iodata.git@main"
 ]
 pyscf = [
     "pyscf>=1.6.1"
