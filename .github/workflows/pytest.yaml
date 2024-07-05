@@ -31,7 +31,9 @@ jobs:
 
       - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}
-        run: pip install numpy==1.22 scipy==1.11.1 attrs==21.3.0
+        # Ensure these versions are consistent with the minimal version requirements
+        # in pyproject.toml
+        run: pip install numpy==1.22 scipy==1.11.1
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
