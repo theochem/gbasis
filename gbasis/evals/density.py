@@ -2,6 +2,7 @@
 from gbasis.evals.eval import evaluate_basis
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 import numpy as np
+import psutil
 from scipy.special import comb
 
 
@@ -57,7 +58,29 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
             " of the orbital evaluations."
         )
 
-    return np.einsum("pq,qn,pn->n", one_density_matrix, orb_eval, orb_eval, optimize=True)
+    # Output vector of densities
+    density = np.zeros(orb_eval.shape[1], dtype=one_density_matrix.dtype)
+    # Number of chunks (use 8.1 as the number of bytes in a double, just to have a buffer so that we
+    # don't run out of memory). If it fits in 1 chunk, 1 chunk will be used.
+    chunks = max(
+        1,
+        int(
+            8.1
+            * one_density_matrix.shape[0]
+            * orb_eval.shape[1]
+            / psutil.virtual_memory().available
+        ),
+    )
+    # Evaluate densities chunk-wise
+    for density_chunk, orb_eval_chunk in zip(
+        np.split(density, chunks, axis=0), np.split(orb_eval, chunks, axis=1)
+    ):
+        # Evaluate orbital densities
+        d = one_density_matrix.dot(orb_eval_chunk)
+        d *= orb_eval_chunk
+        # Sum orbital densities into output vector
+        np.sum(d, axis=0, out=density_chunk)
+    return density
 
 
 def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
