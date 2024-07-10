@@ -61,7 +61,7 @@ doc = [
     "nbsphinx-link"
 ]
 "dev" = ["tox"]
-"test" = ["tox", "pytest", "pytest-cov"]
+"test" = ["tox", "pytest", "pytest-cov", "pytest-profiling"]
 "pyscf" = ["pyscf>=1.6.1"]
 
 [tool.black]
