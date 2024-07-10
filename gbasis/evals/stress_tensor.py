@@ -1,10 +1,11 @@
 """Module for computing properties related to the stress tensor."""
+import numpy as np
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
     evaluate_deriv_reduced_density_matrix,
 )
-import numpy as np
 
 
 # TODO: need to be tested against reference
@@ -132,31 +133,31 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
 
     .. math::
 
-            F_{j}(\mathbf{r} | \alpha, \beta)
-            =&- \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
-            =&
-            \alpha
-            \sum_i
-            \left.
-              \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
-            \right|_{\mathbf{r} = \mathbf{r}'}\\
-            &- (1 - \alpha)
-            \sum_i
-            \left.
-              \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
-            \right|_{\mathbf{r} = \mathbf{r}'}
-            - (1 - 2\alpha)
-            \sum_i
-            \left.
-              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
-            \right|_{\mathbf{r} = \mathbf{r}'}\\
-            &+ \frac{1}{2} \beta
-            \left(
-            \frac{\partial^3}{\partial r_j \partial x^2}
-            + \frac{\partial^3}{\partial r_j \partial y^2}
-            + \frac{\partial^3}{\partial r_j \partial z^2}
-            \right)
-            \rho(\mathbf{r})
+        F_{j}(\mathbf{r} | \alpha, \beta)
+        =&- \sum_i \frac{\partial}{\partial r_i} \boldsymbol{\sigma}_{ij}\\
+        =&
+        \alpha
+        \sum_i
+        \left.
+          \frac{\partial^3}{\partial r^2_i \partial r'_j} \gamma(\mathbf{r}, \mathbf{r}')
+        \right|_{\mathbf{r} = \mathbf{r}'}\\
+        &- (1 - \alpha)
+        \sum_i
+        \left.
+          \frac{\partial^3}{\partial r^2_i \partial r_j} \gamma(\mathbf{r}, \mathbf{r})
+        \right|_{\mathbf{r} = \mathbf{r}'}
+        - (1 - 2\alpha)
+        \sum_i
+        \left.
+          \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
+        \right|_{\mathbf{r} = \mathbf{r}'}\\
+        &+ \frac{1}{2} \beta
+        \left(
+        \frac{\partial^3}{\partial r_j \partial x^2}
+        + \frac{\partial^3}{\partial r_j \partial y^2}
+        + \frac{\partial^3}{\partial r_j \partial z^2}
+        \right)
+        \rho(\mathbf{r})
 
     Parameters
     ----------

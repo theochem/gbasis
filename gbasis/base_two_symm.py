@@ -2,9 +2,10 @@
 
 import abc
 
+import numpy as np
+
 from gbasis.base import BaseGaussianRelatedArray
 from gbasis.spherical import generate_transformation
-import numpy as np
 
 
 # pylint: disable=W0235

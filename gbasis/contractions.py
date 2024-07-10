@@ -1,7 +1,9 @@
 """Data class for contractions of Gaussian-type primitives."""
 
 from numbers import Integral
+
 import numpy as np
+
 from gbasis.utils import factorial2
 
 
@@ -31,7 +33,8 @@ class GeneralizedContractionShell:
     .. math::
 
         \phi (\mathbf{r} | \mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) =
-        N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_i g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})
+        N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha})
+        \sum_i d_i g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})
 
     where :math:`d_i` is the contraction coefficient of the primitive and :math:`N_{\phi}` is the
     normalization constant of the contraction.
@@ -63,7 +66,8 @@ class GeneralizedContractionShell:
     .. math::
 
         \phi_j (\mathbf{r} | \mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) =
-        N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha}) \sum_i d_{ij} g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})
+        N_{\phi} (\mathbf{R}_A, \mathbf{a}, \mathbf{d}, \boldsymbol{\alpha})
+        \sum_i d_{ij} g_i (\mathbf{r} | \mathbf{R}_A, \mathbf{a})
 
     Attributes
     ----------
@@ -427,8 +431,8 @@ class GeneralizedContractionShell:
             return tuple(["c1", "s1", "c0"])
         else:
             return tuple(
-                ["s{}".format(m) for m in range(self.angmom, 0, -1)]
-                + ["c{}".format(m) for m in range(self.angmom + 1)]
+                [f"s{m}" for m in range(self.angmom, 0, -1)]
+                + [f"c{m}" for m in range(self.angmom + 1)]
             )
 
     @property

@@ -1,6 +1,7 @@
 """Module for computing the nuclear electron attraction."""
-from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
+
+from gbasis.integrals.point_charge import point_charge_integral
 
 
 def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges, transform=None):
@@ -11,7 +12,7 @@ def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges,
         \sum_C \int \phi_a(\mathbf{r}) \frac{-Z_C}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r})
     d\mathbf{r}
 
-    where :math:`\mathbf{R}_C` is the coordinate of the nucleus :math:`C` and :math:`Z_C` its charge.
+    where :math:`\mathbf{R}_C` is the coordinate of the nucleus :math:`C` and :math:`Z_C` its charge
 
     Parameters
     ----------

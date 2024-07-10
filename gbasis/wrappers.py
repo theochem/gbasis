@@ -1,8 +1,7 @@
 """Module for interfacing to other quantum chemistry packages."""
-
-from gbasis.contractions import GeneralizedContractionShell
 import numpy as np
 
+from gbasis.contractions import GeneralizedContractionShell
 
 CONVENTIONS_LIBCINT = {
     (5, "p"): ["s5", "s4", "s3", "s2", "s1", "c0", "c1", "c2", "c3", "c4", "c5"],
@@ -186,8 +185,8 @@ def from_iodata(mol):
             """
             if self.angmom not in sph_conventions:
                 raise ValueError(
-                    "Given convention does not support spherical contractions for the angular "
-                    "momentum {0}".format(self.angmom)
+                    f"Given convention does not support spherical contractions for the angular "
+                    f"momentum {self.angmom}"
                 )
 
             return tuple(sph_conventions[self.angmom])
@@ -227,8 +226,8 @@ def from_iodata(mol):
 
     if molbasis.primitive_normalization != "L2":  # pragma: no cover
         raise ValueError(
-            "Only L2 normalization scheme is supported in `gbasis`. Given `IOData` instance uses "
-            "primitive normalization scheme, {}".format(molbasis.primitive_normalization)
+            f"Only L2 normalization scheme is supported in `gbasis`. Given `IOData` instance uses "
+            f"primitive normalization scheme, {molbasis.primitive_normalization}"
         )
 
     basis = []

@@ -1,9 +1,9 @@
 """Functions for computing overlap of a basis set."""
+import numpy as np
 
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
-import numpy as np
 
 
 class Overlap(BaseTwoIndexSymmetric):
@@ -62,10 +62,10 @@ class Overlap(BaseTwoIndexSymmetric):
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the overlap.
         tol_screen : None or float, optional
-            The tolerance used for screening overlap integrals. The `tol_screen` is combined with the
-            minimum contraction exponents to compute a cutoff which is compared to the distance between
-            the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
-            screened). If `None`, no screening is performed.
+            The tolerance used for screening overlap integrals. The `tol_screen` is combined with
+            the minimum contraction exponents to compute a cutoff which is compared to the distance
+            between the contraction centers to decide whether the overlap integral should be set to
+            zero (i.e.,screened). If `None`, no screening is performed.
 
         Returns
         -------
@@ -181,7 +181,8 @@ def is_integral_screened(contractions_one, contractions_two, tol_screen):
     where :math:`d` is the cut-off distance at which shells do not interact with each other.
     :math:`A` and `B` are the atoms each contraction are respectively centered on.
     :math: `\alpha` is the gaussian exponent
-    :math: `s` and `t` index the primitive Gaussian shells centered on atom `A` and `B` respectively.
+    :math: `s` and `t` index the primitive Gaussian shells centered on atom `A` and `B`
+    respectively.
 
     Parameters
     ----------

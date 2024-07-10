@@ -1,11 +1,12 @@
 """Module for evaluating the integral over the angular momentum operator."""
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
 )
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
-import numpy as np
 
 
 # TODO: need to test against reference
@@ -161,17 +162,18 @@ def angular_momentum_integral(basis, transform=None):
 
     .. math::
 
-            \left< \hat{\mathbf{L}} \right>
-            &= \int \phi_a(\mathbf{r}) \left( -i \mathbf{r} \times \nabla \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
-            &= -i
-            \begin{bmatrix}
-            \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
-            - \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
-            \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}
-            - \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
-            \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}
-            - \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
-            \end{bmatrix}
+        \left< \hat{\mathbf{L}} \right>
+        &= \int \phi_a(\mathbf{r}) \left( -i \mathbf{r} \times \nabla \right) \phi_b(\mathbf{r})
+        d\mathbf{r}\\
+        &= -i
+        \begin{bmatrix}
+        \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
+        - \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+        \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}
+        - \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+        \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}
+        - \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+        \end{bmatrix}
 
     Parameters
     ----------

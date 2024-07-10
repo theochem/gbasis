@@ -1,8 +1,9 @@
 """Module for evaluating the kinetic energy integral."""
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
-import numpy as np
 
 
 class KineticEnergyIntegral(BaseTwoIndexSymmetric):
@@ -126,7 +127,8 @@ def kinetic_energy_integral(basis, transform=None):
 
         \begin{split}
         \left< \hat{T} \right>
-        &= \int \phi_a(\mathbf{r}) \left( -\frac{1}{2} \nabla^2 \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+        &= \int \phi_a(\mathbf{r}) \left( -\frac{1}{2} \nabla^2 \right) \phi_b(\mathbf{r})
+        d\mathbf{r}\\
         &= -\frac{1}{2}
         \left(
         \int \phi_a(\mathbf{r}) \frac{\partial^2}{\partial x^2} \phi_b(\mathbf{r}) d\mathbf{r}
