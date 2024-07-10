@@ -1,8 +1,9 @@
 """Density Evaluation."""
-from gbasis.evals.eval import evaluate_basis
-from gbasis.evals.eval_deriv import evaluate_deriv_basis
 import numpy as np
 from scipy.special import comb
+
+from gbasis.evals.eval import evaluate_basis
+from gbasis.evals.eval_deriv import evaluate_deriv_basis
 
 
 def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
@@ -218,15 +219,16 @@ def evaluate_deriv_density(
             \sum_{l_x=0}^{L_x} \sum_{l_y=0}^{L_y} \sum_{l_z=0}^{L_z}
             \binom{L_x}{l_x} \binom{L_y}{l_y} \binom{L_z}{l_z}
             \sum_{ij} \gamma_{ij}
-            \frac{\partial^{l_x + l_y + l_z} \rho(\mathbf{r})}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
+            \frac{\partial^{l_x + l_y + l_z}
+            \rho(\mathbf{r})}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
             \frac{
                 \partial^{L_x + L_y + L_z - l_x - l_y - l_z} \rho(\mathbf{r})
             }{
                 \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
             }
 
-    where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the :math:`x, y, \text{and} z` components,
-    respectively.
+    where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the
+    :math:`x, y, \text{and} z` components, respectively.
 
     Parameters
     ----------
@@ -320,7 +322,7 @@ def evaluate_density_gradient(
             \frac{\partial}{\partial x} \rho(\mathbf{r})\\\\
             \frac{\partial}{\partial y} \rho(\mathbf{r})\\\\
             \frac{\partial}{\partial z} \rho(\mathbf{r})
-            \end{bmatrix}      
+            \end{bmatrix}
 
     Parameters
     ----------
@@ -489,7 +491,7 @@ def evaluate_density_hessian(
     r"""Return the Hessian of the density evaluated at the given points.
 
     .. math::
-        
+
         H[\rho(\mathbf{r})]
         =
         \begin{bmatrix}

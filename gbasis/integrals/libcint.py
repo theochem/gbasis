@@ -2,25 +2,14 @@ r"""
 Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
-
+import re
 from contextlib import contextmanager
-
-from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double, c_void_p
-
-from itertools import chain
-
+from ctypes import CDLL, POINTER, Structure, byref, c_double, c_int, cdll
 from operator import attrgetter
-
 from pathlib import Path
 
-import re
-
 import numpy as np
-
 from scipy.special import factorial
-
-from gbasis.utils import factorial2
-
 
 __all__ = [
     "LIBCINT",
@@ -218,7 +207,7 @@ class _LibCInt:
 
     """
 
-    _libcint: CDLL = cdll.LoadLibrary((Path(__file__).parent / "lib" / "libcint.so"))
+    _libcint: CDLL = cdll.LoadLibrary(Path(__file__).parent / "lib" / "libcint.so")
     r"""
     ``libcint`` shared object library.
 
@@ -235,7 +224,7 @@ class _LibCInt:
 
         """
         if not hasattr(cls, "_instance"):
-            cls._instance = super(_LibCInt, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
         return cls._instance
 
     def __init__(self):
@@ -386,9 +375,11 @@ class CBasis:
 
     Methods
     -------
-    make_int1e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
+    make_int1e(self, func_name, components=tuple(), constant=None,
+               is_complex=False, origin=False, inv_origin=False)
         Make an instance-bound 1-electron integral method from a ``libcint`` function.
-    make_int2e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
+    make_int2e(self, func_name, components=tuple(), constant=None,
+               is_complex=False, origin=False, inv_origin=False)
         Make an instance-bound 2-electron integral method from a ``libcint`` function.
     overlap(self)
         Compute the overlap integrals.
@@ -630,12 +621,13 @@ class CBasis:
         components : tuple, default=()
             Shape of components in each integral element.
             E.g., for normal integrals, ``comp=()``, while for nuclear gradients,
-            ``components=(Natm, 3)``, and for nuclear Hessians, ``components=(Natm, Natm, 3, 3)``, etc.
+            ``components=(Natm, 3)``, and for nuclear Hessians,
+            ``components=(Natm, Natm, 3, 3)``, etc.
         constant : (float | complex), default=1.
             A constant by which to multiply the whole integral array.
         is_complex : bool, default=False
             Whether the components in each integral element are complex. Not required if only
-            multiplying by a complex constant using the ``constant`` keyword argument..
+            multiplying by a complex constant using the ``constant`` keyword argument.
         origin : bool, default=False
             Whether you must specify an origin ``R`` for the integral computation.
         inv_origin : bool, default=False
@@ -656,7 +648,7 @@ class CBasis:
         if is_complex:
             components += (2,)
         prod_comp = np.prod(components, dtype=int)
-        out_shape = (self.nbfn, self.nbfn) + components
+        out_shape = (self.nbfn, self.nbfn, *components)
         buf_shape = prod_comp * self._max_off**2
 
         # Handle [inv_]origin argument (prevent shadowing)
@@ -789,7 +781,8 @@ class CBasis:
         components : tuple, default=()
             Shape of components in each integral element.
             E.g., for normal integrals, ``components=(1,)``, while for nuclear gradients,
-            ``components=(Natm, 3)``, and for nuclear Hessians, ``components=(Natm, Natm, 3, 3)``, etc.
+            ``components=(Natm, 3)``, and for nuclear Hessians,
+            ``components=(Natm, Natm, 3, 3)``, etc.
         constant : (float | complex), default=1.
             A constant by which to multiply the whole integral array.
         is_complex : bool, default=False
@@ -1001,8 +994,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1024,8 +1017,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1047,8 +1040,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1070,8 +1063,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1095,8 +1088,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1120,8 +1113,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1145,8 +1138,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1175,8 +1168,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.
@@ -1210,8 +1203,8 @@ class CBasis:
         notation : ("physicist" | "chemist"), default="physicist"
             Axis order convention.
         transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
+            Transformation matrix from the basis set in the given coordinate system (e.g. AO)
+            to linear combinations of contractions (e.g. MO).
             Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
             and index 0 of the array for contractions.
             Default is no transformation.

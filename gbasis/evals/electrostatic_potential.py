@@ -1,6 +1,7 @@
 """Module for computing electrostatic potential integrals."""
-from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
+
+from gbasis.integrals.point_charge import point_charge_integral
 
 
 def electrostatic_potential(
@@ -18,12 +19,13 @@ def electrostatic_potential(
 
         - \left(
             - \sum_A \frac{Z_A}{|\mathbf{R}_C - \mathbf{R}_A|}
-            + \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{-1}{|\mathbf{r} - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
+            + \sum_{ab} \gamma_{ab} \int \phi_a(\mathbf{r}) \frac{-1}{|\mathbf{r}
+            - \mathbf{R}_C|} \phi_b(\mathbf{r}) d\mathbf{r}
         \right)
 
-    where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A` is the
-    coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}` is the
-    one-electron density matrix.
+    where :math:`\mathbf{R}_C` is the coordinate of a unitary point charge, :math:`\mathbf{R}_A`
+    is the coordinate of the nucleus :math:`A`, :math:`Z_A` its charge, and :math:`\gamma_{ab}`
+    is the one-electron density matrix.
 
     Parameters
     ----------
