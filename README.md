@@ -9,14 +9,13 @@
 
 ## About
 
-`gbasis` is a pure-Python package for evaluating and analytically integrating Gaussian-type orbitals
-and their related quantities. The goal is to build a set of tools to the quantum chemistry community
-that are easily accessible and easy to use as to facilitate future scientific works.
+`gbasis` is a pure-Python package for analytical integration and evaluation of Gaussian-type orbitals
+and their related quantities. The goal is to build a set of tools for the quantum chemistry community
+that are easily accessible and extendable to facilitate future scientific works.
 
-Since basis set manipulation is often slow, Quantum Chemistry packages in Python often interface to
-a lower-level language, such as C++ and Fortran, for these parts, resulting in a more difficult
-build process and limited distribution. The hope is that `gbasis` can fill in this gap without a
-significant difference in performance.
+Since basis set manipulation is often slow, quantum chemistry packages in Python often interface to
+a lower-level language, such as C++ and Fortran, resulting in a complicated build process and limited
+distribution. The hope is that `gbasis` can fill in this gap without a significant difference in performance.
 
 See [the `gbasis` website](https://gbasis.qcdevs.org/) for more information, tutorials and examples,
 and API documentation.
@@ -26,14 +25,23 @@ and API documentation.
 Please use the following citation in any publication using `gbasis` library:
 
 > **"GBasis: A Python Library for Evaluating Functions, Functionals, and Integrals Expressed with
-> Gaussian Basis Functions."**,
+> Gaussian Basis Functions.\"**,
 > T. D. Kim, L. Pujal, M. Richer, M. van Zyl, M. Martínez-González, A. Tehrani, V. Chuiko,
 > G. Sánchez-Díaz, W. Sanchez, W. Adams, X. Huang, B. D. Kelly, E. Vöhringer-Martinez,
-> T. Verstraelen, F. Heidar-Zadeh, and P. W. Ayers, *accepted for publication*.
+> T. Verstraelen, F. Heidar-Zadeh, and P. W. Ayers,
+> [J. Chem. Phys. 161, 042503 (2024)](https://doi.org/10.1063/5.0216776).
 
 ## Installation
 
 [See the website for installation instructions.](https://gbasis.qcdevs.org/installation.html)
+
+## Contributing
+
+We welcome contributions of all kinds, such as new features,
+improvements, bug fixes, and documentation clarifications. Please read
+our [Contributor Guide](https://iodata.qcdevs.org/contributing.html) and
+[Code of Conduct](https://github.com/theochem/.github/blob/main/CODE_OF_CONDUCT.md)
+for more details.
 
 ## Feature List (Partial)
 
@@ -73,12 +81,3 @@ This is a partial list of the features that are supported in `gbasis`:
 - point charge interaction integral (`gbasis.point_charge.point_charge_integral`)
 - nuclear-electron attraction integral (`gbasis.point_charge.point_charge_integral`)
 - electron-electron repulsion integral (`gbasis.electron_repulsion.electron_repulsion_integral`)
-
-## Acknowledgements
-
-This software was developed using funding from a variety of international sources including, but not
-limited to: Canarie, the Canada Research Chairs, Compute Canada, the European Union's Horizon 2020
-Marie Skłodowska-Curie Actions (Individual Fellowship No 800130), the Foundation of Scientific
-Research--Flanders (FWO), McMaster University, the National Fund for Scientific and Technological
-Development of Chile (FONDECYT), the Natural Sciences and Engineering Research Council of Canada
-(NSERC), the Research Board of Ghent University (BOF), and Sharcnet.
