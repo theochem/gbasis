@@ -1,95 +1,61 @@
-# gbasis
-`gbasis` is a pure-Python package for evaluating and analytically integrating Gaussian-type orbitals
-and their related quantities. The goal is to build a set of tools to the quantum chemistry community
-that are easily accessible and easy to use as to facilitate future scientific works.
+# GBasis
 
-Since basis set manipulation is often slow, Quantum Chemistry packages in Python often interface to
-a lower-level lanaguage, such as C++ and Fortran, for these parts, resulting in a more difficult
-build process and limited distribution. The hope is that `gbasis` can fill in this gap without a
-significant difference in performance.
+[![pytest](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml/badge.svg)](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml)
+[![PyPI](https://img.shields.io/pypi/v/qc-gbasis.svg)](https://pypi.python.org/pypi/qc-gbasis/)
+![Version](https://img.shields.io/pypi/pyversions/qc-gbasis.svg)
+![License](https://img.shields.io/github/license/theochem/gbasis)
+<!-- [![release](https://github.com/theochem/gbasis/actions/workflows/release.yaml/badge.svg)](https://github.com/theochem/gbasis/actions/workflows/release.yaml) -->
+<!-- [![CodeFactor](https://www.codefactor.io/repository/github/tovrstra/stepup-core/badge)](https://www.codefactor.io/repository/github/tovrstra/stepup-core) -->
 
-## Dependencies
-- numpy >= 1.10
-- scipy >= 1.0
+## About
+
+`gbasis` is a pure-Python package for analytical integration and evaluation of Gaussian-type orbitals
+and their related quantities. The goal is to build a set of tools for the quantum chemistry community
+that are easily accessible and extendable to facilitate future scientific works.
+
+Since basis set manipulation is often slow, quantum chemistry packages in Python often interface to
+a lower-level language, such as C++ and Fortran, resulting in a complicated build process and limited
+distribution. The hope is that `gbasis` can fill in this gap without a significant difference in performance.
+
+See [the `gbasis` website](https://gbasis.qcdevs.org/) for more information, tutorials and examples,
+and API documentation.
+
+## Citation
+
+Please use the following citation in any publication using `gbasis` library:
+
+> **"GBasis: A Python Library for Evaluating Functions, Functionals, and Integrals Expressed with
+> Gaussian Basis Functions.\"**,
+> T. D. Kim, L. Pujal, M. Richer, M. van Zyl, M. Martínez-González, A. Tehrani, V. Chuiko,
+> G. Sánchez-Díaz, W. Sanchez, W. Adams, X. Huang, B. D. Kelly, E. Vöhringer-Martinez,
+> T. Verstraelen, F. Heidar-Zadeh, and P. W. Ayers,
+> [J. Chem. Phys. 161, 042503 (2024)](https://doi.org/10.1063/5.0216776).
 
 ## Installation
-### From PyPi
-Note: This is not supported yet.
-```bash
-pip install --user gbasis
-```
 
-### From Conda
-Note: This is not supported yet.
-```bash
-pip install gbasis -c theochem
-```
+[See the website for installation instructions.](https://gbasis.qcdevs.org/installation.html)
 
-### From GitHub Repository
-To install `gbasis` by itself,
-```bash
-git clone https://github.com/theochem/gbasis.git
-cd gbasis
-pip install --user -e .[dev]
-```
-To install `gbasis` with `pyscf`,
-```bash
-git clone https://github.com/theochem/gbasis.git
-cd gbasis
-pip install --user -e .[dev,pyscf]
-```
-To install `gbasis` with `iodata`,
-```bash
-pip install --user cython
-pip install --user git+https://github.com/theochem/iodata.git@master
-git clone https://github.com/theochem/gbasis.git
-cd gbasis
-pip install --user -e .[dev,iodata]
-```
-To use `gbasis.integrals.libcint`, the user must run the following script to build
-and install `libcint` into the `gbasis/integrals` directory,
-```bash
-tools/install_libcint.sh
-```
-This script depends on the following packages:
-* CMake
-* Git
-* Python 3
-* a C compiler (gcc or clang are recommended)
-* a Common Lisp interpreter (sbcl or clisp are recommended)
-By default, the x86-optimized `qcint` package is used for `libcint`.
-If this doesn't work on your computer, then run the script with the environment
-variable `USE_LIBCINT=1` to use the regular `libcint` package:
-```bash
-USE_LIBCINT=1 tools/install_libcint.sh
-```
+## Contributing
 
-Note that `iodata` must be installed separately. `cython` is a dependency of `iodata`.
+We welcome contributions of all kinds, such as new features,
+improvements, bug fixes, and documentation clarifications. Please read
+our [Contributor Guide](https://iodata.qcdevs.org/contributing.html) and
+[Code of Conduct](https://github.com/theochem/.github/blob/main/CODE_OF_CONDUCT.md)
+for more details.
 
-To test the installation,
-```bash
-tox -e qa
-```
-Note that the interfaces to `pyscf` and `iodata` are not tested in this environment. To test the
-interface to `pyscf`, run
-```bash
-tox -e pyscf
-```
-and to test the interface to `iodata`, run
-```bash
-tox -e iodata
-```
+## Feature List (Partial)
 
-## Features
-Following features are supported in `gbasis`:
+This is a partial list of the features that are supported in `gbasis`:
 
 ### Importing basis set
+
 - from Gaussian94 basis set file (`gbasis.parsers.parse_gbs`)
 - from NWChem basis set file (`gbasis.parsers.parse_nwchem`)
 - from `iodata` (`gbasis.wrappers.from_iodata`)
 - from `pyscf` (`gbasis.wrappers.from_pyscf`)
 
 ### Evaluations
+
 - of basis sets (`gbasis.eval.evaluate_basis`)
 - of arbitrary derivative of basis sets (`gbasis.eval_deriv.evaluate_deriv_basis`)
 - of density (`gbasis.density.evaluate_density`)
@@ -105,6 +71,7 @@ Following features are supported in `gbasis`:
 - of electrostatic potential (`gbasis.electrostatic_potential.electrostatic_potential`)
 
 ### Integrals
+
 - overlap integrals of a basis set (`gbasis.overlap.overlap_integral`)
 - overlap integrals between two basis sets (`gbasis.overlap_asymm.overlap_integral_asymmetric`)
 - arbitrary multipole moment integral (`gbasis.moment.moment_integral`)
@@ -114,11 +81,3 @@ Following features are supported in `gbasis`:
 - point charge interaction integral (`gbasis.point_charge.point_charge_integral`)
 - nuclear-electron attraction integral (`gbasis.point_charge.point_charge_integral`)
 - electron-electron repulsion integral (`gbasis.electron_repulsion.electron_repulsion_integral`)
-
-## Acknowledgements
-This software was developed using funding from a variety of international sources including, but not
-limited to: Canarie, the Canada Research Chairs, Compute Canada, the European Union's Horizon 2020
-Marie Sklodowska-Curie Actions (Individual Fellowship No 800130), the Foundation of Scientific
-Research--Flanders (FWO), McMaster University, the National Fund for Scientific and Technological
-Development of Chile (FONDECYT), the Natural Sciences and Engineering Research Council of Canada
-(NSERC), the Research Board of Ghent University (BOF), and Sharcnet.
