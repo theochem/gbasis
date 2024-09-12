@@ -37,6 +37,7 @@ dependencies = [
     "scipy>=1.11.1",
     "importlib_resources",
     "sympy",
+    "autograd"
 ]
 dynamic = ["version"]
 

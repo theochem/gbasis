@@ -1,0 +1,1 @@
+"""Module for differentiating Gaussian functions using automatic differention."""

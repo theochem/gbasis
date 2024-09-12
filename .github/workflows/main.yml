@@ -65,7 +65,6 @@ jobs:
       # inspired by https://github.com/orgs/community/discussions/26724
       # only push to gh-pages if the master branch has been updated
       - name: GitHub Pages Action
-        # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
