@@ -18,7 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ["ubuntu-latest", "windows-latest"]
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
         py: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
@@ -37,7 +37,8 @@ jobs:
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
-          pip install -e .[dev,iodata]
+          # pip install -e .[dev,iodata]
+          pip install -e .[dev,pyscf]
 
       - name: Install Libcint library
         if: ${{ matrix.os  != 'windows-latest' }}
