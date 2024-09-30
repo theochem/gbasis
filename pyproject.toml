@@ -37,6 +37,7 @@ dependencies = [
     "scipy>=1.11.1",
     "importlib_resources",
     "sympy",
+    "qc-iodata>=1.0.0a5",
 ]
 dynamic = ["version"]
 
@@ -64,9 +65,9 @@ doc = [
     "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
     "nbsphinx-link"
 ]
-iodata = [
- "qc-iodata@git+https://github.com/theochem/iodata.git@main"
-]
+# iodata = [
+#  "qc-iodata@git+https://github.com/theochem/iodata.git@main"
+# ]
 pyscf = [
     "pyscf>=1.6.1"
 ]
