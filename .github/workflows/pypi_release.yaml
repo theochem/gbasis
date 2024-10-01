@@ -53,7 +53,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     environment:
-      name: pypi
+      name: PyPI-Release
       url: https://pypi.org/project/${{ env.PYPI_NAME }}
     permissions:
       id-token: write
@@ -107,13 +107,13 @@ jobs:
 
   publish-to-testpypi:
     name: Publish Python distribution to TestPyPI
-    if: ${{ github.ref == 'refs/heads/main' && github.repository_owner == 'theochem' }}
+    if: ${{ github.ref == 'refs/heads/master' && github.repository_owner == 'theochem' }}
     needs:
     - build
     runs-on: ubuntu-latest
 
     environment:
-      name: testpypi
+      name: TestPyPI
       url: https://test.pypi.org/project/${{ env.PYPI_NAME }}
 
     permissions:
