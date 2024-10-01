@@ -5,7 +5,7 @@
 # - Updated some actions to more recent versions
 # - Customized for the qc-gbasis repository
 
-name: release
+name: PyPI Release
 on:
   push:
     tags:
