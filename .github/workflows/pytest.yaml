@@ -39,7 +39,7 @@ jobs:
           # Need editable mode in order to include the test files
           pip install -e .[dev,iodata]
 
-      - name: Install Libcint library
+      - name: Install Libcint library in Ubuntu
         if: ${{ matrix.os  != 'windows-latest' }}
         run: |
           echo "${{ matrix.os }}"

@@ -1,11 +1,12 @@
 # GBasis
 
-[![pytest](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml/badge.svg)](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml)
+[![This project supports Python 3.9+](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/downloads)
+[![pytest](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml/badge.svg?branch=master)](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml)
+[![codecov](https://codecov.io/gh/theochem/gbasis/graph/badge.svg?token=QPUfAWj7vf)](https://codecov.io/gh/theochem/gbasis)
 [![PyPI](https://img.shields.io/pypi/v/qc-gbasis.svg)](https://pypi.python.org/pypi/qc-gbasis/)
 ![Version](https://img.shields.io/pypi/pyversions/qc-gbasis.svg)
 ![License](https://img.shields.io/github/license/theochem/gbasis)
-<!-- [![release](https://github.com/theochem/gbasis/actions/workflows/release.yaml/badge.svg)](https://github.com/theochem/gbasis/actions/workflows/release.yaml) -->
-<!-- [![CodeFactor](https://www.codefactor.io/repository/github/tovrstra/stepup-core/badge)](https://www.codefactor.io/repository/github/tovrstra/stepup-core) -->
+[![documentation](https://github.com/theochem/gbasis/actions/workflows/build_website.yaml/badge.svg?branch=master)](https://github.com/theochem/gbasis/actions/workflows/build_website.yaml)
 
 ## About
 

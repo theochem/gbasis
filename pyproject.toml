@@ -64,8 +64,11 @@ doc = [
     "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
     "nbsphinx-link"
 ]
+# iodata = [
+#  "qc-iodata@git+https://github.com/theochem/iodata.git@main"
+# ]
 iodata = [
- "qc-iodata@git+https://github.com/theochem/iodata.git@main"
+    "qc-iodata>=1.0.0a5"
 ]
 pyscf = [
     "pyscf>=1.6.1"
