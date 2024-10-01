@@ -110,7 +110,7 @@ jobs:
 
   publish-to-testpypi:
     name: Publish Python distribution to TestPyPI
-    if: ${{ github.ref == 'refs/heads/master' && github.repository_owner == 'theochem' }}
+    # if: ${{ github.ref == 'refs/heads/master' && github.repository_owner == 'theochem' }}
     needs:
     - build
     runs-on: ubuntu-latest
