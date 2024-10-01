@@ -37,8 +37,7 @@ jobs:
       - name: Install development version
         run: |
           # Need editable mode in order to include the test files
-          # pip install -e .[dev,iodata]
-          pip install -e .[dev,pyscf]
+          pip install -e .[dev,iodata]
 
       - name: Install Libcint library in Ubuntu
         if: ${{ matrix.os  != 'windows-latest' }}
