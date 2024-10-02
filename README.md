@@ -4,7 +4,6 @@
 [![pytest](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml/badge.svg?branch=master)](https://github.com/theochem/gbasis/actions/workflows/pytest.yaml)
 [![codecov](https://codecov.io/gh/theochem/gbasis/graph/badge.svg?token=QPUfAWj7vf)](https://codecov.io/gh/theochem/gbasis)
 [![PyPI](https://img.shields.io/pypi/v/qc-gbasis.svg)](https://pypi.python.org/pypi/qc-gbasis/)
-![Version](https://img.shields.io/pypi/pyversions/qc-gbasis.svg)
 ![License](https://img.shields.io/github/license/theochem/gbasis)
 [![documentation](https://github.com/theochem/gbasis/actions/workflows/build_website.yaml/badge.svg?branch=master)](https://github.com/theochem/gbasis/actions/workflows/build_website.yaml)
 
