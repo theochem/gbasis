@@ -61,7 +61,7 @@ launch_buttons:
   thebe                  : true
   colab_url: "https://colab.research.google.com"
 
-copyright: "2022-2023"
+copyright: "2022-2024"
 
 html:
   use_issues_button: true
