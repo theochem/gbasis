@@ -445,7 +445,6 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable-releases">Stable releases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-with-ana-or-miniconda">Installation with Ana- or Miniconda:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-with-pip">Installation with Pip</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latest-git-revision">Latest git revision</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
@@ -471,38 +470,20 @@ document.write(`
 </div>
 <p>The following dependencies are required to run GBasis properly,</p>
 <ul class="simple">
-<li><p>Python &gt;= 3.6: <a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p></li>
-<li><p>Numpy &gt;= 1.10: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p></li>
-<li><p>SciPy &gt;= 1.0, &lt;1=.10.1 : <a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p></li>
+<li><p>Python &gt;= 3.9: <a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p></li>
+<li><p>Numpy: <a class="reference external" href="http://www.numpy.org/">http://www.numpy.org/</a></p>
+<ul>
+<li><p>numpy &gt;=1.22, &lt;2.0.0 for Windows</p></li>
+<li><p>numpy &gt;=1.22 for Linux</p></li>
+</ul>
+</li>
+<li><p>SciPy &gt;= 1.11.1: <a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p></li>
+<li><p>importlib_resources: <a class="reference external" href="https://pypi.org/project/importlib_resources/">https://pypi.org/project/importlib_resources/</a></p></li>
+<li><p>sympy: <a class="reference external" href="https://www.sympy.org/">https://www.sympy.org/</a></p></li>
 <li><p>PyTest &gt;= 5.3.4: <a class="reference external" href="https://docs.pytest.org/">https://docs.pytest.org/</a></p></li>
 <li><p>PyTest-Cov &gt;= 2.8.0: <a class="reference external" href="https://pypi.org/project/pytest-cov">https://pypi.org/project/pytest-cov</a></p></li>
 </ul>
 <p>Normally, you don’t need to install these dependencies manually. They will be installed automatically when you follow the instructions below.</p>
-</section>
-<section id="installation-with-ana-or-miniconda">
-<h2>Installation with Ana- or Miniconda:<a class="headerlink" href="#installation-with-ana-or-miniconda" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p>To install GBasis using the conda package management system, install <a class="reference external" href="https://conda.io/miniconda.html">miniconda</a> or <a class="reference external" href="https://www.anaconda.com/download">anaconda</a> first, and then:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Activate your main conda environment if it is not loaded in your .bashrc.</span>
-<span class="c1"># E.g. run the following if you have miniconda installed in e.g. ~/miniconda3</span>
-<span class="nb">source</span><span class="w"> </span>~/miniconda3/bin/activate
-
-<span class="c1"># Create a horton3 conda environment. (optional, recommended)</span>
-conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>horton3
-<span class="nb">source</span><span class="w"> </span>activate<span class="w"> </span>horton3
-
-<span class="c1"># Install the stable release.</span>
-conda<span class="w"> </span>install<span class="w"> </span>gbasis<span class="w"> </span>-c<span class="w"> </span>theochem
-
-<span class="c1"># Unstable releases</span>
-<span class="c1"># (Only do this if you understand the implications.)</span>
-<span class="c1"># Install the testing release. (beta)</span>
-conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem/label/test<span class="w"> </span>gbasis
-<span class="c1"># Install the development release. (alpha)</span>
-conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>theochem/label/dev<span class="w"> </span>gbasis
-</pre></div>
-</div>
 </section>
 <section id="installation-with-pip">
 <h2>Installation with Pip<a class="headerlink" href="#installation-with-pip" title="Link to this heading">#</a></h2>
@@ -517,12 +498,12 @@ python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </
 <span class="nb">source</span><span class="w"> </span>~/horton3/bin/activate
 
 <span class="c1"># Install the stable release in the venv horton3.</span>
-pip3<span class="w"> </span>install<span class="w"> </span>gbasis
+pip3<span class="w"> </span>install<span class="w"> </span>qc-gbasis
 <span class="c1"># alternative: python3 -m pip install gbasis</span>
 
 <span class="c1"># For developers, install a pre-release (alpha or beta).</span>
 <span class="c1"># (Only do this if you understand the implications.)</span>
-pip3<span class="w"> </span>install<span class="w"> </span>--pre<span class="w"> </span>gbasis
+pip3<span class="w"> </span>install<span class="w"> </span>--pre<span class="w"> </span>qc-gbasis
 <span class="c1"># alternative: python3 -m pip install --pre gbasis</span>
 </pre></div>
 </div>
@@ -685,7 +666,6 @@ python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </sp
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable-releases">Stable releases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-with-ana-or-miniconda">Installation with Ana- or Miniconda:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-with-pip">Installation with Pip</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#latest-git-revision">Latest git revision</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
@@ -713,7 +693,7 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
 
   <p class="copyright">
     
-      © Copyright 2022-2023.
+      © Copyright 2022-2024.
       <br/>
     
   </p>
