@@ -33,7 +33,13 @@ Please use the following citation in any publication using `gbasis` library:
 
 ## Installation
 
-[See the website for installation instructions.](https://gbasis.qcdevs.org/installation.html)
+To install the latest release of `qc-gbasis`, run as follows:
+
+```bash
+python -m pip install qc-gbasis
+```
+
+See https://gbasis.qcdevs.org/installation.html for full details.
 
 ## Contributing
 
