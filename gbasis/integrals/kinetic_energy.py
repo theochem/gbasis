@@ -1,8 +1,10 @@
 """Module for evaluating the kinetic energy integral."""
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
-import numpy as np
+from gbasis.screening import two_index_screening
 
 
 class KineticEnergyIntegral(BaseTwoIndexSymmetric):
@@ -51,7 +53,7 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions_one, contractions_two):
+    def construct_array_contraction(contractions_one, contractions_two, tol_screen=None):
         """Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
@@ -62,6 +64,11 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
         contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the kinetic energy integral.
+        tol_screen : None or float, optional
+            The tolerance used for screening kinetic integrals. The `tol_screen` is combined with the
+            minimum contraction exponents to compute a cutoff which is compared to the distance between
+            the contraction centers to decide whether the kinetic integral should be set to zero (i.e.,
+            screened). If `None`, no screening is performed.
 
         Returns
         -------
@@ -93,6 +100,16 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
+        if two_index_screening(contractions_one, contractions_two, tol_screen):
+            return np.zeros(
+                (
+                    contractions_one.num_seg_cont,
+                    len(contractions_one.norm_prim_cart),
+                    contractions_two.num_seg_cont,
+                    len(contractions_two.norm_prim_cart),
+                )
+            )
+
         coord_a = contractions_one.coord
         angmoms_a = contractions_one.angmom_components_cart
         alphas_a = contractions_one.exps
@@ -119,7 +136,7 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
         return -0.5 * np.sum(output, axis=0)
 
 
-def kinetic_energy_integral(basis, transform=None):
+def kinetic_energy_integral(basis, transform=None, tol_screen=None):
     r"""Return kinetic energy integral of the given basis set.
 
     .. math::
@@ -145,6 +162,11 @@ def kinetic_energy_integral(basis, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    tol_screen : None or float, optional
+        The tolerance used for screening kinetic integrals. The `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff which is compared to the distance between
+        the contraction centers to decide whether the kinetic integral should be set to zero (i.e.,
+        screened). If `None`, no screening is performed.
 
     Returns
     -------
@@ -157,11 +179,12 @@ def kinetic_energy_integral(basis, transform=None):
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"tol_screen": tol_screen}
 
     if transform is not None:
-        return KineticEnergyIntegral(basis).construct_array_lincomb(transform, coord_type)
+        return KineticEnergyIntegral(basis).construct_array_lincomb(transform, coord_type, **kwargs)
     if all(ct == "cartesian" for ct in coord_type):
-        return KineticEnergyIntegral(basis).construct_array_cartesian()
+        return KineticEnergyIntegral(basis).construct_array_cartesian(**kwargs)
     if all(ct == "spherical" for ct in coord_type):
-        return KineticEnergyIntegral(basis).construct_array_spherical()
-    return KineticEnergyIntegral(basis).construct_array_mix(coord_type)
+        return KineticEnergyIntegral(basis).construct_array_spherical(**kwargs)
+    return KineticEnergyIntegral(basis).construct_array_mix(coord_type, **kwargs)

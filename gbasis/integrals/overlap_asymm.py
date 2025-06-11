@@ -64,12 +64,9 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
 
 
 def overlap_integral_asymmetric(
-    basis_one,
-    basis_two,
-    transform_one=None,
-    transform_two=None,
+    basis_one, basis_two, transform_one=None, transform_two=None, tol_screen=None
 ):
-    """Return overlap integrals between two basis sets.
+    r"""Return overlap integrals between two basis sets.
 
     .. math::
 
@@ -95,6 +92,12 @@ def overlap_integral_asymmetric(
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    tol_screen : None or float, optional
+        The tolerance used for screening overlap integrals. The `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff which is compared to the distance between
+        the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
+        screened). If `None`, no screening is performed.
+
 
     Returns
     -------
@@ -108,7 +111,8 @@ def overlap_integral_asymmetric(
     """
     coord_type_one = [ct for ct in [shell.coord_type for shell in basis_one]]
     coord_type_two = [ct for ct in [shell.coord_type for shell in basis_two]]
+    kwargs = {"tol_screen": tol_screen}
 
     return OverlapAsymmetric(basis_one, basis_two).construct_array_lincomb(
-        transform_one, transform_two, coord_type_one, coord_type_two
+        transform_one, transform_two, coord_type_one, coord_type_two, **kwargs
     )

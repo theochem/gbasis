@@ -1,11 +1,13 @@
 """Module for evaluating the integral over the angular momentum operator."""
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
 )
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
-import numpy as np
+from gbasis.screening import two_index_screening
 
 
 # TODO: need to test against reference
@@ -56,17 +58,22 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions_one, contractions_two):
+    def construct_array_contraction(contractions_one, contractions_two, tol_screen=None):
         """Return the integrals over the angular momentum operator of the given contractions.
 
         Parameters
         ----------
         contractions_one : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the first index of
-            the kinetic energy integral.
+            the angular momentum integral.
         contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
-            the kinetic energy integral.
+            the angular momentum integral.
+        tol_screen : None or float, optional
+            The tolerance used for screening angular momentum integrals. The `tol_screen` is combined with the
+            minimum contraction exponents to compute a cutoff which is compared to the distance between
+            the contraction centers to decide whether the angular momentum integral should be set to zero (i.e.,
+            screened). If `None`, no screening is performed.
 
         Returns
         -------
@@ -98,6 +105,18 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
             raise TypeError("`contractions_one` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
+
+        if two_index_screening(contractions_one, contractions_two, tol_screen):
+            return np.zeros(
+                (
+                    contractions_one.num_seg_cont,
+                    len(contractions_one.norm_prim_cart),
+                    contractions_two.num_seg_cont,
+                    len(contractions_two.norm_prim_cart),
+                    3,
+                ),
+                dtype=complex,
+            )
 
         diff_integrals = _compute_differential_operator_integrals_intermediate(
             1,
@@ -156,7 +175,7 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         return -1j * np.transpose(output, (3, 2, 4, 1, 0))
 
 
-def angular_momentum_integral(basis, transform=None):
+def angular_momentum_integral(basis, transform=None, tol_screen=None):
     r"""Return the integral over :math:`hat{L}` of the given basis set.
 
     .. math::
@@ -183,6 +202,11 @@ def angular_momentum_integral(basis, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    tol_screen : None or float, optional
+        The tolerance used for screening angular momentum integrals. The `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff which is compared to the distance between
+        the contraction centers to decide whether the angular momentum integral should be set to zero (i.e.,
+        screened). If `None`, no screening is performed.
 
     Returns
     -------
@@ -194,11 +218,14 @@ def angular_momentum_integral(basis, transform=None):
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"tol_screen": tol_screen}
 
     if transform is not None:
-        return AngularMomentumIntegral(basis).construct_array_lincomb(transform, coord_type)
+        return AngularMomentumIntegral(basis).construct_array_lincomb(
+            transform, coord_type, **kwargs
+        )
     if all(ct == "cartesian" for ct in coord_type):
-        return AngularMomentumIntegral(basis).construct_array_cartesian()
+        return AngularMomentumIntegral(basis).construct_array_cartesian(**kwargs)
     if all(ct == "spherical" for ct in coord_type):
-        return AngularMomentumIntegral(basis).construct_array_spherical()
-    return AngularMomentumIntegral(basis).construct_array_mix(coord_type)
+        return AngularMomentumIntegral(basis).construct_array_spherical(**kwargs)
+    return AngularMomentumIntegral(basis).construct_array_mix(coord_type, **kwargs)
