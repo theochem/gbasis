@@ -1,25 +1,6 @@
 """1 and 2-index screening functions"""
 
 import numpy as np
-from scipy.special import factorial2, lambertw
-
-
-def one_index_screening(contractions, points, tol_screen=None):
-    if tol_screen is None:
-        return True
-
-    c_min = np.abs(contractions.coeffs.min())
-    exp_min = contractions.exps.min()
-    angm = contractions.angmom
-    n_min = np.sqrt(
-        (np.sqrt(2 * exp_min) * (4 * exp_min) ** angm) / (np.sqrt(np.pi) * factorial2(2 * angm + 1))
-    )
-    A = tol_screen / (n_min * c_min)
-    d2 = np.log(A) / -exp_min if angm == 0 else lambertw(A, k=-1).real / -exp_min
-
-    cutoff = np.sqrt(d2)
-
-    return np.linalg.norm(points - contractions.coord, axis=1) <= cutoff
 
 
 def two_index_screening(contractions_one, contractions_two, tol_screen):
