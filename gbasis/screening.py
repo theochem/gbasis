@@ -4,7 +4,7 @@ import numpy as np
 
 
 def two_index_screening(contractions_one, contractions_two, tol_screen):
-    r"""Return True or False in response to whether integral is required.
+    r"""Return True if the integral should be screened.
 
     .. math::
            d_{A_s;B_t} > \sqrt{-\frac{\alpha_{ min(\alpha_{s,A})} +
@@ -14,7 +14,7 @@ def two_index_screening(contractions_one, contractions_two, tol_screen):
     where :math:`d` is the cut-off distance at which shells do not interact with each other.
     :math:`A` and `B` are the atoms each contraction are respectively centered on.
     :math: `\alpha` is the gaussian exponent
-    :math: `s` and `t` index the primitive Gaussian shells centered on atom `A` and `B` respectively.
+    :math: `s` and `t` index primitive Gaussian shells centered on atom `A` and `B` respectively.
 
     Parameters
     ----------
@@ -24,7 +24,7 @@ def two_index_screening(contractions_one, contractions_two, tol_screen):
     contractions_two : GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) associated with the second index of
         the integral.
-    tol_screen : bool or float, optional
+    tol_screen : None or float, optional
         The tolerance used for screening two-index integrals. The `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance between
         the contraction centers to decide whether the integral should be set to zero.
@@ -33,7 +33,7 @@ def two_index_screening(contractions_one, contractions_two, tol_screen):
     Returns
     -------
     value : `bool`
-        If integral is required, return `True`
+        If integral should be screened, return `True`
     """
 
     # check screening_tol
