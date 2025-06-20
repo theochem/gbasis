@@ -107,7 +107,8 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
                     len(contractions_one.norm_prim_cart),
                     contractions_two.num_seg_cont,
                     len(contractions_two.norm_prim_cart),
-                )
+                ),
+                dtype=np.float64,
             )
 
         coord_a = contractions_one.coord

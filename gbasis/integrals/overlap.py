@@ -106,7 +106,8 @@ class Overlap(BaseTwoIndexSymmetric):
                     len(contractions_one.norm_prim_cart),
                     contractions_two.num_seg_cont,
                     len(contractions_two.norm_prim_cart),
-                )
+                ),
+                dtype=np.float64,
             )
 
         # calculate overlap integrals

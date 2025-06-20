@@ -115,7 +115,7 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
                     len(contractions_two.norm_prim_cart),
                     3,
                 ),
-                dtype=complex,
+                dtype=np.complex128,
             )
 
         diff_integrals = _compute_differential_operator_integrals_intermediate(

@@ -112,7 +112,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
                     len(contractions_two.norm_prim_cart),
                     3,
                 ),
-                dtype=complex,
+                dtype=np.complex128,
             )
 
         output = _compute_differential_operator_integrals(

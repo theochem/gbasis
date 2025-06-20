@@ -145,7 +145,8 @@ class Moment(BaseTwoIndexSymmetric):
                     contractions_two.num_seg_cont,
                     len(contractions_two.norm_prim_cart),
                     3,
-                )
+                ),
+                dtype=np.float64,
             )
 
         coord_a = contractions_one.coord
