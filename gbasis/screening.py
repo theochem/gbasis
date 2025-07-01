@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def two_index_screening(contractions_one, contractions_two, tol_screen):
+def is_two_index_integral_screened(contractions_one, contractions_two, tol_screen):
     r"""Return True if the integral should be screened.
 
     .. math::
@@ -24,11 +24,10 @@ def two_index_screening(contractions_one, contractions_two, tol_screen):
     contractions_two : GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) associated with the second index of
         the integral.
-    tol_screen : None or float, optional
+    tol_screen : float, optional
         The tolerance used for screening two-index integrals. The `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance between
         the contraction centers to decide whether the integral should be set to zero.
-        If `None`, no screening is performed.
 
     Returns
     -------
@@ -36,13 +35,9 @@ def two_index_screening(contractions_one, contractions_two, tol_screen):
         If integral should be screened, return `True`
     """
 
-    # check screening_tol
+    # check tol_screen
     if isinstance(tol_screen, bool):
-        raise TypeError(f"Argument tol_screen must be a float or None. Got {type(tol_screen)}.")
-
-    # test if screening is required
-    if tol_screen is None:
-        return False
+        raise TypeError(f"Argument tol_screen must be a float. Got {type(tol_screen)}.")
 
     # calculate distance cutoff
     alpha_a = min(contractions_one.exps)

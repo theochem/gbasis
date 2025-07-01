@@ -1,4 +1,5 @@
 """Module for evaluating the integral over the angular momentum operator."""
+
 import numpy as np
 
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
@@ -7,7 +8,7 @@ from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
 )
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
-from gbasis.screening import two_index_screening
+from gbasis.screening import is_two_index_integral_screened
 
 
 # TODO: need to test against reference
@@ -58,7 +59,9 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions_one, contractions_two, tol_screen=None):
+    def construct_array_contraction(
+        contractions_one, contractions_two, screen_basis=True, tol_screen=1e-8
+    ):
         """Return the integrals over the angular momentum operator of the given contractions.
 
         Parameters
@@ -69,11 +72,13 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the angular momentum integral.
-        tol_screen : None or float, optional
-            The tolerance used for screening angular momentum integrals. The `tol_screen` is combined with the
-            minimum contraction exponents to compute a cutoff which is compared to the distance between
-            the contraction centers to decide whether the angular momentum integral should be set to zero (i.e.,
-            screened). If `None`, no screening is performed.
+        screen_basis : bool, optional
+            A toggle to enable or disable screening. Default value is True to enable screening.
+        tol_screen : float, optional
+            The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+            minimum contraction exponents to compute a cutoff which is compared to the distance
+            between the contraction centers to decide whether the overlap integral should be
+            set to zero. The default value for `tol_screen` is 1e-8.
 
         Returns
         -------
@@ -106,7 +111,10 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
-        if two_index_screening(contractions_one, contractions_two, tol_screen):
+        # return zero if screening is enabled, and the integral is screened
+        if screen_basis and is_two_index_integral_screened(
+            contractions_one, contractions_two, tol_screen
+        ):
             return np.zeros(
                 (
                     contractions_one.num_seg_cont,
@@ -117,79 +125,87 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
                 ),
                 dtype=np.complex128,
             )
+        # calculate the integral otherwise
+        else:
+            diff_integrals = _compute_differential_operator_integrals_intermediate(
+                1,
+                contractions_one.coord,
+                np.max(contractions_one.angmom_components_cart),
+                contractions_one.exps,
+                contractions_two.coord,
+                np.max(contractions_two.angmom_components_cart),
+                contractions_two.exps,
+            )
+            moment_integrals = _compute_multipole_moment_integrals_intermediate(
+                np.zeros(3),
+                1,
+                contractions_one.coord,
+                np.max(contractions_one.angmom_components_cart),
+                contractions_one.exps,
+                contractions_two.coord,
+                np.max(contractions_two.angmom_components_cart),
+                contractions_two.exps,
+            )
 
-        diff_integrals = _compute_differential_operator_integrals_intermediate(
-            1,
-            contractions_one.coord,
-            np.max(contractions_one.angmom_components_cart),
-            contractions_one.exps,
-            contractions_two.coord,
-            np.max(contractions_two.angmom_components_cart),
-            contractions_two.exps,
-        )
-        moment_integrals = _compute_multipole_moment_integrals_intermediate(
-            np.zeros(3),
-            1,
-            contractions_one.coord,
-            np.max(contractions_one.angmom_components_cart),
-            contractions_one.exps,
-            contractions_two.coord,
-            np.max(contractions_two.angmom_components_cart),
-            contractions_two.exps,
-        )
+            angmoms_a = contractions_one.angmom_components_cart
+            angmoms_b = contractions_two.angmom_components_cart
+            output = np.array(
+                [
+                    moment_integrals[0, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                    * (
+                        moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                        * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                        - moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                        * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                    ),
+                    moment_integrals[0, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                    * (
+                        moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                        * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                        - moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                        * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                    ),
+                    moment_integrals[0, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                    * (
+                        moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                        * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                        - moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                        * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                    ),
+                ]
+            )
 
-        angmoms_a = contractions_one.angmom_components_cart
-        angmoms_b = contractions_two.angmom_components_cart
-        output = np.array(
-            [
-                moment_integrals[0, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                * (
-                    moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                    * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                    - moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                    * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                ),
-                moment_integrals[0, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                * (
-                    moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                    * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                    - moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                    * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                ),
-                moment_integrals[0, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                * (
-                    moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                    * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                    - moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                    * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                ),
-            ]
-        )
+            # normalize and contract
+            norm_a = contractions_one.norm_prim_cart[np.newaxis, np.newaxis, :, np.newaxis, :]
+            output = np.tensordot(output * norm_a, contractions_one.coeffs, (4, 0))
+            norm_b = contractions_two.norm_prim_cart[np.newaxis, :, np.newaxis, :, np.newaxis]
+            output = np.tensordot(output * norm_b, contractions_two.coeffs, (3, 0))
 
-        # normalize and contract
-        norm_a = contractions_one.norm_prim_cart[np.newaxis, np.newaxis, :, np.newaxis, :]
-        output = np.tensordot(output * norm_a, contractions_one.coeffs, (4, 0))
-        norm_b = contractions_two.norm_prim_cart[np.newaxis, :, np.newaxis, :, np.newaxis]
-        output = np.tensordot(output * norm_b, contractions_two.coeffs, (3, 0))
-
-        return -1j * np.transpose(output, (3, 2, 4, 1, 0))
+            return -1j * np.transpose(output, (3, 2, 4, 1, 0))
 
 
-def angular_momentum_integral(basis, transform=None, tol_screen=None):
+def angular_momentum_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):
     r"""Return the integral over :math:`hat{L}` of the given basis set.
 
     .. math::
 
             \left< \hat{\mathbf{L}} \right>
-            &= \int \phi_a(\mathbf{r}) \left( -i \mathbf{r} \times \nabla \right) \phi_b(\mathbf{r}) d\mathbf{r}\\
+            &= \int \phi_a(\mathbf{r}) \left( -i \mathbf{r} \times \nabla \right)
+            \phi_b(\mathbf{r}) d\mathbf{r}\\
             &= -i
             \begin{bmatrix}
-            \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}
-            - \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
-            \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}
-            - \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial z} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
-            \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial y} \phi_b(\mathbf{r}) d\mathbf{r}
-            - \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial x} \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial z}
+            \phi_b(\mathbf{r}) d\mathbf{r}
+            - \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial y}
+            \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) z\frac{\partial}{\partial x}
+            \phi_b(\mathbf{r}) d\mathbf{r}
+            - \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial z}
+            \phi_b(\mathbf{r}) d\mathbf{r}\\\\
+            \int \phi_a(\mathbf{r}) x\frac{\partial}{\partial y}
+            \phi_b(\mathbf{r}) d\mathbf{r}
+            - \int \phi_a(\mathbf{r}) y\frac{\partial}{\partial x}
+            \phi_b(\mathbf{r}) d\mathbf{r}\\\\
             \end{bmatrix}
 
     Parameters
@@ -202,11 +218,13 @@ def angular_momentum_integral(basis, transform=None, tol_screen=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    tol_screen : None or float, optional
-        The tolerance used for screening angular momentum integrals. The `tol_screen` is combined with the
-        minimum contraction exponents to compute a cutoff which is compared to the distance between
-        the contraction centers to decide whether the angular momentum integral should be set to zero (i.e.,
-        screened). If `None`, no screening is performed.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff which is compared to the distance
+        between the contraction centers to decide whether the overlap integral should be
+        set to zero. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -218,7 +236,7 @@ def angular_momentum_integral(basis, transform=None, tol_screen=None):
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
-    kwargs = {"tol_screen": tol_screen}
+    kwargs = {"tol_screen": tol_screen, "screen_basis": screen_basis}
 
     if transform is not None:
         return AngularMomentumIntegral(basis).construct_array_lincomb(
