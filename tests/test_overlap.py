@@ -63,9 +63,8 @@ def test_overlap_construct_array_contraction():
             for angmom_comp_one in test_one.angmom_components_cart
         ]
     )
-    assert np.allclose(
-        np.squeeze(Overlap.construct_array_contraction(test_one, test_two)), np.squeeze(answer)
-    )
+    contraction_value = Overlap.construct_array_contraction(test_one, test_two, screen_basis=False)
+    assert np.allclose(np.squeeze(contraction_value), np.squeeze(answer))
 
     with pytest.raises(TypeError):
         Overlap.construct_array_contraction(test_one, None)
@@ -78,7 +77,9 @@ def test_overlap_cartesian():
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     overlap_obj = Overlap(basis)
-    assert np.allclose(overlap_obj.construct_array_cartesian(), overlap_integral(basis))
+    overlap_obj_value = overlap_obj.construct_array_cartesian(screen_basis=False)
+    overlap_func_value = overlap_integral(basis, screen_basis=False)
+    assert np.allclose(overlap_obj_value, overlap_func_value)
 
 
 def test_overlap_spherical():
@@ -87,7 +88,9 @@ def test_overlap_spherical():
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     overlap_obj = Overlap(basis)
-    assert np.allclose(overlap_obj.construct_array_spherical(), overlap_integral(basis))
+    overlap_obj_value = overlap_obj.construct_array_spherical(screen_basis=False)
+    overlap_func_value = overlap_integral(basis, screen_basis=False)
+    assert np.allclose(overlap_obj_value, overlap_func_value)
 
 
 def test_overlap_mix():
@@ -97,8 +100,8 @@ def test_overlap_mix():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
     overlap_obj = Overlap(basis)
     assert np.allclose(
-        overlap_obj.construct_array_mix(["spherical"] * 8),
-        overlap_integral(basis, tol_screen=None),
+        overlap_obj.construct_array_mix(["spherical"] * 8, screen_basis=False),
+        overlap_integral(basis, screen_basis=False),
     )
 
 
@@ -109,8 +112,8 @@ def test_overlap_lincomb():
     overlap_obj = Overlap(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        overlap_obj.construct_array_lincomb(transform, ["spherical"]),
-        overlap_integral(basis, transform=transform),
+        overlap_obj.construct_array_lincomb(transform, ["spherical"], screen_basis=False),
+        overlap_integral(basis, transform=transform, screen_basis=False),
     )
 
 
@@ -124,7 +127,7 @@ def test_overlap_cartesian_norm_anorcc():
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     overlap_obj = Overlap(basis)
-    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian(screen_basis=False)), 1)
 
 
 def test_overlap_spherical_norm_sto6g():
@@ -138,7 +141,7 @@ def test_overlap_spherical_norm_sto6g():
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     overlap_obj = Overlap(basis)
-    assert np.allclose(np.diag(overlap_obj.construct_array_spherical()), 1)
+    assert np.allclose(np.diag(overlap_obj.construct_array_spherical(screen_basis=False)), 1)
 
 
 def test_overlap_spherical_norm_anorcc():
@@ -151,11 +154,11 @@ def test_overlap_spherical_norm_anorcc():
 
     basis = make_contractions(basis_dict, ["C"], np.array([[0, 0, 0]]), "cartesian")
     overlap_obj = Overlap(basis)
-    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian(screen_basis=False)), 1)
 
     basis = make_contractions(basis_dict, ["Xe"], np.array([[0, 0, 0]]), "cartesian")
     overlap_obj = Overlap(basis)
-    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian(screen_basis=False)), 1)
 
 
 def test_overlap_cartesian_norm_sto6g():
@@ -169,7 +172,7 @@ def test_overlap_cartesian_norm_sto6g():
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     overlap_obj = Overlap(basis)
-    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian()), 1)
+    assert np.allclose(np.diag(overlap_obj.construct_array_cartesian(screen_basis=False)), 1)
 
 
 def test_overlap_horton_anorcc_hhe():
@@ -189,7 +192,7 @@ def test_overlap_horton_anorcc_hhe():
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
-    assert np.allclose(overlap_integral(basis), horton_overlap)
+    assert np.allclose(overlap_integral(basis, screen_basis=False), horton_overlap)
 
 
 def test_overlap_horton_anorcc_bec():
@@ -210,10 +213,11 @@ def test_overlap_horton_anorcc_bec():
     basis = [HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type) for i in basis]
 
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
-    assert np.allclose(overlap_integral(basis), horton_overlap)
+    assert np.allclose(overlap_integral(basis, screen_basis=False), horton_overlap)
+
 
 @pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
-def test_overlap_screening_tight(precision):
+def test_overlap_screening_accuracy(precision):
     """Test overlap screening.
 
     This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
