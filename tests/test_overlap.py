@@ -229,8 +229,8 @@ def test_overlap_screening_vs_without_screening():
     overlaps_no_screen = overlap_integral(contraction, tol_screen=None)
     assert np.allclose(overlaps, overlaps_no_screen)
 
-
-def test_overlap_screening_with_fail():
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_overlap_screening_tight(precision):
     """Test overlap screening.
 
     This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
@@ -241,7 +241,8 @@ def test_overlap_screening_with_fail():
     atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
     contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
 
-    # check overlap integrals with and without screening do not match
-    overlaps = overlap_integral(contraction, tol_screen=1.0e-2)
-    overlaps_no_screen = overlap_integral(contraction, tol_screen=None)
-    assert not np.allclose(overlaps, overlaps_no_screen)
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    overlaps = overlap_integral(contraction, tol_screen=tol_screen)
+    overlaps_no_screen = overlap_integral(contraction, screen_basis=False)
+    assert np.allclose(overlaps, overlaps_no_screen, atol=precision)
