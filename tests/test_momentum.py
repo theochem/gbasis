@@ -17,7 +17,9 @@ def test_momentum_construct_array_contraction():
     test_two = GeneralizedContractionShell(
         2, np.array([1.5, 2, 3]), np.array([3.0, 4.0]), np.array([0.2, 0.02]), "spherical"
     )
-    test = MomentumIntegral.construct_array_contraction(test_one, test_two).squeeze()
+    test = MomentumIntegral.construct_array_contraction(
+        test_one, test_two, screen_basis=False
+    ).squeeze()
     answer = np.array(
         [
             [
@@ -165,8 +167,8 @@ def test_momentum_integral_cartesian():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
-        momentum_integral_obj.construct_array_cartesian(),
-        momentum_integral(basis),
+        momentum_integral_obj.construct_array_cartesian(screen_basis=False),
+        momentum_integral(basis, screen_basis=False),
     )
 
 
@@ -177,8 +179,8 @@ def test_momentum_integral_spherical():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
-        momentum_integral_obj.construct_array_spherical(),
-        momentum_integral(basis),
+        momentum_integral_obj.construct_array_spherical(screen_basis=False),
+        momentum_integral(basis, screen_basis=False),
     )
 
 
@@ -189,8 +191,8 @@ def test_momentum_integral_mix():
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
     momentum_integral_obj = MomentumIntegral(basis)
     assert np.allclose(
-        momentum_integral_obj.construct_array_mix(["spherical"] * 8),
-        momentum_integral(basis),
+        momentum_integral_obj.construct_array_mix(["spherical"] * 8, screen_basis=False),
+        momentum_integral(basis, screen_basis=False),
     )
 
 
@@ -201,6 +203,6 @@ def test_momentum_integral_lincomb():
     momentum_integral_obj = MomentumIntegral(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        momentum_integral_obj.construct_array_lincomb(transform, ["spherical"]),
-        momentum_integral(basis, transform=transform),
+        momentum_integral_obj.construct_array_lincomb(transform, ["spherical"], screen_basis=False),
+        momentum_integral(basis, transform=transform, screen_basis=False),
     )
