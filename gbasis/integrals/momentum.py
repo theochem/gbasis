@@ -120,7 +120,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
                     len(contractions_two.norm_prim_cart),
                     3,
                 ),
-                dtype=np.complex128,
+                dtype=np.float64,
             )
 
         # compute not-screened integrals
