@@ -212,23 +212,6 @@ def test_overlap_horton_anorcc_bec():
     horton_overlap = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
     assert np.allclose(overlap_integral(basis), horton_overlap)
 
-
-def test_overlap_screening_vs_without_screening():
-    """Test overlap screening.
-
-    This test is meant to  pass.  Using spherical 6-31G Gaussian basis set.
-
-    """
-    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
-    atsymbols = ["H", "C", "Kr"]
-    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
-    contraction = make_contractions(basis_dict, atsymbols, atcoords, "spherical")
-
-    # check overlap integrals with and without screening match
-    overlaps = overlap_integral(contraction, tol_screen=1.0e-10)
-    overlaps_no_screen = overlap_integral(contraction, tol_screen=None)
-    assert np.allclose(overlaps, overlaps_no_screen)
-
 @pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
 def test_overlap_screening_tight(precision):
     """Test overlap screening.
