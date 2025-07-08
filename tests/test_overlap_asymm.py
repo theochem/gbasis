@@ -24,7 +24,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_hhe():
 
     horton_overlap_integral_asymmetric = np.load(find_datafile("data_horton_hhe_cart_overlap.npy"))
     assert np.allclose(
-        overlap_integral_asymmetric(basis, basis),
+        overlap_integral_asymmetric(basis, basis, screen_basis=False),
         horton_overlap_integral_asymmetric,
     )
 
@@ -47,7 +47,7 @@ def test_overlap_integral_asymmetric_horton_anorcc_bec():
 
     horton_overlap_integral_asymmetric = np.load(find_datafile("data_horton_bec_cart_overlap.npy"))
     assert np.allclose(
-        overlap_integral_asymmetric(basis, basis),
+        overlap_integral_asymmetric(basis, basis, screen_basis=False),
         horton_overlap_integral_asymmetric,
     )
 
@@ -80,26 +80,28 @@ def test_overlap_integral_asymmetric_compare():
     ]
 
     assert np.allclose(
-        overlap_integral(cartesian_basis),
-        overlap_integral_asymmetric(cartesian_basis, cartesian_basis),
+        overlap_integral(cartesian_basis, screen_basis=False),
+        overlap_integral_asymmetric(cartesian_basis, cartesian_basis, screen_basis=False),
     )
     assert np.allclose(
-        overlap_integral(spherical_basis),
-        overlap_integral_asymmetric(spherical_basis, spherical_basis),
+        overlap_integral(spherical_basis, screen_basis=False),
+        overlap_integral_asymmetric(spherical_basis, spherical_basis, screen_basis=False),
     )
     assert np.allclose(
-        overlap_integral(spherical_basis, transform=np.identity(218)),
+        overlap_integral(spherical_basis, transform=np.identity(218), screen_basis=False),
         overlap_integral_asymmetric(
             spherical_basis,
             spherical_basis,
             transform_one=np.identity(218),
             transform_two=np.identity(218),
+            screen_basis=False,
         ),
     )
     assert np.allclose(
-        overlap_integral(mixed_basis),
+        overlap_integral(mixed_basis, screen_basis=False),
         overlap_integral_asymmetric(
             mixed_basis,
             mixed_basis,
+            screen_basis=False,
         ),
     )
