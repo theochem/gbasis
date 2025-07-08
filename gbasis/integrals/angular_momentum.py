@@ -8,7 +8,7 @@ from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
 )
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
-from gbasis.screening import is_two_index_integral_screened
+from gbasis.screening import is_two_index_overlap_screened
 
 
 # TODO: need to test against reference
@@ -111,8 +111,8 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
-        # return zero if screening is enabled, and the integral is screened
-        if screen_basis and is_two_index_integral_screened(
+        # return zeros if overlap is screened
+        if screen_basis and is_two_index_overlap_screened(
             contractions_one, contractions_two, tol_screen
         ):
             return np.zeros(
@@ -125,63 +125,62 @@ class AngularMomentumIntegral(BaseTwoIndexSymmetric):
                 ),
                 dtype=np.complex128,
             )
-        # calculate the integral otherwise
-        else:
-            diff_integrals = _compute_differential_operator_integrals_intermediate(
-                1,
-                contractions_one.coord,
-                np.max(contractions_one.angmom_components_cart),
-                contractions_one.exps,
-                contractions_two.coord,
-                np.max(contractions_two.angmom_components_cart),
-                contractions_two.exps,
-            )
-            moment_integrals = _compute_multipole_moment_integrals_intermediate(
-                np.zeros(3),
-                1,
-                contractions_one.coord,
-                np.max(contractions_one.angmom_components_cart),
-                contractions_one.exps,
-                contractions_two.coord,
-                np.max(contractions_two.angmom_components_cart),
-                contractions_two.exps,
-            )
 
-            angmoms_a = contractions_one.angmom_components_cart
-            angmoms_b = contractions_two.angmom_components_cart
-            output = np.array(
-                [
-                    moment_integrals[0, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                    * (
-                        moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                        * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                        - moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                        * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                    ),
-                    moment_integrals[0, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                    * (
-                        moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                        * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                        - moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                        * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                    ),
-                    moment_integrals[0, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
-                    * (
-                        moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                        * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                        - moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
-                        * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
-                    ),
-                ]
-            )
+        diff_integrals = _compute_differential_operator_integrals_intermediate(
+            1,
+            contractions_one.coord,
+            np.max(contractions_one.angmom_components_cart),
+            contractions_one.exps,
+            contractions_two.coord,
+            np.max(contractions_two.angmom_components_cart),
+            contractions_two.exps,
+        )
+        moment_integrals = _compute_multipole_moment_integrals_intermediate(
+            np.zeros(3),
+            1,
+            contractions_one.coord,
+            np.max(contractions_one.angmom_components_cart),
+            contractions_one.exps,
+            contractions_two.coord,
+            np.max(contractions_two.angmom_components_cart),
+            contractions_two.exps,
+        )
 
-            # normalize and contract
-            norm_a = contractions_one.norm_prim_cart[np.newaxis, np.newaxis, :, np.newaxis, :]
-            output = np.tensordot(output * norm_a, contractions_one.coeffs, (4, 0))
-            norm_b = contractions_two.norm_prim_cart[np.newaxis, :, np.newaxis, :, np.newaxis]
-            output = np.tensordot(output * norm_b, contractions_two.coeffs, (3, 0))
+        angmoms_a = contractions_one.angmom_components_cart
+        angmoms_b = contractions_two.angmom_components_cart
+        output = np.array(
+            [
+                moment_integrals[0, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                * (
+                    moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                    * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                    - moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                    * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                ),
+                moment_integrals[0, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                * (
+                    moment_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                    * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                    - moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                    * diff_integrals[1, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                ),
+                moment_integrals[0, angmoms_b[:, None, 2], angmoms_a[None, :, 2], 2, :, :]
+                * (
+                    moment_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                    * diff_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                    - moment_integrals[1, angmoms_b[:, None, 1], angmoms_a[None, :, 1], 1, :, :]
+                    * diff_integrals[1, angmoms_b[:, None, 0], angmoms_a[None, :, 0], 0, :, :]
+                ),
+            ]
+        )
 
-            return -1j * np.transpose(output, (3, 2, 4, 1, 0))
+        # normalize and contract
+        norm_a = contractions_one.norm_prim_cart[np.newaxis, np.newaxis, :, np.newaxis, :]
+        output = np.tensordot(output * norm_a, contractions_one.coeffs, (4, 0))
+        norm_b = contractions_two.norm_prim_cart[np.newaxis, :, np.newaxis, :, np.newaxis]
+        output = np.tensordot(output * norm_b, contractions_two.coeffs, (3, 0))
+
+        return -1j * np.transpose(output, (3, 2, 4, 1, 0))
 
 
 def angular_momentum_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):

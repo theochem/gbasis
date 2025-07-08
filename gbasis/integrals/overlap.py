@@ -5,7 +5,7 @@ import numpy as np
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
-from gbasis.screening import is_two_index_integral_screened
+from gbasis.screening import is_two_index_overlap_screened
 
 
 class Overlap(BaseTwoIndexSymmetric):
@@ -103,7 +103,7 @@ class Overlap(BaseTwoIndexSymmetric):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
         # return zero if screening is enabled, and the integral is screened
-        if screen_basis and is_two_index_integral_screened(
+        if screen_basis and is_two_index_overlap_screened(
             contractions_one, contractions_two, tol_screen
         ):
             return np.zeros(
@@ -115,24 +115,23 @@ class Overlap(BaseTwoIndexSymmetric):
                 ),
                 dtype=np.float64,
             )
-        # calculate integral otherwise
-        else:
-            return _compute_multipole_moment_integrals(
-                np.zeros(3),
-                np.zeros((1, 3), dtype=int),
-                # contraction on the left hand side
-                contractions_one.coord,
-                contractions_one.angmom_components_cart,
-                contractions_one.exps,
-                contractions_one.coeffs,
-                contractions_one.norm_prim_cart,
-                # contraction on the right hand side
-                contractions_two.coord,
-                contractions_two.angmom_components_cart,
-                contractions_two.exps,
-                contractions_two.coeffs,
-                contractions_two.norm_prim_cart,
-            )[0]
+        # compute not-screened integrals
+        return _compute_multipole_moment_integrals(
+            np.zeros(3),
+            np.zeros((1, 3), dtype=int),
+            # contraction on the left hand side
+            contractions_one.coord,
+            contractions_one.angmom_components_cart,
+            contractions_one.exps,
+            contractions_one.coeffs,
+            contractions_one.norm_prim_cart,
+            # contraction on the right hand side
+            contractions_two.coord,
+            contractions_two.angmom_components_cart,
+            contractions_two.exps,
+            contractions_two.coeffs,
+            contractions_two.norm_prim_cart,
+        )[0]
 
 
 def overlap_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):

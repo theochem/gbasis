@@ -5,7 +5,7 @@ import numpy as np
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
-from gbasis.screening import is_two_index_integral_screened
+from gbasis.screening import is_two_index_overlap_screened
 
 
 class KineticEnergyIntegral(BaseTwoIndexSymmetric):
@@ -106,7 +106,7 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
         # return zero if screening is enabled, and the integral is screened
-        if screen_basis and is_two_index_integral_screened(
+        if screen_basis and is_two_index_overlap_screened(
             contractions_one, contractions_two, tol_screen
         ):
             return np.zeros(
@@ -118,32 +118,32 @@ class KineticEnergyIntegral(BaseTwoIndexSymmetric):
                 ),
                 dtype=np.float64,
             )
-        # calculate the integral otherwise
-        else:
-            coord_a = contractions_one.coord
-            angmoms_a = contractions_one.angmom_components_cart
-            alphas_a = contractions_one.exps
-            coeffs_a = contractions_one.coeffs
-            norm_a_prim = contractions_one.norm_prim_cart
-            coord_b = contractions_two.coord
-            angmoms_b = contractions_two.angmom_components_cart
-            alphas_b = contractions_two.exps
-            coeffs_b = contractions_two.coeffs
-            norm_b_prim = contractions_two.norm_prim_cart
-            output = _compute_differential_operator_integrals(
-                np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]]),
-                coord_a,
-                angmoms_a,
-                alphas_a,
-                coeffs_a,
-                norm_a_prim,
-                coord_b,
-                angmoms_b,
-                alphas_b,
-                coeffs_b,
-                norm_b_prim,
-            )
-            return -0.5 * np.sum(output, axis=0)
+
+        # compute not-screened integrals
+        coord_a = contractions_one.coord
+        angmoms_a = contractions_one.angmom_components_cart
+        alphas_a = contractions_one.exps
+        coeffs_a = contractions_one.coeffs
+        norm_a_prim = contractions_one.norm_prim_cart
+        coord_b = contractions_two.coord
+        angmoms_b = contractions_two.angmom_components_cart
+        alphas_b = contractions_two.exps
+        coeffs_b = contractions_two.coeffs
+        norm_b_prim = contractions_two.norm_prim_cart
+        output = _compute_differential_operator_integrals(
+            np.array([[2, 0, 0], [0, 2, 0], [0, 0, 2]]),
+            coord_a,
+            angmoms_a,
+            alphas_a,
+            coeffs_a,
+            norm_a_prim,
+            coord_b,
+            angmoms_b,
+            alphas_b,
+            coeffs_b,
+            norm_b_prim,
+        )
+        return -0.5 * np.sum(output, axis=0)
 
 
 def kinetic_energy_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):

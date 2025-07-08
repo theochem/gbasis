@@ -5,7 +5,7 @@ import numpy as np
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
-from gbasis.screening import is_two_index_integral_screened
+from gbasis.screening import is_two_index_overlap_screened
 
 
 # TODO: need to test against reference
@@ -109,7 +109,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
         # return zero if screening is enabled, and the integral is screened
-        if screen_basis and is_two_index_integral_screened(
+        if screen_basis and is_two_index_overlap_screened(
             contractions_one, contractions_two, tol_screen
         ):
             return np.zeros(
@@ -122,22 +122,22 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
                 ),
                 dtype=np.complex128,
             )
-        # calculate the integral otherwise
-        else:
-            output = _compute_differential_operator_integrals(
-                np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
-                contractions_one.coord,
-                contractions_one.angmom_components_cart,
-                contractions_one.exps,
-                contractions_one.coeffs,
-                contractions_one.norm_prim_cart,
-                contractions_two.coord,
-                contractions_two.angmom_components_cart,
-                contractions_two.exps,
-                contractions_two.coeffs,
-                contractions_two.norm_prim_cart,
-            )
-            return -1j * np.transpose(output, (1, 2, 3, 4, 0))
+
+        # compute not-screened integrals
+        output = _compute_differential_operator_integrals(
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            contractions_one.coord,
+            contractions_one.angmom_components_cart,
+            contractions_one.exps,
+            contractions_one.coeffs,
+            contractions_one.norm_prim_cart,
+            contractions_two.coord,
+            contractions_two.angmom_components_cart,
+            contractions_two.exps,
+            contractions_two.coeffs,
+            contractions_two.norm_prim_cart,
+        )
+        return -1j * np.transpose(output, (1, 2, 3, 4, 0))
 
 
 def momentum_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):

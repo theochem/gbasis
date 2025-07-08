@@ -5,7 +5,7 @@ import numpy as np
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
-from gbasis.screening import is_two_index_integral_screened
+from gbasis.screening import is_two_index_overlap_screened
 
 
 class Moment(BaseTwoIndexSymmetric):
@@ -146,7 +146,7 @@ class Moment(BaseTwoIndexSymmetric):
             )
 
         # return zero if screening is enabled, and the integral is screened
-        if screen_basis and is_two_index_integral_screened(
+        if screen_basis and is_two_index_overlap_screened(
             contractions_one, contractions_two, tol_screen
         ):
             return np.zeros(
@@ -159,33 +159,32 @@ class Moment(BaseTwoIndexSymmetric):
                 ),
                 dtype=np.float64,
             )
-        # calculate the integral otherwise
-        else:
-            coord_a = contractions_one.coord
-            angmoms_a = contractions_one.angmom_components_cart
-            exps_a = contractions_one.exps
-            coeffs_a = contractions_one.coeffs
-            norm_a_prim = contractions_one.norm_prim_cart
-            coord_b = contractions_two.coord
-            angmoms_b = contractions_two.angmom_components_cart
-            exps_b = contractions_two.exps
-            coeffs_b = contractions_two.coeffs
-            norm_b_prim = contractions_two.norm_prim_cart
-            output = _compute_multipole_moment_integrals(
-                moment_coord,
-                moment_orders,
-                coord_a,
-                angmoms_a,
-                exps_a,
-                coeffs_a,
-                norm_a_prim,
-                coord_b,
-                angmoms_b,
-                exps_b,
-                coeffs_b,
-                norm_b_prim,
-            )
-            return np.transpose(output, (1, 2, 3, 4, 0))
+        # compute not-screened integrals
+        coord_a = contractions_one.coord
+        angmoms_a = contractions_one.angmom_components_cart
+        exps_a = contractions_one.exps
+        coeffs_a = contractions_one.coeffs
+        norm_a_prim = contractions_one.norm_prim_cart
+        coord_b = contractions_two.coord
+        angmoms_b = contractions_two.angmom_components_cart
+        exps_b = contractions_two.exps
+        coeffs_b = contractions_two.coeffs
+        norm_b_prim = contractions_two.norm_prim_cart
+        output = _compute_multipole_moment_integrals(
+            moment_coord,
+            moment_orders,
+            coord_a,
+            angmoms_a,
+            exps_a,
+            coeffs_a,
+            norm_a_prim,
+            coord_b,
+            angmoms_b,
+            exps_b,
+            coeffs_b,
+            norm_b_prim,
+        )
+        return np.transpose(output, (1, 2, 3, 4, 0))
 
 
 def moment_integral(

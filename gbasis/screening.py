@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def is_two_index_integral_screened(contractions_one, contractions_two, tol_screen):
+def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen):
     r"""Return True if the integral should be screened.
 
     .. math::
@@ -35,13 +35,10 @@ def is_two_index_integral_screened(contractions_one, contractions_two, tol_scree
         If integral should be screened, return `True`
     """
 
-    # check tol_screen
-    if isinstance(tol_screen, bool):
-        raise TypeError(f"Argument tol_screen must be a float. Got {type(tol_screen)}.")
-
     # calculate distance cutoff
     alpha_a = min(contractions_one.exps)
     alpha_b = min(contractions_two.exps)
     r_12 = contractions_two.coord - contractions_one.coord
     cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(tol_screen))
+    # integrals are screened if centers are further apart than the cutoff
     return np.linalg.norm(r_12) > cutoff
