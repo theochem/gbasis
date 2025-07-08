@@ -94,6 +94,7 @@ def test_moment_construct_array_contraction():
                         [0, 1, 1],
                     ]
                 ),
+                screen_basis=False,
             )
         ),
         np.squeeze(answer),
@@ -154,6 +155,7 @@ def test_moment_cartesian():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
         moment_integral(
             basis,
@@ -172,6 +174,7 @@ def test_moment_cartesian():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
     )
 
@@ -199,6 +202,7 @@ def test_moment_spherical():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
         moment_integral(
             basis,
@@ -217,6 +221,7 @@ def test_moment_spherical():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
     )
 
@@ -245,6 +250,7 @@ def test_moment_mix():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
         moment_integral(
             basis,
@@ -263,6 +269,7 @@ def test_moment_mix():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
     )
 
@@ -292,6 +299,7 @@ def test_moment_spherical_lincomb():
                     [0, 1, 1],
                 ]
             ),
+            screen_basis=False,
         ),
         moment_integral(
             basis,
@@ -311,5 +319,6 @@ def test_moment_spherical_lincomb():
                 ]
             ),
             transform=transform,
+            screen_basis=False,
         ),
     )
