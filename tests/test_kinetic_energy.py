@@ -2,7 +2,7 @@
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
 from gbasis.integrals.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 from gbasis.utils import factorial2
 import numpy as np
 import pytest
@@ -249,3 +249,21 @@ def test_kinetic_energy_integral_horton_anorcc_bec():
     )
     ke_int_values = kinetic_energy_integral(basis, screen_basis=False)
     assert np.allclose(ke_int_values, horton_kinetic_energy_integral)
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_kinetic_screening_accuracy(precision):
+    """Test kinetic energy screening.
+
+    This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
+
+    """
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    kinetic_energy = kinetic_energy_integral(contraction, tol_screen=tol_screen)
+    kinetic_energy_no_screen = kinetic_energy_integral(contraction, screen_basis=False)
+    assert np.allclose(kinetic_energy, kinetic_energy_no_screen, atol=precision)

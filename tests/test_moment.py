@@ -2,7 +2,7 @@
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.moment import Moment, moment_integral
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 from gbasis.utils import factorial2
 import numpy as np
 import pytest
@@ -322,3 +322,23 @@ def test_moment_spherical_lincomb():
             screen_basis=False,
         ),
     )
+
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_moment_screening_accuracy(precision):
+    """Test (dipole) moment screening.
+
+    This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
+
+    """
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+    order = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    moment = moment_integral(contraction, np.zeros(3), order, tol_screen=tol_screen)
+    moment_no_screen = moment_integral(contraction, np.zeros(3), order, screen_basis=False)
+    assert np.allclose(moment, moment_no_screen, atol=precision)

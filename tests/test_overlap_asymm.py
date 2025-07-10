@@ -1,9 +1,10 @@
 """Test gbasis.integrals.overlap_asymm."""
 from gbasis.integrals.overlap import overlap_integral
 from gbasis.integrals.overlap_asymm import overlap_integral_asymmetric
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem, parse_gbs
 import numpy as np
 from utils import find_datafile, HortonContractions
+import pytest
 
 
 def test_overlap_integral_asymmetric_horton_anorcc_hhe():
@@ -105,3 +106,22 @@ def test_overlap_integral_asymmetric_compare():
             screen_basis=False,
         ),
     )
+
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_overlap_asymmetric_screening_accuracy(precision):
+    """Test asymmetric overlap screening.
+
+    This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
+
+    """
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    overlap_asymmetric = overlap_integral_asymmetric(contraction, contraction, tol_screen=tol_screen)
+    overlap_asymmetric_no_screen = overlap_integral_asymmetric(contraction, contraction, screen_basis=False)
+    assert np.allclose(overlap_asymmetric, overlap_asymmetric_no_screen, atol=precision)
