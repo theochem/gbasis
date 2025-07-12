@@ -326,11 +326,8 @@ def test_moment_spherical_lincomb():
 
 @pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
 def test_moment_screening_accuracy(precision):
-    """Test (dipole) moment screening.
+    """Test (dipole) moment screening."""
 
-    This test is meant to  fail.  Using cartesian sto-6G nwchem basis set.
-
-    """
     basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
     atsymbols = ["H", "C", "Kr"]
     atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
