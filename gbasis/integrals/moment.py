@@ -1,8 +1,11 @@
 """Module for computing the moments of a basis set."""
+
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
-import numpy as np
+from gbasis.screening import is_two_index_overlap_screened
 
 
 class Moment(BaseTwoIndexSymmetric):
@@ -49,7 +52,12 @@ class Moment(BaseTwoIndexSymmetric):
 
     @staticmethod
     def construct_array_contraction(
-        contractions_one, contractions_two, moment_coord, moment_orders
+        contractions_one,
+        contractions_two,
+        moment_coord,
+        moment_orders,
+        screen_basis=True,
+        tol_screen=1e-8,
     ):
         """Return the evaluations of the given contractions at the given coordinates.
 
@@ -67,6 +75,13 @@ class Moment(BaseTwoIndexSymmetric):
             Orders of the moment for each dimension (x, y, z).
             Note that a two dimensional array must be given, even if there is only one set of orders
             of the moment.
+        screen_basis : bool, optional
+            A toggle to enable or disable screening. Default value is True to enable screening.
+        tol_screen : float, optional
+            The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+            minimum contraction exponents to compute a cutoff which is compared to the distance
+            between the contraction centers to decide whether the overlap integral should be
+            set to zero. The default value for `tol_screen` is 1e-8.
 
         Returns
         -------
@@ -130,6 +145,21 @@ class Moment(BaseTwoIndexSymmetric):
                 " int"
             )
 
+        # return zero if screening is enabled, and the integral is screened
+        if screen_basis and is_two_index_overlap_screened(
+            contractions_one, contractions_two, tol_screen
+        ):
+            return np.zeros(
+                (
+                    contractions_one.num_seg_cont,
+                    len(contractions_one.norm_prim_cart),
+                    contractions_two.num_seg_cont,
+                    len(contractions_two.norm_prim_cart),
+                    3,
+                ),
+                dtype=np.float64,
+            )
+        # compute not-screened integrals
         coord_a = contractions_one.coord
         angmoms_a = contractions_one.angmom_components_cart
         exps_a = contractions_one.exps
@@ -157,15 +187,18 @@ class Moment(BaseTwoIndexSymmetric):
         return np.transpose(output, (1, 2, 3, 4, 0))
 
 
-def moment_integral(basis, moment_coord, moment_orders, transform=None):
-    """Return moment integral of the given basis set.
+def moment_integral(
+    basis, moment_coord, moment_orders, transform=None, screen_basis=True, tol_screen=1e-8
+):
+    r"""Return moment integral of the given basis set.
 
     .. math::
 
-        \int \phi_a (\mathbf{r}) (x - X_C)^{c_x} (y - Y_C)^{c_y} (z - Z_C)^{c_z} \phi_b (\mathbf{r}) d\mathbf{r}
+        \int \phi_a (\mathbf{r}) (x - X_C)^{c_x} (y - Y_C)^{c_y} (z - Z_C)^{c_z}
+        \phi_b (\mathbf{r}) d\mathbf{r}
 
-    where :math:`X_C`, :math:`Y_C`, and :math:`Z_C` are the coordinates of the center of the moment, and
-    :math:`c_x`, :math:`c_y`, and :math:`c_z` are the orders of the moment.
+    where :math:`X_C`, :math:`Y_C`, and :math:`Z_C` are the coordinates of the center of the moment,
+    and :math:`c_x`, :math:`c_y`, and :math:`c_z` are the orders of the moment.
 
     Parameters
     ----------
@@ -183,6 +216,13 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff which is compared to the distance
+        between the contraction centers to decide whether the overlap integral should be
+        set to zero. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -202,19 +242,20 @@ def moment_integral(basis, moment_coord, moment_orders, transform=None):
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"tol_screen": tol_screen, "screen_basis": screen_basis}
 
     if transform is not None:
         return Moment(basis).construct_array_lincomb(
-            transform, coord_type, moment_coord=moment_coord, moment_orders=moment_orders
+            transform, coord_type, moment_coord=moment_coord, moment_orders=moment_orders, **kwargs
         )
     if all(ct == "cartesian" for ct in coord_type):
         return Moment(basis).construct_array_cartesian(
-            moment_coord=moment_coord, moment_orders=moment_orders
+            moment_coord=moment_coord, moment_orders=moment_orders, **kwargs
         )
     if all(ct == "spherical" for ct in coord_type):
         return Moment(basis).construct_array_spherical(
-            moment_coord=moment_coord, moment_orders=moment_orders
+            moment_coord=moment_coord, moment_orders=moment_orders, **kwargs
         )
     return Moment(basis).construct_array_mix(
-        coord_type, moment_coord=moment_coord, moment_orders=moment_orders
+        coord_type, moment_coord=moment_coord, moment_orders=moment_orders, **kwargs
     )

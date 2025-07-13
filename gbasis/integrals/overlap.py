@@ -1,9 +1,11 @@
 """Functions for computing overlap of a basis set."""
 
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
-import numpy as np
+from gbasis.screening import is_two_index_overlap_screened
 
 
 class Overlap(BaseTwoIndexSymmetric):
@@ -50,7 +52,9 @@ class Overlap(BaseTwoIndexSymmetric):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions_one, contractions_two, tol_screen=None):
+    def construct_array_contraction(
+        contractions_one, contractions_two, screen_basis=True, tol_screen=1e-8
+    ):
         """Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
@@ -61,11 +65,13 @@ class Overlap(BaseTwoIndexSymmetric):
         contractions_two : GeneralizedContractionShell
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the overlap.
-        tol_screen : None or float, optional
-            The tolerance used for screening overlap integrals. The `tol_screen` is combined with the
-            minimum contraction exponents to compute a cutoff which is compared to the distance between
-            the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
-            screened). If `None`, no screening is performed.
+        screen_basis : bool, optional
+            A toggle to enable or disable screening. Default value is True to enable screening.
+        tol_screen : float, optional
+            The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+            minimum contraction exponents to compute a cutoff which is compared to the distance
+            between the contraction centers to decide whether the overlap integral should be
+            set to zero. The default value for `tol_screen` is 1e-8.
 
         Returns
         -------
@@ -96,18 +102,20 @@ class Overlap(BaseTwoIndexSymmetric):
         if not isinstance(contractions_two, GeneralizedContractionShell):
             raise TypeError("`contractions_two` must be a `GeneralizedContractionShell` instance.")
 
-        # return zeros for overlap integrals if contractions are screened
-        if is_integral_screened(contractions_one, contractions_two, tol_screen):
+        # return zero if screening is enabled, and the integral is screened
+        if screen_basis and is_two_index_overlap_screened(
+            contractions_one, contractions_two, tol_screen
+        ):
             return np.zeros(
                 (
                     contractions_one.num_seg_cont,
                     len(contractions_one.norm_prim_cart),
                     contractions_two.num_seg_cont,
                     len(contractions_two.norm_prim_cart),
-                )
+                ),
+                dtype=np.float64,
             )
-
-        # calculate overlap integrals
+        # compute not-screened integrals
         return _compute_multipole_moment_integrals(
             np.zeros(3),
             np.zeros((1, 3), dtype=int),
@@ -126,8 +134,8 @@ class Overlap(BaseTwoIndexSymmetric):
         )[0]
 
 
-def overlap_integral(basis, transform=None, tol_screen=None):
-    """Return overlap integral of the given basis set.
+def overlap_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):
+    r"""Return overlap integral of the given basis set.
 
     .. math::
 
@@ -145,11 +153,13 @@ def overlap_integral(basis, transform=None, tol_screen=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
-    tol_screen : None or float, optional
-        The tolerance used for screening overlap integrals. The `tol_screen` is combined with the
-        minimum contraction exponents to compute a cutoff which is compared to the distance between
-        the contraction centers to decide whether the overlap integral should be set to zero (i.e.,
-        screened). If `None`, no screening is performed.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff which is compared to the distance
+        between the contraction centers to decide whether the overlap integral should be
+        set to zero. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -160,7 +170,8 @@ def overlap_integral(basis, transform=None, tol_screen=None):
 
     """
     coord_type = [shell.coord_type for shell in basis]
-    kwargs = {"tol_screen": tol_screen}
+    kwargs = {"tol_screen": tol_screen, "screen_basis": screen_basis}
+
     if transform is not None:
         return Overlap(basis).construct_array_lincomb(transform, coord_type, **kwargs)
     if all(ct == "cartesian" for ct in coord_type):
@@ -168,51 +179,3 @@ def overlap_integral(basis, transform=None, tol_screen=None):
     if all(ct == "spherical" for ct in coord_type):
         return Overlap(basis).construct_array_spherical(**kwargs)
     return Overlap(basis).construct_array_mix(coord_type, **kwargs)
-
-
-def is_integral_screened(contractions_one, contractions_two, tol_screen):
-    r"""Return True or False in response to whether overlap integral is required.
-
-    .. math::
-           d_{A_s;B_t} > \sqrt{-\frac{\alpha_{ min(\alpha_{s,A})} +
-           \alpha_{ min(\alpha_{t,B})} }{ \alpha_{ min(\alpha_{s,A})}
-            \alpha_{ min(\alpha_{t,B})} } \ln \varepsilon }
-
-    where :math:`d` is the cut-off distance at which shells do not interact with each other.
-    :math:`A` and `B` are the atoms each contraction are respectively centered on.
-    :math: `\alpha` is the gaussian exponent
-    :math: `s` and `t` index the primitive Gaussian shells centered on atom `A` and `B` respectively.
-
-    Parameters
-    ----------
-    contractions_one : GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) associated with the first index of
-        the overlap.
-    contractions_two : GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) associated with the second index of
-        the overlap.
-    tol_screen : bool or float, optional
-        The tolerance used for screening overlap integrals. The `tol_screen` is combined with the
-        minimum contraction exponents to compute a cutoff which is compared to the distance between
-        the contraction centers to decide whether the overlap integral should be set to zero.
-        If `None`, no screening is performed.
-
-    Returns
-    -------
-    value : `bool`
-        If overlap integral is required, return `True`
-    """
-    # check screening_tol
-    if isinstance(tol_screen, bool):
-        raise TypeError(f"Argument tol_screen must be a float or None. Got {type(tol_screen)}.")
-
-    # test if screening is required
-    if tol_screen is None:
-        return False
-
-    # calculate distance cutoff
-    alpha_a = min(contractions_one.exps)
-    alpha_b = min(contractions_two.exps)
-    r_12 = contractions_two.coord - contractions_one.coord
-    cutoff = np.sqrt(-(alpha_a + alpha_b) / (alpha_a * alpha_b) * np.log(tol_screen))
-    return np.linalg.norm(r_12) > cutoff

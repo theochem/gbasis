@@ -93,13 +93,13 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
     lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
 
     if integral == "overlap":
-        py_int = overlap_integral(py_basis)
+        py_int = overlap_integral(py_basis, screen_basis=False)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.overlap_integral()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "kinetic_energy":
-        py_int = kinetic_energy_integral(py_basis)
+        py_int = kinetic_energy_integral(py_basis, screen_basis=False)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         lc_int = lc_basis.kinetic_energy_integral()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
@@ -119,7 +119,7 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         return
 
     elif integral == "momentum":
-        py_int = momentum_integral(py_basis)
+        py_int = momentum_integral(py_basis, screen_basis=False)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
         lc_int = lc_basis.momentum_integral(origin=np.zeros(3))
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
@@ -159,7 +159,7 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
                 [0, 1, 1],
             ]
         )
-        py_int = moment_integral(py_basis, origin, orders)
+        py_int = moment_integral(py_basis, origin, orders, screen_basis=False)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
         lc_int = lc_basis.moment_integral(orders, origin=origin)
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
@@ -213,24 +213,24 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
 
     if integral == "overlap":
         if transform:
-            py_int = overlap_integral(py_basis, transform=mol.mo.coeffs.T)
+            py_int = overlap_integral(py_basis, transform=mol.mo.coeffs.T, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
             lc_int = lc_basis.overlap_integral(transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         else:
-            py_int = overlap_integral(py_basis)
+            py_int = overlap_integral(py_basis, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
             lc_int = lc_basis.overlap_integral()
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
 
     elif integral == "kinetic_energy":
         if transform:
-            py_int = kinetic_energy_integral(py_basis, transform=mol.mo.coeffs.T)
+            py_int = kinetic_energy_integral(py_basis, transform=mol.mo.coeffs.T, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
             lc_int = lc_basis.kinetic_energy_integral(transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         else:
-            py_int = kinetic_energy_integral(py_basis)
+            py_int = kinetic_energy_integral(py_basis, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
             lc_int = lc_basis.kinetic_energy_integral()
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
@@ -258,12 +258,12 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
 
     elif integral == "momentum":
         if transform:
-            py_int = momentum_integral(py_basis, transform=mol.mo.coeffs.T)
+            py_int = momentum_integral(py_basis, transform=mol.mo.coeffs.T, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
             lc_int = lc_basis.momentum_integral(origin=np.zeros(3), transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
         else:
-            py_int = momentum_integral(py_basis)
+            py_int = momentum_integral(py_basis, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
             lc_int = lc_basis.momentum_integral(origin=np.zeros(3))
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
@@ -324,12 +324,12 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
             ]
         )
         if transform:
-            py_int = moment_integral(py_basis, origin, orders, transform=mol.mo.coeffs.T)
+            py_int = moment_integral(py_basis, origin, orders, transform=mol.mo.coeffs.T, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
             lc_int = lc_basis.moment_integral(orders, origin=origin, transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
         else:
-            py_int = moment_integral(py_basis, origin, orders)
+            py_int = moment_integral(py_basis, origin, orders, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
             lc_int = lc_basis.moment_integral(orders, origin=origin)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))

@@ -5,7 +5,7 @@ from gbasis.integrals._diff_operator_int import (
 )
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals_intermediate
 from gbasis.integrals.angular_momentum import angular_momentum_integral, AngularMomentumIntegral
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
 import numpy as np
 import pytest
 from utils import find_datafile
@@ -411,3 +411,19 @@ def test_angular_momentum_integral_lincomb():
         angular_momentum_integral_obj.construct_array_lincomb(transform, ["spherical"]),
         angular_momentum_integral(basis, transform),
     )
+
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_angular_momentum_screening_accuracy(precision):
+    """Test angular momentum screening."""
+
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    angular_momentum = angular_momentum_integral(contraction, tol_screen=tol_screen)
+    angular_momentum_no_screen = angular_momentum_integral(contraction, screen_basis=False)
+    assert np.allclose(angular_momentum, angular_momentum_no_screen, atol=precision)
