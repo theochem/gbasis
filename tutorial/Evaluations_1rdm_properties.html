@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -495,9 +495,9 @@ document.write(`
 <p>To evaluate properties dependent on the system state, we need its wavefunction or an equivalent representation. In <code class="docutils literal notranslate"><span class="pre">gbasis</span></code>, this is done through the <strong>one-electron reduced density matrix</strong> (1-RDM). As a case example, the following code will load this data from a <code class="docutils literal notranslate"><span class="pre">fchk</span></code> file corresponding to a <code class="docutils literal notranslate"><span class="pre">ub3lyp/aug-cc-pvtz</span></code> calculation on ethylene. The file can be <a class="reference internal" href="#"><span class="xref myst">downloaded</span></a> from the data folder of this repository. For simplicity, we will be using the <a class="reference external" href="https://iodata.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">iodata</span></code></a> package to load the data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># formchk file available from</span>
 <span class="c1">#</span>
@@ -597,8 +597,8 @@ t_+ (\mathbf{r}_n)
 <p>The following example shows how to evaluate the positive definite kinetic energy density and plot it on the molecular plane. The positive definite kinetic energy density is represented as a scalar field, where the color represents the magnitude of the positive definite kinetic energy density.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_posdef_kinetic_energy_density</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_posdef_kinetic_energy_density</span>
 
 
 <span class="c1"># Compute expected electron density using GBasis</span>
@@ -656,7 +656,7 @@ The kinetic energy density is positive definite: True
 <p>For an infinitesimal cube centered at <span class="math notranslate nohighlight">\(\mathbf{r}_n\)</span> containing an electron density <span class="math notranslate nohighlight">\(\rho(r)dr\)</span>, the stress tensor represents the infinitesimal force acting on each face of the cube (<span class="math notranslate nohighlight">\(i\)</span>). In the following code, we will illustrate how to evaluate the stress tensor at a set of points using <code class="docutils literal notranslate"><span class="pre">gbasis</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.stress_tensor</span> <span class="kn">import</span> <span class="n">evaluate_stress_tensor</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.stress_tensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_stress_tensor</span>
 
 <span class="c1"># center of mass of ethylene</span>
 <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mol_data</span><span class="o">.</span><span class="n">atmasses</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol_data</span><span class="o">.</span><span class="n">atmasses</span><span class="p">))[</span><span class="kc">None</span><span class="p">,:]</span>
@@ -741,7 +741,7 @@ Shape of a stress tensor result: (1600, 3, 3)
 <p>The following example shows how to evaluate it at a set of points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.stress_tensor</span> <span class="kn">import</span> <span class="n">evaluate_ehrenfest_force</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.stress_tensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_ehrenfest_force</span>
 
 <span class="c1"># center of mass of ethylene</span>
 <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mol_data</span><span class="o">.</span><span class="n">atmasses</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol_data</span><span class="o">.</span><span class="n">atmasses</span><span class="p">))[</span><span class="kc">None</span><span class="p">,:]</span>
@@ -871,7 +871,7 @@ None have out of plane components: True
 <p>The following example shows how to evaluate it at a set of points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.stress_tensor</span> <span class="kn">import</span> <span class="n">evaluate_ehrenfest_hessian</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.stress_tensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_ehrenfest_hessian</span>
 
 <span class="c1"># center of mass of ethylene</span>
 <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mol_data</span><span class="o">.</span><span class="n">atmasses</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mol_data</span><span class="o">.</span><span class="n">atmasses</span><span class="p">))[</span><span class="kc">None</span><span class="p">,:]</span>

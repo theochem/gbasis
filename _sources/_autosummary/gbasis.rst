@@ -74,6 +74,14 @@ gbasis.parsers module
    :undoc-members:
    :show-inheritance:
 
+gbasis.screening module
+-----------------------
+
+.. automodule:: gbasis.screening
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gbasis.spherical module
 -----------------------
 

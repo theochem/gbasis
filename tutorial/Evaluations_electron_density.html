@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -484,9 +484,9 @@ document.write(`
 <p>To evaluate properties dependent on the system state, we need its wavefunction or an equivalent representation. In <code class="docutils literal notranslate"><span class="pre">gbasis</span></code>, this is done through the <strong>one-electron reduced density matrix</strong> (1-RDM). As a case example, the following code will load this data from a <code class="docutils literal notranslate"><span class="pre">fchk</span></code> file corresponding to a <code class="docutils literal notranslate"><span class="pre">ub3lyp/aug-cc-pvtz</span></code> calculation on formaldehyde. The file can be <a class="reference internal" href="#"><span class="xref myst">downloaded</span></a> from the data folder of this repository. For simplicity, we will be using the <a class="reference external" href="https://iodata.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">iodata</span></code></a> package to load the data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># formchk file available from</span>
 <span class="c1">#</span>
@@ -570,8 +570,8 @@ $<span class="math notranslate nohighlight">\(\rho(\mathbf{r}_n) = \sum_{ij} \ga
 <p>In the following example, we will evaluate and plot the electron density and its gradient on the molecular plane.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density</span>
 
 <span class="c1"># Compute expected electron density using GBasis</span>
 <span class="n">rho</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
@@ -641,7 +641,7 @@ Electron density is positive definite: True
 <p>The following example shows how to evaluate the gradient of the electron density and plot it on the molecular plane. The gradient is represented as a vector field, where the length of the arrows in the representation fixed and the color represents the magnitude of the gradient.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density_gradient</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density_gradient</span>
 
 <span class="c1"># compute the gradient of the electron density</span>
 <span class="n">rho_grad</span> <span class="o">=</span> <span class="n">evaluate_density_gradient</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
@@ -736,7 +736,7 @@ Electron density is positive definite: True
 <p>This property can be evaluated in a grid of points  using the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.evals.html?highlight=evaluate_density#gbasis.evals.density.evaluate_density_hessian"><code class="docutils literal notranslate"><span class="pre">evaluate_density_hessian</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density_hessian</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density_hessian</span>
 
 <span class="n">rho_hess</span> <span class="o">=</span> <span class="n">evaluate_density_hessian</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
 
@@ -779,7 +779,7 @@ The hessians are symmetric: True
 <p>The Laplacian can be used then to understand the formation of chemical bonds, for example, by pairing regions of negative Laplacian from the base with regions of positive Laplacian from the acid. This property can be evaluated using the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.evals.html?highlight=evaluate_density#gbasis.evals.density.evaluate_density_laplacian"><code class="docutils literal notranslate"><span class="pre">evaluate_density_laplacian</span></code></a> function. The following example shows how to evaluate the Laplacian of the electron density and plot it on the molecular plane. The Laplacian is represented as a scalar field, where the color represents the magnitude of the Laplacian.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density_laplacian</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density_laplacian</span>
 
 <span class="c1"># compute the Laplacian of the electron density</span>
 <span class="n">rho_lapl</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">rdm</span><span class="p">,</span> <span class="n">ao_basis</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
@@ -847,7 +847,7 @@ The hessians are symmetric: True
 <p>This is done using the <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.evals.html?highlight=evaluate_density#gbasis.evals.density.evaluate_deriv_density"><code class="docutils literal notranslate"><span class="pre">evaluate_deriv_density</span></code></a> function from the 1-RDM and an array with the orders (x,y,z) of the derivative. The following example shows how to evaluate the different necessary derivatives of the electron density to reconstruct the gradient and Hessian of the electron density.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_deriv_density</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_deriv_density</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reconstructing the gradient using derivatives&quot;</span><span class="p">)</span>
 <span class="c1"># evaluate the derivative of density (with respect to x, y, z).</span>

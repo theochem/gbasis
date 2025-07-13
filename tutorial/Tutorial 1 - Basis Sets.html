@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -484,7 +484,7 @@ document.write(`
 <h3>1.1. Loading Gaussian94 Basis Set File Formats: <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.parsers.parse_gbs"><code class="docutils literal notranslate"><span class="pre">parse_gbs</span></code></a><a class="headerlink" href="#loading-gaussian94-basis-set-file-formats-parse-gbs" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_gbs</span>
 
 <span class="c1"># load hydrogen atom def2-SVP basis set information with the Gaussian94 format</span>
 <span class="n">gbs_basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">&quot;hydrogen_def2-svp.1.gbs&quot;</span><span class="p">)</span>
@@ -525,8 +525,8 @@ Atom: H
 <p>Checking that the basis set information loaded from Gaussian and NWChem are the same.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_nwchem</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_nwchem</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;def2-SVP Basis Set Loaded from NwChem Format:&quot;</span><span class="p">)</span>
 <span class="n">nw_basis_dict</span> <span class="o">=</span> <span class="n">parse_nwchem</span><span class="p">(</span><span class="s2">&quot;hydrogen_def2-svp.1.nw&quot;</span><span class="p">)</span>
@@ -577,8 +577,8 @@ Shell 2 has the same coefficients: True
 <p>Setting <code class="docutils literal notranslate"><span class="pre">coord_types='cartesian'</span></code> or <code class="docutils literal notranslate"><span class="pre">coord_types='c'</span></code> uses a Cartesian coordinate system for <strong>all</strong> contraction shells.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">make_contractions</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_contractions</span>
 
 <span class="c1"># Define atomic symbols and coordinates</span>
 <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
@@ -756,8 +756,8 @@ Contraction Shell #2
 <p>The following example loads basis functions from a FCHK file, but other formats supported by <a class="reference external" href="https://iodata.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">iodata</span></code></a> can also be used.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># load basis functions from a fchk file of water at uwB97XD/def2-TZVPD level</span>
 <span class="n">iodata_mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;water.fchk&quot;</span><span class="p">)</span>
@@ -816,8 +816,8 @@ Contraction Shell #2
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.html#gbasis.wrappers.from_pyscf"><code class="docutils literal notranslate"><span class="pre">from_pyscf</span></code></a> function supports building basis functions directly from <a class="reference external" href="https://pyscf.org/pyscf_api_docs/pyscf.gto.html#pyscf.gto.mole.Mole"><code class="docutils literal notranslate"><span class="pre">pyscf.gto.mole.Mole</span></code></a> object. Setting <code class="docutils literal notranslate"><span class="pre">cart=False</span></code> when creating an instance of <code class="docutils literal notranslate"><span class="pre">Mole</span></code>, spherical coordinates are used.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_pyscf</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyscf</span><span class="w"> </span><span class="kn">import</span> <span class="n">gto</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_pyscf</span>
 
 <span class="c1"># build an STO-3G basis for water using PySCF</span>
 <span class="n">molecule</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>

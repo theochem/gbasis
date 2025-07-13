@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -474,9 +474,9 @@ document.write(`
 <p>To evaluate properties dependent on the system state, we need its wavefunction or an equivalent representation. In <code class="docutils literal notranslate"><span class="pre">gbasis</span></code>, this is done through the <strong>one-electron reduced density matrix</strong> (1-RDM). As a case example, the following code will load this data from a <code class="docutils literal notranslate"><span class="pre">fchk</span></code> file corresponding to a <code class="docutils literal notranslate"><span class="pre">ub3lyp/aug-cc-pvtz</span></code> calculation on ethylene. The file can be <a class="reference internal" href="#"><span class="xref myst">downloaded</span></a> from the data folder of this repository. For simplicity, we will be using the <a class="reference external" href="https://iodata.readthedocs.io/en/latest/"><code class="docutils literal notranslate"><span class="pre">iodata</span></code></a> package to load the data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># formchk file available from</span>
 <span class="c1">#</span>
@@ -528,8 +528,8 @@ One electron RDM shape: (138, 138)
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">UniformGrid</span>
-<span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">UniformInteger</span><span class="p">,</span> <span class="n">LinearInfiniteRTransform</span><span class="p">,</span> <span class="n">Tensor1DGrids</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniformGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniformInteger</span><span class="p">,</span> <span class="n">LinearInfiniteRTransform</span><span class="p">,</span> <span class="n">Tensor1DGrids</span>
 
 <span class="c1"># create a uniform grid for the molecule (interface to cube files)</span>
 <span class="n">mol_grid</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="o">.</span><span class="n">from_molecule</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -568,7 +568,7 @@ Number of points in the planar grid: 1600
 <p>The following code shows how to evaluate the basis in the uniform grid points. As we desire to evaluate the MOs instead of the basis functions, the argument <code class="docutils literal notranslate"><span class="pre">transform</span></code> is used with the matrix of the basis set expansion coefficients (transforms from AO to MO).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.eval</span> <span class="kn">import</span> <span class="n">evaluate_basis</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.eval</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_basis</span>
 
 <span class="c1"># extract MO coefficients from iodata object</span>
 <span class="n">mo_coeffs</span> <span class="o">=</span> <span class="n">mol_data</span><span class="o">.</span><span class="n">mo</span><span class="o">.</span><span class="n">coeffs</span>
@@ -642,7 +642,7 @@ Number of points in the planar grid: 1600
 <p>The next code computes the HOMO (alpha) for the grid of points in the molecular plane. A contour plot representation is also generated.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
 <span class="c1"># Compute expected MO values using GBasis</span>
 <span class="n">mo_vals</span> <span class="o">=</span> <span class="n">evaluate_basis</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -692,7 +692,7 @@ Number of points in the planar grid: 1600
 <p>The following example shows how to evaluate the electrostatic potential of formaldehyde. In this example, the same grids will be used.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.electrostatic_potential</span> <span class="kn">import</span> <span class="n">electrostatic_potential</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.electrostatic_potential</span><span class="w"> </span><span class="kn">import</span> <span class="n">electrostatic_potential</span>
 
 <span class="c1"># Compute electrostatic potential at grid points</span>
 <span class="n">v_elect</span> <span class="o">=</span> <span class="n">electrostatic_potential</span><span class="p">(</span>

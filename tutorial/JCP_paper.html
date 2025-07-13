@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -526,8 +526,8 @@ document.write(`
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
 
 <span class="c1"># Define atomic symbols and coordinates (i.e., basis function centers)</span>
 <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
@@ -560,8 +560,8 @@ Total number of AOs:  10
 </ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># Load ethylene fchk</span>
 <span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;C2H4_hf_ccpvdz.fchk&quot;</span><span class="p">)</span>
@@ -667,8 +667,8 @@ Shape: (1, 1) --&gt; (M, L), M=# number segmented contraction shells, L=# differ
 their centers of the basis functions. To use this functionality the molecule neeeds to be loaded and the argument <code class="docutils literal notranslate"><span class="pre">overlap</span></code> set to <code class="docutils literal notranslate"><span class="pre">True</span></code> (default is <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap</span> <span class="kn">import</span> <span class="n">overlap_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.overlap</span><span class="w"> </span><span class="kn">import</span> <span class="n">overlap_integral</span>
 
 <span class="c1"># compute overlap integrals in AO and MO basis</span>
 <span class="n">olp_ao</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
@@ -701,8 +701,8 @@ Is Overlap equal to Overlap screening? True
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals.overlap_asymm"><code class="docutils literal notranslate"><span class="pre">overlap_integral_asymmetric</span></code></a> function computes the overlap integrals between two different basis sets, each denoted by a list of generalized contraction shells. The following example showcase how to use this feature to compute the overlap integrals between the <code class="docutils literal notranslate"><span class="pre">CC-pVDZ</span></code> and <code class="docutils literal notranslate"><span class="pre">CC-pTDZ</span></code> basis sets:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
-<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap_asymm</span> <span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.overlap_asymm</span><span class="w"> </span><span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
 
 <span class="c1"># load ethylene with basis set cc-pTDZ</span>
 <span class="n">mol_extended_basis</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;C2H4_hf_ccpvtz.fchk&quot;</span><span class="p">)</span>
@@ -737,7 +737,7 @@ Shape of overlap matrix: (116, 48)
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.kinetic_energy.kinetic_energy_integral"><code class="docutils literal notranslate"><span class="pre">kinetic_energy_integral</span></code></a> computes the kinetic energy integrals between pairs of basis functions in AO basis, unless <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument is provided.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.kinetic_energy</span> <span class="kn">import</span> <span class="n">kinetic_energy_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.kinetic_energy</span><span class="w"> </span><span class="kn">import</span> <span class="n">kinetic_energy_integral</span>
 
 <span class="c1"># compute kinetic energy integrals in AO basis</span>
 <span class="n">k_int1e</span> <span class="o">=</span> <span class="n">kinetic_energy_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
@@ -761,7 +761,7 @@ Kinetic energy (Hartree): 77.9285467708042
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=nuclear_electron_attraction#module-gbasis.integrals.nuclear_electron_attraction"><code class="docutils literal notranslate"><span class="pre">nuclear_electron_attraction</span></code></a> function computes the nuclear attraction integrals to a set of nuclei of <span class="math notranslate nohighlight">\(\{Z_C\}\)</span> located at <span class="math notranslate nohighlight">\(\{\mathbf{R}_{C}\}\)</span> for pairs of AO or MO basis functions. Its computation is build upon the The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.point_charge.point_charge_integral"><code class="docutils literal notranslate"><span class="pre">point_charge_integral</span></code></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.nuclear_electron_attraction</span> <span class="kn">import</span> \
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.nuclear_electron_attraction</span><span class="w"> </span><span class="kn">import</span> \
 <span class="n">nuclear_electron_attraction_integral</span>
 
 <span class="c1"># compute nuclear-electron attraction integrals in AO basis</span>
@@ -787,7 +787,7 @@ Nuclear-electron energy (Hartree): -248.2770425530744
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=electron#gbasis.integrals.electron_repulsion.electron_repulsion_integral"><code class="docutils literal notranslate"><span class="pre">electron_repulsion</span></code></a> function compute the electron-electron repulsion integrals in AO or MO basis for a pair of basis functions. This integrals can be used to compute Coulomb(J) and Exchange(K)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.electron_repulsion</span> <span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.electron_repulsion</span><span class="w"> </span><span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
 
 <span class="c1">#Compute e-e repulsion integral in MO basis, shape=(#MO, #MO, #MO, #MO)</span>
 <span class="n">int2e_mo</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">&#39;chemist&#39;</span><span class="p">)</span>
@@ -858,7 +858,7 @@ Total energy - Gaussian16 (Hartre):  -78.04016529602737
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.libcint</span> <span class="kn">import</span> <span class="n">CBasis</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.libcint</span><span class="w"> </span><span class="kn">import</span> <span class="n">CBasis</span>
 
 <span class="c1"># Define atomic elements matching atom numbers</span>
 <span class="n">atoms_ethylene</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
@@ -917,7 +917,7 @@ Gaussian basis set on a set of points.For the following examples, we use the <a 
 generate the Becke-Lebedev molecular grid:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid.molgrid</span> <span class="kn">import</span> <span class="n">MolGrid</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid.molgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolGrid</span>
 
 <span class="n">grid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
         <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">)</span>
@@ -934,8 +934,8 @@ generate the Becke-Lebedev molecular grid:</p>
 <p>The following example show how to evaluate atomic and molecular orbitals and their derivatives</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.eval</span> <span class="kn">import</span> <span class="n">evaluate_basis</span>
-<span class="kn">from</span> <span class="nn">gbasis.evals.eval_deriv</span> <span class="kn">import</span> <span class="n">evaluate_deriv_basis</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.eval</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_basis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.eval_deriv</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_deriv_basis</span>
 
 <span class="c1"># Evaluate the MOs on the grid points</span>
 <span class="n">basis_mo</span> <span class="o">=</span> <span class="n">evaluate_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -976,7 +976,7 @@ MO 8 integrated squared:  0.9999976856899412
 <p>Gbasis supports evaluating the electron density and arbitrary-order derivatives</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density</span>
 
 <span class="c1"># compute electronic density</span>
 <span class="n">dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
@@ -997,7 +997,7 @@ to choose between the arbitrary-order-derivative implementation, or the explicit
 coded 1st and 2nd derivatives.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.density</span> <span class="kn">import</span> <span class="n">evaluate_density_laplacian</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.density</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_density_laplacian</span>
 
 <span class="c1"># compute Laplacian of electron density</span>
 <span class="c1"># general arbitrary-order-derivative implementation</span>
@@ -1026,7 +1026,7 @@ Are General and Direct implementation the same? True
 and arbitrary order derivatives on a set of grid points. Supported related properties are the stress tensor, the Ehrenfest force and the Ehrenfest Hessian. Below we show an example on how to use the Ehrenfest force. Other properties are accessed similarly with their corresponding high level function.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.evals.stress_tensor</span> <span class="kn">import</span> <span class="n">evaluate_ehrenfest_force</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.stress_tensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluate_ehrenfest_force</span>
 
 <span class="c1">#center of mass ethylene</span>
 <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">atmasses</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">atmasses</span><span class="p">))[</span><span class="kc">None</span><span class="p">,:]</span>
@@ -1064,8 +1064,8 @@ Ehrenfest force at center of mass is 0: True
 <p>An high-level function for computing the molecular electrostatic potential is also provided. It is more suitable to use a cubic grid for this computation, which is typically used for visualizing molecular surface properties.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">grid</span> <span class="kn">import</span> <span class="n">UniformGrid</span>
-<span class="kn">from</span> <span class="nn">gbasis.evals.electrostatic_potential</span> <span class="kn">import</span> <span class="n">electrostatic_potential</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UniformGrid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.evals.electrostatic_potential</span><span class="w"> </span><span class="kn">import</span> <span class="n">electrostatic_potential</span>
 
 <span class="c1"># construct a cubic grid</span>
 <span class="n">cube_grid</span> <span class="o">=</span> <span class="n">UniformGrid</span><span class="o">.</span><span class="n">from_molecule</span><span class="p">(</span><span class="n">atnums</span><span class="p">,</span>

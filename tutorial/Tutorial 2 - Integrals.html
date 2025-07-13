@@ -28,8 +28,8 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -492,8 +492,8 @@ document.write(`
 <p>Here, the basis set is built from a formatted checkpoint file (of a HF/6-31G calculation for the helium hydride ion) which is loaded using the <a class="reference external" href="https://iodata.readthedocs.io/en/latest/">IOData</a> package. For a detailed tutorial on building basis sets, see the <a class="reference internal" href="#"><span class="xref myst">Building Basis Set</span></a> tutorial.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">iodata</span> <span class="kn">import</span> <span class="n">load_one</span>
-<span class="kn">from</span> <span class="nn">gbasis.wrappers</span> <span class="kn">import</span> <span class="n">from_iodata</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">iodata</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_one</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># load FCHK file and build basis set in atomic orbitals (AO) basis</span>
 <span class="c1"># Source:</span>
@@ -538,8 +538,8 @@ Number of contraction shells: 4
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap</span> <span class="kn">import</span> <span class="n">overlap_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.overlap</span><span class="w"> </span><span class="kn">import</span> <span class="n">overlap_integral</span>
 
 <span class="c1"># compute overlap of atomic orbitals (AO)</span>
 <span class="n">int1e_overlap_ao</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
@@ -603,8 +603,8 @@ Are MOs orthogonal? True
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#module-gbasis.integrals.overlap_asymm"><code class="docutils literal notranslate"><span class="pre">overlap_integral_asymmetric</span></code></a> function computes the overlap integrals between two different basis sets, each denoted by a list of generalized contraction shells. The following example showcase how to use this feature to compute the overlap integrals between the <code class="docutils literal notranslate"><span class="pre">6-31G</span></code> and <code class="docutils literal notranslate"><span class="pre">6-311G</span></code> basis sets:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.parsers</span> <span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
-<span class="kn">from</span> <span class="nn">gbasis.integrals.overlap_asymm</span> <span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.overlap_asymm</span><span class="w"> </span><span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
 
 <span class="c1"># create an 6-311G basis set for the helium hydride ion in spherical coordinates</span>
 <span class="n">basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">&quot;HeH_6-311g.gbs&quot;</span><span class="p">)</span>
@@ -740,7 +740,7 @@ Projected coefficients are orthogonal: False
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.moment</span> <span class="kn">import</span> <span class="n">moment_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.moment</span><span class="w"> </span><span class="kn">import</span> <span class="n">moment_integral</span>
 
 <span class="c1"># extract the 1-RDM from the IOData object</span>
 <span class="n">rdm</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">one_rdms</span><span class="p">[</span><span class="s1">&#39;scf&#39;</span><span class="p">]</span>
@@ -802,7 +802,7 @@ Electric Dipole Moment of the molecule: [-9.81527656e-20  0.00000000e+00  5.6055
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.kinetic_energy</span> <span class="kn">import</span> <span class="n">kinetic_energy_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.kinetic_energy</span><span class="w"> </span><span class="kn">import</span> <span class="n">kinetic_energy_integral</span>
 
 <span class="c1"># compute kinetic energy integrals in AO basis</span>
 <span class="n">int1e_kin_ao</span> <span class="o">=</span> <span class="n">kinetic_energy_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
@@ -846,7 +846,7 @@ Kinetic energy integral matrix in MO basis:
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.momentum.momentum_integral"><code class="docutils literal notranslate"><span class="pre">momentum_integral</span></code></a> function computes the momentum integrals between pairs of basis functions in AO basis, unless <code class="docutils literal notranslate"><span class="pre">transform</span></code> argument is provided. This matrix corresponds to the unitary transformation from the <strong>position space</strong> to the <strong>momentum space</strong> representation. In the example below, the momentum vector for each AO and MO orbital is computed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.momentum</span> <span class="kn">import</span> <span class="n">momentum_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.momentum</span><span class="w"> </span><span class="kn">import</span> <span class="n">momentum_integral</span>
 
 <span class="c1"># compute momentum integrals in AO basis</span>
 <span class="n">int1_p_ao</span> <span class="o">=</span> <span class="n">momentum_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
@@ -887,7 +887,7 @@ Momentum for shell # 4: [0.+0.00e+00j 0.+0.00e+00j 0.+3.31e-17j]
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html#gbasis.integrals.angular_momentum.angular_momentum_integral"><code class="docutils literal notranslate"><span class="pre">angular_momentum_integral</span></code></a> function computes the angular momentum integral matrix for the AO and MO basis functions. The example below shows how to compute the angular momentum vector and norm.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.angular_momentum</span> <span class="kn">import</span> <span class="n">angular_momentum_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.angular_momentum</span><span class="w"> </span><span class="kn">import</span> <span class="n">angular_momentum_integral</span>
 
 <span class="c1"># compute angular momentum integrals in AO basis</span>
 <span class="n">int1_l_ao</span> <span class="o">=</span> <span class="n">angular_momentum_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">)</span>
@@ -937,7 +937,7 @@ Momentum for shell # 4: [0.+0.00e+00j 0.+0.00e+00j 0.+3.31e-17j]
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.nuclear_electron_attraction</span> <span class="kn">import</span> <span class="n">nuclear_electron_attraction_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.nuclear_electron_attraction</span><span class="w"> </span><span class="kn">import</span> <span class="n">nuclear_electron_attraction_integral</span>
 
 <span class="c1"># compute nuclear-electron attraction integral in AO basis</span>
 <span class="n">int1e_nuc_ao</span> <span class="o">=</span> <span class="n">nuclear_electron_attraction_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">)</span>
@@ -978,7 +978,7 @@ Nuclear-Electron Attraction Integral of MOs (6-31G):
 <p>In the example below, the nuclear attraction integrals (in the previous example) is reproduced by setting the point charge position and charge to the coordinates of the nucleus and their corresponding atomic number.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.point_charge</span> <span class="kn">import</span> <span class="n">point_charge_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.point_charge</span><span class="w"> </span><span class="kn">import</span> <span class="n">point_charge_integral</span>
 
 <span class="c1"># compute integral for interaction between these point charges and the set of atomic orbitals</span>
 <span class="n">int1e_pc_ao</span> <span class="o">=</span> <span class="n">point_charge_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">atcorenums</span><span class="p">)</span>
@@ -1058,7 +1058,7 @@ H_{\mu\nu} = T_{\mu\nu} + V_{\mu\nu}
 <p>The <a class="reference external" href="http://gbasis.qcdevs.org/_autosummary/gbasis.integrals.html?highlight=electron#gbasis.integrals.electron_repulsion.electron_repulsion_integral"><code class="docutils literal notranslate"><span class="pre">electron_repulsion</span></code></a> function compute the electron-electron repulsion integrals in AO or MO basis for a pir of basis functions. In the example below, these integrals will be used to compute the Coulomb J energy.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">gbasis.integrals.electron_repulsion</span> <span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.electron_repulsion</span><span class="w"> </span><span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
 
 <span class="c1"># compute electron-electron repulsion integral in AO basis</span>
 <span class="n">int2e_ao</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">ao_basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">&quot;chemist&quot;</span><span class="p">)</span>
