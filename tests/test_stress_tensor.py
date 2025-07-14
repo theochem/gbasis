@@ -23,16 +23,16 @@ def test_evaluate_stress_tensor():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        evaluate_stress_tensor(np.identity(40), basis, points, np.array(0), 0, np.identity(40))
+        evaluate_stress_tensor(np.identity(40), basis, points, np.array(0), 0, np.identity(40), screen_basis=False)
     with pytest.raises(TypeError):
-        evaluate_stress_tensor(np.identity(40), basis, points, 1, None, np.identity(40))
+        evaluate_stress_tensor(np.identity(40), basis, points, 1, None, np.identity(40), screen_basis=False)
     with pytest.raises(TypeError):
-        evaluate_stress_tensor(np.identity(40), basis, points, 1, 0j, np.identity(40))
+        evaluate_stress_tensor(np.identity(40), basis, points, 1, 0j, np.identity(40), screen_basis=False)
 
-    test_a = evaluate_stress_tensor(np.identity(40), basis, points, 0, 0, np.identity(40))
-    test_b = evaluate_stress_tensor(np.identity(40), basis, points, 1, 0, np.identity(40))
-    test_c = evaluate_stress_tensor(np.identity(40), basis, points, 1, 2, np.identity(40))
-    test_d = evaluate_stress_tensor(np.identity(40), basis, points, 0.5, 2, np.identity(40))
+    test_a = evaluate_stress_tensor(np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False)
+    test_b = evaluate_stress_tensor(np.identity(40), basis, points, 1, 0, np.identity(40), screen_basis=False)
+    test_c = evaluate_stress_tensor(np.identity(40), basis, points, 1, 2, np.identity(40), screen_basis=False)
+    test_d = evaluate_stress_tensor(np.identity(40), basis, points, 0.5, 2, np.identity(40), screen_basis=False)
     for i in range(3):
         for j in range(3):
             orders_i = np.array([0, 0, 0])
@@ -41,10 +41,10 @@ def test_evaluate_stress_tensor():
             orders_j[j] += 1
 
             temp1 = evaluate_deriv_reduced_density_matrix(
-                orders_i, orders_j, np.identity(40), basis, points, np.identity(40)
+                orders_i, orders_j, np.identity(40), basis, points, np.identity(40), screen_basis=False
             )
             temp2 = evaluate_deriv_reduced_density_matrix(
-                orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
+                orders_j, orders_i, np.identity(40), basis, points, np.identity(40), screen_basis=False
             )
             temp3 = evaluate_deriv_reduced_density_matrix(
                 orders_i + orders_j,
@@ -53,6 +53,7 @@ def test_evaluate_stress_tensor():
                 basis,
                 points,
                 np.identity(40),
+                screen_basis=False,
             )
             temp4 = evaluate_deriv_reduced_density_matrix(
                 orders_i + orders_j,
@@ -61,9 +62,10 @@ def test_evaluate_stress_tensor():
                 basis,
                 points,
                 np.identity(40),
+                screen_basis=False,
             )
             if i == j:
-                temp5 = evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40))
+                temp5 = evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40), screen_basis=False)
             else:
                 temp5 = 0
             assert np.allclose(test_a[:, i, j], 0.5 * temp3 + 0.5 * temp4)
@@ -82,16 +84,16 @@ def test_evaluate_ehrenfest_force():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        evaluate_ehrenfest_force(np.identity(40), basis, points, np.array(0), 0, np.identity(40))
+        evaluate_ehrenfest_force(np.identity(40), basis, points, np.array(0), 0, np.identity(40), screen_basis=False)
     with pytest.raises(TypeError):
-        evaluate_ehrenfest_force(np.identity(40), basis, points, 1, None, np.identity(40))
+        evaluate_ehrenfest_force(np.identity(40), basis, points, 1, None, np.identity(40), screen_basis=False)
     with pytest.raises(TypeError):
-        evaluate_ehrenfest_force(np.identity(40), basis, points, 1, 0j, np.identity(40))
+        evaluate_ehrenfest_force(np.identity(40), basis, points, 1, 0j, np.identity(40), screen_basis=False)
 
-    test_a = evaluate_ehrenfest_force(np.identity(40), basis, points, 0, 0, np.identity(40))
-    test_b = evaluate_ehrenfest_force(np.identity(40), basis, points, 1, 0, np.identity(40))
-    test_c = evaluate_ehrenfest_force(np.identity(40), basis, points, 0.5, 0, np.identity(40))
-    test_d = evaluate_ehrenfest_force(np.identity(40), basis, points, 0, 2, np.identity(40))
+    test_a = evaluate_ehrenfest_force(np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False)
+    test_b = evaluate_ehrenfest_force(np.identity(40), basis, points, 1, 0, np.identity(40), screen_basis=False)
+    test_c = evaluate_ehrenfest_force(np.identity(40), basis, points, 0.5, 0, np.identity(40), screen_basis=False)
+    test_d = evaluate_ehrenfest_force(np.identity(40), basis, points, 0, 2, np.identity(40), screen_basis=False)
     for j in range(3):
         ref_a = np.zeros(points.shape[0])
         ref_b = np.zeros(points.shape[0])
@@ -105,10 +107,10 @@ def test_evaluate_ehrenfest_force():
             orders_i[i] += 1
 
             temp1 = evaluate_deriv_reduced_density_matrix(
-                2 * orders_i, orders_j, np.identity(40), basis, points, np.identity(40)
+                2 * orders_i, orders_j, np.identity(40), basis, points, np.identity(40), screen_basis=False
             )
             temp2 = evaluate_deriv_reduced_density_matrix(
-                orders_i, orders_i + orders_j, np.identity(40), basis, points, np.identity(40)
+                orders_i, orders_i + orders_j, np.identity(40), basis, points, np.identity(40), screen_basis=False
             )
             temp3 = evaluate_deriv_reduced_density_matrix(
                 2 * orders_i + orders_j,
@@ -117,12 +119,13 @@ def test_evaluate_ehrenfest_force():
                 basis,
                 points,
                 np.identity(40),
+                screen_basis=False,
             )
             temp4 = evaluate_deriv_reduced_density_matrix(
-                orders_i + orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
+                orders_i + orders_j, orders_i, np.identity(40), basis, points, np.identity(40), screen_basis=False
             )
             temp5 = evaluate_deriv_density(
-                2 * orders_i + orders_j, np.identity(40), basis, points, np.identity(40)
+                2 * orders_i + orders_j, np.identity(40), basis, points, np.identity(40), screen_basis=False
             )
 
             ref_a += temp3 + temp4
@@ -145,16 +148,16 @@ def test_evaluate_ehrenfest_hessian():
     points = np.random.rand(10, 3)
 
     with pytest.raises(TypeError):
-        evaluate_ehrenfest_hessian(np.identity(40), basis, points, np.array(0), 0, np.identity(40))
+        evaluate_ehrenfest_hessian(np.identity(40), basis, points, np.array(0), 0, np.identity(40), screen_basis=False)
     with pytest.raises(TypeError):
-        evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, None, np.identity(40))
+        evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, None, np.identity(40), screen_basis=False)
     with pytest.raises(TypeError):
-        evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, 0j, np.identity(40))
+        evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, 0j, np.identity(40), screen_basis=False)
 
-    test_a = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40))
-    test_b = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, 0, np.identity(40))
-    test_c = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0.5, 0, np.identity(40))
-    test_d = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 2, np.identity(40))
+    test_a = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False)
+    test_b = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, 0, np.identity(40), screen_basis=False)
+    test_c = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0.5, 0, np.identity(40), screen_basis=False)
+    test_d = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 2, np.identity(40), screen_basis=False)
     for j in range(3):
         for k in range(3):
             ref_a = np.zeros(points.shape[0])
@@ -177,6 +180,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp2 = evaluate_deriv_reduced_density_matrix(
                     2 * orders_i,
@@ -185,6 +189,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp3 = evaluate_deriv_reduced_density_matrix(
                     orders_i + orders_k,
@@ -193,6 +198,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp4 = evaluate_deriv_reduced_density_matrix(
                     orders_i,
@@ -201,6 +207,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp5 = evaluate_deriv_reduced_density_matrix(
                     2 * orders_i + orders_j + orders_k,
@@ -209,6 +216,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp6 = evaluate_deriv_reduced_density_matrix(
                     2 * orders_i + orders_j,
@@ -217,6 +225,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp7 = evaluate_deriv_reduced_density_matrix(
                     orders_i + orders_j + orders_k,
@@ -225,6 +234,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp8 = evaluate_deriv_reduced_density_matrix(
                     orders_i + orders_j,
@@ -233,6 +243,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp9 = evaluate_deriv_density(
                     2 * orders_i + orders_j + orders_k,
@@ -240,6 +251,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
 
                 ref_a += temp5 + temp6 + temp7 + temp8
@@ -261,12 +273,12 @@ def test_evaluate_ehrenfest_hessian():
             assert np.allclose(test_d[:, j, k], -ref_d)
     assert np.allclose(
         evaluate_ehrenfest_hessian(
-            np.identity(40), basis, points, 0, 0, np.identity(40), symmetric=True
+            np.identity(40), basis, points, 0, 0, np.identity(40), symmetric=True, screen_basis=False
         ),
         (
-            evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40))
+            evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False)
             + np.swapaxes(
-                evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40)),
+                evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False),
                 1,
                 2,
             )
