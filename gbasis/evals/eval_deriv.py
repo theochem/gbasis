@@ -1,9 +1,13 @@
 """Functions for evaluating Gaussian primitives."""
+import numpy as np
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.evals._deriv import _eval_deriv_contractions
-from gbasis.evals._deriv import _eval_first_second_order_deriv_contractions
-import numpy as np
+from gbasis.evals._deriv import (
+    _eval_deriv_contractions,
+    _eval_first_second_order_deriv_contractions,
+)
+from gbasis.screening import evaluate_contraction_mask
 
 
 class EvalDeriv(BaseOneIndex):
@@ -55,7 +59,9 @@ class EvalDeriv(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points, orders, deriv_type="general"):
+    def construct_array_contraction(
+        contractions, points, orders, deriv_type="general", screen_basis=True, tol_screen=1e-8
+    ):
         r"""Return the array associated with a set of contracted Cartesian Gaussians.
 
         Parameters
@@ -76,6 +82,13 @@ class EvalDeriv(BaseOneIndex):
             function (_eval_deriv_contractions()) and "direct" makes reference to specific
             implementation of first and second order derivatives for generalized
             contraction (_eval_first_second_order_deriv_contractions()).
+        screen_basis : bool, optional
+            A toggle to enable or disable screening. Default value is True to enable screening.
+        tol_screen : float, optional
+            The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+            with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+            compared against all grid points, point farther than the cutoff will be excluded
+            from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
         Returns
         -------
@@ -127,6 +140,38 @@ class EvalDeriv(BaseOneIndex):
         angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
         norm_prim_cart = contractions.norm_prim_cart
+
+        if screen_basis:
+            L_cart = contractions.num_cart
+            M = contractions.num_seg_cont
+            N = points.shape[0]
+            mask = evaluate_contraction_mask(contractions, points, tol_screen)
+            screened_points = points[mask]
+
+            if deriv_type == "general":
+                partial_output = _eval_deriv_contractions(
+                    screened_points,
+                    orders,
+                    center,
+                    angmom_comps,
+                    alphas,
+                    prim_coeffs,
+                    norm_prim_cart,
+                )
+            elif deriv_type == "direct":
+                partial_output = _eval_first_second_order_deriv_contractions(
+                    screened_points,
+                    orders,
+                    center,
+                    angmom_comps,
+                    alphas,
+                    prim_coeffs,
+                    norm_prim_cart,
+                )
+            output = np.zeros((M, L_cart, N))
+            output[:, :, mask] = partial_output
+            return output
+
         if deriv_type == "general":
             output = _eval_deriv_contractions(
                 points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
@@ -144,18 +189,21 @@ def evaluate_deriv_basis(
     orders,
     transform=None,
     deriv_type="general",
+    screen_basis=True,
+    tol_screen=1e-8,
 ):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
     The derivative (to arbitrary orders) of a basis function is given by:
 
     .. math::
-    
+
         \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
         \phi (\mathbf{r})
-    
-    where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z, 
-    :math:`\phi` is the basis function (a generalized contraction shell), and :math:`\mathbf{r}_n` are
+
+    where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z,
+    :math:`\phi` is the basis function (a generalized contraction shell),
+    and :math:`\mathbf{r}_n` are
     the coordinate of the points in space where the basis function is evaluated.
 
     Parameters
@@ -183,6 +231,13 @@ def evaluate_deriv_basis(
         to general implementation of any order derivative function (_eval_deriv_contractions())
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+        compared against all grid points, point farther than the cutoff will be excluded
+        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -195,19 +250,20 @@ def evaluate_deriv_basis(
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"screen_basis": screen_basis, "tol_screen": tol_screen}
 
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
-            transform, coord_type, points=points, orders=orders, deriv_type=deriv_type
+            transform, coord_type, points=points, orders=orders, deriv_type=deriv_type, **kwargs
         )
     if all(ct == "cartesian" for ct in coord_type) or coord_type == "cartesian":
         return EvalDeriv(basis).construct_array_cartesian(
-            points=points, orders=orders, deriv_type=deriv_type
+            points=points, orders=orders, deriv_type=deriv_type, **kwargs
         )
     if all(ct == "spherical" for ct in coord_type) or coord_type == "spherical":
         return EvalDeriv(basis).construct_array_spherical(
-            points=points, orders=orders, deriv_type=deriv_type
+            points=points, orders=orders, deriv_type=deriv_type, **kwargs
         )
     return EvalDeriv(basis).construct_array_mix(
-        coord_type, points=points, orders=orders, deriv_type=deriv_type
+        coord_type, points=points, orders=orders, deriv_type=deriv_type, **kwargs
     )

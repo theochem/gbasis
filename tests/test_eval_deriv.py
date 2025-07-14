@@ -137,13 +137,13 @@ def test_evaluate_deriv_basis_cartesian():
         evaluate_obj.construct_array_cartesian(
             points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])),
+        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), orders=np.array([0, 0, 0]), screen_basis=False),
     )
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(
             points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])),
+        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), orders=np.array([2, 1, 0]), screen_basis=False),
     )
 
 
@@ -156,13 +156,13 @@ def test_evaluate_deriv_basis_spherical():
         evaluate_obj.construct_array_spherical(
             points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), np.array([0, 0, 0])),
+        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), screen_basis=False),
     )
     assert np.allclose(
         evaluate_obj.construct_array_spherical(
             points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
-        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), np.array([2, 1, 0])),
+        evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), screen_basis=False),
     )
 
 
@@ -181,7 +181,7 @@ def test_evaluate_deriv_basis_mix():
         evaluate_obj_cartesian.construct_array_mix(
             ["cartesian"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
         ),
-        evaluate_deriv_basis(cartesian_basis, np.array([[1, 1, 1]]), np.array([0, 0, 0])),
+        evaluate_deriv_basis(cartesian_basis, np.array([[1, 1, 1]]), np.array([0, 0, 0]), screen_basis=False),
     )
     assert np.allclose(
         evaluate_obj_spherical.construct_array_mix(
@@ -209,6 +209,7 @@ def test_evaluate_deriv_basis_lincomb():
             np.array([[1, 1, 1]]),
             np.array([0, 0, 0]),
             cart_transform,
+            screen_basis=False,
         ),
     )
     assert np.allclose(
@@ -216,6 +217,6 @@ def test_evaluate_deriv_basis_lincomb():
             sph_transform, ["spherical"], points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
         ),
         evaluate_deriv_basis(
-            spherical_basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform
+            spherical_basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform, screen_basis=False
         ),
     )

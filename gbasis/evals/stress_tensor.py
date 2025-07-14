@@ -1,14 +1,24 @@
 """Module for computing properties related to the stress tensor."""
+import numpy as np
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
     evaluate_deriv_reduced_density_matrix,
 )
-import numpy as np
 
 
 # TODO: need to be tested against reference
-def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
+def evaluate_stress_tensor(
+    one_density_matrix,
+    basis,
+    points,
+    alpha=1,
+    beta=0,
+    transform=None,
+    screen_basis=True,
+    tol_screen=1e-8,
+):
     r"""Return the stress tensor evaluated at the given coordinates.
 
     Stress tensor is defined here as:
@@ -70,6 +80,13 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+        compared against all grid points, point farther than the cutoff will be excluded
+        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -99,6 +116,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 1:
                 output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -108,6 +127,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if i == j and beta != 0:
                 output[i, j] -= (
@@ -118,6 +139,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 )
             output[j, i] = output[i, j]
@@ -125,7 +148,16 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
 
 
 # TODO: need to be tested against reference
-def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
+def evaluate_ehrenfest_force(
+    one_density_matrix,
+    basis,
+    points,
+    alpha=1,
+    beta=0,
+    transform=None,
+    screen_basis=True,
+    tol_screen=1e-8,
+):
     r"""Return the Ehrenfest force.
 
     Ehrenfest force is the negative of the divergence of the stress tensor:
@@ -148,7 +180,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
             - (1 - 2\alpha)
             \sum_i
             \left.
-              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i} \gamma(\mathbf{r}, \mathbf{r})
+              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i}
+                  \gamma(\mathbf{r}, \mathbf{r})
             \right|_{\mathbf{r} = \mathbf{r}'}\\
             &+ \frac{1}{2} \beta
             \left(
@@ -183,6 +216,13 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+        compared against all grid points, point farther than the cutoff will be excluded
+        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -211,6 +251,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 1:
                 output[i] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -220,6 +262,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 0.5:
                 output[i] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -229,6 +273,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if beta != 0:
                 output[i] += (
@@ -240,6 +286,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 )
     return output.T
@@ -254,6 +302,8 @@ def evaluate_ehrenfest_hessian(
     beta=0,
     transform=None,
     symmetric=False,
+    screen_basis=True,
+    tol_screen=1e-8,
 ):
     r"""Return the Ehrenfest Hessian.
 
@@ -326,6 +376,13 @@ def evaluate_ehrenfest_hessian(
         Flag for symmetrizing the Hessian.
         If True, then the Hessian is symmetrized by averaging it with its transpose.
         Default value is False.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+        compared against all grid points, point farther than the cutoff will be excluded
+        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -356,6 +413,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] += alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one,
@@ -364,6 +423,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if alpha != 1:
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -373,6 +434,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
@@ -381,6 +444,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if alpha != 0.5:
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -390,6 +455,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two,
@@ -398,6 +465,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if beta != 0:
                     output[i, j] += (
@@ -409,6 +478,8 @@ def evaluate_ehrenfest_hessian(
                             basis,
                             points,
                             transform=transform,
+                            screen_basis=screen_basis,
+                            tol_screen=tol_screen,
                         )
                     )
     if symmetric:

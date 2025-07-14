@@ -1,8 +1,10 @@
 """Functions for evaluating Gaussian contractions."""
+import numpy as np
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
-import numpy as np
+from gbasis.screening import evaluate_contraction_mask
 
 
 class Eval(BaseOneIndex):
@@ -53,7 +55,7 @@ class Eval(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points):
+    def construct_array_contraction(contractions, points, screen_basis=True, tol_screen=1e-8):
         r"""Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
@@ -66,6 +68,13 @@ class Eval(BaseOneIndex):
             functions are evaluated.
             Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
             components.
+        screen_basis : bool, optional
+            A toggle to enable or disable screening. Default value is True to enable screening.
+        tol_screen : float, optional
+            The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+            with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+            compared against all grid points, point farther than the cutoff will be excluded
+            from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
         Returns
         -------
@@ -105,13 +114,34 @@ class Eval(BaseOneIndex):
         angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
         norm_prim_cart = contractions.norm_prim_cart
+
+        if screen_basis:
+            L_cart = contractions.num_cart
+            M = contractions.num_seg_cont
+            N = points.shape[0]
+            mask = evaluate_contraction_mask(contractions, points, tol_screen)
+            screened_points = points[mask]
+            partial_output = _eval_deriv_contractions(
+                screened_points,
+                np.zeros(3),
+                center,
+                angmom_comps,
+                alphas,
+                prim_coeffs,
+                norm_prim_cart,
+            )
+            # print(partial_output.shape)
+            output = np.zeros((M, L_cart, N))
+            output[:, :, mask] = partial_output
+            return output
+
         output = _eval_deriv_contractions(
             points, np.zeros(3), center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
         )
         return output
 
 
-def evaluate_basis(basis, points, transform=None):
+def evaluate_basis(basis, points, transform=None, screen_basis=True, tol_screen=1e-8):
     r"""Evaluate the basis set in the given coordinate system at the given points.
 
     Parameters
@@ -129,6 +159,13 @@ def evaluate_basis(basis, points, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True to enable screening.
+    tol_screen : float, optional
+        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
+        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
+        compared against all grid points, point farther than the cutoff will be excluded
+        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -140,12 +177,13 @@ def evaluate_basis(basis, points, transform=None):
         `N` is the number of coordinates at which the contractions are evaluated.
 
     """
+    kwargs = {"screen_basis": screen_basis, "tol_screen": tol_screen}
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
     if transform is not None:
-        return Eval(basis).construct_array_lincomb(transform, coord_type, points=points)
+        return Eval(basis).construct_array_lincomb(transform, coord_type, points=points, **kwargs)
     if all(ct == "cartesian" for ct in coord_type):
-        return Eval(basis).construct_array_cartesian(points=points)
+        return Eval(basis).construct_array_cartesian(points=points, **kwargs)
     if all(ct == "spherical" for ct in coord_type):
-        return Eval(basis).construct_array_spherical(points=points)
-    return Eval(basis).construct_array_mix(coord_type, points=points)
+        return Eval(basis).construct_array_spherical(points=points, **kwargs)
+    return Eval(basis).construct_array_mix(coord_type, points=points, **kwargs)
