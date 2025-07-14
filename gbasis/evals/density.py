@@ -2,10 +2,11 @@
 from gbasis.evals.eval import evaluate_basis
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
 import numpy as np
+import psutil
 from scipy.special import comb
 
 
-def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
+def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval, out=None):
     """Return the evaluation of the density given the evaluated orbitals.
 
     Parameters
@@ -16,6 +17,8 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
         Orbitals evaluated at :math:`N` grid points.
         The set of orbitals must be the same basis set used to build the one-electron density
         matrix.
+    out : np.ndarray(N,), optional
+        Output array.
 
     Returns
     -------
@@ -57,9 +60,9 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
             " of the orbital evaluations."
         )
 
-    density = one_density_matrix.dot(orb_eval)
-    density *= orb_eval
-    return np.sum(density, axis=0)
+    d = one_density_matrix.dot(orb_eval)
+    d *= orb_eval
+    return np.sum(d, axis=0, out=out)
 
 
 def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
@@ -101,13 +104,31 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
         Density evaluated at `N` grid points.
 
     """
-    orb_eval = evaluate_basis(basis, points, transform=transform)
-    output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
-    # Fix #117: check magnitude of small negative density values, then use clip to remove them
-    min_output = np.min(output)
-    if min_output < 0.0 and abs(min_output) > threshold:
-        raise ValueError(f"Found negative density <= {-threshold}, got {min_output}.")
-    return output.clip(min=0.0)
+    # Output vector of densities
+    density = np.zeros(points.shape[0])
+    # Number of chunks (use 8.1 as the number of bytes in a double, just to have a buffer so that we
+    # don't run out of memory). If it fits in 1 chunk, 1 chunk will be used.
+    chunks = max(
+        1,
+        int(
+            8.1
+            * one_density_matrix.shape[0]
+            * points.shape[0]
+            / psutil.virtual_memory().available
+        ),
+    )
+    # Evaluate densities chunk-wise
+    for density_chunk, points_chunk in zip(
+        np.array_split(density, chunks, axis=0), np.array_split(points, chunks, axis=0)
+    ):
+        orb_eval = evaluate_basis(basis, points_chunk, transform=transform)
+        evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval, out=density_chunk)
+    # Fix #117: check magnitude of small negative density values, then remove them
+    min_density = np.min(density)
+    if min_density <= -threshold:
+        raise ValueError(f"Found negative density <= {-threshold}, got {min_density}.")
+    density[density < 0] = 0
+    return density
 
 
 def evaluate_deriv_reduced_density_matrix(
