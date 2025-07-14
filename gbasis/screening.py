@@ -46,17 +46,29 @@ def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen
 
 
 def evaluate_contraction_mask(contraction, points, tol_screen):
-    r"""Return a bolean mask of points that should be screened.
+    r"""Return a boolean mask of points that should be screened.
 
     .. math::
-           d_{A_s;B_t} > \sqrt{-\frac{\alpha_{ min(\alpha_{s,A})} +
-           \alpha_{ min(\alpha_{t,B})} }{ \alpha_{ min(\alpha_{s,A})}
-            \alpha_{ min(\alpha_{t,B})} } \ln \varepsilon }
 
-    where :math:`d` is the cut-off distance at which shells do not interact with each other.
-    :math:`A` and `B` are the atoms each contraction are respectively centered on.
-    :math: `\alpha` is the gaussian exponent
-    :math: `s` and `t` index primitive Gaussian shells centered on atom `A` and `B` respectively.
+        d =
+            \begin{cases}
+                \sqrt{ -\dfrac{\ln \left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
+		{\alpha_{\min}} }, & \text{if } \ell = 0 \\
+                \sqrt{ -\dfrac{W_{-1}
+		\left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
+		{\alpha_{\min}} }, & \text{otherwise}
+            \end{cases}
+
+    where :math:`d` is the cutoff distance beyond which the
+    contraction does not interact with a grid point.
+
+    :math:`\alpha_{\min}` is the Gaussian exponent
+    :math:`c_{\min}` is the Gaussian coefficient, and :math:`n_{\min}` is given by:
+
+    .. math::
+        n_{\min} =
+            \left( \dfrac{2 \alpha_{\min}}{\pi} \right)^{3/4}
+            \cdot \dfrac{(4 \alpha_{\min})^{\ell / 2}}{\sqrt{(2\ell + 1)!!}}
 
     Parameters
     ----------
