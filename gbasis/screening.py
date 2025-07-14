@@ -49,7 +49,10 @@ def evaluate_contraction_mask(contraction, points, tol_screen):
     r"""Return a boolean mask of points that should be screened.
 
     .. math::
+<<<<<<< HEAD
 
+=======
+>>>>>>> a90981d (fix math for `evaluate_contraction_mask()`)
         d =
             \begin{cases}
                 \sqrt{ -\dfrac{\ln \left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
@@ -58,6 +61,7 @@ def evaluate_contraction_mask(contraction, points, tol_screen):
 		\left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
 		{\alpha_{\min}} }, & \text{otherwise}
             \end{cases}
+<<<<<<< HEAD
 
     where :math:`d` is the cutoff distance beyond which the
     contraction does not interact with a grid point.
@@ -65,6 +69,12 @@ def evaluate_contraction_mask(contraction, points, tol_screen):
     :math:`\alpha_{\min}` is the Gaussian exponent
     :math:`c_{\min}` is the Gaussian coefficient, and :math:`n_{\min}` is given by:
 
+=======
+    where :math:`d` is the cutoff distance beyond which the
+    contraction does not interact with a grid point.
+    :math:`\alpha_{\min}` is the Gaussian exponent
+    :math:`c_{\min}` is the Gaussian coefficient, and :math:`n_{\min}` is given by:
+>>>>>>> a90981d (fix math for `evaluate_contraction_mask()`)
     .. math::
         n_{\min} =
             \left( \dfrac{2 \alpha_{\min}}{\pi} \right)^{3/4}
