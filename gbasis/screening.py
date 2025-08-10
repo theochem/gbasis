@@ -135,12 +135,10 @@ def compute_primitive_cutoff_radius(c, alpha, angm, dens_tol):
     """
     # Compute normalization factor n for the primitive Gaussian
     n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
+    # special case for angular momentum 0. Solution found using logarithm
     if angm == 0:
         return np.sqrt(-np.log(dens_tol / (c * n)) / alpha)
-    # branch k=-1 corresponds to the large cutoff radius
-    if angm == 2:
-        return np.sqrt(-lambertw(-alpha * dens_tol / (c * n), k=-1).real / alpha)
-    return np.sqrt(
-        -(angm / (2 * alpha))
-        * lambertw(-2 * alpha * (dens_tol / (c * n)) ** (2 / angm) / angm, k=-1).real
-    )
+    # general case for angular momentum > 0. Solution found in terms of the Lambert W function
+    # W_{-1} branch corresponds to the outermost solution
+    lambert_input_value = -2 * alpha * (dens_tol / (c * n)) ** (2 / angm) / angm
+    return np.sqrt(-(angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)
