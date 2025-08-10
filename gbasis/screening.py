@@ -99,3 +99,48 @@ def get_points_mask_for_contraction(contraction, points, tol_screen):
     # mask points that are further than the cutoff radius
     points_r = np.linalg.norm(points - contraction.coord, axis=1)
     return points_r <= cutoff_radius
+
+
+def compute_primitive_cutoff_radius(c, alpha, angm, dens_tol):
+    r"""Compute the cutoff radius for a primitive Gaussian.
+
+    The cuttoff radius is the maximum distance from the center of the primitive Gaussian
+    at which the radial density is above a given tolerance :math:`\epsilon`.
+
+    .. math::
+        \begin{eqnarray}
+            r^{2\ell} \chi(r)^2 &= \epsilon^2 \\
+            r^{2 \ell} c^2 n^2 e^{-2 \alpha r^2} &= \epsilon^2
+        \end{eqnarray}
+
+    where :math:`\chi(r)` is the radial part of the primitive Gaussian, :math:`\ell` is the angular
+    momentum, :math:`c` is the coefficient of the primitive Gaussian, :math:`n` is the normalization
+    factor, and :math:`\alpha` is the exponent of the primitive Gaussian.
+
+    Parameters
+    ----------
+    c : float
+        Coefficient of the primitive Gaussian.
+    exp : float
+        Exponent :math:`\alpha` of the primitive Gaussian.
+    angm : int
+        Angular momentum of the primitive Gaussian.
+    dens_tol : float
+        The radial density for which the maximum radius is computed.
+
+    Returns
+    -------
+    float
+        The cutoff radius for the primitive Gaussian.
+    """
+    # Compute normalization factor n for the primitive Gaussian
+    n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
+    if angm == 0:
+        return np.sqrt(-np.log(dens_tol / (c * n)) / alpha)
+    # branch k=-1 corresponds to the large cutoff radius
+    if angm == 2:
+        return np.sqrt(-lambertw(-alpha * dens_tol / (c * n), k=-1).real / alpha)
+    return np.sqrt(
+        -(angm / (2 * alpha))
+        * lambertw(-2 * alpha * (dens_tol / (c * n)) ** (2 / angm) / angm, k=-1).real
+    )
