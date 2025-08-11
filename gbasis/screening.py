@@ -47,49 +47,30 @@ def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen
 
 
 def get_points_mask_for_contraction(contraction, points, tol_screen):
-    r"""Return a boolean mask of points that should be screened.
+    r"""Return a boolean mask indicating which points should be screened.
 
-    .. math::
-        d =
-            \begin{cases}
-                \sqrt{ -\dfrac{\ln \left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
-		{\alpha_{\min}} }, & \text{if } \ell = 0 \\
-                \sqrt{ -\dfrac{W_{-1}
-		\left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
-		{\alpha_{\min}} }, & \text{otherwise}
-            \end{cases}
-
-    where :math:`d` is the cutoff distance beyond which the
-    contraction does not interact with a grid point.
-    :math:`\alpha_{\min}` is the Gaussian exponent
-    :math:`c_{\min}` is the Gaussian coefficient, and :math:`n_{\min}` is given by:
-    .. math::
-        n_{\min} =
-            \left( \dfrac{2 \alpha_{\min}}{\pi} \right)^{3/4}
-            \cdot \dfrac{(4 \alpha_{\min})^{\ell / 2}}{\sqrt{(2\ell + 1)!!}}.
-    for any angular momentum higher than 0, the logarithm will be replaced by
-    the -1 branch of the Lambert W function.
+    A point is considered screened if it lies farther from the contraction center than a cutoff
+    radius computed from the contraction parameters and the screening tolerance
+    (see :func:`compute_primitive_cutoff_radius`).
 
     Parameters
     ----------
     contraction : GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) associated with the first index of
-        the integral.
-    points : np.ndarray(N, 3)
-        Cartesian coordinates of the points in space (in atomic units) where the basis
-        functions are evaluated.
-        Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
-        components.
+        Contracted Cartesian Gaussians (of the same shell) associated with the
+        first index of the integral.
+    points : np.ndarray of shape (N, 3)
+        Cartesian coordinates of the points in space (in atomic units) where the
+        basis functions are evaluated. Rows correspond to points; columns
+        correspond to the :math:`x`, :math:`y`, and :math:`z` components.
     tol_screen : float
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction.
+        Screening tolerance for excluding points. This value, together with the
+        minimum contraction parameters, determines a cutoff distance. Points
+        farther than the cutoff are excluded from contraction evaluation.
 
     Returns
     -------
-    array : `bool` (N, 3)
-        For each grid point, if evaluation should be screened, return `False`
+    np.ndarray of bool, shape (N,)
+        Boolean mask where `False` marks points to be screened out.
     """
 
     # get index of most diffuse primitive and compute cutoff radius
@@ -105,29 +86,39 @@ def get_points_mask_for_contraction(contraction, points, tol_screen):
 def compute_primitive_cutoff_radius(c, alpha, angm, dens_tol):
     r"""Compute the cutoff radius for a primitive Gaussian.
 
-    The cuttoff radius is the maximum distance from the center of the primitive Gaussian
-    at which the radial density is above a given tolerance :math:`\epsilon`.
+    The cutoff radius is the maximum distance from the center of the primitive Gaussian at which the
+    radial density remains above a given tolerance :math:`\epsilon`. This radius is computed by
+    solving the equation:
 
     .. math::
-        \begin{eqnarray}
-            r^{2\ell} \chi(r)^2 &= \epsilon^2 \\
-            r^{2 \ell} c^2 n^2 e^{-2 \alpha r^2} &= \epsilon^2
-        \end{eqnarray}
 
-    where :math:`\chi(r)` is the radial part of the primitive Gaussian, :math:`\ell` is the angular
-    momentum, :math:`c` is the coefficient of the primitive Gaussian, :math:`n` is the normalization
-    factor, and :math:`\alpha` is the exponent of the primitive Gaussian.
+        r^{2\ell} \chi(r)^2 = \epsilon^2
+
+    where :math:`\chi(r)` is the radial part of the primitive Gaussian, defined as:
+
+    .. math::
+
+        \chi(r) = c \, n \, e^{-\alpha r^2}
+
+    Here, :math:`c` is the coefficient of the primitive Gaussian, :math:`\alpha` is its exponent,
+    :math:`\ell` is the angular momentum quantum number, and :math:`n` is the normalization factor
+    given by:
+
+    .. math::
+
+        n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{1}{4}}
+            \frac{(4 \alpha)^{\frac{\ell}{2}}}{\sqrt{(2\ell + 1)!!}}
 
     Parameters
     ----------
     c : float
         Coefficient of the primitive Gaussian.
-    exp : float
+    alpha : float
         Exponent :math:`\alpha` of the primitive Gaussian.
     angm : int
-        Angular momentum of the primitive Gaussian.
+        Angular momentum quantum number :math:`\ell` of the primitive Gaussian.
     dens_tol : float
-        The radial density for which the maximum radius is computed.
+        Radial density tolerance :math:`\epsilon` for computing the cutoff radius.
 
     Returns
     -------
