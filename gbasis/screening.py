@@ -1,7 +1,8 @@
 """1 and 2-index screening functions"""
 
 import numpy as np
-from scipy.special import factorial2, lambertw
+from scipy.special import lambertw
+from gbasis.utils import factorial2
 
 
 def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen):
