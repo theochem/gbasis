@@ -118,7 +118,9 @@ def evaluate_density(
         Density evaluated at `N` grid points.
 
     """
-    orb_eval = evaluate_basis(basis, points, transform=transform)
+    orb_eval = evaluate_basis(
+        basis, points, transform=transform, screen_basis=screen_basis, tol_screen=tol_screen
+    )
     output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
     # Fix #117: check magnitude of small negative density values, then use clip to remove them
     min_output = np.min(output)

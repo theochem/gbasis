@@ -143,7 +143,7 @@ class EvalDeriv(BaseOneIndex):
             )
         return output
 
-    def construct_array_cartesian(self, points, orders, deriv_type, mask):
+    def construct_array_cartesian(self, points, orders, deriv_type="general", mask=None):
         """Return the array associated with the given set of contracted Cartesian Gaussians.
 
         Parameters
@@ -197,7 +197,7 @@ class EvalDeriv(BaseOneIndex):
             matrices.append(np.concatenate(array, axis=0))
         return np.concatenate(matrices, axis=0)
 
-    def construct_array_spherical(self, points, orders, deriv_type, mask):
+    def construct_array_spherical(self, points, orders, deriv_type="general", mask=None):
         """Return the array associated with contracted spherical Gaussians (atomic orbitals).
 
         Parameters
@@ -271,7 +271,7 @@ class EvalDeriv(BaseOneIndex):
 
         return np.concatenate(matrices_spherical, axis=0)
 
-    def construct_array_mix(self, coord_types, points, orders, deriv_type, mask):
+    def construct_array_mix(self, coord_types, points, orders, deriv_type="general", mask=None):
         """Return the array associated with all of the contractions in the given coordinate system.
 
         Parameters
@@ -369,7 +369,9 @@ class EvalDeriv(BaseOneIndex):
 
         return np.concatenate(matrices, axis=0)
 
-    def construct_array_lincomb(self, transform, coord_type, points, orders, deriv_type, mask):
+    def construct_array_lincomb(
+        self, transform, coord_type, points, orders, deriv_type="general", mask=None
+    ):
         r"""Return the array associated with linear combinations of contractions.
 
         .. math::

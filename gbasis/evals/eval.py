@@ -114,7 +114,7 @@ class Eval(BaseOneIndex):
         )
         return output
 
-    def construct_array_cartesian(self, points, mask):
+    def construct_array_cartesian(self, points, mask=None):
         """Return the array associated with the given set of contracted Cartesian Gaussians.
 
         Parameters
@@ -153,7 +153,7 @@ class Eval(BaseOneIndex):
             matrices.append(np.concatenate(array, axis=0))
         return np.concatenate(matrices, axis=0)
 
-    def construct_array_spherical(self, points, mask):
+    def construct_array_spherical(self, points, mask=None):
         """Return the array associated with contracted spherical Gaussians (atomic orbitals).
 
         Parameters
@@ -212,7 +212,7 @@ class Eval(BaseOneIndex):
 
         return np.concatenate(matrices_spherical, axis=0)
 
-    def construct_array_mix(self, coord_types, points, mask):
+    def construct_array_mix(self, coord_types, points, mask=None):
         """Return the array associated with all of the contractions in the given coordinate system.
 
         Parameters
@@ -262,7 +262,7 @@ class Eval(BaseOneIndex):
         matrices = []
         for i, (cont, coord_type) in enumerate(zip(self.contractions, coord_types)):
             if mask is not None:
-                # evaluate the function at the given points
+                # evaluate the function at the given subset of points
                 points_subset = points[mask[i]]
                 subset_matrix_contraction = self.construct_array_contraction(cont, points_subset)
                 matrix_contraction = np.zeros(
@@ -295,7 +295,7 @@ class Eval(BaseOneIndex):
 
         return np.concatenate(matrices, axis=0)
 
-    def construct_array_lincomb(self, transform, coord_type, points, mask):
+    def construct_array_lincomb(self, transform, coord_type, points, mask=None):
         r"""Return the array associated with linear combinations of contractions.
 
         .. math::
