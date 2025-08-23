@@ -25,7 +25,7 @@ def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen
     contractions_two : GeneralizedContractionShell
         Contracted Cartesian Gaussians (of the same shell) associated with the second index of
         the integral.
-    tol_screen : float
+    tol_screen : float, optional
         The tolerance used for screening two-index integrals. The `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance between
         the contraction centers to decide whether the integral should be set to zero.
@@ -45,69 +45,57 @@ def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen
     return np.linalg.norm(r_12) > cutoff
 
 
-def evaluate_contraction_mask(contraction, points, tol_screen):
-    r"""Return a boolean mask of points that should be screened.
-
-    .. math::
-        d =
-            \begin{cases}
-                \sqrt{ -\dfrac{\ln \left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
-		{\alpha_{\min}} }, & \text{if } \ell = 0 \\
-                \sqrt{ -\dfrac{W_{-1}
-		\left( \dfrac{\epsilon}{c_{\min} \times \alpha_{\min}} \right)}
-		{\alpha_{\min}} }, & \text{otherwise}
-            \end{cases}
-
-    where :math:`d` is the cutoff distance beyond which the
-    contraction does not interact with a grid point.
-    :math:`\alpha_{\min}` is the Gaussian exponent
-    :math:`c_{\min}` is the Gaussian coefficient, and :math:`n_{\min}` is given by:
-    .. math::
-        n_{\min} =
-            \left( \dfrac{2 \alpha_{\min}}{\pi} \right)^{3/4}
-            \cdot \dfrac{(4 \alpha_{\min})^{\ell / 2}}{\sqrt{(2\ell + 1)!!}}.
-    for any angular momentum higher than 0, the logarithm will be replaced by
-    the -1 branch of the Lambert W function.
+def evaluate_basis_mask(basis, points, tol_screen):
+    """
+    Compute a masks indicating which grid points are within the
+    effective cutoff radius of each contracted Gaussian basis function.
+    This function calculates a distance cutoff for each contracted basis
+    function in `basis` such that contributions below `tol_screen`
+    are neglected. For each contraction, the most diffuse primitive
+    is identified, and the cutoff is determined analytically.
 
     Parameters
     ----------
-    contraction : GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) associated with the first index of
-        the integral.
+    basis : list/tuple of GeneralizedContractionShell
+        Shells of generalized contractions.
     points : np.ndarray(N, 3)
-        Cartesian coordinates of the points in space (in atomic units) where the basis
-        functions are evaluated.
+        Cartesian coordinates of the points in space (in atomic units) where the basis functions
+        are evaluated.
         Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
         components.
-    tol_screen : float
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction.
+    tol_screen : float, optional
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
 
     Returns
     -------
-    array : `bool` (N, 3)
-        For each grid point, if evaluation should be screened, return `False`
+    mask : list of ndarray of shape (N,)
+        A list of boolean arrays, one for each contraction in `basis`.
+        Each array marks with `True` the points within the cutoff radius
+        for that contraction and `False` otherwise.
     """
-
-    # minimum contraction parameters
-    cmin = np.abs(contraction.coeffs.min())
-    amin = contraction.exps.min()
-    angm = contraction.angmom
-    nmin = (
-        (2 * amin / np.pi) ** (3 / 4)
-        * ((4 * amin) ** (angm / 2))
-        / np.sqrt(factorial2(2 * angm + 1))
-    )
-
-    # log formula for l = 0
-    if angm == 0:
-        dist2 = -np.log(tol_screen / (cmin * nmin)) / amin
-    # lambert formula otheriwse
-    else:
-        w = lambertw((tol_screen / (cmin * nmin)), k=-1)
-        x = -w.real / amin
-        dist2 = x
-
-    return np.sum((points - contraction.coord) ** 2, axis=1) <= dist2
+    mask = []
+    for contraction in basis:
+        ## most diffuse primitive
+        index = np.argmin(contraction.exps)
+        cmin = np.abs(contraction.coeffs[index])
+        amin = contraction.exps[index]
+        angm = contraction.angmom
+        nmin = (
+            (2 * amin / np.pi) ** (3 / 4)
+            * ((4 * amin) ** (angm / 2))
+            / np.sqrt(factorial2(2 * angm + 1))
+        )
+        ## log formula for l=0
+        if angm == 0:
+            cutoff = np.sqrt(-np.log(tol_screen / (cmin * nmin)) / amin)
+        ## lambert formula otherwise
+        else:
+            w = lambertw(
+                (-(2.0 * amin / angm) * ((tol_screen / (cmin * nmin)) ** (2.0 / angm))), k=-1
+            ).real
+            cutoff = np.sqrt(-(angm / (2.0 * amin)) * w)
+        distance = np.linalg.norm(points - contraction.coord, axis=1)
+        mask.append(distance <= cutoff)
+    return mask
