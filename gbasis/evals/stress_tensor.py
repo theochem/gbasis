@@ -1,4 +1,5 @@
 """Module for computing properties related to the stress tensor."""
+
 import numpy as np
 
 from gbasis.evals.density import (
@@ -81,12 +82,12 @@ def evaluate_stress_tensor(
         Second parameter of the stress tensor.
         Default value is 0.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -180,8 +181,7 @@ def evaluate_ehrenfest_force(
             - (1 - 2\alpha)
             \sum_i
             \left.
-              \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i}
-                  \gamma(\mathbf{r}, \mathbf{r})
+            \frac{\partial^3}{\partial r_i \partial r_j \partial r'_i}\gamma(\mathbf{r},\mathbf{r})
             \right|_{\mathbf{r} = \mathbf{r}'}\\
             &+ \frac{1}{2} \beta
             \left(
@@ -217,12 +217,12 @@ def evaluate_ehrenfest_force(
         Second parameter of the stress tensor.
         Default value is 0.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -377,12 +377,12 @@ def evaluate_ehrenfest_hessian(
         If True, then the Hessian is symmetrized by averaging it with its transpose.
         Default value is False.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------

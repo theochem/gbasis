@@ -1,4 +1,5 @@
 """Density Evaluation."""
+
 import numpy as np
 from scipy.special import comb
 
@@ -104,12 +105,12 @@ def evaluate_density(
         The absolute value below which negative density values are acceptable. Any negative density
         value with an absolute value smaller than this threshold will be set to zero.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -117,9 +118,7 @@ def evaluate_density(
         Density evaluated at `N` grid points.
 
     """
-    orb_eval = evaluate_basis(
-        basis, points, transform=transform, screen_basis=screen_basis, tol_screen=tol_screen
-    )
+    orb_eval = evaluate_basis(basis, points, transform=transform)
     output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
     # Fix #117: check magnitude of small negative density values, then use clip to remove them
     min_output = np.min(output)
@@ -191,12 +190,12 @@ def evaluate_deriv_reduced_density_matrix(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -251,17 +250,19 @@ def evaluate_deriv_density(
             \sum_{l_x=0}^{L_x} \sum_{l_y=0}^{L_y} \sum_{l_z=0}^{L_z}
             \binom{L_x}{l_x} \binom{L_y}{l_y} \binom{L_z}{l_z}
             \sum_{ij} \gamma_{ij}
-            \frac{\partial^{l_x + l_y + l_z}
-            \rho(\mathbf{r})}{\partial x^{l_x} \partial y^{l_y} \partial z^{l_z}}
+            \frac{
+                 \partial^{l_x+ l_y+ l_z} \rho(\mathbf{r})
+            }{
+                 \partial x^{l_x} \partial y^{l_y} \partial z^{l_z}
+            }
             \frac{
                 \partial^{L_x + L_y + L_z - l_x - l_y - l_z} \rho(\mathbf{r})
             }{
                 \partial x^{L_x - l_x} \partial y^{L_y - l_y} \partial z^{L_z - l_z}
             }
 
-    where :math:`L_x, L_y, L_z` are the orders of the derivative
-    relative to the :math:`x, y, \text{and} z` components,
-    respectively.
+    where :math:`L_x, L_y, L_z` are the orders of the derivative relative to the
+    :math:`x, y, \text{and} z` components, respectively.
 
     Parameters
     ----------
@@ -290,12 +291,12 @@ def evaluate_deriv_density(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -395,12 +396,12 @@ def evaluate_density_gradient(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -483,12 +484,12 @@ def evaluate_density_laplacian(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -607,12 +608,12 @@ def evaluate_density_hessian(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -760,12 +761,12 @@ def evaluate_posdef_kinetic_energy_density(
         The absolute value below which negative density values are acceptable. Any negative density
         value with an absolute value smaller than this threshold will be set to zero.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
@@ -840,12 +841,12 @@ def evaluate_general_kinetic_energy_density(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is `True` to enable screening.
     tol_screen : float, optional
-        The tolerance used for screening a contraction at grid points. `tol_screen` is combined
-        with the minimum contraction parameters to compute a cutoff distance. This cutoff is
-        compared against all grid points, point farther than the cutoff will be excluded
-        from evaluation of the contraction. The default value for `tol_screen` is 1e-8.
+        The tolerance used for screening one-index evaluations. `tol_screen` is combined with the
+        most diffuse primitive parameters to compute a cutoff, which is compared to the distance
+        between the contraction center to determine whether the evaluation should be set to zero.
+        The default value for `tol_screen` is 1e-8.
 
     Returns
     -------
