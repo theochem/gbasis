@@ -11,7 +11,7 @@ from gbasis.evals.density import (
 )
 from gbasis.evals.eval import evaluate_basis
 from gbasis.evals.eval_deriv import evaluate_deriv_basis
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem, parse_gbs
 import numpy as np
 import pytest
 from utils import find_datafile, HortonContractions
@@ -448,3 +448,113 @@ def test_evaluate_general_kinetic_energy_density():
         evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40), screen_basis=False)
         + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40), screen_basis=False),
     )
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_density_screening_accuracy(precision):
+    """Test density evaluation screening."""
+
+    density = np.identity(40)
+    density += density.T
+    
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    density_evaluation = evaluate_density(density, contraction, grid_3d, tol_screen=tol_screen)
+    density_evaluation_no_screen = evaluate_density(density, contraction, grid_3d, screen_basis=False)
+    assert np.allclose(density_evaluation, density_evaluation_no_screen, atol=precision)
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_deriv_density_screening_accuracy(precision):
+    """Test density derivative evaluation screening."""
+
+    density = np.identity(40)
+    density += density.T
+    
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    density_deriv_evaluation = evaluate_deriv_density(np.array([1, 1, 1]), density, contraction, grid_3d, tol_screen=tol_screen)
+    density_deriv_evaluation_no_screen = evaluate_deriv_density(np.array([1, 1, 1]), density, contraction, grid_3d, screen_basis=False)
+    assert np.allclose(density_deriv_evaluation, density_deriv_evaluation_no_screen, atol=precision)
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_density_gradient_screening_accuracy(precision):
+    """Test density gradient evaluation screening."""
+
+    density = np.identity(40)
+    density += density.T
+    
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    density_grad = evaluate_density_gradient(density, contraction, grid_3d, tol_screen=tol_screen)
+    density_grad_no_screen = evaluate_density_gradient(density, contraction, grid_3d, screen_basis=False)
+    assert np.allclose(density_grad, density_grad_no_screen, atol=precision)
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_posdef_kinetic_screening_accuracy(precision):
+    """Test positive definite kinetic energy evaluation screening."""
+
+    density = np.identity(40)
+    density += density.T
+    
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    kinetic_posdef = evaluate_posdef_kinetic_energy_density(density, contraction, grid_3d, tol_screen=tol_screen)
+    kinetic_posdef_no_screen = evaluate_posdef_kinetic_energy_density(density, contraction, grid_3d, screen_basis=False)
+    assert np.allclose(kinetic_posdef, kinetic_posdef_no_screen, atol=precision)
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_general_kinetic_screening_accuracy(precision):
+    """Test general kinetic energy evaluation screening."""
+
+    density = np.identity(40)
+    density += density.T
+    
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    kinetic_general = evaluate_general_kinetic_energy_density(density, contraction, grid_3d, alpha=1, tol_screen=tol_screen)
+    kinetic_general_no_screen = evaluate_general_kinetic_energy_density(density, contraction, grid_3d, alpha=1, screen_basis=False)
+    assert np.allclose(kinetic_general, kinetic_general_no_screen, atol=precision)

@@ -4,7 +4,7 @@ import itertools as it
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval_deriv import EvalDeriv, evaluate_deriv_basis
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem, parse_gbs
 from gbasis.utils import factorial2
 import numpy as np
 import pytest
@@ -220,3 +220,22 @@ def test_evaluate_deriv_basis_lincomb():
             spherical_basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform, screen_basis=False
         ),
     )
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_basis_deriv_screening_accuracy(precision):
+    """Test basis set derivative evaluation screening."""
+    
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    basis_deriv_evaluation = evaluate_deriv_basis(contraction, grid_3d, orders=np.array([1, 1, 1]), tol_screen=tol_screen)
+    basis_deriv_evaluation_no_screen = evaluate_deriv_basis(contraction, grid_3d, orders=np.array([1, 1, 1]), screen_basis=False)
+    assert np.allclose(basis_deriv_evaluation, basis_deriv_evaluation_no_screen, atol=precision)
