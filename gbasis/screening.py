@@ -46,8 +46,8 @@ def is_two_index_overlap_screened(contractions_one, contractions_two, tol_screen
     return np.linalg.norm(r_12) > cutoff
 
 
-def get_points_mask_for_contraction(contraction, points, tol_screen):
-    r"""Return a boolean mask indicating which points should be screened.
+def get_points_mask_for_contraction(contractions, points, tol_screen):
+    r"""Return a boolean mask indicating which points should be screened for a contraction shell
 
     A point is considered screened if it lies farther from the contraction center than a cutoff
     radius computed from the contraction parameters and the screening tolerance
@@ -55,9 +55,8 @@ def get_points_mask_for_contraction(contraction, points, tol_screen):
 
     Parameters
     ----------
-    contraction : GeneralizedContractionShell
-        Contracted Cartesian Gaussians (of the same shell) associated with the
-        first index of the integral.
+    contractions : GeneralizedContractionShell
+        Contracted Cartesian Gaussians (of the same shell) for which the mask is computed.
     points : np.ndarray of shape (N, 3)
         Cartesian coordinates of the points in space (in atomic units) where the
         basis functions are evaluated. Rows correspond to points; columns
@@ -73,13 +72,20 @@ def get_points_mask_for_contraction(contraction, points, tol_screen):
         Boolean mask where `False` marks points to be screened out.
     """
 
-    # get index of most diffuse primitive and compute cutoff radius
-    idx = np.argmax(contraction.exps)
-    c, exp, angm = contraction.coeffs[idx], contraction.exps[idx], contraction.angmom
-    cutoff_radius = compute_primitive_cutoff_radius(c, exp, angm, tol_screen)
+    angm = contractions.angmom
+    shell_contractions_num = contractions.coeffs.shape[1]
+    # get outer primitive index and exponent
+    outer_prim_idx = np.argmax(contractions.exps)
+    outer_prim_exp = contractions.exps[outer_prim_idx]
 
-    # mask points that are further than the cutoff radius
-    points_r = np.linalg.norm(points - contraction.coord, axis=1)
+    cutoff_radius = 0.0
+    # for split basis, compute the cutoff radius for each contraction and use the maximum
+    for contraction_idx in range(shell_contractions_num):
+        c = abs(contractions.coeffs[outer_prim_idx, contraction_idx])
+        contraction_cutoff = compute_primitive_cutoff_radius(c, outer_prim_exp, angm, tol_screen)
+        cutoff_radius = max(cutoff_radius, contraction_cutoff)
+    # mask points that are further than the outer cutoff radius
+    points_r = np.linalg.norm(points - contractions.coord, axis=1)
     return points_r <= cutoff_radius
 
 
