@@ -20,8 +20,6 @@ def get_atom_contractions_data(atsym, atcoords):
 def test_is_two_index_overlap_screened(bond_length, tol_screen):
     contractions_one = get_atom_contractions_data("H", np.array([[0, 0, 0]]))
     contractions_two = get_atom_contractions_data("O", np.array([[0, 0, bond_length]]))
-
-    print(f"Testing with bond length: {bond_length} and screen tolerance: {tol_screen}")
     screen_pairs_list = []
     screening_cutoffs = []
     for h_shell in contractions_one:
