@@ -120,8 +120,6 @@ class Eval(BaseOneIndex):
         M = prim_coeffs.shape[1]
         N = points.shape[0]
         output = np.zeros((M, L, N), dtype=np.float64)
-        print(f"points shape {points.shape}")
-        print(f"screened points shape {points[points_mask].shape}")
 
         # fill non-screened points in the output array
         output[:,:, points_mask] = _eval_deriv_contractions(

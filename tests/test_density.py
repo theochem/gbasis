@@ -69,7 +69,7 @@ def test_evaluate_density():
     points = np.random.rand(10, 3)
 
     evaluate_orbs = evaluate_basis(basis, points, transform)
-    dens = evaluate_density(density, basis, points, transform)
+    dens = evaluate_density(density, basis, points, transform, screen_basis=False)
     assert np.all(dens >= 0.0)
     assert np.allclose(dens, np.einsum("ij,ik,jk->k", density, evaluate_orbs, evaluate_orbs))
 
