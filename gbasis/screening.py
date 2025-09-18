@@ -71,20 +71,19 @@ def get_points_mask_for_contraction(contractions, points, tol_screen):
     np.ndarray of bool, shape (N,)
         Boolean mask where `False` marks points to be screened out.
     """
-
     angm = contractions.angmom
-    shell_contractions_num = contractions.coeffs.shape[1]
-    # get outer primitive index and exponent
-    outer_prim_idx = np.argmax(contractions.exps)
-    outer_prim_exp = contractions.exps[outer_prim_idx]
+    # reshape exponents for broadcasting
+    exps = contractions.exps[:, np.newaxis]  # shape (K, 1)
+    # use absolute value (indicating magnitude) of primitive contributions
+    coeffs = np.abs(contractions.coeffs)  # shape (K, M)
 
-    cutoff_radius = 0.0
-    # for split basis, compute the cutoff radius for each contraction and use the maximum
-    for contraction_idx in range(shell_contractions_num):
-        c = abs(contractions.coeffs[outer_prim_idx, contraction_idx])
-        contraction_cutoff = compute_primitive_cutoff_radius(c, outer_prim_exp, angm, tol_screen)
-        cutoff_radius = max(cutoff_radius, contraction_cutoff)
-    # mask points that are further than the outer cutoff radius
+    # compute cutoff radius for all primitives in all contractions
+    r_cuts = compute_primitive_cutoff_radius(coeffs, exps, angm, tol_screen)
+
+    # pick the maximum radius over all primitives and contractions
+    cutoff_radius = np.max(r_cuts)
+
+    # screen out points beyond the cutoff radius
     points_r = np.linalg.norm(points - contractions.coord, axis=1)
     return points_r <= cutoff_radius
 
