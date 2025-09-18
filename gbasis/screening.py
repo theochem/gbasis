@@ -88,7 +88,7 @@ def get_points_mask_for_contraction(contractions, points, tol_screen):
     return points_r <= cutoff_radius
 
 
-def compute_primitive_cutoff_radius(c, alpha, angm, dens_tol):
+def compute_primitive_cutoff_radius(c, alpha, angm, tol_screen):
     r"""Compute the cutoff radius for a primitive Gaussian.
 
     The cutoff radius is the maximum distance from the center of the primitive Gaussian at which the
@@ -134,8 +134,8 @@ def compute_primitive_cutoff_radius(c, alpha, angm, dens_tol):
     n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
     # special case for angular momentum 0. Solution found using logarithm
     if angm == 0:
-        return np.sqrt(-np.log(dens_tol / (c * n)) / alpha)
+        return np.sqrt(-np.log(tol_screen / (c * n)) / alpha)
     # general case for angular momentum > 0. Solution found in terms of the Lambert W function
     # W_{-1} branch corresponds to the outermost solution
-    lambert_input_value = -2 * alpha * (dens_tol / (c * n)) ** (2 / angm) / angm
+    lambert_input_value = -2 * alpha * (tol_screen / (c * n)) ** (2 / angm) / angm
     return np.sqrt(-(angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)

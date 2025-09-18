@@ -4,6 +4,8 @@ import pytest
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.screening import is_two_index_overlap_screened
 from utils import find_datafile
+from gbasis.utils import factorial2
+from gbasis.screening import compute_primitive_cutoff_radius
 
 
 def get_atom_contractions_data(atsym, atcoords):
@@ -42,3 +44,27 @@ def test_is_two_index_overlap_screened(bond_length, tol_screen):
         assert np.all(
             np.array(screen_pairs_list) == ref_screened
         ), "Screening results do not match the expected values based on cutoff distances."
+
+
+@pytest.mark.parametrize("angm", [0, 1, 2, 3])
+@pytest.mark.parametrize("alpha", [0.5, 1.0, 2.0])
+@pytest.mark.parametrize("coeff", [0.1, 0.4, 0.8])
+@pytest.mark.parametrize("tol_screen", [1e-4, 1e-8])
+def test_compute_primitive_cutoff_radius(angm, alpha, coeff, tol_screen):
+    """Test the computation of the primitive cutoff radius."""
+
+    def compute_primitive_value(r, c, alpha, angm):
+        """Compute the primitive value ate the given radius."""
+        n = (
+            (2 * alpha / np.pi) ** 0.25
+            * (4 * alpha) ** (angm / 2)
+            / np.sqrt(factorial2(2 * angm + 1))
+        )
+        return c * n * np.exp(-alpha * r**2)
+
+    cutoff_r = compute_primitive_cutoff_radius(coeff, alpha, angm, tol_screen)
+    val_over_cutoff = compute_primitive_value(cutoff_r + 1e-3, coeff, alpha, angm)
+
+    assert (
+        val_over_cutoff < tol_screen
+    ), f"Value {val_over_cutoff} at r={cutoff_r + 1e-3} is not below the tolerance {tol_screen}"
