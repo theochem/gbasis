@@ -62,7 +62,15 @@ def evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval):
     return np.sum(density, axis=0)
 
 
-def evaluate_density(one_density_matrix, basis, points, transform=None, threshold=1.0e-8):
+def evaluate_density(
+    one_density_matrix,
+    basis,
+    points,
+    transform=None,
+    threshold=1.0e-8,
+    screen_basis=True,
+    tol_screen=1e-8,
+):
     r"""Return the density of the given basis set at the given points.
 
     .. math::
@@ -94,6 +102,13 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
     threshold : float, optional
         The absolute value below which negative density values are acceptable. Any negative density
         value with an absolute value smaller than this threshold will be set to zero.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True (enable screening).
+    tol_screen : float, optional
+        The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff radius which is compared to the distance
+        between the points and the contraction centers to decide whether the basis function
+        should be evaluated or set to zero at that point.
 
     Returns
     -------
@@ -101,7 +116,9 @@ def evaluate_density(one_density_matrix, basis, points, transform=None, threshol
         Density evaluated at `N` grid points.
 
     """
-    orb_eval = evaluate_basis(basis, points, transform=transform)
+    orb_eval = evaluate_basis(
+        basis, points, transform=transform, screen_basis=screen_basis, tol_screen=tol_screen
+    )
     output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
     # Fix #117: check magnitude of small negative density values, then use clip to remove them
     min_output = np.min(output)
