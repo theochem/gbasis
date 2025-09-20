@@ -52,7 +52,7 @@ def test_compute_primitive_cutoff_radius(angm, alpha, coeff, tol_screen):
     """Test the computation of the primitive cutoff radius."""
 
     def compute_primitive_value(r, c, alpha, angm):
-        """Compute the primitive value ate the given radius."""
+        """Compute the primitive value at the given radius."""
         n = (
             (2 * alpha / np.pi) ** 0.25
             * (4 * alpha) ** (angm / 2)
