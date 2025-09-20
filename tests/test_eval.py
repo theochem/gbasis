@@ -2,7 +2,7 @@
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval import Eval, evaluate_basis
-from gbasis.parsers import make_contractions, parse_nwchem
+from gbasis.parsers import make_contractions, parse_nwchem, parse_gbs
 from gbasis.utils import factorial2
 import numpy as np
 import pytest
@@ -128,8 +128,8 @@ def test_evaluate_basis_mix():
         basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["cartesian"] * 8
     )
     assert np.allclose(
-        evaluate_basis(cartesian_basis, np.array([[1, 1, 1]])),
-        evaluate_basis(cartesian_basis_list, np.array([[1, 1, 1]])),
+        evaluate_basis(cartesian_basis, np.array([[1, 1, 1]]), screen_basis=False),
+        evaluate_basis(cartesian_basis_list, np.array([[1, 1, 1]]), screen_basis=False),
     )
 
 
@@ -166,8 +166,12 @@ def test_evaluate_basis_horton():
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
-    assert np.allclose(evaluate_basis(cartesian_basis, grid_3d, screen_basis=False), horton_eval_cart.T)
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False), horton_eval_sph.T)
+    assert np.allclose(
+        evaluate_basis(cartesian_basis, grid_3d, screen_basis=False), horton_eval_cart.T
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False), horton_eval_sph.T
+    )
 
 
 def test_evaluate_basis_pyscf():
@@ -195,21 +199,47 @@ def test_evaluate_basis_pyscf():
     pyscf_eval_cart = gto.eval_gto(mol, "GTOval_cart", grid_3d)
 
     # s orbitals
-    assert np.allclose(evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[:6], pyscf_eval_cart.T[:6])
-    assert np.allclose(evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[46:53], pyscf_eval_cart.T[46:53])
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[:6], pyscf_eval_sph.T[:6])
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[40:47], pyscf_eval_sph.T[40:47])
+    assert np.allclose(
+        evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[:6], pyscf_eval_cart.T[:6]
+    )
+    assert np.allclose(
+        evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[46:53],
+        pyscf_eval_cart.T[46:53],
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[:6], pyscf_eval_sph.T[:6]
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[40:47], pyscf_eval_sph.T[40:47]
+    )
     # p orbitals
-    assert np.allclose(evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[6:18], pyscf_eval_cart.T[6:18])
-    assert np.allclose(evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[53:65], pyscf_eval_cart.T[53:65])
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[6:18], pyscf_eval_sph.T[6:18])
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[47:59], pyscf_eval_sph.T[47:59])
+    assert np.allclose(
+        evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[6:18], pyscf_eval_cart.T[6:18]
+    )
+    assert np.allclose(
+        evaluate_basis(cartesian_basis, grid_3d, screen_basis=False)[53:65],
+        pyscf_eval_cart.T[53:65],
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[6:18], pyscf_eval_sph.T[6:18]
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[47:59], pyscf_eval_sph.T[47:59]
+    )
     # d orbitals are off by some constant for the cartesian case
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[18:33], pyscf_eval_sph.T[18:33])
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[59:74], pyscf_eval_sph.T[59:74])
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[18:33], pyscf_eval_sph.T[18:33]
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[59:74], pyscf_eval_sph.T[59:74]
+    )
     # f orbitals are off by some constant for the cartesian case
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[33:40], pyscf_eval_sph.T[33:40])
-    assert np.allclose(evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[74:88], pyscf_eval_sph.T[74:88])
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[33:40], pyscf_eval_sph.T[33:40]
+    )
+    assert np.allclose(
+        evaluate_basis(spherical_basis, grid_3d, screen_basis=False)[74:88], pyscf_eval_sph.T[74:88]
+    )
 
 
 @pytest.mark.xfail
@@ -237,15 +267,39 @@ def test_evaluate_basis_pyscf_cart_norm():
 
     # d orbitals are all off by some scalar factor
     assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[18:36], pyscf_eval_cart.T[18:36]
+        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[18:36],
+        pyscf_eval_cart.T[18:36],
     )
     assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[65:83], pyscf_eval_cart.T[65:83]
+        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[65:83],
+        pyscf_eval_cart.T[65:83],
     )
     # f orbitals are all off by some scalar factor
     assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[36:46], pyscf_eval_cart.T[36:46]
+        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[36:46],
+        pyscf_eval_cart.T[36:46],
     )
     assert np.allclose(
-        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[83:103], pyscf_eval_cart.T[83:103]
+        evaluate_basis(basis, grid_3d, coord_type="cartesian", screen_basis=False)[83:103],
+        pyscf_eval_cart.T[83:103],
     )
+
+
+@pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
+def test_evaluate_basis_screening_accuracy(precision):
+    """Test basis set evaluation screening."""
+
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    atsymbols = ["H", "C", "Kr"]
+    atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
+
+    grid_1d = np.linspace(-2, 2, num=5)
+    grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
+    grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
+
+    #  the screening tolerance needs to be 1e-4 times the desired precision
+    tol_screen = precision * 1e-4
+    basis_evaluation = evaluate_basis(contraction, grid_3d, tol_screen=tol_screen)
+    basis_evaluation_no_screen = evaluate_basis(contraction, grid_3d, screen_basis=False)
+    assert np.allclose(basis_evaluation, basis_evaluation_no_screen, atol=precision)

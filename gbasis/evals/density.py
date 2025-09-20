@@ -506,7 +506,7 @@ def evaluate_density_hessian(
     r"""Return the Hessian of the density evaluated at the given points.
 
     .. math::
-        
+
         H[\rho(\mathbf{r})]
         =
         \begin{bmatrix}
