@@ -68,6 +68,13 @@ class Eval(BaseOneIndex):
             functions are evaluated.
             Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
             components.
+        screen_basis : bool, optional
+            Whether to screen out points that are too far from the contraction center. Default value
+            is True (enable screening).
+        tol_screen : float
+            Screening tolerance for excluding points. This value, together with the
+            minimum contraction parameters, determines a cutoff distance. Points
+            farther than the cutoff are excluded from contraction evaluation.
 
         Returns
         -------
@@ -115,7 +122,7 @@ class Eval(BaseOneIndex):
             )
 
         # default case, screen points that are too far from the contraction center
-        points_mask = get_points_mask_for_contraction(
+        pts_mask = get_points_mask_for_contraction(
             contractions, points, deriv_order=0, tol_screen=tol_screen
         )
         # reconstruct the array with correct shape
@@ -125,8 +132,8 @@ class Eval(BaseOneIndex):
         output = np.zeros((M, L, N), dtype=np.float64)
 
         # fill non-screened points in the output array
-        output[:, :, points_mask] = _eval_deriv_contractions(
-            points[points_mask],
+        output[:, :, pts_mask] = _eval_deriv_contractions(
+            points[pts_mask],
             np.zeros(3),
             center,
             angmom_comps,

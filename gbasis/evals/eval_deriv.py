@@ -1,8 +1,10 @@
 """Functions for evaluating Gaussian primitives."""
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals._deriv import _eval_first_second_order_deriv_contractions
+from gbasis.screening import get_points_mask_for_contraction
 import numpy as np
 
 
@@ -55,7 +57,9 @@ class EvalDeriv(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points, orders, deriv_type="general"):
+    def construct_array_contraction(
+        contractions, points, orders, deriv_type="general", screen_basis=True, tol_screen=1e-8
+    ):
         r"""Return the array associated with a set of contracted Cartesian Gaussians.
 
         Parameters
@@ -76,6 +80,13 @@ class EvalDeriv(BaseOneIndex):
             function (_eval_deriv_contractions()) and "direct" makes reference to specific
             implementation of first and second order derivatives for generalized
             contraction (_eval_first_second_order_deriv_contractions()).
+        screen_basis : bool, optional
+            Whether to screen out points that are too far from the contraction center. Default value
+            is True (enable screening).
+        tol_screen : float
+            Screening tolerance for excluding points. This value, together with the
+            minimum contraction parameters, determines a cutoff distance. Points
+            farther than the cutoff are excluded from contraction evaluation.
 
         Returns
         -------
@@ -127,13 +138,35 @@ class EvalDeriv(BaseOneIndex):
         angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
         norm_prim_cart = contractions.norm_prim_cart
+
+        if not screen_basis:
+            if deriv_type == "general":
+                return _eval_deriv_contractions(
+                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                )
+            elif deriv_type == "direct":
+                return _eval_first_second_order_deriv_contractions(
+                    points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+                )
+
+        # default case, screen points that are too far from the contraction center
+        pts_mask = get_points_mask_for_contraction(
+            contractions, points, deriv_order=np.sum(orders), tol_screen=tol_screen
+        )
+        # reconstruct the array with correct shape
+        L = angmom_comps.shape[0]
+        M = prim_coeffs.shape[1]
+        N = points.shape[0]
+        output = np.zeros((M, L, N), dtype=np.float64)
+
+        # fill non-screened points in the output array
         if deriv_type == "general":
-            output = _eval_deriv_contractions(
-                points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+            output[:, :, pts_mask] = _eval_deriv_contractions(
+                points[pts_mask], orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         elif deriv_type == "direct":
-            output = _eval_first_second_order_deriv_contractions(
-                points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+            output[:, :, pts_mask] = _eval_first_second_order_deriv_contractions(
+                points[pts_mask], orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
         return output
 
@@ -150,11 +183,11 @@ def evaluate_deriv_basis(
     The derivative (to arbitrary orders) of a basis function is given by:
 
     .. math::
-    
+
         \frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
         \phi (\mathbf{r})
-    
-    where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z, 
+
+    where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z,
     :math:`\phi` is the basis function (a generalized contraction shell), and :math:`\mathbf{r}_n` are
     the coordinate of the points in space where the basis function is evaluated.
 
