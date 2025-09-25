@@ -1,4 +1,5 @@
 """Functions for evaluating Gaussian contractions."""
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
@@ -114,7 +115,9 @@ class Eval(BaseOneIndex):
             )
 
         # default case, screen points that are too far from the contraction center
-        points_mask = get_points_mask_for_contraction(contractions, points, tol_screen=tol_screen)
+        points_mask = get_points_mask_for_contraction(
+            contractions, points, deriv_order=0, tol_screen=tol_screen
+        )
         # reconstruct the array with correct shape
         L = angmom_comps.shape[0]
         M = prim_coeffs.shape[1]
@@ -122,8 +125,14 @@ class Eval(BaseOneIndex):
         output = np.zeros((M, L, N), dtype=np.float64)
 
         # fill non-screened points in the output array
-        output[:,:, points_mask] = _eval_deriv_contractions(
-            points[points_mask], np.zeros(3), center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+        output[:, :, points_mask] = _eval_deriv_contractions(
+            points[points_mask],
+            np.zeros(3),
+            center,
+            angmom_comps,
+            alphas,
+            prim_coeffs,
+            norm_prim_cart,
         )
         return output
 

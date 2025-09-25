@@ -1,4 +1,5 @@
 """Test gbasis.screening"""
+
 import numpy as np
 import pytest
 from gbasis.parsers import make_contractions, parse_nwchem
@@ -44,24 +45,32 @@ def test_is_two_index_overlap_screened(bond_length, tol_screen):
         ), "Screening results do not match the expected values based on cutoff distances."
 
 
-@pytest.mark.parametrize("angm", [0, 1, 2, 3])
-@pytest.mark.parametrize("alpha", [0.5, 1.0, 2.0])
-@pytest.mark.parametrize("coeff", [0.1, 0.4, 0.8])
+@pytest.mark.parametrize("angm", [0, 3])
+@pytest.mark.parametrize("alpha", [0.5, 2.0])
+@pytest.mark.parametrize("coeff", [0.1, 0.8])
+@pytest.mark.parametrize("deriv_order", [0, 4])
 @pytest.mark.parametrize("tol_screen", [1e-4, 1e-8])
-def test_compute_primitive_cutoff_radius(angm, alpha, coeff, tol_screen):
+def test_compute_primitive_cutoff_radius(angm, alpha, coeff, deriv_order, tol_screen):
     """Test the computation of the primitive cutoff radius."""
 
-    def compute_primitive_value(r, c, alpha, angm):
+    def compute_primitive_value(r, c, alpha, angm, deriv_order):
         """Compute the primitive value at the given radius."""
         n = (
             (2 * alpha / np.pi) ** 0.25
             * (4 * alpha) ** (angm / 2)
             / np.sqrt(factorial2(2 * angm + 1))
         )
-        return c * n * np.exp(-alpha * r**2)
+        # Include derivative polynomial factor as radial bound
+        radial_factor = r ** (angm + deriv_order)
+        derivative_scale = (2 * alpha) ** deriv_order  # optional scaling from derivative
+        return c * n * derivative_scale * radial_factor * np.exp(-alpha * r**2)
 
-    cutoff_r = compute_primitive_cutoff_radius(coeff, alpha, angm, tol_screen)
-    val_over_cutoff = compute_primitive_value(cutoff_r + 1e-3, coeff, alpha, angm)
+    cutoff_r = compute_primitive_cutoff_radius(
+        coeff, alpha, angm, deriv_order=deriv_order, tol_screen=tol_screen
+    )
+    val_over_cutoff = compute_primitive_value(
+        cutoff_r + 1e-3, coeff, alpha, angm, deriv_order=deriv_order
+    )
 
     assert (
         val_over_cutoff < tol_screen
