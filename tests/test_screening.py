@@ -3,10 +3,10 @@
 import numpy as np
 import pytest
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.screening import is_two_index_overlap_screened
-from utils import find_datafile
-from gbasis.utils import factorial2
+from gbasis.screening import is_two_index_overlap_screened, compute_primitive_upper_bound
 from gbasis.screening import compute_primitive_cutoff_radius
+from gbasis.utils import factorial2
+from utils import find_datafile
 
 
 def get_atom_contractions_data(atsym, atcoords):
@@ -75,3 +75,29 @@ def test_compute_primitive_cutoff_radius(angm, alpha, coeff, deriv_order, tol_sc
     assert (
         val_over_cutoff < tol_screen
     ), f"Value {val_over_cutoff} at r={cutoff_r + 1e-3} is not below the tolerance {tol_screen}"
+
+
+def test_compute_compute_primitive_upper_bound():
+    """Test the computation of the primitive upper bound."""
+
+    rgrid = np.linspace(0, 80, 1000)
+
+    def compute_primitive_value(r, c, alpha, angm, deriv_order):
+        """Compute the primitive value at the given radius."""
+        n = (
+            (2 * alpha / np.pi) ** 0.25
+            * (4 * alpha) ** (angm / 2)
+            / np.sqrt(factorial2(2 * angm + 1))
+        )
+        # Include derivative polynomial factor as radial bound
+        radial_factor = r ** (angm + deriv_order)
+        derivative_scale = (2 * alpha) ** deriv_order  # optional scaling from derivative
+        return c * n * derivative_scale * radial_factor * np.exp(-alpha * r**2)
+
+    angmom = 3
+    deriv_order = 2
+    alpha = 0.5
+    coeff = 0.8
+    prim_vals = compute_primitive_value(rgrid, coeff, alpha, angmom, deriv_order)
+    upper_bound = compute_primitive_upper_bound(coeff, alpha, angmom, deriv_order)
+    assert np.all(prim_vals <= upper_bound), "Primitive values exceed the computed upper bound"
