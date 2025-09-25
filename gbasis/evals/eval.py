@@ -69,12 +69,13 @@ class Eval(BaseOneIndex):
             Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
             components.
         screen_basis : bool, optional
-            Whether to screen out points that are too far from the contraction center. Default value
-            is True (enable screening).
+            Whether to screen out points with negligible contributions. Default value is True
+            (enable screening).
         tol_screen : float
-            Screening tolerance for excluding points. This value, together with the
-            minimum contraction parameters, determines a cutoff distance. Points
-            farther than the cutoff are excluded from contraction evaluation.
+            Screening tolerance for excluding evaluations. Points with values below this tolerance
+            will not be evaluated (they will be set to zero). Internal computed quantities that
+            affect the results below this tolerance will also be ignored to speed up the
+            evaluation. Default value is 1e-8.
 
         Returns
         -------
@@ -163,12 +164,13 @@ def evaluate_basis(basis, points, transform=None, screen_basis=True, tol_screen=
         and index 0 of the array for contractions.
         Default is no transformation.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True (enable screening).
-    tol_screen : float, optional
-        The tolerance used for screening overlap integrals. `tol_screen` is combined with the
-        minimum contraction exponents to compute a cutoff radius which is compared to the distance
-        between the points and the contraction centers to decide whether the basis function
-        should be evaluated or set to zero at that point.
+        Whether to screen out points with negligible contributions. Default value is True
+        (enable screening).
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
