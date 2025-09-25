@@ -177,6 +177,8 @@ def evaluate_deriv_basis(
     orders,
     transform=None,
     deriv_type="general",
+    screen_basis=True,
+    tol_screen=1e-8,
 ):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
 
@@ -216,6 +218,13 @@ def evaluate_deriv_basis(
         to general implementation of any order derivative function (_eval_deriv_contractions())
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
+    screen_basis : bool, optional
+        Whether to screen out points that are too far from the contractions center to contribute to
+        the result above the given tolerance. Default value is True (enable screening).
+    tol_screen : float
+        Screening tolerance for excluding points. This value, together with the
+        minimum contraction parameters, determines a cutoff distance. Points
+        farther than the cutoff are excluded from contraction evaluation.
 
     Returns
     -------
@@ -231,16 +240,35 @@ def evaluate_deriv_basis(
 
     if transform is not None:
         return EvalDeriv(basis).construct_array_lincomb(
-            transform, coord_type, points=points, orders=orders, deriv_type=deriv_type
+            transform,
+            coord_type,
+            points=points,
+            orders=orders,
+            deriv_type=deriv_type,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
         )
     if all(ct == "cartesian" for ct in coord_type) or coord_type == "cartesian":
         return EvalDeriv(basis).construct_array_cartesian(
-            points=points, orders=orders, deriv_type=deriv_type
+            points=points,
+            orders=orders,
+            deriv_type=deriv_type,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
         )
     if all(ct == "spherical" for ct in coord_type) or coord_type == "spherical":
         return EvalDeriv(basis).construct_array_spherical(
-            points=points, orders=orders, deriv_type=deriv_type
+            points=points,
+            orders=orders,
+            deriv_type=deriv_type,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
         )
     return EvalDeriv(basis).construct_array_mix(
-        coord_type, points=points, orders=orders, deriv_type=deriv_type
+        coord_type,
+        points=points,
+        orders=orders,
+        deriv_type=deriv_type,
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
     )
