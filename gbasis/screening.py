@@ -157,3 +157,56 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
     # function W_{-1} branch corresponds to the outermost solution
     lambert_input_value = -2 * alpha * (eff_tol_screen / (c * n)) ** (2 / eff_angm) / eff_angm
     return np.sqrt(-(eff_angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)
+
+
+def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
+    r"""Compute an upper bound for a primitive Gaussian or its derivatives at a distance r.
+
+    The upper bound for a primitive Gaussian or its Cartesian derivative at a distance r from its
+    center is given by:
+
+    .. math::
+        U(r) =  |c| n  (2 \alpha)^{k} r^{\ell + k}e^{-\alpha r^2}
+
+    where :math:`c` is the coefficient of the primitive Gaussian, :math:`\alpha` is its exponent,
+    :math:`\ell` is the angular momentum quantum number, :math:`k` is the total order of the
+    derivative (0 for the function itself), and :math:`n` is the normalization factor given by:
+    .. math::
+
+        n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{1}{4}}
+            \frac{(4 \alpha)^{\frac{\ell}{2}}}{\sqrt{(2\ell + 1)!!}}
+
+    The primitive upper bound is then:
+    .. math::
+        max(U(r)) = |c|,n,(2 \alpha)^{\frac{k - \ell}{2}}
+        (\ell + k)^{\frac{\ell + k}{2}} e^{-\frac{\ell + k}{2}}
+
+    Parameters
+    ----------
+    c : float
+        Coefficient of the primitive Gaussian.
+    alpha : float
+        Exponent :math:`\alpha` of the primitive Gaussian.
+    angm : int
+        Angular momentum quantum number :math:`\ell` of the primitive Gaussian.
+    deriv_order : int
+        Total order :math:`k` of the Cartesian derivative to consider (0 for the function itself).
+
+    Returns
+    -------
+    float
+        An upper bound for the absolute value of the primitive Gaussian or its derivative at any
+        point.
+    """
+    # Compute normalization factor n for the primitive Gaussian
+    n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
+
+    # compute logaritm of the upper bound to avoid over/underflow
+    up_log = (
+        np.log(np.abs(c) * n)
+        + (deriv_order - angm) / 2 * np.log(2 * alpha)
+        + (deriv_order + angm) / 2 * np.log(deriv_order + angm)
+        - (deriv_order + angm) / 2
+    )
+
+    return np.exp(up_log)
