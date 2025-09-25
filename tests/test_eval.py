@@ -1,4 +1,5 @@
 """Test gbasis.evals.eval."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval import Eval, evaluate_basis
@@ -9,7 +10,9 @@ import pytest
 from utils import find_datafile, HortonContractions
 
 
-def test_evaluate_construct_array_contraction():
+@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis", [True, False])
+def test_evaluate_construct_array_contraction(screen_basis, tol_screen):
     """Test gbasis.evals.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), "spherical"
@@ -39,18 +42,46 @@ def test_evaluate_construct_array_contraction():
             for angmom_comp in test.angmom_components_cart
         ]
     ).reshape(3, 1)
+
     assert np.allclose(
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=test), answer
+        Eval.construct_array_contraction(
+            points=np.array([[2, 3, 4]]),
+            contractions=test,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        answer,
+        atol=tol_screen,
     )
 
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=None)
+        Eval.construct_array_contraction(
+            points=np.array([[2, 3, 4]]),
+            contractions=None,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions={1: 2})
+        Eval.construct_array_contraction(
+            points=np.array([[2, 3, 4]]),
+            contractions={1: 2},
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([2, 3, 4]), contractions=test)
+        Eval.construct_array_contraction(
+            points=np.array([2, 3, 4]),
+            contractions=test,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[3, 4]]), contractions=test)
+        Eval.construct_array_contraction(
+            points=np.array([[3, 4]]),
+            contractions=test,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
 
 
 def test_evaluate_basis_cartesian():
