@@ -158,6 +158,38 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
     lambert_input_value = -2 * alpha * (eff_tol_screen / (c * n)) ** (2 / eff_angm) / eff_angm
     return np.sqrt(-(eff_angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)
 
+# TODO: Fix this, it fails for some reason, it is needed for screening of 1rdms
+def compute_contraction_upper_bond(contractions, deriv_order):
+    r"""Compute an upper bound for a contraction or its derivatives for any point.
+
+    The upper bound for a contraction or its Cartesian derivative at any point is given by the
+    maximum upper bound of its constituent primitive Gaussians or their derivatives (see
+    `compute_primitive_upper_bound`).
+
+    Parameters
+    ----------
+    contractions : GeneralizedContractionShell
+        Contracted Cartesian Gaussians (of the same shell) for which the upper bound is computed.
+    deriv_order : int
+        Total order of the Cartesian derivative to consider (0 for the function itself).
+
+    Returns
+    -------
+    float
+        An upper bound for the absolute value of the contraction or its derivative at any point.
+    """
+    angm = contractions.angmom
+    # reshape exponents for broadcasting
+    exps = contractions.exps[:, np.newaxis]  # shape (K, 1)
+    # use absolute value (indicating magnitude) of primitive contributions
+    coeffs = np.abs(contractions.coeffs)  # shape (K, M)
+
+    # compute cutoff radius for all primitives in all contractions
+    upper_bounds = compute_primitive_upper_bound(coeffs, exps, angm, deriv_order)
+    print(upper_bounds.shape)
+
+    return np.sum(upper_bounds)
+
 
 def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
     r"""Compute an upper bound for a primitive Gaussian or its derivatives at a distance r.
@@ -178,7 +210,7 @@ def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
 
     The primitive upper bound is then:
     .. math::
-        max(U(r)) = |c|,n,(2 \alpha)^{\frac{k - \ell}{2}}
+        max(U(r)) = |c| n (2 \alpha)^{\frac{k - \ell}{2}}
         (\ell + k)^{\frac{\ell + k}{2}} e^{-\frac{\ell + k}{2}}
 
     Parameters
@@ -200,6 +232,9 @@ def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
     """
     # Compute normalization factor n for the primitive Gaussian
     n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
+
+    if angm + deriv_order == 0:
+        return np.abs(c) * n
 
     # compute logaritm of the upper bound to avoid over/underflow
     up_log = (

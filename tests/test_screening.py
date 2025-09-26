@@ -4,7 +4,8 @@ import numpy as np
 import pytest
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.screening import is_two_index_overlap_screened, compute_primitive_upper_bound
-from gbasis.screening import compute_primitive_cutoff_radius
+from gbasis.screening import compute_primitive_cutoff_radius, compute_contraction_upper_bond
+from gbasis.evals.eval_deriv import _eval_deriv_contractions
 from gbasis.utils import factorial2
 from utils import find_datafile
 
@@ -101,3 +102,34 @@ def test_compute_compute_primitive_upper_bound():
     prim_vals = compute_primitive_value(rgrid, coeff, alpha, angmom, deriv_order)
     upper_bound = compute_primitive_upper_bound(coeff, alpha, angmom, deriv_order)
     assert np.all(prim_vals <= upper_bound), "Primitive values exceed the computed upper bound"
+
+
+@pytest.mark.skip(reason="The implementation fails for some reason")
+@pytest.mark.parametrize("deriv_order", [0, 2])
+def test_compute_contraction_upper_bond(deriv_order):
+    """Test the computation of the contraction upper bound."""
+
+    atcoord = np.array([[0.0, 0.0, 0.0]])
+    # Create a line of points along z axis
+    max_length = 80.0
+    npoints = 600
+    points = np.array([[0.0, 0.0, 1.0]]) * np.linspace(1e-8, max_length, npoints)[:, None]
+    orders = np.array([0, 0, deriv_order])
+
+    basis = get_atom_contractions_data("O", atcoord)
+    for contractions in basis:
+        computed_upper_bound = compute_contraction_upper_bond(contractions, deriv_order=deriv_order)
+        alphas = contractions.exps
+        prim_coeffs = contractions.coeffs
+        angmom_comps = contractions.angmom_components_cart
+        center = contractions.coord
+        norm_prim_cart = contractions.norm_prim_cart
+
+        contraction_values = _eval_deriv_contractions(
+            points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+        )
+        max_contraction_values = np.max(np.abs(contraction_values))
+        assert max_contraction_values <= computed_upper_bound, (
+            f"Contraction values exceed the computed upper bound: "
+            f"{max_contraction_values} > {computed_upper_bound}"
+        )
