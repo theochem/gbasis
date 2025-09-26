@@ -2,6 +2,7 @@
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
+from gbasis.screening import get_points_mask_for_contraction
 import numpy as np
 
 
@@ -53,7 +54,7 @@ class Eval(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points):
+    def construct_array_contraction(contractions, points, screen_basis=True, tol_screen=1e-8):
         r"""Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
@@ -105,13 +106,29 @@ class Eval(BaseOneIndex):
         angmom_comps = contractions.angmom_components_cart
         center = contractions.coord
         norm_prim_cart = contractions.norm_prim_cart
-        output = _eval_deriv_contractions(
-            points, np.zeros(3), center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+
+        # if screening is not requested, evaluate all points
+        if not screen_basis:
+            return _eval_deriv_contractions(
+                points, np.zeros(3), center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+            )
+
+        # default case, screen points that are too far from the contraction center
+        points_mask = get_points_mask_for_contraction(contractions, points, tol_screen=tol_screen)
+        # reconstruct the array with correct shape
+        L = angmom_comps.shape[0]
+        M = prim_coeffs.shape[1]
+        N = points.shape[0]
+        output = np.zeros((M, L, N), dtype=np.float64)
+
+        # fill non-screened points in the output array
+        output[:,:, points_mask] = _eval_deriv_contractions(
+            points[points_mask], np.zeros(3), center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
         )
         return output
 
 
-def evaluate_basis(basis, points, transform=None):
+def evaluate_basis(basis, points, transform=None, screen_basis=True, tol_screen=1e-8):
     r"""Evaluate the basis set in the given coordinate system at the given points.
 
     Parameters
@@ -129,6 +146,13 @@ def evaluate_basis(basis, points, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    screen_basis : bool, optional
+        A toggle to enable or disable screening. Default value is True (enable screening).
+    tol_screen : float, optional
+        The tolerance used for screening overlap integrals. `tol_screen` is combined with the
+        minimum contraction exponents to compute a cutoff radius which is compared to the distance
+        between the points and the contraction centers to decide whether the basis function
+        should be evaluated or set to zero at that point.
 
     Returns
     -------
@@ -141,11 +165,12 @@ def evaluate_basis(basis, points, transform=None):
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"tol_screen": tol_screen, "screen_basis": screen_basis}
 
     if transform is not None:
-        return Eval(basis).construct_array_lincomb(transform, coord_type, points=points)
+        return Eval(basis).construct_array_lincomb(transform, coord_type, points=points, **kwargs)
     if all(ct == "cartesian" for ct in coord_type):
-        return Eval(basis).construct_array_cartesian(points=points)
+        return Eval(basis).construct_array_cartesian(points=points, **kwargs)
     if all(ct == "spherical" for ct in coord_type):
-        return Eval(basis).construct_array_spherical(points=points)
-    return Eval(basis).construct_array_mix(coord_type, points=points)
+        return Eval(basis).construct_array_spherical(points=points, **kwargs)
+    return Eval(basis).construct_array_mix(coord_type, points=points, **kwargs)
