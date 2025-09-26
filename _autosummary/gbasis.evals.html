@@ -487,12 +487,13 @@ Default is no transformation.</p>
 <dt>threshold<span class="classifier">float, optional</span></dt><dd><p>The absolute value below which negative density values are acceptable. Any negative density
 value with an absolute value smaller than this threshold will be set to zero.</p>
 </dd>
-<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>A toggle to enable or disable screening. Default value is True (enable screening).</p>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
 </dd>
-<dt>tol_screen<span class="classifier">float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. <cite>tol_screen</cite> is combined with the
-minimum contraction exponents to compute a cutoff radius which is compared to the distance
-between the points and the contraction centers to decide whether the basis function
-should be evaluated or set to zero at that point.</p>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
 </dd>
 </dl>
 </section>
@@ -507,7 +508,7 @@ should be evaluated or set to zero at that point.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_gradient">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_gradient" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_gradient" title="Link to this definition">#</a></dt>
 <dd><p>Return the gradient of the density evaluated at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\nabla \rho(\mathbf{r})
@@ -542,6 +543,14 @@ to general implementation of any order derivative function (_eval_deriv_contract
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id2">
@@ -555,7 +564,7 @@ derivatives for generalized contraction (_eval_first_second_order_deriv_contract
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_hessian">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_hessian" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_hessian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_hessian" title="Link to this definition">#</a></dt>
 <dd><p>Return the Hessian of the density evaluated at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}H[\rho(\mathbf{r})]
@@ -596,6 +605,14 @@ to general implementation of any order derivative function (_eval_deriv_contract
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id4">
@@ -612,7 +629,7 @@ was calculated.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density_laplacian">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_laplacian" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density_laplacian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density_laplacian" title="Link to this definition">#</a></dt>
 <dd><p>Return the Laplacian of the density evaluated at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\nabla^2 \rho(\mathbf{r})
@@ -644,6 +661,14 @@ Default is no transformation.</p>
 to general implementation of any order derivative function (_eval_deriv_contractions())
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
+</dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
 </dd>
 </dl>
 </section>
@@ -694,7 +719,7 @@ rows of the orbital evaluations.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_deriv_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_density" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_density" title="Link to this definition">#</a></dt>
 <dd><p>Return the derivative of density of the given transformed basis set at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}&amp;\frac{\partial^{L_x + L_y + L_z}}{\partial x^{L_x} \partial y^{L_y} \partial z^{L_z}}
@@ -738,6 +763,14 @@ to general implementation of any order derivative function (_eval_deriv_contract
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id10">
@@ -751,7 +784,7 @@ derivatives for generalized contraction (_eval_first_second_order_deriv_contract
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_deriv_reduced_density_matrix">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_reduced_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_reduced_density_matrix" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_reduced_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_one</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders_two</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_deriv_reduced_density_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Return the derivative of the first-order reduced density matrix at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}&amp;\left.
@@ -800,6 +833,14 @@ to general implementation of any order derivative function (_eval_deriv_contract
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id12">
@@ -813,7 +854,7 @@ derivatives for generalized contraction (_eval_first_second_order_deriv_contract
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_general_kinetic_energy_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_general_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_general_kinetic_energy_density" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_general_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_general_kinetic_energy_density" title="Link to this definition">#</a></dt>
 <dd><p>Return evaluations of general form of the kinetic energy density at the given points.</p>
 <div class="math notranslate nohighlight">
 \[t_{\alpha} (\mathbf{r}) = t_+(\mathbf{r}) + \alpha \nabla^2 \rho(\mathbf{r})\]</div>
@@ -845,6 +886,14 @@ to general implementation of any order derivative function (_eval_deriv_contract
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id14">
@@ -866,7 +915,7 @@ grid points.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_posdef_kinetic_energy_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_posdef_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_posdef_kinetic_energy_density" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_posdef_kinetic_energy_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_posdef_kinetic_energy_density" title="Link to this definition">#</a></dt>
 <dd><p>Return evaluations of positive definite kinetic energy density at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{split}
@@ -907,12 +956,20 @@ derivatives for generalized contraction (_eval_first_second_order_deriv_contract
 <dt>threshold<span class="classifier">float, optional</span></dt><dd><p>The absolute value below which negative density values are acceptable. Any negative density
 value with an absolute value smaller than this threshold will be set to zero.</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id17">
 <h3>Returns<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <dl class="simple">
-<dt>posdef_kindetic_energy_density<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Positive definite kinetic energy density of the given transformed basis set evaluated at
+<dt>posdef_kinetic_energy_density<span class="classifier">np.ndarray(N,)</span></dt><dd><p>Positive definite kinetic energy density of the given transformed basis set evaluated at
 <cite>N</cite> grid points.</p>
 </dd>
 </dl>
@@ -1060,6 +1117,14 @@ functions are evaluated.
 Rows correspond to the points and columns correspond to the <span class="math notranslate nohighlight">\(x, y, \text{and} z\)</span>
 components.</p>
 </dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
+</dd>
 </dl>
 </section>
 <section id="id22">
@@ -1116,12 +1181,13 @@ Transformation is applied to the left, i.e. the sum is over the index 1 of <cite
 and index 0 of the array for contractions.
 Default is no transformation.</p>
 </dd>
-<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>A toggle to enable or disable screening. Default value is True (enable screening).</p>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points with negligible contributions. Default value is True
+(enable screening).</p>
 </dd>
-<dt>tol_screen<span class="classifier">float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. <cite>tol_screen</cite> is combined with the
-minimum contraction exponents to compute a cutoff radius which is compared to the distance
-between the points and the contraction centers to decide whether the basis function
-should be evaluated or set to zero at that point.</p>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding evaluations. Points with values below this tolerance
+will not be evaluated (they will be set to zero). Internal computed quantities that
+affect the results below this tolerance will also be ignored to speed up the
+evaluation. Default value is 1e-8.</p>
 </dd>
 </dl>
 </section>
@@ -1193,7 +1259,7 @@ given coordinate system.
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.EvalDeriv.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return the array associated with a set of contracted Cartesian Gaussians.</p>
 <section id="id28">
 <h4>Parameters<a class="headerlink" href="#id28" title="Link to this heading">#</a></h4>
@@ -1213,6 +1279,13 @@ makes reference to general implementation of any order derivative
 function (_eval_deriv_contractions()) and “direct” makes reference to specific
 implementation of first and second order derivatives for generalized
 contraction (_eval_first_second_order_deriv_contractions()).</p>
+</dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points that are too far from the contraction center. Default value
+is True (enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding points. This value, together with the
+minimum contraction parameters, determines a cutoff distance. Points
+farther than the cutoff are excluded from contraction evaluation.</p>
 </dd>
 </dl>
 </section>
@@ -1256,13 +1329,13 @@ down to this method, all of the mentioned methods must be called with the keywor
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.eval_deriv.evaluate_deriv_basis">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval_deriv.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.evaluate_deriv_basis" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval_deriv.</span></span><span class="sig-name descname"><span class="pre">evaluate_deriv_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orders</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'general'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval_deriv.evaluate_deriv_basis" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate the derivative of the basis set in the given coordinate system at the given points.</p>
 <p>The derivative (to arbitrary orders) of a basis function is given by:</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial^{m_x + m_y + m_z}}{\partial x^{m_x} \partial y^{m_y} \partial z^{m_z}}
 \phi (\mathbf{r})\]</div>
-<p>where <span class="math notranslate nohighlight">\(m_x, m_y, m_z\)</span> are the orders of the derivative with respect to x, y, and z, 
+<p>where <span class="math notranslate nohighlight">\(m_x, m_y, m_z\)</span> are the orders of the derivative with respect to x, y, and z,
 <span class="math notranslate nohighlight">\(\phi\)</span> is the basis function (a generalized contraction shell), and <span class="math notranslate nohighlight">\(\mathbf{r}_n\)</span> are
 the coordinate of the points in space where the basis function is evaluated.</p>
 <section id="id32">
@@ -1290,6 +1363,13 @@ Default is no transformation.</p>
 to general implementation of any order derivative function (_eval_deriv_contractions())
 and “direct” makes reference to specific implementation of first and second order
 derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).</p>
+</dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>Whether to screen out points that are too far from the contractions center to contribute to
+the result above the given tolerance. Default value is True (enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding points. This value, together with the
+minimum contraction parameters, determines a cutoff distance. Points
+farther than the cutoff are excluded from contraction evaluation.</p>
 </dd>
 </dl>
 </section>

@@ -485,7 +485,9 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.screening">gbasis.screening module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.compute_contraction_upper_bond"><code class="docutils literal notranslate"><span class="pre">compute_contraction_upper_bond()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.compute_primitive_cutoff_radius"><code class="docutils literal notranslate"><span class="pre">compute_primitive_cutoff_radius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.compute_primitive_upper_bound"><code class="docutils literal notranslate"><span class="pre">compute_primitive_upper_bound()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.get_points_mask_for_contraction"><code class="docutils literal notranslate"><span class="pre">get_points_mask_for_contraction()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.is_two_index_overlap_screened"><code class="docutils literal notranslate"><span class="pre">is_two_index_overlap_screened()</span></code></a></li>
 </ul>
@@ -2359,25 +2361,54 @@ set has an angular momentum greater than “k”, an error will be raised.</p>
 <span id="gbasis-screening-module"></span><h2>gbasis.screening module<a class="headerlink" href="#module-gbasis.screening" title="Link to this heading">#</a></h2>
 <p>1 and 2-index screening functions</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="gbasis.screening.compute_contraction_upper_bond">
+<span class="sig-prename descclassname"><span class="pre">gbasis.screening.</span></span><span class="sig-name descname"><span class="pre">compute_contraction_upper_bond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.screening.compute_contraction_upper_bond" title="Link to this definition">#</a></dt>
+<dd><p>Compute an upper bound for a contraction or its derivatives for any point.</p>
+<p>The upper bound for a contraction or its Cartesian derivative at any point is given by the
+maximum upper bound of its constituent primitive Gaussians or their derivatives (see
+<cite>compute_primitive_upper_bound</cite>).</p>
+<section id="id141">
+<h3>Parameters<a class="headerlink" href="#id141" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) for which the upper bound is computed.</p>
+</dd>
+<dt>deriv_order<span class="classifier">int</span></dt><dd><p>Total order of the Cartesian derivative to consider (0 for the function itself).</p>
+</dd>
+</dl>
+</section>
+<section id="id142">
+<h3>Returns<a class="headerlink" href="#id142" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>An upper bound for the absolute value of the contraction or its derivative at any point.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="gbasis.screening.compute_primitive_cutoff_radius">
-<span class="sig-prename descclassname"><span class="pre">gbasis.screening.</span></span><span class="sig-name descname"><span class="pre">compute_primitive_cutoff_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.screening.compute_primitive_cutoff_radius" title="Link to this definition">#</a></dt>
-<dd><p>Compute the cutoff radius for a primitive Gaussian.</p>
-<p>The cutoff radius is the maximum distance from the center of the primitive Gaussian at which the
-radial density remains above a given tolerance <span class="math notranslate nohighlight">\(\epsilon\)</span>. This radius is computed by
-solving the equation:</p>
+<span class="sig-prename descclassname"><span class="pre">gbasis.screening.</span></span><span class="sig-name descname"><span class="pre">compute_primitive_cutoff_radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.screening.compute_primitive_cutoff_radius" title="Link to this definition">#</a></dt>
+<dd><p>Compute the cutoff radius for a primitive Gaussian or its derivatives.</p>
+<p>The cutoff radius is the maximum distance from the center of the primitive Gaussian at which
+the radial bound of the function or its Cartesian derivative remains above a given tolerance
+<span class="math notranslate nohighlight">\(\epsilon\)</span>. This radius is computed by solving the equation:</p>
 <div class="math notranslate nohighlight">
-\[r^{2\ell} \chi(r)^2 = \epsilon^2\]</div>
+\[r^{2(\ell + k)} \chi(r)^2 = \epsilon^2\]</div>
 <p>where <span class="math notranslate nohighlight">\(\chi(r)\)</span> is the radial part of the primitive Gaussian, defined as:</p>
 <div class="math notranslate nohighlight">
 \[\chi(r) = c \, n \, e^{-\alpha r^2}\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(c\)</span> is the coefficient of the primitive Gaussian, <span class="math notranslate nohighlight">\(\alpha\)</span> is its exponent,
-<span class="math notranslate nohighlight">\(\ell\)</span> is the angular momentum quantum number, and <span class="math notranslate nohighlight">\(n\)</span> is the normalization factor
-given by:</p>
+<span class="math notranslate nohighlight">\(\ell\)</span> is the angular momentum quantum number, <span class="math notranslate nohighlight">\(k\)</span> is the total order of the
+derivative (0 for the function itself), and <span class="math notranslate nohighlight">\(n\)</span> is the normalization factor given by:</p>
 <div class="math notranslate nohighlight">
 \[n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{1}{4}}
     \frac{(4 \alpha)^{\frac{\ell}{2}}}{\sqrt{(2\ell + 1)!!}}\]</div>
-<section id="id141">
-<h3>Parameters<a class="headerlink" href="#id141" title="Link to this heading">#</a></h3>
+<p>The radial bound accounts for the polynomial factors arising from derivatives:</p>
+<div class="math notranslate nohighlight">
+\[|\partial_x^p \partial_y^q \partial_z^r \chi(\mathbf{r})| \lesssim r^{\ell+k} e^{-\alpha r^2},
+\quad k = p+q+r\]</div>
+<section id="id143">
+<h3>Parameters<a class="headerlink" href="#id143" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>c<span class="classifier">float</span></dt><dd><p>Coefficient of the primitive Gaussian.</p>
 </dd>
@@ -2385,14 +2416,62 @@ given by:</p>
 </dd>
 <dt>angm<span class="classifier">int</span></dt><dd><p>Angular momentum quantum number <span class="math notranslate nohighlight">\(\ell\)</span> of the primitive Gaussian.</p>
 </dd>
-<dt>dens_tol<span class="classifier">float</span></dt><dd><p>Radial density tolerance <span class="math notranslate nohighlight">\(\epsilon\)</span> for computing the cutoff radius.</p>
+<dt>deriv_order<span class="classifier">int</span></dt><dd><p>Total order <span class="math notranslate nohighlight">\(k\)</span> of the Cartesian derivative to consider (0 for the function itself).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float</span></dt><dd><p>Radial bound tolerance <span class="math notranslate nohighlight">\(\epsilon\)</span> for computing the cutoff radius.</p>
 </dd>
 </dl>
 </section>
-<section id="id142">
-<h3>Returns<a class="headerlink" href="#id142" title="Link to this heading">#</a></h3>
+<section id="id144">
+<h3>Returns<a class="headerlink" href="#id144" title="Link to this heading">#</a></h3>
 <dl class="simple">
-<dt>float</dt><dd><p>The cutoff radius for the primitive Gaussian.</p>
+<dt>float</dt><dd><p>The cutoff radius at which the radial bound of the Gaussian (or its derivative) drops below
+the specified tolerance.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gbasis.screening.compute_primitive_upper_bound">
+<span class="sig-prename descclassname"><span class="pre">gbasis.screening.</span></span><span class="sig-name descname"><span class="pre">compute_primitive_upper_bound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.screening.compute_primitive_upper_bound" title="Link to this definition">#</a></dt>
+<dd><p>Compute an upper bound for a primitive Gaussian or its derivatives at a distance r.</p>
+<p>The upper bound for a primitive Gaussian or its Cartesian derivative at a distance r from its
+center is given by:</p>
+<div class="math notranslate nohighlight">
+\[U(r) =  |c| n  (2 \alpha)^{k} r^{\ell + k}e^{-\alpha r^2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(c\)</span> is the coefficient of the primitive Gaussian, <span class="math notranslate nohighlight">\(\alpha\)</span> is its exponent,
+<span class="math notranslate nohighlight">\(\ell\)</span> is the angular momentum quantum number, <span class="math notranslate nohighlight">\(k\)</span> is the total order of the
+derivative (0 for the function itself), and <span class="math notranslate nohighlight">\(n\)</span> is the normalization factor given by:
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{1}{4}}
+    \frac{(4 \alpha)^{\frac{\ell}{2}}}{\sqrt{(2\ell + 1)!!}}
+</pre></div>
+</div>
+<p>The primitive upper bound is then:
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">max</span><span class="p">(</span><span class="n">U</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="o">=</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">n</span> <span class="p">(</span><span class="mi">2</span> \<span class="n">alpha</span><span class="p">)</span><span class="o">^</span><span class="p">{</span>\<span class="n">frac</span><span class="p">{</span><span class="n">k</span> <span class="o">-</span> \<span class="n">ell</span><span class="p">}{</span><span class="mi">2</span><span class="p">}}</span>
+<span class="p">(</span>\<span class="n">ell</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span><span class="o">^</span><span class="p">{</span>\<span class="n">frac</span><span class="p">{</span>\<span class="n">ell</span> <span class="o">+</span> <span class="n">k</span><span class="p">}{</span><span class="mi">2</span><span class="p">}}</span> <span class="n">e</span><span class="o">^</span><span class="p">{</span><span class="o">-</span>\<span class="n">frac</span><span class="p">{</span>\<span class="n">ell</span> <span class="o">+</span> <span class="n">k</span><span class="p">}{</span><span class="mi">2</span><span class="p">}}</span>
+</pre></div>
+</div>
+<section id="id145">
+<h3>Parameters<a class="headerlink" href="#id145" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>c<span class="classifier">float</span></dt><dd><p>Coefficient of the primitive Gaussian.</p>
+</dd>
+<dt>alpha<span class="classifier">float</span></dt><dd><p>Exponent <span class="math notranslate nohighlight">\(\alpha\)</span> of the primitive Gaussian.</p>
+</dd>
+<dt>angm<span class="classifier">int</span></dt><dd><p>Angular momentum quantum number <span class="math notranslate nohighlight">\(\ell\)</span> of the primitive Gaussian.</p>
+</dd>
+<dt>deriv_order<span class="classifier">int</span></dt><dd><p>Total order <span class="math notranslate nohighlight">\(k\)</span> of the Cartesian derivative to consider (0 for the function itself).</p>
+</dd>
+</dl>
+</section>
+<section id="id146">
+<h3>Returns<a class="headerlink" href="#id146" title="Link to this heading">#</a></h3>
+<dl class="simple">
+<dt>float</dt><dd><p>An upper bound for the absolute value of the primitive Gaussian or its derivative at any
+point.</p>
 </dd>
 </dl>
 </section>
@@ -2400,13 +2479,13 @@ given by:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.screening.get_points_mask_for_contraction">
-<span class="sig-prename descclassname"><span class="pre">gbasis.screening.</span></span><span class="sig-name descname"><span class="pre">get_points_mask_for_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.screening.get_points_mask_for_contraction" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.screening.</span></span><span class="sig-name descname"><span class="pre">get_points_mask_for_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.screening.get_points_mask_for_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return a boolean mask indicating which points should be screened for a contraction shell</p>
 <p>A point is considered screened if it lies farther from the contraction center than a cutoff
 radius computed from the contraction parameters and the screening tolerance
 (see <a class="reference internal" href="#gbasis.screening.compute_primitive_cutoff_radius" title="gbasis.screening.compute_primitive_cutoff_radius"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_primitive_cutoff_radius()</span></code></a>).</p>
-<section id="id143">
-<h3>Parameters<a class="headerlink" href="#id143" title="Link to this heading">#</a></h3>
+<section id="id147">
+<h3>Parameters<a class="headerlink" href="#id147" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>contractions<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) for which the mask is computed.</p>
 </dd>
@@ -2414,14 +2493,16 @@ radius computed from the contraction parameters and the screening tolerance
 basis functions are evaluated. Rows correspond to points; columns
 correspond to the <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> components.</p>
 </dd>
+<dt>deriv_order<span class="classifier">int</span></dt><dd><p>Total order of the Cartesian derivative to consider (0 for the function itself).</p>
+</dd>
 <dt>tol_screen<span class="classifier">float</span></dt><dd><p>Screening tolerance for excluding points. This value, together with the
 minimum contraction parameters, determines a cutoff distance. Points
 farther than the cutoff are excluded from contraction evaluation.</p>
 </dd>
 </dl>
 </section>
-<section id="id144">
-<h3>Returns<a class="headerlink" href="#id144" title="Link to this heading">#</a></h3>
+<section id="id148">
+<h3>Returns<a class="headerlink" href="#id148" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>np.ndarray of bool, shape (N,)</dt><dd><p>Boolean mask where <cite>False</cite> marks points to be screened out.</p>
 </dd>
@@ -2441,8 +2522,8 @@ farther than the cutoff are excluded from contraction evaluation.</p>
 <span class="math notranslate nohighlight">\(A\)</span> and <cite>B</cite> are the atoms each contraction are respectively centered on.
 :math: <cite>alpha</cite> is the gaussian exponent
 :math: <cite>s</cite> and <cite>t</cite> index primitive Gaussian shells centered on atom <cite>A</cite> and <cite>B</cite> respectively.</p>
-<section id="id145">
-<h3>Parameters<a class="headerlink" href="#id145" title="Link to this heading">#</a></h3>
+<section id="id149">
+<h3>Parameters<a class="headerlink" href="#id149" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>contractions_one<span class="classifier">GeneralizedContractionShell</span></dt><dd><p>Contracted Cartesian Gaussians (of the same shell) associated with the first index of
 the integral.</p>
@@ -2456,8 +2537,8 @@ the contraction centers to decide whether the integral should be set to zero.</p
 </dd>
 </dl>
 </section>
-<section id="id146">
-<h3>Returns<a class="headerlink" href="#id146" title="Link to this heading">#</a></h3>
+<section id="id150">
+<h3>Returns<a class="headerlink" href="#id150" title="Link to this heading">#</a></h3>
 <dl>
 <dt>value<span class="classifier"><cite>bool</cite></span></dt><dd><p>If integral should be screened, return <cite>True</cite></p>
 </dd>
@@ -2477,8 +2558,8 @@ the contraction centers to decide whether the integral should be set to zero.</p
 \[C^{angmom,mag,i,j,k} = -1^{i + k - \text{shift_factor}} * (1/4)^i * {angmom \choose i}
 * {(angmom - i) \choose (|mag| + i)} * {i \choose j} * {|mag| \choose 2 * k},\]</div>
 <p>where <span class="math notranslate nohighlight">\(shift_factor = 0\)</span> if <span class="math notranslate nohighlight">\(mag &gt;= 0\)</span> and <span class="math notranslate nohighlight">\(shift_factor = 1/2\)</span> if <span class="math notranslate nohighlight">\(mag &lt; 0\)</span>    .</p>
-<section id="id147">
-<h3>Parameters<a class="headerlink" href="#id147" title="Link to this heading">#</a></h3>
+<section id="id151">
+<h3>Parameters<a class="headerlink" href="#id151" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the Gaussian primitive(s).</p>
 </dd>
@@ -2490,15 +2571,15 @@ the contraction centers to decide whether the integral should be set to zero.</p
 </dd>
 </dl>
 </section>
-<section id="id148">
-<h3>Returns<a class="headerlink" href="#id148" title="Link to this heading">#</a></h3>
+<section id="id152">
+<h3>Returns<a class="headerlink" href="#id152" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>coeff<span class="classifier">float</span></dt><dd><p>The real solid harmonic expansion coefficient.</p>
 </dd>
 </dl>
 </section>
-<section id="id149">
-<h3>Raises<a class="headerlink" href="#id149" title="Link to this heading">#</a></h3>
+<section id="id153">
+<h3>Raises<a class="headerlink" href="#id153" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>mag</cite> is not an integer.
@@ -2508,7 +2589,7 @@ If <cite>k</cite> is not a float.</p>
 </dd>
 <dt>ValueError</dt><dd><p>If <cite>angmom</cite> is negative.
 If <cite>mag</cite> has a greater magnitude than angmom.
-If <a href="#id150"><span class="problematic" id="id151">`</span></a>k is not either an integer (mag &gt;= 0) or a half integer (mag &lt; 0).</p>
+If <a href="#id154"><span class="problematic" id="id155">`</span></a>k is not either an integer (mag &gt;= 0) or a half integer (mag &lt; 0).</p>
 </dd>
 </dl>
 </section>
@@ -2520,8 +2601,8 @@ If <a href="#id150"><span class="problematic" id="id151">`</span></a>k is not ei
 <dd><p>Generate the transformation matrix for a given shell.</p>
 <p>The Cartesian contractions are ordered as given in <cite>cartesian_order</cite>. The spherical contractions
 are ordered as given in <cite>spherical_order</cite>.</p>
-<section id="id152">
-<h3>Parameters<a class="headerlink" href="#id152" title="Link to this heading">#</a></h3>
+<section id="id156">
+<h3>Parameters<a class="headerlink" href="#id156" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum <span class="math notranslate nohighlight">\(\ell\)</span> of the basis function(s).</p>
 </dd>
@@ -2538,15 +2619,15 @@ GeneralizedContractionShell.angmom_conventions_sph for details.</p>
 </dd>
 </dl>
 </section>
-<section id="id153">
-<h3>Returns<a class="headerlink" href="#id153" title="Link to this heading">#</a></h3>
+<section id="id157">
+<h3>Returns<a class="headerlink" href="#id157" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>transform<span class="classifier">np.ndarray((angmom + 1)*(angmom + 2) / 2, 2 * angmom + 1)</span></dt><dd><p>The transformation matrix from Cartesian primitives to spherical primitives.</p>
 </dd>
 </dl>
 </section>
-<section id="id154">
-<h3>Raises<a class="headerlink" href="#id154" title="Link to this heading">#</a></h3>
+<section id="id158">
+<h3>Raises<a class="headerlink" href="#id158" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>cartesian_order</cite> is not an array.
@@ -2571,8 +2652,8 @@ If <cite>spherical_order</cite> does not contain exactly <span class="math notra
 <div class="math notranslate nohighlight">
 \[N^S_{angmom,m} = 1/(2^{|m|} * angmom!) * \sqrt{2 * (angmom + |{m}|)! * (angmom - |{m}|)! / 2^{\delta_0^m}},\]</div>
 <p>where :math: <cite>del{0, m}</cite> is the Kronecker delta of 0 and m.</p>
-<section id="id155">
-<h3>Parameters<a class="headerlink" href="#id155" title="Link to this heading">#</a></h3>
+<section id="id159">
+<h3>Parameters<a class="headerlink" href="#id159" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the basis function(s).</p>
 </dd>
@@ -2580,15 +2661,15 @@ If <cite>spherical_order</cite> does not contain exactly <span class="math notra
 </dd>
 </dl>
 </section>
-<section id="id156">
-<h3>Returns<a class="headerlink" href="#id156" title="Link to this heading">#</a></h3>
+<section id="id160">
+<h3>Returns<a class="headerlink" href="#id160" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>norm<span class="classifier">float</span></dt><dd><p>The normalization constant of the real solid harmonic.</p>
 </dd>
 </dl>
 </section>
-<section id="id157">
-<h3>Raises<a class="headerlink" href="#id157" title="Link to this heading">#</a></h3>
+<section id="id161">
+<h3>Raises<a class="headerlink" href="#id161" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>mag</cite> is not an integer.</p>
@@ -2609,8 +2690,8 @@ If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
 \sum_k={shift_factor}^{[(|{mag}|-1)/2] + 0.5} C^{angmom,m_i,j,k} x^a_x y^a_y z^a_z,\]</div>
 <p>where <span class="math notranslate nohighlight">\(a_x = 2t + |mag| - 2(u + v)\)</span>, <span class="math notranslate nohighlight">\(a_y = 2(u + v)\)</span>,
 and <span class="math notranslate nohighlight">\(a_z = angmom - 2t - |mag|\)</span>.</p>
-<section id="id158">
-<h3>Parameters<a class="headerlink" href="#id158" title="Link to this heading">#</a></h3>
+<section id="id162">
+<h3>Parameters<a class="headerlink" href="#id162" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>angmom<span class="classifier">int</span></dt><dd><p>The angular momentum of the basis function(s).</p>
 </dd>
@@ -2618,15 +2699,15 @@ and <span class="math notranslate nohighlight">\(a_z = angmom - 2t - |mag|\)</sp
 </dd>
 </dl>
 </section>
-<section id="id159">
-<h3>Returns<a class="headerlink" href="#id159" title="Link to this heading">#</a></h3>
+<section id="id163">
+<h3>Returns<a class="headerlink" href="#id163" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>harmonic<span class="classifier">dict</span></dt><dd><p>The Cartesian components of a Gaussian primitive, linked to the associated coefficient.</p>
 </dd>
 </dl>
 </section>
-<section id="id160">
-<h3>Raises<a class="headerlink" href="#id160" title="Link to this heading">#</a></h3>
+<section id="id164">
+<h3>Raises<a class="headerlink" href="#id164" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>angmom</cite> is not an integer.
 If <cite>mag</cite> is not an integer.</p>
@@ -2646,22 +2727,22 @@ If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
 \[\begin{split}\mathrm{shift\_factor} = \begin{cases}
 0 &amp; \mathrm{mag} \geq 0\\
 \frac{1}{2} &amp; \mathrm{mag} &lt; 0 \end{cases}\end{split}\]</div>
-<section id="id161">
-<h3>Parameters<a class="headerlink" href="#id161" title="Link to this heading">#</a></h3>
+<section id="id165">
+<h3>Parameters<a class="headerlink" href="#id165" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>mag<span class="classifier">int</span></dt><dd><p>The magnetic quantum number of the basis function.</p>
 </dd>
 </dl>
 </section>
-<section id="id162">
-<h3>Returns<a class="headerlink" href="#id162" title="Link to this heading">#</a></h3>
+<section id="id166">
+<h3>Returns<a class="headerlink" href="#id166" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>shift_factor<span class="classifier">float</span></dt><dd><p>The shift factor for calculating solid harmonics.</p>
 </dd>
 </dl>
 </section>
-<section id="id163">
-<h3>Raises<a class="headerlink" href="#id163" title="Link to this heading">#</a></h3>
+<section id="id167">
+<h3>Raises<a class="headerlink" href="#id167" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>TypeError</dt><dd><p>If <cite>mag</cite> is not an integer.</p>
 </dd>
@@ -2679,8 +2760,8 @@ If <cite>mag</cite> has a greater magnitude than <cite>angmom</cite>.</p>
 <dd><p>Wrap scipy.special.factorial2 to return 1.0 when the input is not positive.</p>
 <p>This is a temporary workaround to address issue #129, while we wait for Scipy’s update.
 To learn more, see <a class="github reference external" href="https://github.com/scipy/scipy/issues/18409">scipy/scipy#18409</a>.</p>
-<section id="id164">
-<h3>Parameters<a class="headerlink" href="#id164" title="Link to this heading">#</a></h3>
+<section id="id168">
+<h3>Parameters<a class="headerlink" href="#id168" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>n<span class="classifier">int or np.ndarray</span></dt><dd><p>Values to calculate n!! for. If n &lt;= 0, the return value is 1.</p>
 </dd>
@@ -2696,23 +2777,23 @@ To learn more, see <a class="github reference external" href="https://github.com
 <dt class="sig sig-object py" id="gbasis.wrappers.from_iodata">
 <span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_iodata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_iodata" title="Link to this definition">#</a></dt>
 <dd><p>Return basis set stored within the <cite>IOData</cite> instance in <cite>iodata</cite>.</p>
-<section id="id165">
-<h3>Parameters<a class="headerlink" href="#id165" title="Link to this heading">#</a></h3>
+<section id="id169">
+<h3>Parameters<a class="headerlink" href="#id169" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>mol<span class="classifier">iodata.iodata.IOData</span></dt><dd><p><cite>IOData</cite> instance from <cite>iodata</cite> module.</p>
 </dd>
 </dl>
 </section>
-<section id="id166">
-<h3>Returns<a class="headerlink" href="#id166" title="Link to this heading">#</a></h3>
+<section id="id170">
+<h3>Returns<a class="headerlink" href="#id170" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Basis set object used within the <cite>gbasis</cite> module.
 <cite>GeneralizedContractionShell</cite> corresponds to the <cite>Shell</cite> object within <cite>iodata.basis</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id167">
-<h3>Raises<a class="headerlink" href="#id167" title="Link to this heading">#</a></h3>
+<section id="id171">
+<h3>Raises<a class="headerlink" href="#id171" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ValueError</dt><dd><p>If <cite>mol</cite> is not an <cite>iodata.iodata.IOData</cite> instance.
 If the primitive normalization scheme of the shells in <cite>IOData</cite> instance is not “L2”.</p>
@@ -2721,8 +2802,8 @@ If the primitive normalization scheme of the shells in <cite>IOData</cite> insta
 </dd>
 </dl>
 </section>
-<section id="id168">
-<h3>Notes<a class="headerlink" href="#id168" title="Link to this heading">#</a></h3>
+<section id="id172">
+<h3>Notes<a class="headerlink" href="#id172" title="Link to this heading">#</a></h3>
 <p>The version of the module <cite>iodata</cite> must be greater than 0.1.7.</p>
 </section>
 </dd></dl>
@@ -2731,30 +2812,30 @@ If the primitive normalization scheme of the shells in <cite>IOData</cite> insta
 <dt class="sig sig-object py" id="gbasis.wrappers.from_pyscf">
 <span class="sig-prename descclassname"><span class="pre">gbasis.wrappers.</span></span><span class="sig-name descname"><span class="pre">from_pyscf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.wrappers.from_pyscf" title="Link to this definition">#</a></dt>
 <dd><p>Return basis set stored within the <cite>Mole</cite> instance in <cite>pyscf</cite>.</p>
-<section id="id169">
-<h3>Parameters<a class="headerlink" href="#id169" title="Link to this heading">#</a></h3>
+<section id="id173">
+<h3>Parameters<a class="headerlink" href="#id173" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>mol<span class="classifier">pyscf.gto.mole.Mole</span></dt><dd><p><cite>Mole</cite> object in <cite>pyscf</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id170">
-<h3>Returns<a class="headerlink" href="#id170" title="Link to this heading">#</a></h3>
+<section id="id174">
+<h3>Returns<a class="headerlink" href="#id174" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>basis<span class="classifier">tuple of gbasis.contraciton.GeneralizedContractionShell</span></dt><dd><p>Contractions for each atom.
 Contractions are ordered by the atom first, then the contractions as ordered in <cite>pyscf</cite>.</p>
 </dd>
 </dl>
 </section>
-<section id="id171">
-<h3>Raises<a class="headerlink" href="#id171" title="Link to this heading">#</a></h3>
+<section id="id175">
+<h3>Raises<a class="headerlink" href="#id175" title="Link to this heading">#</a></h3>
 <dl class="simple">
 <dt>ValueError</dt><dd><p>If <cite>mol</cite> is not a <cite>pyscf.gto.mole.Mole</cite> instance.</p>
 </dd>
 </dl>
 </section>
-<section id="id172">
-<h3>Notes<a class="headerlink" href="#id172" title="Link to this heading">#</a></h3>
+<section id="id176">
+<h3>Notes<a class="headerlink" href="#id176" title="Link to this heading">#</a></h3>
 <p>This function touches the internal components of <cite>pyscf</cite>, which may or may not be documented.
 This function will break as soon as the internal components change. If so, please raise an issue
 at <a class="github reference external" href="https://github.com/theochem/gbasis">theochem/gbasis</a>. It is supported for, at least, <cite>pyscf</cite> version 1.6.1.</p>
@@ -2916,7 +2997,9 @@ at <a class="github reference external" href="https://github.com/theochem/gbasis
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-gbasis.screening">gbasis.screening module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.compute_contraction_upper_bond"><code class="docutils literal notranslate"><span class="pre">compute_contraction_upper_bond()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.compute_primitive_cutoff_radius"><code class="docutils literal notranslate"><span class="pre">compute_primitive_cutoff_radius()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.compute_primitive_upper_bound"><code class="docutils literal notranslate"><span class="pre">compute_primitive_upper_bound()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.get_points_mask_for_contraction"><code class="docutils literal notranslate"><span class="pre">get_points_mask_for_contraction()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gbasis.screening.is_two_index_overlap_screened"><code class="docutils literal notranslate"><span class="pre">is_two_index_overlap_screened()</span></code></a></li>
 </ul>
