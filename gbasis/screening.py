@@ -235,7 +235,7 @@ def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
     if angm + deriv_order == 0:
         return np.abs(c) * n
 
-    # compute logaritm of the upper bound to avoid over/underflow
+    # compute logarithm of the upper bound to avoid over/underflow
     up_log = (
         np.log(np.abs(c) * n)
         + (deriv_order - angm) / 2 * np.log(2 * alpha)
