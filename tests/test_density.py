@@ -85,7 +85,8 @@ def test_evaluate_density(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_deriv_density(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_deriv_density(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_deriv_density."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
@@ -102,6 +103,7 @@ def test_evaluate_deriv_density(screen_basis, tol_screen):
             basis,
             points,
             transform,
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -128,6 +130,7 @@ def test_evaluate_deriv_density(screen_basis, tol_screen):
             basis,
             points,
             transform,
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -153,6 +156,7 @@ def test_evaluate_deriv_density(screen_basis, tol_screen):
             basis,
             points,
             transform,
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -178,6 +182,7 @@ def test_evaluate_deriv_density(screen_basis, tol_screen):
             basis,
             points,
             transform,
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -269,7 +274,8 @@ def test_evaluate_deriv_density(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_density_gradient(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_density_gradient(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_gradient."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
@@ -280,7 +286,13 @@ def test_evaluate_density_gradient(screen_basis, tol_screen):
 
     np.allclose(
         evaluate_density_gradient(
-            density, basis, points, transform, screen_basis=screen_basis, tol_screen=tol_screen
+            density,
+            basis,
+            points,
+            transform,
+            deriv_type=deriv_type,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
         ).T,
         np.array(
             [
@@ -360,7 +372,8 @@ def test_evaluate_density_horton(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_density_gradient_horton(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_density_gradient_horton(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_gradient against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -394,7 +407,8 @@ def test_evaluate_density_gradient_horton(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_hessian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -424,6 +438,7 @@ def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen):
             basis,
             grid_3d,
             np.identity(88),
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -434,7 +449,8 @@ def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_laplacian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -458,6 +474,7 @@ def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen):
             basis,
             grid_3d,
             np.identity(88),
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -468,7 +485,8 @@ def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen, deriv_type):
     """Test evaluate_posdef_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -493,6 +511,7 @@ def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen):
         basis,
         grid_3d,
         np.identity(88),
+        deriv_type=deriv_type,
         screen_basis=screen_basis,
         tol_screen=tol_screen,
     )
@@ -502,7 +521,8 @@ def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen):
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen, deriv_type):
     """Test evaluate_general_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -531,6 +551,7 @@ def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen
             grid_3d,
             0,
             np.identity(88),
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
@@ -541,7 +562,8 @@ def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen
 
 @pytest.mark.parametrize("screen_basis", [True, False])
 @pytest.mark.parametrize("tol_screen", [1e-8])
-def test_evaluate_general_kinetic_energy_density(screen_basis, tol_screen):
+@pytest.mark.parametrize("deriv_type", ["general", "direct"])
+def test_evaluate_general_kinetic_energy_density(screen_basis, tol_screen, deriv_type):
     """Test density.evaluate_general_kinetic_energy_density."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0]])
@@ -567,6 +589,7 @@ def test_evaluate_general_kinetic_energy_density(screen_basis, tol_screen):
             points,
             1,
             np.identity(40),
+            deriv_type=deriv_type,
             screen_basis=screen_basis,
             tol_screen=tol_screen,
         ),
