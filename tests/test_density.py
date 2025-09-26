@@ -466,7 +466,9 @@ def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen):
     )
 
 
-def test_evaluate_posdef_kinetic_energy_density():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen):
     """Test evaluate_posdef_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -486,9 +488,16 @@ def test_evaluate_posdef_kinetic_energy_density():
     grid_x, grid_y, grid_z = np.meshgrid(grid_1d, grid_1d, grid_1d)
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
-    dens = evaluate_posdef_kinetic_energy_density(np.identity(88), basis, grid_3d, np.identity(88))
+    dens = evaluate_posdef_kinetic_energy_density(
+        np.identity(88),
+        basis,
+        grid_3d,
+        np.identity(88),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
     assert np.all(dens >= 0.0)
-    assert np.allclose(dens, horton_density_kinetic_density)
+    assert np.allclose(dens, horton_density_kinetic_density, atol=tol_screen)
 
 
 def test_evaluate_general_kinetic_energy_density_horton():
