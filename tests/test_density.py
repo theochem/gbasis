@@ -392,7 +392,9 @@ def test_evaluate_density_gradient_horton(screen_basis, tol_screen):
     )
 
 
-def test_evaluate_hessian_deriv_horton():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen):
     """Test gbasis.evals.density.evaluate_density_hessian against result from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -417,8 +419,16 @@ def test_evaluate_hessian_deriv_horton():
     grid_3d = np.vstack([grid_x.ravel(), grid_y.ravel(), grid_z.ravel()]).T
 
     assert np.allclose(
-        evaluate_density_hessian(np.identity(88), basis, grid_3d, np.identity(88)),
+        evaluate_density_hessian(
+            np.identity(88),
+            basis,
+            grid_3d,
+            np.identity(88),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
         horton_density_hessian,
+        atol=tol_screen,
     )
 
 
