@@ -539,7 +539,9 @@ def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen
     )
 
 
-def test_evaluate_general_kinetic_energy_density():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_general_kinetic_energy_density(screen_basis, tol_screen):
     """Test density.evaluate_general_kinetic_energy_density."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     points = np.array([[0, 0, 0]])
@@ -552,10 +554,27 @@ def test_evaluate_general_kinetic_energy_density():
         )
     with pytest.raises(TypeError):
         evaluate_general_kinetic_energy_density(
-            np.identity(40), basis, points, None, np.identity(40)
+            np.identity(40),
+            basis,
+            points,
+            None,
+            np.identity(40),
         )
     assert np.allclose(
-        evaluate_general_kinetic_energy_density(np.identity(40), basis, points, 1, np.identity(40)),
-        evaluate_posdef_kinetic_energy_density(np.identity(40), basis, points, np.identity(40))
-        + evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40)),
+        evaluate_general_kinetic_energy_density(
+            np.identity(40),
+            basis,
+            points,
+            1,
+            np.identity(40),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        evaluate_posdef_kinetic_energy_density(
+            np.identity(40), basis, points, np.identity(40), screen_basis=False
+        )
+        + evaluate_density_laplacian(
+            np.identity(40), basis, points, np.identity(40), screen_basis=False
+        ),
+        atol=tol_screen,
     )
