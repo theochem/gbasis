@@ -186,7 +186,6 @@ def compute_contraction_upper_bond(contractions, deriv_order):
 
     # compute cutoff radius for all primitives in all contractions
     upper_bounds = compute_primitive_upper_bound(coeffs, exps, angm, deriv_order)
-    print(upper_bounds.shape)
 
     return np.sum(upper_bounds)
 
