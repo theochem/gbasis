@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -458,7 +458,7 @@ document.write(`
 <p>Density Evaluation.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.density.evaluate_density">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.density.</span></span><span class="sig-name descname"><span class="pre">evaluate_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">one_density_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.density.evaluate_density" title="Link to this definition">#</a></dt>
 <dd><p>Return the density of the given basis set at the given points.</p>
 <div class="math notranslate nohighlight">
 \[\rho(\mathbf{r}) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}) \phi_j(\mathbf{r})\]</div>
@@ -486,6 +486,13 @@ Default is no transformation.</p>
 </dd>
 <dt>threshold<span class="classifier">float, optional</span></dt><dd><p>The absolute value below which negative density values are acceptable. Any negative density
 value with an absolute value smaller than this threshold will be set to zero.</p>
+</dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>A toggle to enable or disable screening. Default value is True (enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. <cite>tol_screen</cite> is combined with the
+minimum contraction exponents to compute a cutoff radius which is compared to the distance
+between the points and the contraction centers to decide whether the basis function
+should be evaluated or set to zero at that point.</p>
 </dd>
 </dl>
 </section>
@@ -1040,7 +1047,7 @@ system.
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="gbasis.evals.eval.Eval.construct_array_contraction">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.Eval.construct_array_contraction" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">construct_array_contraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contractions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.Eval.construct_array_contraction" title="Link to this definition">#</a></dt>
 <dd><p>Return the evaluations of the given contractions at the given coordinates.</p>
 <section id="id21">
 <h4>Parameters<a class="headerlink" href="#id21" title="Link to this heading">#</a></h4>
@@ -1091,7 +1098,7 @@ down to this method, all of the mentioned methods must be called with the keywor
 
 <dl class="py function">
 <dt class="sig sig-object py" id="gbasis.evals.eval.evaluate_basis">
-<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval.</span></span><span class="sig-name descname"><span class="pre">evaluate_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.evaluate_basis" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">gbasis.evals.eval.</span></span><span class="sig-name descname"><span class="pre">evaluate_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_screen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gbasis.evals.eval.evaluate_basis" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate the basis set in the given coordinate system at the given points.</p>
 <section id="id24">
 <h3>Parameters<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
@@ -1108,6 +1115,13 @@ combinations of contractions (e.g. MO).
 Transformation is applied to the left, i.e. the sum is over the index 1 of <cite>transform</cite>
 and index 0 of the array for contractions.
 Default is no transformation.</p>
+</dd>
+<dt>screen_basis<span class="classifier">bool, optional</span></dt><dd><p>A toggle to enable or disable screening. Default value is True (enable screening).</p>
+</dd>
+<dt>tol_screen<span class="classifier">float, optional</span></dt><dd><p>The tolerance used for screening overlap integrals. <cite>tol_screen</cite> is combined with the
+minimum contraction exponents to compute a cutoff radius which is compared to the distance
+between the points and the contraction centers to decide whether the basis function
+should be evaluated or set to zero at that point.</p>
 </dd>
 </dl>
 </section>
