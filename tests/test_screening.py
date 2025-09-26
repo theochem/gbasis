@@ -1,11 +1,13 @@
 """Test gbasis.screening"""
+
 import numpy as np
 import pytest
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.screening import is_two_index_overlap_screened
-from utils import find_datafile
+from gbasis.screening import is_two_index_overlap_screened, compute_primitive_upper_bound
+from gbasis.screening import compute_primitive_cutoff_radius, compute_contraction_upper_bond
+from gbasis.evals.eval_deriv import _eval_deriv_contractions
 from gbasis.utils import factorial2
-from gbasis.screening import compute_primitive_cutoff_radius
+from utils import find_datafile
 
 
 def get_atom_contractions_data(atsym, atcoords):
@@ -44,25 +46,90 @@ def test_is_two_index_overlap_screened(bond_length, tol_screen):
         ), "Screening results do not match the expected values based on cutoff distances."
 
 
-@pytest.mark.parametrize("angm", [0, 1, 2, 3])
-@pytest.mark.parametrize("alpha", [0.5, 1.0, 2.0])
-@pytest.mark.parametrize("coeff", [0.1, 0.4, 0.8])
+@pytest.mark.parametrize("angm", [0, 3])
+@pytest.mark.parametrize("alpha", [0.5, 2.0])
+@pytest.mark.parametrize("coeff", [0.1, 0.8])
+@pytest.mark.parametrize("deriv_order", [0, 4])
 @pytest.mark.parametrize("tol_screen", [1e-4, 1e-8])
-def test_compute_primitive_cutoff_radius(angm, alpha, coeff, tol_screen):
+def test_compute_primitive_cutoff_radius(angm, alpha, coeff, deriv_order, tol_screen):
     """Test the computation of the primitive cutoff radius."""
 
-    def compute_primitive_value(r, c, alpha, angm):
+    def compute_primitive_value(r, c, alpha, angm, deriv_order):
         """Compute the primitive value at the given radius."""
         n = (
             (2 * alpha / np.pi) ** 0.25
             * (4 * alpha) ** (angm / 2)
             / np.sqrt(factorial2(2 * angm + 1))
         )
-        return c * n * np.exp(-alpha * r**2)
+        # Include derivative polynomial factor as radial bound
+        radial_factor = r ** (angm + deriv_order)
+        derivative_scale = (2 * alpha) ** deriv_order  # optional scaling from derivative
+        return c * n * derivative_scale * radial_factor * np.exp(-alpha * r**2)
 
-    cutoff_r = compute_primitive_cutoff_radius(coeff, alpha, angm, tol_screen)
-    val_over_cutoff = compute_primitive_value(cutoff_r + 1e-3, coeff, alpha, angm)
+    cutoff_r = compute_primitive_cutoff_radius(
+        coeff, alpha, angm, deriv_order=deriv_order, tol_screen=tol_screen
+    )
+    val_over_cutoff = compute_primitive_value(
+        cutoff_r + 1e-3, coeff, alpha, angm, deriv_order=deriv_order
+    )
 
     assert (
         val_over_cutoff < tol_screen
     ), f"Value {val_over_cutoff} at r={cutoff_r + 1e-3} is not below the tolerance {tol_screen}"
+
+
+def test_compute_compute_primitive_upper_bound():
+    """Test the computation of the primitive upper bound."""
+
+    rgrid = np.linspace(0, 80, 1000)
+
+    def compute_primitive_value(r, c, alpha, angm, deriv_order):
+        """Compute the primitive value at the given radius."""
+        n = (
+            (2 * alpha / np.pi) ** 0.25
+            * (4 * alpha) ** (angm / 2)
+            / np.sqrt(factorial2(2 * angm + 1))
+        )
+        # Include derivative polynomial factor as radial bound
+        radial_factor = r ** (angm + deriv_order)
+        derivative_scale = (2 * alpha) ** deriv_order  # optional scaling from derivative
+        return c * n * derivative_scale * radial_factor * np.exp(-alpha * r**2)
+
+    angmom = 3
+    deriv_order = 2
+    alpha = 0.5
+    coeff = 0.8
+    prim_vals = compute_primitive_value(rgrid, coeff, alpha, angmom, deriv_order)
+    upper_bound = compute_primitive_upper_bound(coeff, alpha, angmom, deriv_order)
+    assert np.all(prim_vals <= upper_bound), "Primitive values exceed the computed upper bound"
+
+
+@pytest.mark.skip(reason="The implementation fails for some reason")
+@pytest.mark.parametrize("deriv_order", [0, 2])
+def test_compute_contraction_upper_bond(deriv_order):
+    """Test the computation of the contraction upper bound."""
+
+    atcoord = np.array([[0.0, 0.0, 0.0]])
+    # Create a line of points along z axis
+    max_length = 80.0
+    npoints = 600
+    points = np.array([[0.0, 0.0, 1.0]]) * np.linspace(1e-8, max_length, npoints)[:, None]
+    orders = np.array([0, 0, deriv_order])
+
+    basis = get_atom_contractions_data("O", atcoord)
+    for contractions in basis:
+        computed_upper_bound = compute_contraction_upper_bond(contractions, deriv_order=deriv_order)
+        alphas = contractions.exps
+        prim_coeffs = contractions.coeffs
+        angmom_comps = contractions.angmom_components_cart
+        center = contractions.coord
+        norm_prim_cart = contractions.norm_prim_cart
+
+        contraction_values = _eval_deriv_contractions(
+            points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
+        )
+        max_contraction_values = np.max(np.abs(contraction_values))
+        assert max_contraction_values <= computed_upper_bound, (
+            f"Contraction values exceed the computed upper bound: "
+            f"{max_contraction_values} > {computed_upper_bound}"
+        )

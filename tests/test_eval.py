@@ -1,4 +1,5 @@
 """Test gbasis.evals.eval."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.evals.eval import Eval, evaluate_basis
@@ -9,7 +10,9 @@ import pytest
 from utils import find_datafile, HortonContractions
 
 
-def test_evaluate_construct_array_contraction():
+@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis", [True, False])
+def test_evaluate_construct_array_contraction(screen_basis, tol_screen):
     """Test gbasis.evals.eval.Eval.construct_array_contraction."""
     test = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), "spherical"
@@ -39,32 +42,67 @@ def test_evaluate_construct_array_contraction():
             for angmom_comp in test.angmom_components_cart
         ]
     ).reshape(3, 1)
+
     assert np.allclose(
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=test), answer
+        Eval.construct_array_contraction(
+            points=np.array([[2, 3, 4]]),
+            contractions=test,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        answer,
+        atol=tol_screen,
     )
 
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions=None)
+        Eval.construct_array_contraction(
+            points=np.array([[2, 3, 4]]),
+            contractions=None,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[2, 3, 4]]), contractions={1: 2})
+        Eval.construct_array_contraction(
+            points=np.array([[2, 3, 4]]),
+            contractions={1: 2},
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([2, 3, 4]), contractions=test)
+        Eval.construct_array_contraction(
+            points=np.array([2, 3, 4]),
+            contractions=test,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
     with pytest.raises(TypeError):
-        Eval.construct_array_contraction(points=np.array([[3, 4]]), contractions=test)
+        Eval.construct_array_contraction(
+            points=np.array([[3, 4]]),
+            contractions=test,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        )
 
 
-def test_evaluate_basis_cartesian():
+@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis", [True, False])
+def test_evaluate_basis_cartesian(screen_basis, tol_screen):
     """Test gbasis.evals.eval.evaluate_basis_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "cartesian")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
-        evaluate_basis(basis, np.array([[0, 0, 0]]), screen_basis=False),
+        evaluate_basis(
+            basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        atol=tol_screen,
     )
 
 
-def test_evaluate_basis_spherical():
+@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis", [True, False])
+def test_evaluate_basis_spherical(screen_basis, tol_screen):
     """Test gbasis.evals.eval.evaluate_basis_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
@@ -73,25 +111,36 @@ def test_evaluate_basis_spherical():
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
-        evaluate_basis(basis, np.array([[0, 0, 0]]), screen_basis=False),
+        evaluate_basis(
+            basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        atol=tol_screen,
     )
     # p orbitals are zero at center
     basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
-        evaluate_basis(basis, np.array([[0, 0, 0]]), screen_basis=False),
+        evaluate_basis(
+            basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        atol=tol_screen,
     )
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
         evaluate_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
-        evaluate_basis(basis, np.array([[1, 1, 1]]), screen_basis=False),
+        evaluate_basis(
+            basis, np.array([[1, 1, 1]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        atol=tol_screen,
     )
 
 
-def test_evaluate_basis_mix():
+@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis", [True, False])
+def test_evaluate_basis_mix(screen_basis, tol_screen):
     """Test gbasis.evals.eval.evaluate_basis_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
@@ -101,8 +150,16 @@ def test_evaluate_basis_mix():
         basis_dict, ["H"], np.array([[0, 0, 0]]), ["spherical"]
     )
     assert np.allclose(
-        evaluate_basis(spherical_basis, np.array([[0, 0, 0]]), screen_basis=False),
-        evaluate_basis(spherical_basis_list, np.array([[0, 0, 0]]), screen_basis=False),
+        evaluate_basis(
+            spherical_basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        evaluate_basis(
+            spherical_basis_list,
+            np.array([[0, 0, 0]]),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        atol=tol_screen,
     )
 
     cartesian_basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "cartesian")
@@ -110,8 +167,16 @@ def test_evaluate_basis_mix():
         basis_dict, ["H"], np.array([[0, 0, 0]]), ["cartesian"]
     )
     assert np.allclose(
-        evaluate_basis(cartesian_basis, np.array([[0, 0, 0]]), screen_basis=False),
-        evaluate_basis(cartesian_basis_list, np.array([[0, 0, 0]]), screen_basis=False),
+        evaluate_basis(
+            cartesian_basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        evaluate_basis(
+            cartesian_basis_list,
+            np.array([[0, 0, 0]]),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        atol=tol_screen,
     )
 
     spherical_basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
@@ -119,8 +184,16 @@ def test_evaluate_basis_mix():
         basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8
     )
     assert np.allclose(
-        evaluate_basis(spherical_basis, np.array([[1, 1, 1]]), screen_basis=False),
-        evaluate_basis(spherical_basis_list, np.array([[1, 1, 1]]), screen_basis=False),
+        evaluate_basis(
+            spherical_basis, np.array([[1, 1, 1]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        evaluate_basis(
+            spherical_basis_list,
+            np.array([[1, 1, 1]]),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        atol=tol_screen,
     )
 
     cartesian_basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
@@ -128,8 +201,16 @@ def test_evaluate_basis_mix():
         basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["cartesian"] * 8
     )
     assert np.allclose(
-        evaluate_basis(cartesian_basis, np.array([[1, 1, 1]]), screen_basis=False),
-        evaluate_basis(cartesian_basis_list, np.array([[1, 1, 1]]), screen_basis=False),
+        evaluate_basis(
+            cartesian_basis, np.array([[1, 1, 1]]), screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        evaluate_basis(
+            cartesian_basis_list,
+            np.array([[1, 1, 1]]),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
+        atol=tol_screen,
     )
 
 
