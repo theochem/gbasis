@@ -500,7 +500,9 @@ def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen):
     assert np.allclose(dens, horton_density_kinetic_density, atol=tol_screen)
 
 
-def test_evaluate_general_kinetic_energy_density_horton():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen):
     """Test evaluate_general_kinetic_energy_density against results from HORTON.
 
     The test case is diatomic with H and He separated by 0.8 angstroms with basis set ANO-RCC.
@@ -524,9 +526,16 @@ def test_evaluate_general_kinetic_energy_density_horton():
 
     assert np.allclose(
         evaluate_general_kinetic_energy_density(
-            np.identity(88), basis, grid_3d, 0, np.identity(88)
+            np.identity(88),
+            basis,
+            grid_3d,
+            0,
+            np.identity(88),
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
         ),
         horton_density_kinetic_density,
+        atol=tol_screen,
     )
 
 
