@@ -396,19 +396,24 @@ def point_charge_integral(
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"tol_screen": tol_screen, "screen_basis": screen_basis}
 
     if transform is not None:
         return PointChargeIntegral(basis).construct_array_lincomb(
-            transform, coord_type, points_coords=points_coords, points_charge=points_charge
+            transform,
+            coord_type,
+            points_coords=points_coords,
+            points_charge=points_charge,
+            **kwargs,
         )
     if all(ct == "cartesian" for ct in coord_type):
         return PointChargeIntegral(basis).construct_array_cartesian(
-            points_coords=points_coords, points_charge=points_charge
+            points_coords=points_coords, points_charge=points_charge, **kwargs
         )
     if all(ct == "spherical" for ct in coord_type):
         return PointChargeIntegral(basis).construct_array_spherical(
-            points_coords=points_coords, points_charge=points_charge
+            points_coords=points_coords, points_charge=points_charge, **kwargs
         )
     return PointChargeIntegral(basis).construct_array_mix(
-        coord_type, points_coords=points_coords, points_charge=points_charge
+        coord_type, points_coords=points_coords, points_charge=points_charge, **kwargs
     )

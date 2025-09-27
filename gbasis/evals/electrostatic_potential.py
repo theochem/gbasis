@@ -137,7 +137,7 @@ def electrostatic_potential(
             "`coord_type` must be a list/tuple of the strings 'spherical' or 'cartesian'."
         )
     hartree_potential = point_charge_integral(
-        basis, points, -np.ones(points.shape[0]), transform=transform
+        basis, points, -np.ones(points.shape[0]), transform=transform, screen_basis=False
     )
     hartree_potential *= one_density_matrix[:, :, None]
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))
