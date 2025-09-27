@@ -149,7 +149,16 @@ def evaluate_stress_tensor(
 
 
 # TODO: need to be tested against reference
-def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
+def evaluate_ehrenfest_force(
+    one_density_matrix,
+    basis,
+    points,
+    alpha=1,
+    beta=0,
+    transform=None,
+    screen_basis=True,
+    tol_screen=1e-8,
+):
     r"""Return the Ehrenfest force.
 
     Ehrenfest force is the negative of the divergence of the stress tensor:
@@ -207,6 +216,14 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
+    screen_basis : bool, optional
+        Whether to screen out points with negligible contributions. Default value is True
+        (enable screening).
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -235,6 +252,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 1:
                 output[i] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -244,6 +263,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 0.5:
                 output[i] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -253,6 +274,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if beta != 0:
                 output[i] += (
@@ -264,6 +287,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 )
     return output.T

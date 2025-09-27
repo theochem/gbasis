@@ -133,7 +133,9 @@ def test_evaluate_stress_tensor(screen_basis, tol_screen):
             )
 
 
-def test_evaluate_ehrenfest_force():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_ehrenfest_force(screen_basis, tol_screen):
     """Test gbasis.evals.stress_tensor.evaluate_ehrenfest_force."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
@@ -147,16 +149,53 @@ def test_evaluate_ehrenfest_force():
     with pytest.raises(TypeError):
         evaluate_ehrenfest_force(np.identity(40), basis, points, 1, 0j, np.identity(40))
 
-    test_a = evaluate_ehrenfest_force(np.identity(40), basis, points, 0, 0, np.identity(40))
-    test_b = evaluate_ehrenfest_force(np.identity(40), basis, points, 1, 0, np.identity(40))
-    test_c = evaluate_ehrenfest_force(np.identity(40), basis, points, 0.5, 0, np.identity(40))
-    test_d = evaluate_ehrenfest_force(np.identity(40), basis, points, 0, 2, np.identity(40))
+    test_a = evaluate_ehrenfest_force(
+        np.identity(40),
+        basis,
+        points,
+        0,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_b = evaluate_ehrenfest_force(
+        np.identity(40),
+        basis,
+        points,
+        1,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_c = evaluate_ehrenfest_force(
+        np.identity(40),
+        basis,
+        points,
+        0.5,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_d = evaluate_ehrenfest_force(
+        np.identity(40),
+        basis,
+        points,
+        0,
+        2,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
     for j in range(3):
         ref_a = np.zeros(points.shape[0])
         ref_b = np.zeros(points.shape[0])
         ref_c = np.zeros(points.shape[0])
         ref_d = np.zeros(points.shape[0])
 
+        # compute reference without screening
         orders_j = np.array([0, 0, 0])
         orders_j[j] += 1
         for i in range(3):
@@ -164,10 +203,22 @@ def test_evaluate_ehrenfest_force():
             orders_i[i] += 1
 
             temp1 = evaluate_deriv_reduced_density_matrix(
-                2 * orders_i, orders_j, np.identity(40), basis, points, np.identity(40)
+                2 * orders_i,
+                orders_j,
+                np.identity(40),
+                basis,
+                points,
+                np.identity(40),
+                screen_basis=False,
             )
             temp2 = evaluate_deriv_reduced_density_matrix(
-                orders_i, orders_i + orders_j, np.identity(40), basis, points, np.identity(40)
+                orders_i,
+                orders_i + orders_j,
+                np.identity(40),
+                basis,
+                points,
+                np.identity(40),
+                screen_basis=False,
             )
             temp3 = evaluate_deriv_reduced_density_matrix(
                 2 * orders_i + orders_j,
@@ -176,22 +227,35 @@ def test_evaluate_ehrenfest_force():
                 basis,
                 points,
                 np.identity(40),
+                screen_basis=False,
             )
             temp4 = evaluate_deriv_reduced_density_matrix(
-                orders_i + orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
+                orders_i + orders_j,
+                orders_i,
+                np.identity(40),
+                basis,
+                points,
+                np.identity(40),
+                screen_basis=False,
             )
             temp5 = evaluate_deriv_density(
-                2 * orders_i + orders_j, np.identity(40), basis, points, np.identity(40)
+                2 * orders_i + orders_j,
+                np.identity(40),
+                basis,
+                points,
+                np.identity(40),
+                screen_basis=False,
             )
 
             ref_a += temp3 + temp4
             ref_b += -temp1 - temp2
             ref_c += -0.5 * temp1 - 0.5 * temp2 + 0.5 * temp3 + 0.5 * temp4
             ref_d += temp3 + temp4 - temp5
-        assert np.allclose(test_a[:, j], -ref_a)
-        assert np.allclose(test_b[:, j], -ref_b)
-        assert np.allclose(test_c[:, j], -ref_c)
-        assert np.allclose(test_d[:, j], -ref_d)
+        # check that non screened reference matches screened result within tol_screen
+        assert np.allclose(test_a[:, j], -ref_a, atol=tol_screen)
+        assert np.allclose(test_b[:, j], -ref_b, atol=tol_screen)
+        assert np.allclose(test_c[:, j], -ref_c, atol=tol_screen)
+        assert np.allclose(test_d[:, j], -ref_d, atol=tol_screen)
 
 
 def test_evaluate_ehrenfest_hessian():
