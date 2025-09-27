@@ -1,4 +1,5 @@
 """Test gbasis.evals.stress_tensor."""
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
@@ -15,7 +16,9 @@ import pytest
 from utils import find_datafile, HortonContractions
 
 
-def test_evaluate_stress_tensor():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_stress_tensor(screen_basis, tol_screen):
     """Test gbasis.evals.stress_tensor.evaluate_stress_tensor."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
@@ -29,10 +32,47 @@ def test_evaluate_stress_tensor():
     with pytest.raises(TypeError):
         evaluate_stress_tensor(np.identity(40), basis, points, 1, 0j, np.identity(40))
 
-    test_a = evaluate_stress_tensor(np.identity(40), basis, points, 0, 0, np.identity(40))
-    test_b = evaluate_stress_tensor(np.identity(40), basis, points, 1, 0, np.identity(40))
-    test_c = evaluate_stress_tensor(np.identity(40), basis, points, 1, 2, np.identity(40))
-    test_d = evaluate_stress_tensor(np.identity(40), basis, points, 0.5, 2, np.identity(40))
+    test_a = evaluate_stress_tensor(
+        np.identity(40),
+        basis,
+        points,
+        0,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_b = evaluate_stress_tensor(
+        np.identity(40),
+        basis,
+        points,
+        1,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_c = evaluate_stress_tensor(
+        np.identity(40),
+        basis,
+        points,
+        1,
+        2,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_d = evaluate_stress_tensor(
+        np.identity(40),
+        basis,
+        points,
+        0.5,
+        2,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    # compute reference without screening
     for i in range(3):
         for j in range(3):
             orders_i = np.array([0, 0, 0])
@@ -41,10 +81,22 @@ def test_evaluate_stress_tensor():
             orders_j[j] += 1
 
             temp1 = evaluate_deriv_reduced_density_matrix(
-                orders_i, orders_j, np.identity(40), basis, points, np.identity(40)
+                orders_i,
+                orders_j,
+                np.identity(40),
+                basis,
+                points,
+                np.identity(40),
+                screen_basis=False,
             )
             temp2 = evaluate_deriv_reduced_density_matrix(
-                orders_j, orders_i, np.identity(40), basis, points, np.identity(40)
+                orders_j,
+                orders_i,
+                np.identity(40),
+                basis,
+                points,
+                np.identity(40),
+                screen_basis=False,
             )
             temp3 = evaluate_deriv_reduced_density_matrix(
                 orders_i + orders_j,
@@ -53,6 +105,7 @@ def test_evaluate_stress_tensor():
                 basis,
                 points,
                 np.identity(40),
+                screen_basis=False,
             )
             temp4 = evaluate_deriv_reduced_density_matrix(
                 orders_i + orders_j,
@@ -61,16 +114,22 @@ def test_evaluate_stress_tensor():
                 basis,
                 points,
                 np.identity(40),
+                screen_basis=False,
             )
             if i == j:
-                temp5 = evaluate_density_laplacian(np.identity(40), basis, points, np.identity(40))
+                temp5 = evaluate_density_laplacian(
+                    np.identity(40), basis, points, np.identity(40), screen_basis=False
+                )
             else:
                 temp5 = 0
-            assert np.allclose(test_a[:, i, j], 0.5 * temp3 + 0.5 * temp4)
-            assert np.allclose(test_b[:, i, j], -0.5 * temp1 - 0.5 * temp2)
-            assert np.allclose(test_c[:, i, j], -0.5 * temp1 - 0.5 * temp2 - temp5)
+            # check that non screened reference matches screened result within tol_screen
+            assert np.allclose(test_a[:, i, j], 0.5 * temp3 + 0.5 * temp4, atol=tol_screen)
+            assert np.allclose(test_b[:, i, j], -0.5 * temp1 - 0.5 * temp2, atol=tol_screen)
+            assert np.allclose(test_c[:, i, j], -0.5 * temp1 - 0.5 * temp2 - temp5, atol=tol_screen)
             assert np.allclose(
-                test_d[:, i, j], -0.25 * temp1 - 0.25 * temp2 + 0.25 * temp3 + 0.25 * temp4 - temp5
+                test_d[:, i, j],
+                -0.25 * temp1 - 0.25 * temp2 + 0.25 * temp3 + 0.25 * temp4 - temp5,
+                atol=tol_screen,
             )
 
 

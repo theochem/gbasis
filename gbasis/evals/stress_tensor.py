@@ -1,4 +1,5 @@
 """Module for computing properties related to the stress tensor."""
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
@@ -8,7 +9,16 @@ import numpy as np
 
 
 # TODO: need to be tested against reference
-def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
+def evaluate_stress_tensor(
+    one_density_matrix,
+    basis,
+    points,
+    alpha=1,
+    beta=0,
+    transform=None,
+    screen_basis=True,
+    tol_screen=1e-8,
+):
     r"""Return the stress tensor evaluated at the given coordinates.
 
     Stress tensor is defined here as:
@@ -70,6 +80,14 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
+    screen_basis : bool, optional
+        Whether to screen out points with negligible contributions. Default value is True
+        (enable screening).
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -99,6 +117,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 1:
                 output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -108,6 +128,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if i == j and beta != 0:
                 output[i, j] -= (
@@ -118,6 +140,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 )
             output[j, i] = output[i, j]
