@@ -303,6 +303,8 @@ def evaluate_ehrenfest_hessian(
     beta=0,
     transform=None,
     symmetric=False,
+    screen_basis=True,
+    tol_screen=1e-8,
 ):
     r"""Return the Ehrenfest Hessian.
 
@@ -375,6 +377,14 @@ def evaluate_ehrenfest_hessian(
         Flag for symmetrizing the Hessian.
         If True, then the Hessian is symmetrized by averaging it with its transpose.
         Default value is False.
+    screen_basis : bool, optional
+        Whether to screen out points with negligible contributions. Default value is True
+        (enable screening).
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -405,6 +415,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] += alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one,
@@ -413,6 +425,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if alpha != 1:
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -422,6 +436,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
@@ -430,6 +446,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if alpha != 0.5:
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -439,6 +457,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two,
@@ -447,6 +467,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if beta != 0:
                     output[i, j] += (
@@ -458,6 +480,8 @@ def evaluate_ehrenfest_hessian(
                             basis,
                             points,
                             transform=transform,
+                            screen_basis=screen_basis,
+                            tol_screen=tol_screen,
                         )
                     )
     if symmetric:

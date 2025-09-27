@@ -258,7 +258,9 @@ def test_evaluate_ehrenfest_force(screen_basis, tol_screen):
         assert np.allclose(test_d[:, j], -ref_d, atol=tol_screen)
 
 
-def test_evaluate_ehrenfest_hessian():
+@pytest.mark.parametrize("screen_basis", [True, False])
+@pytest.mark.parametrize("tol_screen", [1e-8])
+def test_evaluate_ehrenfest_hessian(screen_basis, tol_screen):
     """Test gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian."""
     basis_dict = parse_nwchem(find_datafile("data_anorcc.nwchem"))
     coords = np.array([[0, 0, 0]])
@@ -274,10 +276,48 @@ def test_evaluate_ehrenfest_hessian():
     with pytest.raises(TypeError):
         evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, 0j, np.identity(40))
 
-    test_a = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40))
-    test_b = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 1, 0, np.identity(40))
-    test_c = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0.5, 0, np.identity(40))
-    test_d = evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 2, np.identity(40))
+    test_a = evaluate_ehrenfest_hessian(
+        np.identity(40),
+        basis,
+        points,
+        0,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_b = evaluate_ehrenfest_hessian(
+        np.identity(40),
+        basis,
+        points,
+        1,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_c = evaluate_ehrenfest_hessian(
+        np.identity(40),
+        basis,
+        points,
+        0.5,
+        0,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+    test_d = evaluate_ehrenfest_hessian(
+        np.identity(40),
+        basis,
+        points,
+        0,
+        2,
+        np.identity(40),
+        screen_basis=screen_basis,
+        tol_screen=tol_screen,
+    )
+
+    # compute reference without screening
     for j in range(3):
         for k in range(3):
             ref_a = np.zeros(points.shape[0])
@@ -300,6 +340,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp2 = evaluate_deriv_reduced_density_matrix(
                     2 * orders_i,
@@ -308,6 +349,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp3 = evaluate_deriv_reduced_density_matrix(
                     orders_i + orders_k,
@@ -316,6 +358,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp4 = evaluate_deriv_reduced_density_matrix(
                     orders_i,
@@ -324,6 +367,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp5 = evaluate_deriv_reduced_density_matrix(
                     2 * orders_i + orders_j + orders_k,
@@ -332,6 +376,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp6 = evaluate_deriv_reduced_density_matrix(
                     2 * orders_i + orders_j,
@@ -340,6 +385,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp7 = evaluate_deriv_reduced_density_matrix(
                     orders_i + orders_j + orders_k,
@@ -348,6 +394,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp8 = evaluate_deriv_reduced_density_matrix(
                     orders_i + orders_j,
@@ -356,6 +403,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
                 temp9 = evaluate_deriv_density(
                     2 * orders_i + orders_j + orders_k,
@@ -363,6 +411,7 @@ def test_evaluate_ehrenfest_hessian():
                     basis,
                     points,
                     np.identity(40),
+                    screen_basis=False,
                 )
 
                 ref_a += temp5 + temp6 + temp7 + temp8
@@ -378,18 +427,30 @@ def test_evaluate_ehrenfest_hessian():
                     + 0.5 * temp8
                 )
                 ref_d += temp3 + temp4 + temp5 + temp6 - temp9
-            assert np.allclose(test_a[:, j, k], -ref_a)
-            assert np.allclose(test_b[:, j, k], -ref_b)
-            assert np.allclose(test_c[:, j, k], -ref_c)
-            assert np.allclose(test_d[:, j, k], -ref_d)
+            assert np.allclose(test_a[:, j, k], -ref_a, atol=tol_screen)
+            assert np.allclose(test_b[:, j, k], -ref_b, atol=tol_screen)
+            assert np.allclose(test_c[:, j, k], -ref_c, atol=tol_screen)
+            assert np.allclose(test_d[:, j, k], -ref_d, atol=tol_screen)
+    # check symmetry if requested
     assert np.allclose(
         evaluate_ehrenfest_hessian(
-            np.identity(40), basis, points, 0, 0, np.identity(40), symmetric=True
+            np.identity(40),
+            basis,
+            points,
+            0,
+            0,
+            np.identity(40),
+            symmetric=True,
+            screen_basis=False,
         ),
         (
-            evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40))
+            evaluate_ehrenfest_hessian(
+                np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False
+            )
             + np.swapaxes(
-                evaluate_ehrenfest_hessian(np.identity(40), basis, points, 0, 0, np.identity(40)),
+                evaluate_ehrenfest_hessian(
+                    np.identity(40), basis, points, 0, 0, np.identity(40), screen_basis=False
+                ),
                 1,
                 2,
             )
