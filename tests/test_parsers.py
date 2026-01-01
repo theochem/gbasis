@@ -1,5 +1,5 @@
 """Test gbasis.parsers."""
-from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem
+from gbasis.parsers import make_contractions, parse_gbs, parse_nwchem, parse_bse
 import numpy as np
 import pytest
 from utils import find_datafile
@@ -756,6 +756,60 @@ def test_parse_gbs_anorcc():
     assert test["H"][3][0] == 3
     assert np.allclose(test["H"][3][1], np.array([0.9701090000]))
     assert np.allclose(test["H"][3][2], np.array([[1.0000000]]))
+
+
+def test_parse_bse_sto3g():
+    """Test gbasis.parsers.parse_bse for sto-3g (skipped if BSE not installed)."""
+    pytest.importorskip("basis_set_exchange")
+    test = parse_bse("sto-3g", atoms=[1])
+    assert "H" in test
+    # ensure there is at least one s-shell and that arrays have expected dtypes/shapes
+    assert any(shell[0] == 0 for shell in test["H"])
+    assert isinstance(test["H"][0][1], np.ndarray)
+    assert isinstance(test["H"][0][2], np.ndarray)
+    assert test["H"][0][2].ndim == 2
+
+
+def test_parse_bse_empty_elements(monkeypatch):
+    """parse_bse should raise on missing/empty elements returned by BSE."""
+    import sys
+    import types
+
+    fake = types.SimpleNamespace()
+
+    def fake_get_basis(basis_set, elements=None):
+        return {}
+
+    fake.get_basis = fake_get_basis
+    fake.lut = types.SimpleNamespace(element_sym_from_Z=lambda z, normalize=True: "X")
+
+    monkeypatch.setitem(sys.modules, "basis_set_exchange", fake)
+
+    with pytest.raises(ValueError, match="No basis data found"):
+        parse_bse("no-such-basis")
+
+
+def test_parse_bse_unexpected_coeff_layout(monkeypatch):
+    """parse_bse should raise a concise error for unexpected coefficient layout."""
+    import sys
+    import types
+
+    fake = types.SimpleNamespace()
+
+    def fake_get_basis(basis_set, elements=None):
+        return {
+            "elements": {
+                "1": {"electron_shells": [{"exponents": [1.0], "coefficients": []}]}
+            }
+        }
+ 
+    fake.get_basis = fake_get_basis
+    fake.lut = types.SimpleNamespace(element_sym_from_Z=lambda z, normalize=True: "H")
+
+    monkeypatch.setitem(sys.modules, "basis_set_exchange", fake)
+
+    with pytest.raises(ValueError, match="Unexpected coefficients layout"):
+        parse_bse("bad-coeffs", atoms=[1])
 
 
 def test_make_contractions():
