@@ -65,7 +65,7 @@ class OverlapAsymmetric(BaseTwoIndexAsymmetric):
 
 
 def overlap_integral_asymmetric(
-    basis_one, basis_two, transform_one=None, transform_two=None, screen_basis=True, tol_screen=1e-8
+    basis_one, basis_two, transform_one=None, transform_two=None, screen_basis=False, tol_screen=1e-8
 ):
     r"""Return overlap integrals between two basis sets.
 
@@ -94,7 +94,7 @@ def overlap_integral_asymmetric(
         and index 0 of the array for contractions.
         Default is no transformation.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is False.
     tol_screen : float, optional
         The tolerance used for screening overlap integrals. `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance

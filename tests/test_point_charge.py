@@ -1,4 +1,5 @@
 """Test gbasis.integrals.point_charge."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals.point_charge import point_charge_integral, PointChargeIntegral
 from gbasis.parsers import make_contractions, parse_nwchem
@@ -30,7 +31,8 @@ def test_boys_func():
     assert np.allclose(test, ref.reshape(10, 20, 30))
 
 
-def test_construct_array_contraction():
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
+def test_construct_array_contraction(screen_basis, tol_screen):
     """Test gbasis.integrals.point_charge.PointChargeIntegral.construct_array_contraction."""
     coord_one = np.array([0.5, 1, 1.5])
     test_one = GeneralizedContractionShell(
@@ -58,7 +60,9 @@ def test_construct_array_contraction():
         PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, np.array([0, 1]))
 
     assert np.allclose(
-        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge),
+        PointChargeIntegral.construct_array_contraction(
+            test_one, test_two, coord, charge, screen_basis=screen_basis, tol_screen=tol_screen
+        ),
         (
             2
             * np.pi
@@ -71,6 +75,7 @@ def test_construct_array_contraction():
             * 3
             * (-1)
         ),
+        atol=tol_screen,
     )
 
     test_one = GeneralizedContractionShell(
@@ -88,7 +93,9 @@ def test_construct_array_contraction():
         for i in range(2)
     ]
     assert np.allclose(
-        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge).ravel(),
+        PointChargeIntegral.construct_array_contraction(
+            test_one, test_two, coord, charge, screen_basis=screen_basis, tol_screen=tol_screen
+        ).ravel(),
         (
             ((coord_wac - coord_one) * v_000_000[0] - (coord_wac - coord[0]) * v_000_000[1])
             * (2 * 0.1 / np.pi) ** (3 / 4)
@@ -98,6 +105,7 @@ def test_construct_array_contraction():
             * 3
             * (-1)
         ),
+        atol=tol_screen,
     )
 
     test_one = GeneralizedContractionShell(
@@ -107,7 +115,9 @@ def test_construct_array_contraction():
         1, np.array([1.5, 2, 3]), np.array([3.0]), np.array([0.2]), "spherical"
     )
     assert np.allclose(
-        PointChargeIntegral.construct_array_contraction(test_one, test_two, coord, charge).ravel(),
+        PointChargeIntegral.construct_array_contraction(
+            test_one, test_two, coord, charge, screen_basis=screen_basis, tol_screen=tol_screen
+        ).ravel(),
         (
             ((coord_wac - coord_two) * v_000_000[0] - (coord_wac - coord[0]) * v_000_000[1])
             * (2 * 0.1 / np.pi) ** (3 / 4)
@@ -117,6 +127,7 @@ def test_construct_array_contraction():
             * 3
             * (-1)
         ),
+        atol=tol_screen,
     )
 
 
@@ -130,7 +141,8 @@ def test_point_charge_cartesian():
     points_charge = np.random.rand(5)
     assert np.allclose(
         point_charge_obj.construct_array_cartesian(
-            points_coords=points_coords, points_charge=points_charge
+            points_coords=points_coords,
+            points_charge=points_charge,
         ),
         point_charge_integral(basis, points_coords=points_coords, points_charge=points_charge),
     )

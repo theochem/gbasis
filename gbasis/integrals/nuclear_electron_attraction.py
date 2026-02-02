@@ -1,9 +1,12 @@
 """Module for computing the nuclear electron attraction."""
+
 from gbasis.integrals.point_charge import point_charge_integral
 import numpy as np
 
 
-def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges, transform=None):
+def nuclear_electron_attraction_integral(
+    basis, nuclear_coords, nuclear_charges, transform=None, screen_basis=False, tol_screen=1e-8
+):
     """Return the nuclear electron attraction integrals of the basis set in the Cartesian form.
 
     .. math::
@@ -27,6 +30,13 @@ def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges,
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    screen_basis : bool, optional
+        Whether to enable screening of the basis functions. Default value is False.
+    tol_screen : float, optional
+        Screening tolerance for excluding evaluations. Integrals with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -37,6 +47,13 @@ def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges,
 
     """
     return np.sum(
-        point_charge_integral(basis, nuclear_coords, nuclear_charges, transform=transform),
+        point_charge_integral(
+            basis,
+            nuclear_coords,
+            nuclear_charges,
+            transform=transform,
+            screen_basis=screen_basis,
+            tol_screen=tol_screen,
+        ),
         axis=2,
     )

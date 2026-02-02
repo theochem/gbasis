@@ -1,7 +1,9 @@
 """Module for computing point charge integrals."""
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
+from gbasis.screening import is_two_index_overlap_screened, get_points_mask_for_contraction
 import numpy as np
 from scipy.special import hyp1f1  # pylint: disable=E0611
 
@@ -117,7 +119,13 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
 
     @classmethod
     def construct_array_contraction(
-        cls, contractions_one, contractions_two, points_coords, points_charge
+        cls,
+        contractions_one,
+        contractions_two,
+        points_coords,
+        points_charge,
+        screen_basis=False,
+        tol_screen=1e-8,
     ):
         r"""Return point charge interaction integral for the given contractions and point charges.
 
@@ -135,6 +143,13 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             :math:`x, y, \text{and} z` components.
         points_charge : np.ndarray(N)
             Charge of each point charge.
+        screen_basis : bool, optional
+            Whether to enable screening of the basis functions. Default value is False.
+        tol_screen : float, optional
+            Screening tolerance for excluding evaluations. Integrals with values below this tolerance
+            will not be evaluated (they will be set to zero). Internal computed quantities that
+            affect the results below this tolerance will also be ignored to speed up the
+            evaluation. Default value is 1e-8.
 
         Returns
         -------
@@ -198,7 +213,26 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
                 "`points_charge`."
             )
 
-        # TODO: Overlap screening
+        # Overlap screening
+        if screen_basis and is_two_index_overlap_screened(
+            contractions_one, contractions_two, tol_screen
+        ):
+            # Shape of output array:
+            # axis 0 : index for segmented contractions of contraction one
+            # axis 1 : angular momentum vector of contraction one (in the same order as angmoms_a)
+            # axis 2 : index for segmented contractions of contraction two
+            # axis 3 : angular momentum vector of contraction two (in the same order as angmoms_b)
+            # axis 4 : point charge
+            return np.zeros(
+                (
+                    contractions_one.num_seg_cont,
+                    len(contractions_one.angmom_components_cart),
+                    contractions_two.num_seg_cont,
+                    len(contractions_two.angmom_components_cart),
+                    points_coords.shape[0],
+                ),
+                dtype=np.float64,
+            )
 
         coord_a = contractions_one.coord
         angmom_a = contractions_one.angmom
@@ -221,18 +255,66 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
             coeffs_a, coeffs_b = coeffs_b, coeffs_a
             ab_swapped = True
 
-        integrals = _compute_one_elec_integrals(
-            points_coords,
-            cls.boys_func,
-            coord_a,
-            angmom_a,
-            exps_a,
-            coeffs_a,
-            coord_b,
-            angmom_b,
-            exps_b,
-            coeffs_b,
-        )
+        if screen_basis:
+            pts_mask_one = get_points_mask_for_contraction(
+                contractions_one, points_coords, deriv_order=0, tol_screen=tol_screen
+            )
+            pts_mask_two = get_points_mask_for_contraction(
+                contractions_two, points_coords, deriv_order=0, tol_screen=tol_screen
+            )
+            pts_mask = np.logical_and(pts_mask_one, pts_mask_two)
+
+            # NOTE: Ordering convention for horizontal recursion of integrals
+            # axis 0 : a_x (size: angmom_a + 1)
+            # axis 1 : a_y (size: angmom_a + 1)
+            # axis 2 : a_z (size: angmom_a + 1)
+            # axis 3 : b_x (size: angmom_b + 1)
+            # axis 4 : b_y (size: angmom_b + 1)
+            # axis 5 : b_z (size: angmom_b + 1)
+            # axis 6 : point charge (size: N)
+            # axis 7 : index for segmented contractions of contraction a (size: M_a)
+            # axis 8 : index for segmented contractions of contraction b (size: M_b)
+            integrals = np.zeros(
+                (
+                    angmom_a + 1,
+                    angmom_a + 1,
+                    angmom_a + 1,
+                    angmom_b + 1,
+                    angmom_b + 1,
+                    angmom_b + 1,
+                    points_coords.shape[0],
+                    coeffs_a.shape[1],
+                    coeffs_b.shape[1],
+                ),
+                dtype=np.float64,
+            )
+            if np.any(pts_mask):
+                integrals[:, :, :, :, :, :, pts_mask, :, :] = _compute_one_elec_integrals(
+                    points_coords[pts_mask],
+                    cls.boys_func,
+                    coord_a,
+                    angmom_a,
+                    exps_a,
+                    coeffs_a,
+                    coord_b,
+                    angmom_b,
+                    exps_b,
+                    coeffs_b,
+                )
+
+        else:
+            integrals = _compute_one_elec_integrals(
+                points_coords,
+                cls.boys_func,
+                coord_a,
+                angmom_a,
+                exps_a,
+                coeffs_a,
+                coord_b,
+                angmom_b,
+                exps_b,
+                coeffs_b,
+            )
         integrals = np.transpose(integrals, (7, 0, 1, 2, 8, 3, 4, 5, 6))
 
         angmoms_a_x, angmoms_a_y, angmoms_a_z = angmoms_a.T
@@ -266,7 +348,9 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         return output
 
 
-def point_charge_integral(basis, points_coords, points_charge, transform=None):
+def point_charge_integral(
+    basis, points_coords, points_charge, transform=None, screen_basis=False, tol_screen=1e-8
+):
     r"""Return the point-charge interaction integrals of basis set in the given coordinate systems.
 
     .. math::
@@ -293,6 +377,13 @@ def point_charge_integral(basis, points_coords, points_charge, transform=None):
         Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
         and index 0 of the array for contractions.
         Default is no transformation.
+    screen_basis : bool, optional
+        Whether to enable screening of the basis functions. Default value is False.
+    tol_screen : float, optional
+        Screening tolerance for excluding evaluations. Integrals with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -305,19 +396,24 @@ def point_charge_integral(basis, points_coords, points_charge, transform=None):
 
     """
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    kwargs = {"tol_screen": tol_screen, "screen_basis": screen_basis}
 
     if transform is not None:
         return PointChargeIntegral(basis).construct_array_lincomb(
-            transform, coord_type, points_coords=points_coords, points_charge=points_charge
+            transform,
+            coord_type,
+            points_coords=points_coords,
+            points_charge=points_charge,
+            **kwargs,
         )
     if all(ct == "cartesian" for ct in coord_type):
         return PointChargeIntegral(basis).construct_array_cartesian(
-            points_coords=points_coords, points_charge=points_charge
+            points_coords=points_coords, points_charge=points_charge, **kwargs
         )
     if all(ct == "spherical" for ct in coord_type):
         return PointChargeIntegral(basis).construct_array_spherical(
-            points_coords=points_coords, points_charge=points_charge
+            points_coords=points_coords, points_charge=points_charge, **kwargs
         )
     return PointChargeIntegral(basis).construct_array_mix(
-        coord_type, points_coords=points_coords, points_charge=points_charge
+        coord_type, points_coords=points_coords, points_charge=points_charge, **kwargs
     )

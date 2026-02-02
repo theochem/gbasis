@@ -60,8 +60,7 @@ def test_evaluate_density_using_evaluated_orbs():
         evaluate_density_using_evaluated_orbs(density_mat, orb_eval)
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 def test_evaluate_density(screen_basis, tol_screen):
     """Test gbasis.evals.density.evaluate_density."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
@@ -83,8 +82,7 @@ def test_evaluate_density(screen_basis, tol_screen):
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_deriv_density(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_deriv_density."""
@@ -272,8 +270,7 @@ def test_evaluate_deriv_density(screen_basis, tol_screen, deriv_type):
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_density_gradient(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_gradient."""
@@ -338,8 +335,7 @@ def test_evaluate_density_gradient(screen_basis, tol_screen, deriv_type):
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 def test_evaluate_density_horton(screen_basis, tol_screen):
     """Test gbasis.evals.density.evaluate_density against result from HORTON.
 
@@ -370,8 +366,7 @@ def test_evaluate_density_horton(screen_basis, tol_screen):
     assert np.allclose(dens, horton_density, atol=tol_screen)
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_density_gradient_horton(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_gradient against result from HORTON.
@@ -405,8 +400,7 @@ def test_evaluate_density_gradient_horton(screen_basis, tol_screen, deriv_type):
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_hessian against result from HORTON.
@@ -447,8 +441,7 @@ def test_evaluate_hessian_deriv_horton(screen_basis, tol_screen, deriv_type):
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen, deriv_type):
     """Test gbasis.evals.density.evaluate_density_laplacian against result from HORTON.
@@ -483,8 +476,7 @@ def test_evaluate_laplacian_deriv_horton(screen_basis, tol_screen, deriv_type):
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen, deriv_type):
     """Test evaluate_posdef_kinetic_energy_density against results from HORTON.
@@ -519,8 +511,7 @@ def test_evaluate_posdef_kinetic_energy_density(screen_basis, tol_screen, deriv_
     assert np.allclose(dens, horton_density_kinetic_density, atol=tol_screen)
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen, deriv_type):
     """Test evaluate_general_kinetic_energy_density against results from HORTON.
@@ -560,8 +551,7 @@ def test_evaluate_general_kinetic_energy_density_horton(screen_basis, tol_screen
     )
 
 
-@pytest.mark.parametrize("screen_basis", [True, False])
-@pytest.mark.parametrize("tol_screen", [1e-8])
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
 @pytest.mark.parametrize("deriv_type", ["general", "direct"])
 def test_evaluate_general_kinetic_energy_density(screen_basis, tol_screen, deriv_type):
     """Test density.evaluate_general_kinetic_energy_density."""

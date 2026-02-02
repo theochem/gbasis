@@ -1,4 +1,5 @@
 """Test gbasis.integrals.angular_momentum."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
@@ -11,7 +12,8 @@ import pytest
 from utils import find_datafile
 
 
-def test_angular_momentum_construct_array_contraction():
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
+def test_angular_momentum_construct_array_contraction(screen_basis, tol_screen):
     """Test integrals.angular_momentum.angular_momentumIntegral.construct_array_contraction."""
     test_one = GeneralizedContractionShell(
         1, np.array([0.5, 1, 1.5]), np.array([1.0, 2.0]), np.array([0.1, 0.01]), "spherical"
@@ -346,7 +348,9 @@ def test_angular_momentum_construct_array_contraction():
     int_pz_dyz = int_pz_dyz.squeeze()
     int_pz_dzz = int_pz_dzz.squeeze()
 
-    test = AngularMomentumIntegral.construct_array_contraction(test_one, test_two)
+    test = AngularMomentumIntegral.construct_array_contraction(
+        test_one, test_two, screen_basis=screen_basis, tol_screen=tol_screen
+    )
     assert test.shape == (1, 3, 1, 6, 3)
     assert np.allclose(
         test.squeeze(),
@@ -358,6 +362,7 @@ def test_angular_momentum_construct_array_contraction():
                 [int_pz_dxx, int_pz_dxy, int_pz_dxz, int_pz_dyy, int_pz_dyz, int_pz_dzz],
             ]
         ),
+        atol=tol_screen,
     )
 
     with pytest.raises(TypeError):
@@ -366,50 +371,66 @@ def test_angular_momentum_construct_array_contraction():
         AngularMomentumIntegral.construct_array_contraction(None, test_two)
 
 
-def test_angular_momentum_integral_cartesian():
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
+def test_angular_momentum_integral_cartesian(screen_basis, tol_screen):
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_cartesian."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "cartesian")
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
-        angular_momentum_integral_obj.construct_array_cartesian(),
-        angular_momentum_integral(basis),
+        angular_momentum_integral_obj.construct_array_cartesian(
+            screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        angular_momentum_integral(basis, screen_basis=False),
+        atol=tol_screen,
     )
 
 
-def test_angular_momentum_integral_spherical():
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
+def test_angular_momentum_integral_spherical(screen_basis, tol_screen):
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_spherical."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
-        angular_momentum_integral_obj.construct_array_spherical(),
-        angular_momentum_integral(basis),
+        angular_momentum_integral_obj.construct_array_spherical(
+            screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        angular_momentum_integral(basis, screen_basis=False),
+        atol=tol_screen,
     )
 
 
-def test_angular_momentum_integral_mix():
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
+def test_angular_momentum_integral_mix(screen_basis, tol_screen):
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_mix."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
 
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), ["spherical"] * 8)
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     assert np.allclose(
-        angular_momentum_integral_obj.construct_array_mix(["spherical"] * 8),
-        angular_momentum_integral(basis),
+        angular_momentum_integral_obj.construct_array_mix(
+            ["spherical"] * 8, screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        angular_momentum_integral(basis, screen_basis=False),
+        atol=tol_screen,
     )
 
 
-def test_angular_momentum_integral_lincomb():
+@pytest.mark.parametrize("screen_basis, tol_screen", [(True, 1e-8), (False, 1e-12)])
+def test_angular_momentum_integral_lincomb(screen_basis, tol_screen):
     """Test gbasis.integrals.angular_momentum.angular_momentum_integral_lincomb."""
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     angular_momentum_integral_obj = AngularMomentumIntegral(basis)
     transform = np.random.rand(14, 18)
     assert np.allclose(
-        angular_momentum_integral_obj.construct_array_lincomb(transform, ["spherical"]),
-        angular_momentum_integral(basis, transform),
+        angular_momentum_integral_obj.construct_array_lincomb(
+            transform, ["spherical"], screen_basis=screen_basis, tol_screen=tol_screen
+        ),
+        angular_momentum_integral(basis, transform, screen_basis=False),
+        atol=tol_screen,
     )
 
 
@@ -422,8 +443,8 @@ def test_angular_momentum_screening_accuracy(precision):
     atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
     contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
 
-    #  the screening tolerance needs to be 1e-4 times the desired precision
-    tol_screen = precision * 1e-4
+    #  the screening tolerance needs to be 1e-2 times the desired precision
+    tol_screen = precision * 1e-2
     angular_momentum = angular_momentum_integral(contraction, tol_screen=tol_screen)
     angular_momentum_no_screen = angular_momentum_integral(contraction, screen_basis=False)
     assert np.allclose(angular_momentum, angular_momentum_no_screen, atol=precision)

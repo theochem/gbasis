@@ -136,6 +136,7 @@ def electrostatic_potential(
         raise TypeError(
             "`coord_type` must be a list/tuple of the strings 'spherical' or 'cartesian'."
         )
+    # compute Hartree potential (no screening since it is cumulative for all points)
     hartree_potential = point_charge_integral(
         basis, points, -np.ones(points.shape[0]), transform=transform
     )

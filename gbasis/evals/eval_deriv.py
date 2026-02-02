@@ -58,7 +58,7 @@ class EvalDeriv(BaseOneIndex):
 
     @staticmethod
     def construct_array_contraction(
-        contractions, points, orders, deriv_type="general", screen_basis=True, tol_screen=1e-8
+        contractions, points, orders, deriv_type="general", screen_basis=False, tol_screen=1e-8
     ):
         r"""Return the array associated with a set of contracted Cartesian Gaussians.
 
@@ -82,7 +82,7 @@ class EvalDeriv(BaseOneIndex):
             contraction (_eval_first_second_order_deriv_contractions()).
         screen_basis : bool, optional
             Whether to screen out points that are too far from the contraction center. Default value
-            is True (enable screening).
+            is False.
         tol_screen : float
             Screening tolerance for excluding points. This value, together with the
             minimum contraction parameters, determines a cutoff distance. Points
@@ -177,7 +177,7 @@ def evaluate_deriv_basis(
     orders,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
@@ -220,7 +220,7 @@ def evaluate_deriv_basis(
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
         Whether to screen out points that are too far from the contractions center to contribute to
-        the result above the given tolerance. Default value is True (enable screening).
+        the result above the given tolerance. Default value is False.
     tol_screen : float
         Screening tolerance for excluding points. This value, together with the
         minimum contraction parameters, determines a cutoff distance. Points
