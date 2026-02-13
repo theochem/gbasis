@@ -79,17 +79,20 @@ def boys_function_all_orders(m_max, weighted_dist):
         Boys function values for all orders from 0 to m_max.
         Shape: (m_max + 1, *weighted_dist.shape)
     """
-    T = np.atleast_1d(weighted_dist)
-    result_shape = (m_max + 1, *T.shape)
-    boys_all = np.zeros(result_shape)
+    # Vectorize hyp1f1 across all orders with broadcasting to avoid
+    # per-order Python loops while keeping numerical behaviour identical
+    # to the standard expression. hyp1f1 is stable for the practical
+    # range m < 20 and T encountered here.
 
-    # Use direct hyp1f1 formula for all T values. scipy's hyp1f1 is
-    # numerically stable for all practical T (tested up to T=100000)
-    # and m values encountered in quantum chemistry (m < 20).
-    for m in range(m_max + 1):
-        boys_all[m] = hyp1f1(m + 0.5, m + 1.5, -T) / (2 * m + 1)
+    T = np.asarray(weighted_dist)
+    orders = np.arange(m_max + 1, dtype=np.result_type(T, np.float64))
 
-    return boys_all
+    # Reshape orders to broadcast over T's dimensions: (m_max+1, 1, 1, ...)
+    orders_shape = (m_max + 1,) + (1,) * T.ndim
+    orders_b = orders.reshape(orders_shape)
+
+    boys_vals = hyp1f1(orders_b + 0.5, orders_b + 1.5, -T) / (2 * orders_b + 1)
+    return boys_vals
 
 
 def get_boys_function(potential="coulomb", omega=None):

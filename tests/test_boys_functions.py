@@ -107,6 +107,57 @@ class TestBoysAllOrders:
         assert result.shape == (m_max + 1, T.shape[0]), \
             f"Expected shape {(m_max + 1, T.shape[0])}, got {result.shape}"
 
+    def test_small_T_series_branch(self):
+        """Exercise the small-T series path and compare with reference."""
+        m_max = 6
+        T = np.array([0.0, 1e-12, 1e-9])
+        result = boys_function_all_orders(m_max, T)
+
+        for m in range(m_max + 1):
+            expected = boys_function_standard(np.array([m]), T)
+            np.testing.assert_allclose(
+                result[m], expected,
+                rtol=1e-12, atol=1e-14,
+                err_msg=f"Small-T mismatch at m={m}")
+
+    def test_multidim_broadcasting(self):
+        """Check broadcasting for multidimensional T arrays."""
+        m_max = 3
+        T = np.array([[0.2, 1.0, 5.0], [0.4, 2.0, 10.0]])[:, None, :]
+        result = boys_function_all_orders(m_max, T)
+
+        assert result.shape == (m_max + 1, *T.shape)
+
+        # Verify values against scalar reference
+        for idx, t_val in np.ndenumerate(T):
+            for m in range(m_max + 1):
+                expected = boys_function_standard(np.array([m]), np.array([t_val]))[0]
+                assert np.isclose(result[m][idx], expected), f"Mismatch at m={m}, idx={idx}"
+
+    def test_recursion_identity(self):
+        """Verify recurrence holds on all-orders output."""
+        m_max = 8
+        T = np.array([0.3, 1.5, 4.0])
+        all_vals = boys_function_all_orders(m_max, T)
+
+        for m in range(m_max):
+            lhs = (2 * m + 1) * all_vals[m]
+            rhs = 2 * T * all_vals[m + 1] + np.exp(-T)
+            np.testing.assert_allclose(lhs, rhs, rtol=1e-11, atol=1e-14,
+                err_msg=f"Recurrence failed for m={m}")
+
+    def test_random_values_against_reference(self):
+        """Random spot-check across orders and T values."""
+        rng = np.random.default_rng(0)
+        T = 10 ** rng.uniform(-10, 4, size=20)
+        m_max = 10
+        result = boys_function_all_orders(m_max, T)
+
+        for m in range(m_max + 1):
+            expected = boys_function_standard(np.array([m]), T)
+            np.testing.assert_allclose(result[m], expected, rtol=1e-11, atol=1e-14,
+                err_msg=f"Random check mismatch at m={m}")
+
 
 class TestGetBoysFunction:
     """Tests for the get_boys_function factory."""
