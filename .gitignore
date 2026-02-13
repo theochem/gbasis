@@ -121,4 +121,3 @@ venv.bak/
 # Libcint
 gbasis/integrals/lib/
 gbasis/integrals/include/
-qc-dev-env/
