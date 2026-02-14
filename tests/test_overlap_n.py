@@ -27,16 +27,25 @@ def test_primitive_px_py_pz():
 
     alpha = 0.5
 
-    print(
-        "px-px:", PrimitiveNEngine.primitive_overlap([alpha, alpha], [A, B], [(1, 0, 0), (1, 0, 0)])
-    )
+    print("px-px:",
+          PrimitiveNEngine.primitive_overlap(
+              [alpha, alpha],
+              [A, B],
+              [(1,0,0), (1,0,0)]
+          ))
 
-    print(
-        "py-py:", PrimitiveNEngine.primitive_overlap([alpha, alpha], [A, B], [(0, 1, 0), (0, 1, 0)])
-    )
+    print("py-py:",
+          PrimitiveNEngine.primitive_overlap(
+              [alpha, alpha],
+              [A, B],
+              [(0,1,0), (0,1,0)]
+          ))
 
-    print(
-        "pz-pz:", PrimitiveNEngine.primitive_overlap([alpha, alpha], [A, B], [(0, 0, 1), (0, 0, 1)])
-    )
+    print("pz-pz:",
+          PrimitiveNEngine.primitive_overlap(
+              [alpha, alpha],
+              [A, B],
+              [(0,0,1), (0,0,1)]
+          ))
 
     assert True  # temporary so pytest runs it

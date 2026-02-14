@@ -11,11 +11,17 @@ from gbasis.integrals.overlap_n import contracted_n_overlap
 # =====================================================
 def build_h2_basis():
     atoms = ["H", "H"]
-    coords = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 1.0]])
+    coords = np.array([[0.0, 0.0, 0.0],
+                       [0.0, 0.0, 1.0]])
 
     basis_dict = parse_gbs("tests/data_631g.gbs")
 
-    basis = make_contractions(basis_dict, atoms, coords, coord_types="c")
+    basis = make_contractions(
+        basis_dict,
+        atoms,
+        coords,
+        coord_types="c"
+    )
 
     return basis
 
@@ -23,7 +29,6 @@ def build_h2_basis():
 # =====================================================
 # 1️⃣ N=2 FULL AO MATRIX VALIDATION
 # =====================================================
-
 
 def test_n2_matches_gbasis():
 
@@ -46,7 +51,8 @@ def test_n2_matches_gbasis():
             block = contracted_n_overlap([shell_i, shell_j])
             block = block.reshape(size_i, size_j)
 
-            mine[ao_i : ao_i + size_i, ao_j : ao_j + size_j] = block
+            mine[ao_i:ao_i+size_i,
+                 ao_j:ao_j+size_j] = block
 
             ao_j += size_j
 
@@ -62,7 +68,6 @@ def test_n2_matches_gbasis():
 # =====================================================
 # 2️⃣ N=3 SYMMETRY TEST
 # =====================================================
-
 
 def test_n3_symmetry():
 
@@ -85,7 +90,6 @@ def test_n3_symmetry():
 # =====================================================
 # 3️⃣ HIGH ANGULAR MOMENTUM + DIFFUSE TEST
 # =====================================================
-
 
 def test_high_angmom_diffuse():
 
