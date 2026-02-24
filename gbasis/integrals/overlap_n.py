@@ -306,3 +306,22 @@ def build_n_overlap_tensor(shells, tol=1e-12):
     shape = (total_ao ** N, 1)
 
     return coo_matrix((data, (rows, np.zeros(len(rows)))), shape=shape)
+# Public API function (Week 3 deliverable)
+def arbitrary_order_overlap(shells, tol=1e-12):
+    """
+    Compute arbitrary-order Gaussian overlap tensor.
+
+    This is the main public API for N-center overlap integrals.
+
+    Parameters
+    ----------
+    shells : list[GeneralizedContractionShell]
+
+    tol : float
+
+    Returns
+    -------
+    scipy.sparse.coo_matrix
+    """
+
+    return build_n_overlap_tensor(shells, tol)

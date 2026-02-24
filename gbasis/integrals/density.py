@@ -12,7 +12,9 @@ def compute_intracule(shells):
     for i in range(n):
         for j in range(n):
 
-            tensor = arbitrary_order_overlap([shells[i], shells[j]])
+            tensor = arbitrary_order_overlap(
+                [shells[i], shells[j]]
+            )
 
             # extract scalar value
             value = tensor.data[0] if tensor.nnz > 0 else 0.0
@@ -31,7 +33,9 @@ def compute_extracule(shells):
     for i in range(n):
         for j in range(n):
 
-            tensor = arbitrary_order_overlap([shells[i], shells[j]])
+            tensor = arbitrary_order_overlap(
+                [shells[i], shells[j]]
+            )
 
             value = tensor.data[0] if tensor.nnz > 0 else 0.0
 
