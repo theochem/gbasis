@@ -16,10 +16,8 @@ class DummyShell:
 # Monkeypatch arbitrary_order_overlap
 import gbasis.integrals.density as density
 
-
 def dummy_overlap(shells):
     return DummyTensor()
-
 
 density.arbitrary_order_overlap = dummy_overlap
 
@@ -30,7 +28,7 @@ def test_intracule_shape():
 
     result = compute_intracule(shells)
 
-    assert result.shape == (3, 3)
+    assert result.shape == (3,3)
 
 
 def test_intracule_empty():
@@ -39,7 +37,7 @@ def test_intracule_empty():
 
     result = compute_intracule(shells)
 
-    assert result.shape == (0, 0)
+    assert result.shape == (0,0)
 
 
 def test_intracule_symmetry():

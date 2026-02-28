@@ -15,11 +15,17 @@ class DummyShell:
 
 import gbasis.integrals.density as density
 
+<<<<<<< HEAD
 
 def dummy_overlap(shells):
     return DummyTensor()
 
 
+=======
+def dummy_overlap(shells):
+    return DummyTensor()
+
+>>>>>>> 30adfdd (Week-5: Add tests, benchmarks, and real-basis validation for density API)
 density.arbitrary_order_overlap = dummy_overlap
 
 
@@ -33,4 +39,8 @@ def test_intracule_speed():
 
     elapsed = time.time() - start
 
+<<<<<<< HEAD
     assert elapsed < 5
+=======
+    assert elapsed < 5
+>>>>>>> 30adfdd (Week-5: Add tests, benchmarks, and real-basis validation for density API)
