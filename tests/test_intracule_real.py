@@ -13,11 +13,11 @@ def convert_to_shells(parsed_shells):
     for angmom, exps, coeffs in parsed_shells:
 
         shell = GeneralizedContractionShell(
-            angmom,                              # 1
-            origin,                              # 2
-            np.array(coeffs, dtype=float),      # 3
-            np.array(exps, dtype=float),        # 4
-            "cartesian"                         # 5
+            angmom,  # 1
+            origin,  # 2
+            np.array(coeffs, dtype=float),  # 3
+            np.array(exps, dtype=float),  # 4
+            "cartesian",  # 5
         )
 
         shells.append(shell)

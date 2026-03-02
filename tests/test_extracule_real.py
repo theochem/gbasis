@@ -17,11 +17,11 @@ def convert_to_shells(parsed_shells):
     for angmom, exps, coeffs in parsed_shells:
 
         shell = GeneralizedContractionShell(
-            angmom,                              # angular momentum
-            origin,                              # center coordinate
-            np.array(coeffs, dtype=float),      # contraction coefficients
-            np.array(exps, dtype=float),        # exponents
-            "cartesian"                         # coordinate type
+            angmom,  # angular momentum
+            origin,  # center coordinate
+            np.array(coeffs, dtype=float),  # contraction coefficients
+            np.array(exps, dtype=float),  # exponents
+            "cartesian",  # coordinate type
         )
 
         shells.append(shell)
