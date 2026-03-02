@@ -15,8 +15,10 @@ class DummyShell:
 
 import gbasis.integrals.density as density
 
+
 def dummy_overlap(shells):
     return DummyTensor()
+
 
 density.arbitrary_order_overlap = dummy_overlap
 

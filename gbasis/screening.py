@@ -158,6 +158,7 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
     lambert_input_value = -2 * alpha * (eff_tol_screen / (c * n)) ** (2 / eff_angm) / eff_angm
     return np.sqrt(-(eff_angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)
 
+
 # TODO: Fix this, it fails for some reason, it is needed for screening of 1rdms
 def compute_contraction_upper_bond(contractions, deriv_order):
     r"""Compute an upper bound for a contraction or its derivatives for any point.

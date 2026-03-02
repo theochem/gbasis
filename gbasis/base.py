@@ -1,4 +1,5 @@
 """Base class for arrays that depend on one or more contracted Gaussians."""
+
 import abc
 
 from gbasis.contractions import GeneralizedContractionShell

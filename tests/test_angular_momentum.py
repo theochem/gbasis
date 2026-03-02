@@ -1,4 +1,5 @@
 """Test gbasis.integrals.angular_momentum."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,

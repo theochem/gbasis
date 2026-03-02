@@ -21,7 +21,6 @@ from scipy.special import factorial
 
 from gbasis.utils import factorial2
 
-
 __all__ = [
     "LIBCINT",
     "CBasis",
@@ -193,6 +192,7 @@ def ndptr(enable_null=False, **kwargs):
 
 class PairData(Structure):
     r"""``libcint`` ``PairData`` class."""
+
     _fields_ = [
         ("rij", c_double * 3),
         ("eij", c_double),
@@ -202,6 +202,7 @@ class PairData(Structure):
 
 class CINTOpt(Structure):
     r"""``libcint`` ``CINTOpt`` class."""
+
     _fields_ = [
         ("index_xyz_array", POINTER(POINTER(c_int))),
         ("non0ctr", POINTER(POINTER(c_int))),

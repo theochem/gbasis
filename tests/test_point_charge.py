@@ -1,4 +1,5 @@
 """Test gbasis.integrals.point_charge."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals.point_charge import point_charge_integral, PointChargeIntegral
 from gbasis.parsers import make_contractions, parse_nwchem

@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.sparse import coo_matrix
 from itertools import product
+
+
 class PrimitiveNEngine:
 
     # Gaussian collapse
@@ -23,6 +25,7 @@ class PrimitiveNEngine:
         prefactor = np.exp(exponent)
 
         return alpha_tot, P, prefactor
+
     # Pure binomial Hermite shift
     @staticmethod
     def hermite_coefficients(l, PA):
@@ -44,6 +47,7 @@ class PrimitiveNEngine:
             E = E_new
 
         return E
+
     # Gaussian moments
     @staticmethod
     def gaussian_moments(alpha, max_order):
@@ -62,13 +66,12 @@ class PrimitiveNEngine:
             moments[k + 2] = (k + 1) / (2.0 * alpha) * moments[k]
 
         return moments
+
     # Full primitive N-center overlap
     @staticmethod
     def primitive_overlap(alphas, centers, angmoms):
 
-        alpha_tot, P, prefactor = PrimitiveNEngine.collapse_gaussians(
-            alphas, centers
-        )
+        alpha_tot, P, prefactor = PrimitiveNEngine.collapse_gaussians(alphas, centers)
 
         result = prefactor
 
@@ -86,16 +89,15 @@ class PrimitiveNEngine:
 
                 E_total = np.convolve(E_total, E)
 
-            moments = PrimitiveNEngine.gaussian_moments(
-                alpha_tot,
-                len(E_total) - 1
-            )
+            moments = PrimitiveNEngine.gaussian_moments(alpha_tot, len(E_total) - 1)
 
-            axis_integral = np.dot(E_total, moments[:len(E_total)])
+            axis_integral = np.dot(E_total, moments[: len(E_total)])
 
             result *= axis_integral
 
         return result
+
+
 # Screening Function
 def is_n_shell_overlap_screened(shells, tol=1e-12):
     """
@@ -136,6 +138,8 @@ def is_n_shell_overlap_screened(shells, tol=1e-12):
     bound = coeff_bound * norm_bound * volume_bound * np.exp(-D)
 
     return bound < tol
+
+
 def contracted_n_overlap(shells):
     """
     Compute contracted N-center overlap for a list of
@@ -204,11 +208,7 @@ def contracted_n_overlap(shells):
                     coeff_prod *= coeff
                     norm_prod *= norm
 
-                prim_val = PrimitiveNEngine.primitive_overlap(
-                    alphas,
-                    centers,
-                    angmoms
-                )
+                prim_val = PrimitiveNEngine.primitive_overlap(alphas, centers, angmoms)
 
                 total_value += coeff_prod * norm_prod * prim_val
 
@@ -220,6 +220,8 @@ def contracted_n_overlap(shells):
             result[tuple(index)] = total_value
 
     return result
+
+
 def build_n_overlap_tensor(shells, tol=1e-12):
     """
     Build sparse N-center overlap tensor over shells.
@@ -237,10 +239,7 @@ def build_n_overlap_tensor(shells, tol=1e-12):
     """
 
     # Total AO dimension
-    shell_sizes = [
-        shell.num_seg_cont * shell.num_cart
-        for shell in shells
-    ]
+    shell_sizes = [shell.num_seg_cont * shell.num_cart for shell in shells]
 
     total_ao = sum(shell_sizes)
     N = len(shells)
@@ -267,15 +266,9 @@ def build_n_overlap_tensor(shells, tol=1e-12):
 
         block_flat = block.reshape(-1)
 
-        local_sizes = [
-            shells[i].num_seg_cont * shells[i].num_cart
-            for i in shell_indices
-        ]
+        local_sizes = [shells[i].num_seg_cont * shells[i].num_cart for i in shell_indices]
 
-        local_offsets = [
-            offsets[i]
-            for i in shell_indices
-        ]
+        local_offsets = [offsets[i] for i in shell_indices]
 
         for local_idx, value in enumerate(block_flat):
 
@@ -294,18 +287,16 @@ def build_n_overlap_tensor(shells, tol=1e-12):
 
             global_index = 0
             for k in range(N):
-                global_index = (
-                    global_index * total_ao
-                    + local_offsets[k]
-                    + multi[k]
-                )
+                global_index = global_index * total_ao + local_offsets[k] + multi[k]
 
             rows.append(global_index)
             data.append(value)
 
-    shape = (total_ao ** N, 1)
+    shape = (total_ao**N, 1)
 
     return coo_matrix((data, (rows, np.zeros(len(rows)))), shape=shape)
+
+
 # Public API function (Week 3 deliverable)
 def arbitrary_order_overlap(shells, tol=1e-12):
     """
