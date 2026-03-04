@@ -4,16 +4,19 @@ Tests for VRR (Week 2), ETR + contraction (Week 3), and HRR + full pipeline (Wee
 """
 
 import numpy as np
-import pytest
+from scipy.special import hyp1f1
 
+from gbasis.integrals._two_elec_int import (
+    _compute_two_elec_integrals,
+    _compute_two_elec_integrals_angmom_zero,
+)
 from gbasis.integrals._two_elec_int_improved import (
-    _vertical_recursion_relation,
     _electron_transfer_recursion,
-    _optimized_contraction,
     _get_factorial2_norm,
-    _horizontal_recursion_relation,
+    _vertical_recursion_relation,
     compute_two_electron_integrals_os_hgp,
 )
+from gbasis.integrals.point_charge import PointChargeIntegral
 
 
 class TestVerticalRecursion:
@@ -65,20 +68,15 @@ class TestVerticalRecursion:
         [1,0|00]^0 = (P-A)_x * [00|00]^0 - (rho/zeta)*(Q-P)_x * [00|00]^1
         """
         m_max = 2
-        integrals_m = np.array([[[[[1.0]]]],
-                                [[[[0.5]]]]])
+        integrals_m = np.array([[[[[1.0]]]], [[[[0.5]]]]])
 
         PA_x, PA_y, PA_z = 0.3, 0.0, 0.0
         PQ_x, PQ_y, PQ_z = 0.2, 0.0, 0.0
         rho = 0.6
         zeta = 1.5
 
-        rel_coord_a = np.array([[[[[PA_x]]]],
-                                [[[[PA_y]]]],
-                                [[[[PA_z]]]]])
-        coord_wac = np.array([[[[[PQ_x]]]],
-                              [[[[PQ_y]]]],
-                              [[[[PQ_z]]]]])
+        rel_coord_a = np.array([[[[[PA_x]]]], [[[[PA_y]]]], [[[[PA_z]]]]])
+        coord_wac = np.array([[[[[PQ_x]]]], [[[[PQ_y]]]], [[[[PQ_z]]]]])
         harm_mean = np.array([[[[rho]]]])
         exps_sum_one = np.array([[[[zeta]]]])
 
@@ -117,9 +115,7 @@ class TestElectronTransferRecursion:
         n_prim = 2
 
         # Create mock VRR output
-        integrals_vert = np.random.rand(
-            m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim
-        )
+        integrals_vert = np.random.rand(m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim)
 
         rel_coord_c = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
         rel_coord_a = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
@@ -127,8 +123,7 @@ class TestElectronTransferRecursion:
         exps_sum_two = np.random.rand(n_prim, n_prim, n_prim, n_prim) + 0.1
 
         result = _electron_transfer_recursion(
-            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a,
-            exps_sum_one, exps_sum_two
+            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a, exps_sum_one, exps_sum_two
         )
 
         # Base case: [0,0,0, a_x, a_y, a_z] should equal integrals_vert[0, a_x, a_y, a_z]
@@ -140,9 +135,7 @@ class TestElectronTransferRecursion:
         m_max_c = 2
         n_prim = 2
 
-        integrals_vert = np.random.rand(
-            m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim
-        )
+        integrals_vert = np.random.rand(m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim)
 
         rel_coord_c = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
         rel_coord_a = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
@@ -150,12 +143,21 @@ class TestElectronTransferRecursion:
         exps_sum_two = np.random.rand(n_prim, n_prim, n_prim, n_prim) + 0.1
 
         result = _electron_transfer_recursion(
-            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a,
-            exps_sum_one, exps_sum_two
+            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a, exps_sum_one, exps_sum_two
         )
 
-        expected_shape = (m_max_c, m_max_c, m_max_c, m_max, m_max, m_max,
-                          n_prim, n_prim, n_prim, n_prim)
+        expected_shape = (
+            m_max_c,
+            m_max_c,
+            m_max_c,
+            m_max,
+            m_max,
+            m_max,
+            n_prim,
+            n_prim,
+            n_prim,
+            n_prim,
+        )
         assert result.shape == expected_shape
 
 
@@ -195,9 +197,6 @@ class TestImprovedVsOld:
         all-zero angular momentum, so we compare against the specialized
         _compute_two_elec_integrals_angmom_zero function instead.
         """
-        from gbasis.integrals._two_elec_int import _compute_two_elec_integrals_angmom_zero
-        from gbasis.integrals.point_charge import PointChargeIntegral
-
         boys_func = PointChargeIntegral.boys_func
 
         coord_a = np.array([0.0, 0.0, 0.0])
@@ -220,29 +219,54 @@ class TestImprovedVsOld:
         # Old implementation (specialized for angmom zero)
         result_old = _compute_two_elec_integrals_angmom_zero(
             boys_func,
-            coord_a, exps_a, coeffs_a,
-            coord_b, exps_b, coeffs_b,
-            coord_c, exps_c, coeffs_c,
-            coord_d, exps_d, coeffs_d,
+            coord_a,
+            exps_a,
+            coeffs_a,
+            coord_b,
+            exps_b,
+            coeffs_b,
+            coord_c,
+            exps_c,
+            coeffs_c,
+            coord_d,
+            exps_d,
+            coeffs_d,
         )
 
         # New implementation
         result_new = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 0, angmom_comp, exps_a, coeffs_a,
-            coord_b, 0, angmom_comp, exps_b, coeffs_b,
-            coord_c, 0, angmom_comp, exps_c, coeffs_c,
-            coord_d, 0, angmom_comp, exps_d, coeffs_d,
+            coord_a,
+            0,
+            angmom_comp,
+            exps_a,
+            coeffs_a,
+            coord_b,
+            0,
+            angmom_comp,
+            exps_b,
+            coeffs_b,
+            coord_c,
+            0,
+            angmom_comp,
+            exps_c,
+            coeffs_c,
+            coord_d,
+            0,
+            angmom_comp,
+            exps_d,
+            coeffs_d,
         )
 
-        np.testing.assert_allclose(result_new, result_old, rtol=1e-10,
-            err_msg="(ss|ss) integrals don't match between old and improved")
+        np.testing.assert_allclose(
+            result_new,
+            result_old,
+            rtol=1e-10,
+            err_msg="(ss|ss) integrals don't match between old and improved",
+        )
 
     def test_spsp_matches_old(self):
         """Test (sp|sp) integrals match old implementation."""
-        from gbasis.integrals._two_elec_int import _compute_two_elec_integrals
-        from gbasis.integrals.point_charge import PointChargeIntegral
-
         boys_func = PointChargeIntegral.boys_func
 
         coord_a = np.array([0.0, 0.0, 0.0])
@@ -268,23 +292,59 @@ class TestImprovedVsOld:
         # Old implementation
         result_old = _compute_two_elec_integrals(
             boys_func,
-            coord_a, 0, s_comp, exps_a, coeffs_a,
-            coord_b, 1, p_comp, exps_b, coeffs_b,
-            coord_c, 0, s_comp, exps_c, coeffs_c,
-            coord_d, 1, p_comp, exps_d, coeffs_d,
+            coord_a,
+            0,
+            s_comp,
+            exps_a,
+            coeffs_a,
+            coord_b,
+            1,
+            p_comp,
+            exps_b,
+            coeffs_b,
+            coord_c,
+            0,
+            s_comp,
+            exps_c,
+            coeffs_c,
+            coord_d,
+            1,
+            p_comp,
+            exps_d,
+            coeffs_d,
         )
 
         # New implementation
         result_new = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 0, s_comp, exps_a, coeffs_a,
-            coord_b, 1, p_comp, exps_b, coeffs_b,
-            coord_c, 0, s_comp, exps_c, coeffs_c,
-            coord_d, 1, p_comp, exps_d, coeffs_d,
+            coord_a,
+            0,
+            s_comp,
+            exps_a,
+            coeffs_a,
+            coord_b,
+            1,
+            p_comp,
+            exps_b,
+            coeffs_b,
+            coord_c,
+            0,
+            s_comp,
+            exps_c,
+            coeffs_c,
+            coord_d,
+            1,
+            p_comp,
+            exps_d,
+            coeffs_d,
         )
 
-        np.testing.assert_allclose(result_new, result_old, rtol=1e-10,
-            err_msg="(sp|sp) integrals don't match between old and improved")
+        np.testing.assert_allclose(
+            result_new,
+            result_old,
+            rtol=1e-10,
+            err_msg="(sp|sp) integrals don't match between old and improved",
+        )
 
 
 class TestHighAngularMomentum:
@@ -292,8 +352,6 @@ class TestHighAngularMomentum:
 
     def test_dddd_no_overflow(self):
         """Test (dd|dd) integrals produce finite values."""
-        from gbasis.integrals.point_charge import PointChargeIntegral
-
         boys_func = PointChargeIntegral.boys_func
 
         coord_a = np.array([0.0, 0.0, 0.0])
@@ -305,17 +363,30 @@ class TestHighAngularMomentum:
         coeffs = np.array([[1.0]])
 
         # d-orbital components (L=2): xx, xy, xz, yy, yz, zz
-        d_comp = np.array([
-            [2, 0, 0], [1, 1, 0], [1, 0, 1],
-            [0, 2, 0], [0, 1, 1], [0, 0, 2]
-        ])
+        d_comp = np.array([[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1], [0, 0, 2]])
 
         result = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 2, d_comp, exps, coeffs,
-            coord_b, 2, d_comp, exps, coeffs,
-            coord_c, 2, d_comp, exps, coeffs,
-            coord_d, 2, d_comp, exps, coeffs,
+            coord_a,
+            2,
+            d_comp,
+            exps,
+            coeffs,
+            coord_b,
+            2,
+            d_comp,
+            exps,
+            coeffs,
+            coord_c,
+            2,
+            d_comp,
+            exps,
+            coeffs,
+            coord_d,
+            2,
+            d_comp,
+            exps,
+            coeffs,
         )
 
         assert np.all(np.isfinite(result)), "d-orbital integrals contain NaN or Inf"
@@ -327,7 +398,6 @@ class TestPrimitiveScreening:
 
     def test_screening_zero_threshold(self):
         """With threshold=0, results match unscreened exactly."""
-        from scipy.special import hyp1f1
 
         def boys_func(orders, weighted_dist):
             return hyp1f1(orders + 0.5, orders + 1.5, -weighted_dist) / (2 * orders + 1)
@@ -341,18 +411,50 @@ class TestPrimitiveScreening:
 
         result_no_screen = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 1, p_comp, exps, coeffs,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 1, p_comp, exps, coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            1,
+            p_comp,
+            exps,
+            coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            1,
+            p_comp,
+            exps,
+            coeffs,
         )
 
         result_screened = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 1, p_comp, exps, coeffs,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 1, p_comp, exps, coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            1,
+            p_comp,
+            exps,
+            coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            1,
+            p_comp,
+            exps,
+            coeffs,
             primitive_threshold=0.0,
         )
 
@@ -360,7 +462,6 @@ class TestPrimitiveScreening:
 
     def test_screening_reasonable_threshold(self):
         """With reasonable threshold, results match within tolerance."""
-        from scipy.special import hyp1f1
 
         def boys_func(orders, weighted_dist):
             return hyp1f1(orders + 0.5, orders + 1.5, -weighted_dist) / (2 * orders + 1)
@@ -373,20 +474,51 @@ class TestPrimitiveScreening:
 
         result_no_screen = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 0, s_comp, exps, coeffs,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 0, s_comp, exps, coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            0,
+            s_comp,
+            exps,
+            coeffs,
         )
 
         result_screened = compute_two_electron_integrals_os_hgp(
             boys_func,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 0, s_comp, exps, coeffs,
-            coord_a, 0, s_comp, exps, coeffs,
-            coord_b, 0, s_comp, exps, coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_a,
+            0,
+            s_comp,
+            exps,
+            coeffs,
+            coord_b,
+            0,
+            s_comp,
+            exps,
+            coeffs,
             primitive_threshold=1e-12,
         )
 
         np.testing.assert_allclose(result_no_screen, result_screened, atol=1e-10)
-
