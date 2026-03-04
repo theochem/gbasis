@@ -13,15 +13,15 @@ from gbasis.integrals.boys_functions import (
     boys_function_all_orders,
     boys_function_erf,
     boys_function_erfc,
+    boys_function_mpmath,
+    boys_function_recursion,
     boys_function_standard,
     get_boys_function,
-    boys_function_recursion,
-    boys_function_mpmath,
 )
-
 
 try:
     import mpmath  # noqa: F401
+
     HAS_MPMATH = True
 except ImportError:
     HAS_MPMATH = False
@@ -76,8 +76,9 @@ class TestBoysStandard:
         for i, m in enumerate([0, 1, 2]):
             for j, t in enumerate([0.5, 1.0, 2.0]):
                 expected = boys_function_standard(np.array([m]), np.array([t]))[0]
-                assert np.isclose(result[i, j], expected), \
-                    f"Broadcasting value mismatch at m={m}, T={t}"
+                assert np.isclose(
+                    result[i, j], expected
+                ), f"Broadcasting value mismatch at m={m}, T={t}"
 
     def test_boys_recurrence(self):
         """Test the recurrence relation: (2m+1)*F_m(T) = 2T*F_{m+1}(T) + exp(-T)."""
@@ -111,16 +112,22 @@ class TestBoysAllOrders:
 
         for m in range(m_max + 1):
             expected = boys_function_standard(np.array([m]), T)
-            np.testing.assert_allclose(result[m], expected.flatten(), rtol=1e-8,
-                err_msg=f"All-orders doesn't match standard for m={m}, large T")
+            np.testing.assert_allclose(
+                result[m],
+                expected.flatten(),
+                rtol=1e-8,
+                err_msg=f"All-orders doesn't match standard for m={m}, large T",
+            )
 
     def test_output_shape(self):
         """Test that all-orders function returns correct shape (m_max+1, *T.shape)."""
         m_max = 4
         T = np.array([0.5, 1.0, 2.0, 5.0, 30.0])
         result = boys_function_all_orders(m_max, T)
-        assert result.shape == (m_max + 1, T.shape[0]), \
-            f"Expected shape {(m_max + 1, T.shape[0])}, got {result.shape}"
+        assert result.shape == (
+            m_max + 1,
+            T.shape[0],
+        ), f"Expected shape {(m_max + 1, T.shape[0])}, got {result.shape}"
 
     def test_small_T_series_branch(self):
         """Exercise the small-T series path and compare with reference."""
@@ -131,9 +138,8 @@ class TestBoysAllOrders:
         for m in range(m_max + 1):
             expected = boys_function_standard(np.array([m]), T)
             np.testing.assert_allclose(
-                result[m], expected,
-                rtol=1e-12, atol=1e-14,
-                err_msg=f"Small-T mismatch at m={m}")
+                result[m], expected, rtol=1e-12, atol=1e-14, err_msg=f"Small-T mismatch at m={m}"
+            )
 
     def test_multidim_broadcasting(self):
         """Check broadcasting for multidimensional T arrays."""
@@ -158,8 +164,9 @@ class TestBoysAllOrders:
         for m in range(m_max):
             lhs = (2 * m + 1) * all_vals[m]
             rhs = 2 * T * all_vals[m + 1] + np.exp(-T)
-            np.testing.assert_allclose(lhs, rhs, rtol=1e-11, atol=1e-14,
-                err_msg=f"Recurrence failed for m={m}")
+            np.testing.assert_allclose(
+                lhs, rhs, rtol=1e-11, atol=1e-14, err_msg=f"Recurrence failed for m={m}"
+            )
 
     def test_random_values_against_reference(self):
         """Random spot-check across orders and T values."""
@@ -170,8 +177,13 @@ class TestBoysAllOrders:
 
         for m in range(m_max + 1):
             expected = boys_function_standard(np.array([m]), T)
-            np.testing.assert_allclose(result[m], expected, rtol=1e-11, atol=1e-14,
-                err_msg=f"Random check mismatch at m={m}")
+            np.testing.assert_allclose(
+                result[m],
+                expected,
+                rtol=1e-11,
+                atol=1e-14,
+                err_msg=f"Random check mismatch at m={m}",
+            )
 
 
 class TestGetBoysFunction:
@@ -262,7 +274,7 @@ class TestBoysNumericalIntegration:
         """Test F_0(T) against numerical integration."""
 
         def boys_integrand(t, T, m):
-            return t ** (2 * m) * np.exp(-T * t ** 2)
+            return t ** (2 * m) * np.exp(-T * t**2)
 
         for T in [0.5, 1.0, 2.0, 5.0]:
             result_analytic = boys_function_standard(np.array([0]), np.array([T]))[0]
@@ -273,12 +285,14 @@ class TestBoysNumericalIntegration:
         """Test F_2(T) against numerical integration."""
 
         def boys_integrand(t, T, m):
-            return t ** (2 * m) * np.exp(-T * t ** 2)
+            return t ** (2 * m) * np.exp(-T * t**2)
 
         for T in [0.5, 1.0, 2.0]:
             result_analytic = boys_function_standard(np.array([2]), np.array([T]))[0]
             result_numeric, _ = quad(boys_integrand, 0, 1, args=(T, 2))
             assert np.allclose(result_analytic, result_numeric, rtol=1e-6)
+
+
 class TestBoysErf:
     """Tests for the erf-attenuated Boys function."""
 
@@ -294,8 +308,12 @@ class TestBoysErf:
         result_erf = boys_function_erf(orders, T, rho, omega=1000.0)
         result_std = boys_function_standard(orders, T)
 
-        np.testing.assert_allclose(result_erf, result_std, rtol=1e-5,
-            err_msg="erf with large omega should recover standard Coulomb")
+        np.testing.assert_allclose(
+            result_erf,
+            result_std,
+            rtol=1e-5,
+            err_msg="erf with large omega should recover standard Coulomb",
+        )
 
     def test_erf_small_omega_approaches_zero(self):
         """Test that erf with small omega approaches zero.
@@ -330,8 +348,7 @@ class TestBoysErf:
         result_erf = boys_function_erf(orders, T, rho, omega=0.5)
         result_std = boys_function_standard(orders, T)
 
-        assert np.all(result_erf <= result_std + 1e-15), \
-            "erf Boys should be <= standard Coulomb"
+        assert np.all(result_erf <= result_std + 1e-15), "erf Boys should be <= standard Coulomb"
 
     def test_erf_scaling_formula(self):
         """Test the erf scaling formula: scaling^(m+0.5) * F_m(scaling * T).
@@ -348,8 +365,9 @@ class TestBoysErf:
             m = np.array([m_val])
             expected = scaling ** (m_val + 0.5) * boys_function_standard(m, T_mod)
             result = boys_function_erf(m, T, rho, omega)
-            np.testing.assert_allclose(result, expected, rtol=1e-12,
-                err_msg=f"erf scaling formula failed for m={m_val}")
+            np.testing.assert_allclose(
+                result, expected, rtol=1e-12, err_msg=f"erf scaling formula failed for m={m_val}"
+            )
 
 
 class TestBoysErfc:
@@ -367,8 +385,12 @@ class TestBoysErfc:
         result_erfc = boys_function_erfc(orders, T, rho, omega=0.001)
         result_std = boys_function_standard(orders, T)
 
-        np.testing.assert_allclose(result_erfc, result_std, rtol=0.01,
-            err_msg="erfc with small omega should recover standard Coulomb")
+        np.testing.assert_allclose(
+            result_erfc,
+            result_std,
+            rtol=0.01,
+            err_msg="erfc with small omega should recover standard Coulomb",
+        )
 
     def test_erfc_large_omega_approaches_zero(self):
         """Test that erfc with large omega approaches zero.
@@ -380,8 +402,7 @@ class TestBoysErfc:
         rho = np.ones_like(T) * 0.8
 
         result_erfc = boys_function_erfc(orders, T, rho, omega=1000.0)
-        assert np.all(np.abs(result_erfc) < 1e-6), \
-            "erfc with large omega should be near zero"
+        assert np.all(np.abs(result_erfc) < 1e-6), "erfc with large omega should be near zero"
 
     def test_erf_plus_erfc_equals_coulomb(self):
         """Test that erf + erfc = Coulomb for any omega.
@@ -399,8 +420,10 @@ class TestBoysErfc:
             result_std = boys_function_standard(orders, T)
 
             np.testing.assert_allclose(
-                result_erf + result_erfc, result_std, rtol=1e-12,
-                err_msg=f"erf + erfc != Coulomb for omega={omega}"
+                result_erf + result_erfc,
+                result_std,
+                rtol=1e-12,
+                err_msg=f"erf + erfc != Coulomb for omega={omega}",
             )
 
     def test_erfc_positive_values(self):
@@ -423,8 +446,13 @@ class TestBoysRecursion:
         result_rec = boys_function_recursion(m_max, T)
         result_ref = boys_function_all_orders(m_max, T)
 
-        np.testing.assert_allclose(result_rec, result_ref, rtol=1e-12, atol=1e-15,
-            err_msg="Recursion doesn't match all_orders")
+        np.testing.assert_allclose(
+            result_rec,
+            result_ref,
+            rtol=1e-12,
+            atol=1e-15,
+            err_msg="Recursion doesn't match all_orders",
+        )
 
     def test_recursion_T_zero(self):
         """Test F_m(0) = 1/(2m+1) via recursion."""
@@ -432,8 +460,9 @@ class TestBoysRecursion:
         result = boys_function_recursion(m_max, np.array([0.0]))
         for m in range(m_max + 1):
             expected = 1.0 / (2 * m + 1)
-            np.testing.assert_allclose(result[m], expected, rtol=1e-14,
-                err_msg=f"F_{m}(0) incorrect")
+            np.testing.assert_allclose(
+                result[m], expected, rtol=1e-14, err_msg=f"F_{m}(0) incorrect"
+            )
 
     def test_recursion_large_T(self):
         """Test stability for large T values."""
@@ -442,8 +471,9 @@ class TestBoysRecursion:
         result_rec = boys_function_recursion(m_max, T)
         result_ref = boys_function_all_orders(m_max, T)
 
-        np.testing.assert_allclose(result_rec, result_ref, rtol=1e-10,
-            err_msg="Recursion unstable for large T")
+        np.testing.assert_allclose(
+            result_rec, result_ref, rtol=1e-10, err_msg="Recursion unstable for large T"
+        )
 
     def test_recursion_high_order(self):
         """Test with m_max = 20 (high angular momentum)."""
@@ -452,8 +482,9 @@ class TestBoysRecursion:
         result_rec = boys_function_recursion(m_max, T)
         result_ref = boys_function_all_orders(m_max, T)
 
-        np.testing.assert_allclose(result_rec, result_ref, rtol=1e-11,
-            err_msg="Recursion fails at high order")
+        np.testing.assert_allclose(
+            result_rec, result_ref, rtol=1e-11, err_msg="Recursion fails at high order"
+        )
 
     def test_recursion_output_shape(self):
         """Test output shape matches convention."""
@@ -481,8 +512,9 @@ class TestBoysRecursion:
         for m in range(m_max):
             lhs = (2 * m + 1) * all_vals[m]
             rhs = 2 * T * all_vals[m + 1] + np.exp(-T)
-            np.testing.assert_allclose(lhs, rhs, rtol=1e-11, atol=1e-14,
-                err_msg=f"Recurrence failed for m={m}")
+            np.testing.assert_allclose(
+                lhs, rhs, rtol=1e-11, atol=1e-14, err_msg=f"Recurrence failed for m={m}"
+            )
 
 
 @pytest.mark.skipif(not HAS_MPMATH, reason="mpmath not installed")
@@ -496,8 +528,9 @@ class TestBoysMpmath:
         result_mp = boys_function_mpmath(m_max, T, dps=30)
         result_std = boys_function_all_orders(m_max, T)
 
-        np.testing.assert_allclose(result_mp, result_std, rtol=1e-14,
-            err_msg="mpmath doesn't match standard for normal T")
+        np.testing.assert_allclose(
+            result_mp, result_std, rtol=1e-14, err_msg="mpmath doesn't match standard for normal T"
+        )
 
     def test_mpmath_output_shape(self):
         """Test that mpmath returns correct shape."""
@@ -521,6 +554,6 @@ class TestBoysMpmath:
         result_mp = boys_function_mpmath(m_max, T, dps=50)
         result_std = boys_function_all_orders(m_max, T)
 
-        np.testing.assert_allclose(result_mp, result_std, rtol=1e-14,
-            err_msg="mpmath high-order mismatch")
-
+        np.testing.assert_allclose(
+            result_mp, result_std, rtol=1e-14, err_msg="mpmath high-order mismatch"
+        )
