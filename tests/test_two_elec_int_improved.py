@@ -4,13 +4,11 @@ Tests for VRR (Week 2) and ETR + contraction (Week 3).
 """
 
 import numpy as np
-import pytest
 
 from gbasis.integrals._two_elec_int_improved import (
-    _vertical_recursion_relation,
     _electron_transfer_recursion,
-    _optimized_contraction,
     _get_factorial2_norm,
+    _vertical_recursion_relation,
 )
 
 
@@ -63,20 +61,15 @@ class TestVerticalRecursion:
         [1,0|00]^0 = (P-A)_x * [00|00]^0 - (rho/zeta)*(Q-P)_x * [00|00]^1
         """
         m_max = 2
-        integrals_m = np.array([[[[[1.0]]]],
-                                [[[[0.5]]]]])
+        integrals_m = np.array([[[[[1.0]]]], [[[[0.5]]]]])
 
         PA_x, PA_y, PA_z = 0.3, 0.0, 0.0
         PQ_x, PQ_y, PQ_z = 0.2, 0.0, 0.0
         rho = 0.6
         zeta = 1.5
 
-        rel_coord_a = np.array([[[[[PA_x]]]],
-                                [[[[PA_y]]]],
-                                [[[[PA_z]]]]])
-        coord_wac = np.array([[[[[PQ_x]]]],
-                              [[[[PQ_y]]]],
-                              [[[[PQ_z]]]]])
+        rel_coord_a = np.array([[[[[PA_x]]]], [[[[PA_y]]]], [[[[PA_z]]]]])
+        coord_wac = np.array([[[[[PQ_x]]]], [[[[PQ_y]]]], [[[[PQ_z]]]]])
         harm_mean = np.array([[[[rho]]]])
         exps_sum_one = np.array([[[[zeta]]]])
 
@@ -115,9 +108,7 @@ class TestElectronTransferRecursion:
         n_prim = 2
 
         # Create mock VRR output
-        integrals_vert = np.random.rand(
-            m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim
-        )
+        integrals_vert = np.random.rand(m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim)
 
         rel_coord_c = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
         rel_coord_a = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
@@ -125,8 +116,7 @@ class TestElectronTransferRecursion:
         exps_sum_two = np.random.rand(n_prim, n_prim, n_prim, n_prim) + 0.1
 
         result = _electron_transfer_recursion(
-            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a,
-            exps_sum_one, exps_sum_two
+            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a, exps_sum_one, exps_sum_two
         )
 
         # Base case: [0,0,0, a_x, a_y, a_z] should equal integrals_vert[0, a_x, a_y, a_z]
@@ -138,9 +128,7 @@ class TestElectronTransferRecursion:
         m_max_c = 2
         n_prim = 2
 
-        integrals_vert = np.random.rand(
-            m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim
-        )
+        integrals_vert = np.random.rand(m_max, m_max, m_max, m_max, n_prim, n_prim, n_prim, n_prim)
 
         rel_coord_c = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
         rel_coord_a = np.random.rand(3, n_prim, n_prim, n_prim, n_prim)
@@ -148,12 +136,21 @@ class TestElectronTransferRecursion:
         exps_sum_two = np.random.rand(n_prim, n_prim, n_prim, n_prim) + 0.1
 
         result = _electron_transfer_recursion(
-            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a,
-            exps_sum_one, exps_sum_two
+            integrals_vert, m_max, m_max_c, rel_coord_c, rel_coord_a, exps_sum_one, exps_sum_two
         )
 
-        expected_shape = (m_max_c, m_max_c, m_max_c, m_max, m_max, m_max,
-                          n_prim, n_prim, n_prim, n_prim)
+        expected_shape = (
+            m_max_c,
+            m_max_c,
+            m_max_c,
+            m_max,
+            m_max,
+            m_max,
+            n_prim,
+            n_prim,
+            n_prim,
+            n_prim,
+        )
         assert result.shape == expected_shape
 
 
