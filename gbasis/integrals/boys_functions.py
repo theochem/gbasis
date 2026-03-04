@@ -3,9 +3,13 @@
 This module implements the Boys function, which is the starting point for
 computing two-electron integrals using the Obara-Saika recursion relations.
 
-The Boys function is defined as:
+The standard Boys function is defined as:
 
     F_m(T) = integral from 0 to 1 of t^(2m) * exp(-T*t^2) dt
+
+For non-Coulomb potentials (erf-attenuated, erfc-attenuated), the modified
+Boys functions follow from Ahlrichs (2006), where the key modification is
+a rescaling of the argument T and a prefactor depending on omega and rho.
 
 References:
 - Helgaker, T.; Jorgensen, P.; Olsen, J. "Molecular Electronic-Structure Theory"

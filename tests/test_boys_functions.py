@@ -1,4 +1,8 @@
-"""Test gbasis.integrals.boys_functions module."""
+"""Test gbasis.integrals.boys_functions module.
+
+Tests for standard Coulomb Boys function (Week 1) and
+erf/erfc-attenuated potentials (Week 5).
+"""
 
 import numpy as np
 import pytest
@@ -7,6 +11,8 @@ from scipy.special import hyp1f1
 
 from gbasis.integrals.boys_functions import (
     boys_function_all_orders,
+    boys_function_erf,
+    boys_function_erfc,
     boys_function_standard,
     get_boys_function,
     boys_function_recursion,
@@ -190,6 +196,64 @@ class TestGetBoysFunction:
         with pytest.raises(ValueError):
             get_boys_function("unknown_potential")
 
+    def test_erf_potential(self):
+        """Test that erf potential returns correct function."""
+        boys = get_boys_function("erf", omega=0.5)
+        result = boys(np.array([0]), np.array([1.0]), rho=0.8)
+        assert result is not None
+        assert np.all(np.isfinite(result))
+
+    def test_erfc_potential(self):
+        """Test that erfc potential returns correct function."""
+        boys = get_boys_function("erfc", omega=0.5)
+        result = boys(np.array([0]), np.array([1.0]), rho=0.8)
+        assert result is not None
+        assert np.all(np.isfinite(result))
+
+    def test_erf_aliases(self):
+        """Test that erf aliases work correctly."""
+        for alias in ["erf", "erf_coulomb"]:
+            boys = get_boys_function(alias, omega=0.5)
+            result = boys(np.array([0]), np.array([1.0]), rho=0.8)
+            assert result is not None
+
+    def test_erfc_aliases(self):
+        """Test that erfc aliases work correctly."""
+        for alias in ["erfc", "erfc_coulomb"]:
+            boys = get_boys_function(alias, omega=0.5)
+            result = boys(np.array([0]), np.array([1.0]), rho=0.8)
+            assert result is not None
+
+    def test_erf_requires_omega(self):
+        """Test that erf potential requires omega parameter."""
+        with pytest.raises(ValueError):
+            get_boys_function("erf")
+
+    def test_erfc_requires_omega(self):
+        """Test that erfc potential requires omega parameter."""
+        with pytest.raises(ValueError):
+            get_boys_function("erfc")
+
+    def test_erf_requires_rho(self):
+        """Test that erf Boys function requires rho at call time."""
+        boys = get_boys_function("erf", omega=0.5)
+        with pytest.raises(ValueError):
+            boys(np.array([0]), np.array([1.0]))
+
+    def test_erfc_requires_rho(self):
+        """Test that erfc Boys function requires rho at call time."""
+        boys = get_boys_function("erfc", omega=0.5)
+        with pytest.raises(ValueError):
+            boys(np.array([0]), np.array([1.0]))
+
+    def test_case_insensitive(self):
+        """Test that potential matching is case-insensitive."""
+        for alias in ["COULOMB", "Coulomb", "Standard", "1/R"]:
+            boys = get_boys_function(alias)
+            result = boys(np.array([0]), np.array([1.0]))
+            expected = boys_function_standard(np.array([0]), np.array([1.0]))
+            assert np.allclose(result, expected), f"Failed for '{alias}'"
+
 
 class TestBoysNumericalIntegration:
     """Compare Boys function with numerical integration."""
@@ -215,6 +279,139 @@ class TestBoysNumericalIntegration:
             result_analytic = boys_function_standard(np.array([2]), np.array([T]))[0]
             result_numeric, _ = quad(boys_integrand, 0, 1, args=(T, 2))
             assert np.allclose(result_analytic, result_numeric, rtol=1e-6)
+class TestBoysErf:
+    """Tests for the erf-attenuated Boys function."""
+
+    def test_erf_large_omega_recovers_coulomb(self):
+        """Test that erf with large omega approaches standard Coulomb.
+
+        As omega -> infinity, erf(omega*r)/r -> 1/r.
+        """
+        orders = np.array([0, 1, 2])[:, None]
+        T = np.array([0.5, 1.0, 2.0])[None, :]
+        rho = np.ones_like(T) * 0.8
+
+        result_erf = boys_function_erf(orders, T, rho, omega=1000.0)
+        result_std = boys_function_standard(orders, T)
+
+        np.testing.assert_allclose(result_erf, result_std, rtol=1e-5,
+            err_msg="erf with large omega should recover standard Coulomb")
+
+    def test_erf_small_omega_approaches_zero(self):
+        """Test that erf with small omega approaches zero.
+
+        As omega -> 0, erf(omega*r)/r -> 0.
+        """
+        orders = np.array([0, 1, 2])[:, None]
+        T = np.array([0.5, 1.0, 2.0])[None, :]
+        rho = np.ones_like(T) * 0.8
+
+        result_erf = boys_function_erf(orders, T, rho, omega=0.001)
+        result_std = boys_function_standard(orders, T)
+        # With omega=0.001, erf values should be much smaller than Coulomb
+        ratio = np.abs(result_erf) / (np.abs(result_std) + 1e-30)
+        assert np.all(ratio < 0.01), "erf with small omega should be << Coulomb"
+
+    def test_erf_positive_values(self):
+        """Test that erf Boys function produces positive values."""
+        orders = np.array([0, 1, 2, 3])[:, None]
+        T = np.array([0.1, 0.5, 1.0, 5.0])[None, :]
+        rho = np.ones_like(T) * 1.0
+
+        result = boys_function_erf(orders, T, rho, omega=0.5)
+        assert np.all(result >= 0), "erf Boys function should be non-negative"
+
+    def test_erf_less_than_coulomb(self):
+        """Test that erf Boys < standard Coulomb (since erf(x) <= 1)."""
+        orders = np.array([0, 1, 2])[:, None]
+        T = np.array([0.5, 1.0, 2.0])[None, :]
+        rho = np.ones_like(T) * 0.8
+
+        result_erf = boys_function_erf(orders, T, rho, omega=0.5)
+        result_std = boys_function_standard(orders, T)
+
+        assert np.all(result_erf <= result_std + 1e-15), \
+            "erf Boys should be <= standard Coulomb"
+
+    def test_erf_scaling_formula(self):
+        """Test the erf scaling formula: scaling^(m+0.5) * F_m(scaling * T).
+
+        Tests m=0,1,2 to ensure the exponent (m+0.5) is not hardcoded.
+        """
+        T = np.array([1.0])
+        rho = np.array([0.8])
+        omega = 0.5
+        scaling = omega**2 / (omega**2 + rho)
+        T_mod = scaling * T
+
+        for m_val in [0, 1, 2]:
+            m = np.array([m_val])
+            expected = scaling ** (m_val + 0.5) * boys_function_standard(m, T_mod)
+            result = boys_function_erf(m, T, rho, omega)
+            np.testing.assert_allclose(result, expected, rtol=1e-12,
+                err_msg=f"erf scaling formula failed for m={m_val}")
+
+
+class TestBoysErfc:
+    """Tests for the erfc-attenuated Boys function."""
+
+    def test_erfc_small_omega_recovers_coulomb(self):
+        """Test that erfc with small omega approaches standard Coulomb.
+
+        As omega -> 0, erfc(omega*r)/r -> 1/r.
+        """
+        orders = np.array([0, 1, 2])[:, None]
+        T = np.array([0.5, 1.0, 2.0])[None, :]
+        rho = np.ones_like(T) * 0.8
+
+        result_erfc = boys_function_erfc(orders, T, rho, omega=0.001)
+        result_std = boys_function_standard(orders, T)
+
+        np.testing.assert_allclose(result_erfc, result_std, rtol=0.01,
+            err_msg="erfc with small omega should recover standard Coulomb")
+
+    def test_erfc_large_omega_approaches_zero(self):
+        """Test that erfc with large omega approaches zero.
+
+        As omega -> infinity, erfc(omega*r)/r -> 0.
+        """
+        orders = np.array([0, 1, 2])[:, None]
+        T = np.array([0.5, 1.0, 2.0])[None, :]
+        rho = np.ones_like(T) * 0.8
+
+        result_erfc = boys_function_erfc(orders, T, rho, omega=1000.0)
+        assert np.all(np.abs(result_erfc) < 1e-6), \
+            "erfc with large omega should be near zero"
+
+    def test_erf_plus_erfc_equals_coulomb(self):
+        """Test that erf + erfc = Coulomb for any omega.
+
+        This is the fundamental identity: erf(x) + erfc(x) = 1, so
+        erf(omega*r)/r + erfc(omega*r)/r = 1/r.
+        """
+        orders = np.array([0, 1, 2, 3])[:, None]
+        T = np.array([0.1, 0.5, 1.0, 2.0, 5.0])[None, :]
+        rho = np.ones_like(T) * 1.2
+
+        for omega in [0.1, 0.5, 1.0, 2.0]:
+            result_erf = boys_function_erf(orders, T, rho, omega)
+            result_erfc = boys_function_erfc(orders, T, rho, omega)
+            result_std = boys_function_standard(orders, T)
+
+            np.testing.assert_allclose(
+                result_erf + result_erfc, result_std, rtol=1e-12,
+                err_msg=f"erf + erfc != Coulomb for omega={omega}"
+            )
+
+    def test_erfc_positive_values(self):
+        """Test that erfc Boys function produces positive values."""
+        orders = np.array([0, 1, 2])[:, None]
+        T = np.array([0.1, 0.5, 1.0, 5.0])[None, :]
+        rho = np.ones_like(T) * 1.0
+
+        result = boys_function_erfc(orders, T, rho, omega=0.5)
+        assert np.all(result >= -1e-15), "erfc Boys function should be non-negative"
+
 
 class TestBoysRecursion:
     """Tests for the downward recursion Boys function (Eq. 71)."""
