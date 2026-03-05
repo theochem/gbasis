@@ -159,22 +159,22 @@ class TestFactorial2Norm:
 
     def test_s_orbital_norm(self):
         """Test normalization for s-orbital (L=0)."""
-        s_components = np.array([[0, 0, 0]])
-        norm = _get_factorial2_norm(s_components)
+        s_key = ((0, 0, 0),)
+        norm = _get_factorial2_norm(s_key)
         # (2*0-1)!! = (-1)!! = 1, so norm = 1/sqrt(1) = 1
         assert np.allclose(norm, 1.0)
 
     def test_p_orbital_norm(self):
         """Test normalization for p-orbital (L=1)."""
-        p_components = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-        norm = _get_factorial2_norm(p_components)
+        p_key = ((1, 0, 0), (0, 1, 0), (0, 0, 1))
+        norm = _get_factorial2_norm(p_key)
         # Each component has one (2*1-1)!! = 1!! = 1 and two (2*0-1)!! = 1
         # So norm = 1/sqrt(1*1*1) = 1 for all
         assert np.allclose(norm, 1.0)
 
     def test_caching(self):
         """Test that factorial2 normalization is cached."""
-        d_components = np.array([[2, 0, 0], [1, 1, 0]])
-        norm1 = _get_factorial2_norm(d_components)
-        norm2 = _get_factorial2_norm(d_components)
+        d_key = ((2, 0, 0), (1, 1, 0))
+        norm1 = _get_factorial2_norm(d_key)
+        norm2 = _get_factorial2_norm(d_key)
         assert np.allclose(norm1, norm2)

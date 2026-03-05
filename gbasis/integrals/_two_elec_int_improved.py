@@ -16,68 +16,55 @@ References:
 - Ahlrichs, R. Phys. Chem. Chem. Phys. 2006, 8, 3072.
 """
 
+import functools
+
 import numpy as np
 
 from gbasis.utils import factorial2
 
-# Cache for factorial2 values to avoid repeated computation
-_FACTORIAL2_CACHE = {}
 
-
-def _get_factorial2_norm(angmom_components):
+@functools.cache
+def _get_factorial2_norm(angmom_key):
     """Get cached factorial2 normalization for angular momentum components.
 
     Parameters
     ----------
-    angmom_components : np.ndarray(n, 3)
-        Angular momentum components.
+    angmom_key : tuple of tuples
+        Angular momentum components as a tuple of tuples, e.g.
+        ((lx1, ly1, lz1), (lx2, ly2, lz2), ...).
 
     Returns
     -------
     norm : np.ndarray(n,)
         Normalization factors 1/sqrt(prod((2*l-1)!!)).
     """
-    key = tuple(map(tuple, angmom_components))
-    if key not in _FACTORIAL2_CACHE:
-        _FACTORIAL2_CACHE[key] = 1.0 / np.sqrt(
-            np.prod(factorial2(2 * angmom_components - 1), axis=1)
-        )
-    return _FACTORIAL2_CACHE[key]
+    angmom_components = np.array(angmom_key)
+    return 1.0 / np.sqrt(np.prod(factorial2(2 * angmom_components - 1), axis=1))
 
 
-def _optimized_contraction(
-    integrals_etransf,
-    exps_a,
-    exps_b,
-    exps_c,
-    exps_d,
-    coeffs_a,
-    coeffs_b,
-    coeffs_c,
-    coeffs_d,
-    angmom_a,
-    angmom_b,
-    angmom_c,
-    angmom_d,
-):
+def _optimized_contraction(integrals_etransf, exps, coeffs, angmoms):
     """Optimized primitive contraction using einsum.
 
     Parameters
     ----------
     integrals_etransf : np.ndarray
         ETR output with shape (c_x, c_y, c_z, a_x, a_y, a_z, K_d, K_b, K_c, K_a).
-    exps_a/b/c/d : np.ndarray
-        Primitive exponents.
-    coeffs_a/b/c/d : np.ndarray
-        Contraction coefficients.
-    angmom_a/b/c/d : int
-        Angular momenta.
+    exps : tuple of np.ndarray
+        Primitive exponents (exps_a, exps_b, exps_c, exps_d).
+    coeffs : tuple of np.ndarray
+        Contraction coefficients (coeffs_a, coeffs_b, coeffs_c, coeffs_d).
+    angmoms : tuple of int
+        Angular momenta (angmom_a, angmom_b, angmom_c, angmom_d).
 
     Returns
     -------
     contracted : np.ndarray
         Contracted integrals with shape (c_x, c_y, c_z, a_x, a_y, a_z, M_a, M_c, M_b, M_d).
     """
+    exps_a, exps_b, exps_c, exps_d = exps
+    coeffs_a, coeffs_b, coeffs_c, coeffs_d = coeffs
+    angmom_a, angmom_b, angmom_c, angmom_d = angmoms
+
     # Precompute normalization constants (1D arrays)
     norm_a = (2 * exps_a / np.pi) ** 0.75 * (4 * exps_a) ** (angmom_a / 2)
     norm_b = (2 * exps_b / np.pi) ** 0.75 * (4 * exps_b) ** (angmom_b / 2)
