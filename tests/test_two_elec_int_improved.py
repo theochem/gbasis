@@ -8,6 +8,7 @@ import numpy as np
 from gbasis.integrals._two_elec_int_improved import (
     _electron_transfer_recursion,
     _get_factorial2_norm,
+    _optimized_contraction,
     _vertical_recursion_relation,
 )
 
@@ -151,6 +152,36 @@ class TestElectronTransferRecursion:
             n_prim,
             n_prim,
         )
+        assert result.shape == expected_shape
+
+
+class TestOptimizedContraction:
+    """Tests for the optimized primitive contraction."""
+
+    def test_output_shape(self):
+        """Test that contraction output has correct shape."""
+        K, M = 2, 3
+        integrals_etransf = np.random.rand(1, 1, 1, 1, 1, 1, K, K, K, K)
+        exps = np.random.rand(4, K) + 0.1
+        coeffs = np.random.rand(4, K, M)
+        angmoms = np.array([0, 0, 0, 0])
+
+        result = _optimized_contraction(integrals_etransf, exps, coeffs, angmoms)
+
+        expected_shape = (1, 1, 1, 1, 1, 1, M, M, M, M)
+        assert result.shape == expected_shape
+
+    def test_accepts_tuples(self):
+        """Test that contraction accepts tuples as well as arrays."""
+        K, M = 2, 2
+        integrals_etransf = np.random.rand(1, 1, 1, 1, 1, 1, K, K, K, K)
+        exps = tuple(np.random.rand(K) + 0.1 for _ in range(4))
+        coeffs = tuple(np.random.rand(K, M) for _ in range(4))
+        angmoms = (0, 0, 0, 0)
+
+        result = _optimized_contraction(integrals_etransf, exps, coeffs, angmoms)
+
+        expected_shape = (1, 1, 1, 1, 1, 1, M, M, M, M)
         assert result.shape == expected_shape
 
 
