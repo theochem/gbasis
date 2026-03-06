@@ -6,6 +6,7 @@ Tests for VRR (Week 2), ETR + contraction (Week 3), and HRR + full pipeline (Wee
 import numpy as np
 from scipy.special import hyp1f1
 
+from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
@@ -17,6 +18,7 @@ from gbasis.integrals._two_elec_int_improved import (
     _vertical_recursion_relation,
     compute_two_electron_integrals_os_hgp,
 )
+from gbasis.integrals.electron_repulsion import ElectronRepulsionIntegralImproved
 from gbasis.integrals.point_charge import PointChargeIntegral
 
 
@@ -553,3 +555,145 @@ class TestPrimitiveScreening:
         )
 
         np.testing.assert_allclose(result_no_screen, result_screened, atol=1e-10)
+
+
+class TestContractionReordering:
+    """Tests for contraction reordering (l_a >= l_b, l_c >= l_d, l_a >= l_c)."""
+
+    def test_sp_ps_reordering(self):
+        """Test that (sp|ps) gives correct results with bra/ket swapping."""
+        coord_a = np.array([0.0, 0.0, 0.0])
+        coord_b = np.array([1.0, 0.0, 0.0])
+        coord_c = np.array([0.0, 1.0, 0.0])
+        coord_d = np.array([1.0, 1.0, 0.0])
+
+        # Create shells: s (L=0) and p (L=1)
+        shell_s_a = GeneralizedContractionShell(
+            0, coord_a, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_p_b = GeneralizedContractionShell(
+            1, coord_b, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_p_c = GeneralizedContractionShell(
+            1, coord_c, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_s_d = GeneralizedContractionShell(
+            0, coord_d, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+
+        # (sp|ps) triggers bra_swapped and ket_swapped
+        result = ElectronRepulsionIntegralImproved.construct_array_contraction(
+            shell_s_a, shell_p_b, shell_p_c, shell_s_d
+        )
+
+        # Verify result is finite and has correct shape
+        # Shape: (M_a, L_a, M_b, L_b, M_c, L_c, M_d, L_d)
+        assert result.shape == (1, 1, 1, 3, 1, 3, 1, 1)
+        assert np.all(np.isfinite(result)), "Reordered integrals contain NaN or Inf"
+
+        # Compare with direct compute (no reordering) to verify correctness
+        boys_func = PointChargeIntegral.boys_func
+
+        s_comp = np.array([[0, 0, 0]])
+        p_comp = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+        direct = compute_two_electron_integrals_os_hgp(
+            boys_func,
+            coord_a,
+            0,
+            s_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+            coord_b,
+            1,
+            p_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+            coord_c,
+            1,
+            p_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+            coord_d,
+            0,
+            s_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+        )
+        # direct shape: (L_a, L_b, L_c, L_d, M_a, M_b, M_c, M_d)
+        direct_transposed = np.transpose(direct, (4, 0, 5, 1, 6, 2, 7, 3))
+
+        np.testing.assert_allclose(
+            result,
+            direct_transposed,
+            rtol=1e-10,
+            err_msg="Reordered (sp|ps) doesn't match direct computation",
+        )
+
+    def test_pd_sp_braket_reordering(self):
+        """Test (pd|sp) triggers bra-ket swap as well."""
+        coord_a = np.array([0.0, 0.0, 0.0])
+        coord_b = np.array([1.0, 0.0, 0.0])
+        coord_c = np.array([0.0, 1.0, 0.0])
+        coord_d = np.array([1.0, 1.0, 0.0])
+
+        shell_p_a = GeneralizedContractionShell(
+            1, coord_a, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_d_b = GeneralizedContractionShell(
+            2, coord_b, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_s_c = GeneralizedContractionShell(
+            0, coord_c, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_p_d = GeneralizedContractionShell(
+            1, coord_d, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+
+        # (pd|sp): bra_swapped (p<d), ket_swapped (s<p), then braket_swapped (d>p, no swap)
+        result = ElectronRepulsionIntegralImproved.construct_array_contraction(
+            shell_p_a, shell_d_b, shell_s_c, shell_p_d
+        )
+
+        # Shape: (M_a, L_p, M_b, L_d, M_c, L_s, M_d, L_p)
+        assert result.shape == (1, 3, 1, 6, 1, 1, 1, 3)
+        assert np.all(np.isfinite(result)), "Reordered integrals contain NaN or Inf"
+
+        # Compare with direct (no reordering)
+        boys_func = PointChargeIntegral.boys_func
+
+        s_comp = np.array([[0, 0, 0]])
+        p_comp = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        d_comp = np.array([[2, 0, 0], [1, 1, 0], [1, 0, 1], [0, 2, 0], [0, 1, 1], [0, 0, 2]])
+
+        direct = compute_two_electron_integrals_os_hgp(
+            boys_func,
+            coord_a,
+            1,
+            p_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+            coord_b,
+            2,
+            d_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+            coord_c,
+            0,
+            s_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+            coord_d,
+            1,
+            p_comp,
+            np.array([1.0]),
+            np.array([[1.0]]),
+        )
+        direct_transposed = np.transpose(direct, (4, 0, 5, 1, 6, 2, 7, 3))
+
+        np.testing.assert_allclose(
+            result,
+            direct_transposed,
+            rtol=1e-10,
+            err_msg="Reordered (pd|sp) doesn't match direct computation",
+        )
