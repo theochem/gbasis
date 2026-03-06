@@ -49,33 +49,26 @@ def _optimized_contraction(integrals_etransf, exps, coeffs, angmoms):
     ----------
     integrals_etransf : np.ndarray
         ETR output with shape (c_x, c_y, c_z, a_x, a_y, a_z, K_d, K_b, K_c, K_a).
-    exps : tuple of np.ndarray
-        Primitive exponents (exps_a, exps_b, exps_c, exps_d).
-    coeffs : tuple of np.ndarray
-        Contraction coefficients (coeffs_a, coeffs_b, coeffs_c, coeffs_d).
-    angmoms : tuple of int
-        Angular momenta (angmom_a, angmom_b, angmom_c, angmom_d).
+    exps : array-like of shape (4, K)
+        Primitive exponents stacked for all 4 centers (a, b, c, d).
+    coeffs : array-like of shape (4, K, M)
+        Contraction coefficients stacked for all 4 centers (a, b, c, d).
+    angmoms : array-like of shape (4,)
+        Angular momenta for all 4 centers (a, b, c, d).
 
     Returns
     -------
     contracted : np.ndarray
         Contracted integrals with shape (c_x, c_y, c_z, a_x, a_y, a_z, M_a, M_c, M_b, M_d).
     """
-    exps_a, exps_b, exps_c, exps_d = exps
-    coeffs_a, coeffs_b, coeffs_c, coeffs_d = coeffs
-    angmom_a, angmom_b, angmom_c, angmom_d = angmoms
-
-    # Precompute normalization constants (1D arrays)
-    norm_a = (2 * exps_a / np.pi) ** 0.75 * (4 * exps_a) ** (angmom_a / 2)
-    norm_b = (2 * exps_b / np.pi) ** 0.75 * (4 * exps_b) ** (angmom_b / 2)
-    norm_c = (2 * exps_c / np.pi) ** 0.75 * (4 * exps_c) ** (angmom_c / 2)
-    norm_d = (2 * exps_d / np.pi) ** 0.75 * (4 * exps_d) ** (angmom_d / 2)
-
-    # Multiply coefficients by normalization (more efficient than per-element)
-    coeffs_a_norm = coeffs_a * norm_a[:, np.newaxis]
-    coeffs_b_norm = coeffs_b * norm_b[:, np.newaxis]
-    coeffs_c_norm = coeffs_c * norm_c[:, np.newaxis]
-    coeffs_d_norm = coeffs_d * norm_d[:, np.newaxis]
+    # Vectorized norm computation over all 4 centers
+    exps = np.array(exps)  # shape (4, K)
+    angmoms = np.array(angmoms)  # shape (4,)
+    coeffs = np.array(coeffs)  # shape (4, K, M)
+    # shape (4, K)
+    norms = ((2 / np.pi) * exps) ** 0.75 * (4 * exps) ** (angmoms[:, np.newaxis] / 2)
+    coeffs_norm = coeffs * norms[:, :, np.newaxis]  # shape (4, K, M)
+    coeffs_a_norm, coeffs_b_norm, coeffs_c_norm, coeffs_d_norm = coeffs_norm
 
     # Use einsum with optimization for contraction
     # Input: (c_x, c_y, c_z, a_x, a_y, a_z, K_d, K_b, K_c, K_a)
