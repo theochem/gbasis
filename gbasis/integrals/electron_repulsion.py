@@ -4,6 +4,7 @@ import numpy as np
 
 from gbasis.base_four_symm import BaseFourIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._schwarz_screening import SchwarzScreener
 from gbasis.integrals._two_elec_int_improved import compute_two_electron_integrals_os_hgp
 from gbasis.integrals.point_charge import PointChargeIntegral
 
@@ -275,6 +276,8 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
     """
 
     boys_func = PointChargeIntegral.boys_func
+    _screener = None
+    _contraction_index_map = None
 
     @classmethod
     def construct_array_contraction(cls, cont_one, cont_two, cont_three, cont_four):
@@ -311,6 +314,26 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
             raise TypeError("`cont_three` must be a `GeneralizedContractionShell` instance.")
         if not isinstance(cont_four, GeneralizedContractionShell):
             raise TypeError("`cont_four` must be a `GeneralizedContractionShell` instance.")
+
+        # --- Schwarz screening: skip negligible shell quartets ---
+        if cls._screener is not None and cls._contraction_index_map is not None:
+            i = cls._contraction_index_map.get(id(cont_one))
+            j = cls._contraction_index_map.get(id(cont_two))
+            k = cls._contraction_index_map.get(id(cont_three))
+            l_idx = cls._contraction_index_map.get(id(cont_four))
+            if i is not None and j is not None and k is not None and l_idx is not None:
+                if not cls._screener.is_significant(i, j, k, l_idx):
+                    shape = (
+                        cont_one.coeffs.shape[1],
+                        len(cont_one.angmom_components_cart),
+                        cont_two.coeffs.shape[1],
+                        len(cont_two.angmom_components_cart),
+                        cont_three.coeffs.shape[1],
+                        len(cont_three.angmom_components_cart),
+                        cont_four.coeffs.shape[1],
+                        len(cont_four.angmom_components_cart),
+                    )
+                    return np.zeros(shape)
 
         # --- Contraction reordering for efficiency (l_a >= l_b, l_c >= l_d, l_a >= l_c) ---
         bra_swapped = cont_one.angmom < cont_two.angmom
@@ -364,7 +387,9 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
         return integrals
 
 
-def electron_repulsion_integral_improved(basis, transform=None, notation="physicist"):
+def electron_repulsion_integral_improved(
+    basis, transform=None, notation="physicist", schwarz_threshold=0.0
+):
     r"""Return the electron repulsion integrals using the improved OS+HGP algorithm.
 
     This function uses the Obara-Saika + Head-Gordon-Pople recursion scheme,
@@ -398,6 +423,9 @@ def electron_repulsion_integral_improved(basis, transform=None, notation="physic
     notation : {"physicist", "chemist"}
         Convention with which the integrals are ordered.
         Default is Physicists' notation.
+    schwarz_threshold : float
+        Schwarz screening threshold. Shell quartets with Schwarz bound below
+        this threshold are skipped. Default is 0.0 (no screening).
 
     Returns
     -------
@@ -413,18 +441,33 @@ def electron_repulsion_integral_improved(basis, transform=None, notation="physic
     if notation not in ["physicist", "chemist"]:
         raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
 
-    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
-
-    if transform is not None:
-        array = ElectronRepulsionIntegralImproved(basis).construct_array_lincomb(
-            transform, coord_type
+    if schwarz_threshold > 0:
+        index_map = {id(shell): i for i, shell in enumerate(basis)}
+        screener = SchwarzScreener(
+            list(basis),
+            ElectronRepulsionIntegralImproved.boys_func,
+            compute_two_electron_integrals_os_hgp,
+            schwarz_threshold,
         )
-    elif all(ct == "cartesian" for ct in coord_type):
-        array = ElectronRepulsionIntegralImproved(basis).construct_array_cartesian()
-    elif all(ct == "spherical" for ct in coord_type):
-        array = ElectronRepulsionIntegralImproved(basis).construct_array_spherical()
-    else:
-        array = ElectronRepulsionIntegralImproved(basis).construct_array_mix(coord_type)
+        ElectronRepulsionIntegralImproved._screener = screener
+        ElectronRepulsionIntegralImproved._contraction_index_map = index_map
+
+    try:
+        coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
+        if transform is not None:
+            array = ElectronRepulsionIntegralImproved(basis).construct_array_lincomb(
+                transform, coord_type
+            )
+        elif all(ct == "cartesian" for ct in coord_type):
+            array = ElectronRepulsionIntegralImproved(basis).construct_array_cartesian()
+        elif all(ct == "spherical" for ct in coord_type):
+            array = ElectronRepulsionIntegralImproved(basis).construct_array_spherical()
+        else:
+            array = ElectronRepulsionIntegralImproved(basis).construct_array_mix(coord_type)
+    finally:
+        ElectronRepulsionIntegralImproved._screener = None
+        ElectronRepulsionIntegralImproved._contraction_index_map = None
 
     if notation == "physicist":
         array = np.transpose(array, (0, 2, 1, 3))
