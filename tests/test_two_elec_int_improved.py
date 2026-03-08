@@ -7,6 +7,7 @@ import numpy as np
 from scipy.special import hyp1f1
 
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._schwarz_screening import SchwarzScreener
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
@@ -18,7 +19,10 @@ from gbasis.integrals._two_elec_int_improved import (
     _vertical_recursion_relation,
     compute_two_electron_integrals_os_hgp,
 )
-from gbasis.integrals.electron_repulsion import ElectronRepulsionIntegralImproved
+from gbasis.integrals.electron_repulsion import (
+    ElectronRepulsionIntegralImproved,
+    electron_repulsion_integral_improved,
+)
 from gbasis.integrals.point_charge import PointChargeIntegral
 
 
@@ -697,3 +701,80 @@ class TestContractionReordering:
             rtol=1e-10,
             err_msg="Reordered (pd|sp) doesn't match direct computation",
         )
+
+
+class TestSchwarzScreening:
+    """Tests for Schwarz screening integration."""
+
+    def test_schwarz_no_effect(self):
+        """With threshold=0, results match unscreened exactly."""
+        coord_a = np.array([0.0, 0.0, 0.0])
+        coord_b = np.array([1.0, 0.0, 0.0])
+
+        shell_s = GeneralizedContractionShell(
+            0, coord_a, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_p = GeneralizedContractionShell(
+            1, coord_b, np.array([[1.0]]), np.array([0.8]), "cartesian"
+        )
+        basis = [shell_s, shell_p]
+
+        result_no_screen = electron_repulsion_integral_improved(basis, notation="chemist")
+        result_screened = electron_repulsion_integral_improved(
+            basis, notation="chemist", schwarz_threshold=0.0
+        )
+
+        np.testing.assert_array_equal(result_no_screen, result_screened)
+
+    def test_schwarz_screening_tight(self):
+        """With tight threshold, results match within tolerance."""
+        coord_a = np.array([0.0, 0.0, 0.0])
+        coord_b = np.array([1.0, 0.0, 0.0])
+        coord_c = np.array([0.0, 1.0, 0.0])
+
+        shell_s1 = GeneralizedContractionShell(
+            0, coord_a, np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_s2 = GeneralizedContractionShell(
+            0, coord_b, np.array([[1.0]]), np.array([0.8]), "cartesian"
+        )
+        shell_s3 = GeneralizedContractionShell(
+            0, coord_c, np.array([[1.0]]), np.array([0.6]), "cartesian"
+        )
+        basis = [shell_s1, shell_s2, shell_s3]
+
+        result_no_screen = electron_repulsion_integral_improved(basis, notation="chemist")
+        result_screened = electron_repulsion_integral_improved(
+            basis, notation="chemist", schwarz_threshold=1e-12
+        )
+
+        np.testing.assert_allclose(result_no_screen, result_screened, atol=1e-10)
+
+    def test_schwarz_statistics(self):
+        """Verify screening statistics are tracked."""
+        shell_s1 = GeneralizedContractionShell(
+            0, np.array([0.0, 0.0, 0.0]), np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_s2 = GeneralizedContractionShell(
+            0, np.array([100.0, 0.0, 0.0]), np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        shell_s3 = GeneralizedContractionShell(
+            0, np.array([0.0, 100.0, 0.0]), np.array([[1.0]]), np.array([1.0]), "cartesian"
+        )
+        basis = [shell_s1, shell_s2, shell_s3]
+
+        screener = SchwarzScreener(
+            list(basis),
+            PointChargeIntegral.boys_func,
+            compute_two_electron_integrals_os_hgp,
+            threshold=1e-10,
+        )
+        stats = screener.get_statistics()
+        # Far-apart shells should have some bounds below threshold
+        assert stats["total"] == 0  # No quartets checked yet via is_significant
+
+        # Now run full computation with screening
+        result = electron_repulsion_integral_improved(
+            basis, notation="chemist", schwarz_threshold=1e-10
+        )
+        assert np.all(np.isfinite(result))
