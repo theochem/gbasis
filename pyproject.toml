@@ -55,7 +55,6 @@ dev = [
     "sphinx",
     "sphinx_autodoc_typehints",
     "sphinx-copybutton",
-    "pyscf>=1.6.1",
 ]
 doc = [
     "numpydoc",

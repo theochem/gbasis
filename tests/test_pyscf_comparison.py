@@ -15,13 +15,14 @@ basis parameters, avoiding normalization conversion issues.
 
 import numpy as np
 import pytest
-from pyscf import gto
 
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals.electron_repulsion import (
     electron_repulsion_integral,
     electron_repulsion_integral_improved,
 )
+
+gto = pytest.importorskip("pyscf.gto", reason="pyscf not installed")
 
 # ---------------------------------------------------------------------------
 # Helper functions
