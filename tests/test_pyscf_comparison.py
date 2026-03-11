@@ -15,12 +15,7 @@ basis parameters, avoiding normalization conversion issues.
 
 import numpy as np
 import pytest
-
-try:
-    from pyscf import gto
-    HAS_PYSCF = True
-except ImportError:
-    HAS_PYSCF = False
+from pyscf import gto
 
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals.electron_repulsion import (
@@ -28,10 +23,10 @@ from gbasis.integrals.electron_repulsion import (
     electron_repulsion_integral_improved,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------
+
 
 def make_h2_sto3g():
     """Create H2 with STO-3G basis (same parameters for GBasis and PySCF).
@@ -46,19 +41,19 @@ def make_h2_sto3g():
     coord2 = np.array([1.4, 0.0, 0.0])  # 1.4 Bohr apart
 
     basis = [
-        GeneralizedContractionShell(0, coord1, coeffs, exps, 'cartesian'),
-        GeneralizedContractionShell(0, coord2, coeffs, exps, 'cartesian'),
+        GeneralizedContractionShell(0, coord1, coeffs, exps, "cartesian"),
+        GeneralizedContractionShell(0, coord2, coeffs, exps, "cartesian"),
     ]
 
     mol = gto.M(
-        atom='H 0 0 0; H 1.4 0 0',
-        unit='bohr',
-        basis={'H': gto.basis.parse('''
+        atom="H 0 0 0; H 1.4 0 0",
+        unit="bohr",
+        basis={"H": gto.basis.parse("""
             H  S
                 3.42525091    0.15432897
                 0.62391373    0.53532814
                 0.16885540    0.44463454
-        ''')},
+        """)},
         verbose=0,
     )
     return basis, mol
@@ -76,14 +71,14 @@ def make_h2_primitive():
     coord2 = np.array([2.0, 0.0, 0.0])
 
     basis = [
-        GeneralizedContractionShell(0, coord1, coeffs, exps, 'cartesian'),
-        GeneralizedContractionShell(0, coord2, coeffs, exps, 'cartesian'),
+        GeneralizedContractionShell(0, coord1, coeffs, exps, "cartesian"),
+        GeneralizedContractionShell(0, coord2, coeffs, exps, "cartesian"),
     ]
 
     mol = gto.M(
-        atom='H 0 0 0; H 2.0 0 0',
-        unit='bohr',
-        basis={'H': gto.basis.parse('H  S\n    1.0    1.0')},
+        atom="H 0 0 0; H 2.0 0 0",
+        unit="bohr",
+        basis={"H": gto.basis.parse("H  S\n    1.0    1.0")},
         verbose=0,
     )
     return basis, mol
@@ -104,21 +99,21 @@ def make_h2_sp():
     coord2 = np.array([2.0, 0.0, 0.0])
 
     basis = [
-        GeneralizedContractionShell(0, coord1, s_coeffs, s_exps, 'cartesian'),
-        GeneralizedContractionShell(1, coord1, p_coeffs, p_exps, 'cartesian'),
-        GeneralizedContractionShell(0, coord2, s_coeffs, s_exps, 'cartesian'),
-        GeneralizedContractionShell(1, coord2, p_coeffs, p_exps, 'cartesian'),
+        GeneralizedContractionShell(0, coord1, s_coeffs, s_exps, "cartesian"),
+        GeneralizedContractionShell(1, coord1, p_coeffs, p_exps, "cartesian"),
+        GeneralizedContractionShell(0, coord2, s_coeffs, s_exps, "cartesian"),
+        GeneralizedContractionShell(1, coord2, p_coeffs, p_exps, "cartesian"),
     ]
 
     mol = gto.M(
-        atom='H 0 0 0; H 2.0 0 0',
-        unit='bohr',
-        basis={'H': gto.basis.parse('''
+        atom="H 0 0 0; H 2.0 0 0",
+        unit="bohr",
+        basis={"H": gto.basis.parse("""
             H  S
                 1.0    1.0
             H  P
                 0.8    1.0
-        ''')},
+        """)},
         verbose=0,
     )
     return basis, mol
@@ -128,7 +123,7 @@ def make_h2_sp():
 # Tests: Original implementation vs PySCF
 # ---------------------------------------------------------------------------
 
-@pytest.mark.skipif(not HAS_PYSCF, reason="PySCF not installed")
+
 class TestPySCFOriginal:
     """Compare original GBasis ERIs with PySCF reference."""
 
@@ -137,10 +132,15 @@ class TestPySCFOriginal:
         basis, mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')  # PySCF returns chemist (ij|kl)
+        eri_pyscf = mol.intor("int2e")  # PySCF returns chemist (ij|kl)
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf, rtol=1e-6, atol=1e-10,
-            err_msg="H2/STO-3G chemist notation doesn't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="H2/STO-3G chemist notation doesn't match PySCF",
+        )
 
     def test_h2_sto3g_physicist(self):
         """Test H2/STO-3G in physicist notation.
@@ -150,58 +150,77 @@ class TestPySCFOriginal:
         basis, mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral(basis, notation="physicist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
         eri_pyscf_physicist = eri_pyscf.transpose(0, 2, 1, 3)
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf_physicist, rtol=1e-6, atol=1e-10,
-            err_msg="H2/STO-3G physicist notation doesn't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf_physicist,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="H2/STO-3G physicist notation doesn't match PySCF",
+        )
 
     def test_h2_primitive(self):
         """Test single-primitive H2 (simplest possible case)."""
         basis, mol = make_h2_primitive()
 
         eri_gbasis = electron_repulsion_integral(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf, rtol=1e-6, atol=1e-10,
-            err_msg="Single primitive H2 ERIs don't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="Single primitive H2 ERIs don't match PySCF",
+        )
 
     def test_h2_sp_basis(self):
         """Test H2 with s+p basis (tests angular momentum handling)."""
         basis, mol = make_h2_sp()
 
         eri_gbasis = electron_repulsion_integral(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf, rtol=1e-6, atol=1e-10,
-            err_msg="H2 s+p basis ERIs don't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="H2 s+p basis ERIs don't match PySCF",
+        )
 
     def test_h2_specific_integrals(self):
         """Test specific physically meaningful integrals for H2/STO-3G."""
         basis, mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
         # (00|00) - Coulomb integral, both electrons on atom 1
-        assert np.isclose(eri_gbasis[0, 0, 0, 0], eri_pyscf[0, 0, 0, 0], rtol=1e-6), \
-            f"(00|00) mismatch: GBasis={eri_gbasis[0,0,0,0]:.10f}, PySCF={eri_pyscf[0,0,0,0]:.10f}"
+        assert np.isclose(
+            eri_gbasis[0, 0, 0, 0], eri_pyscf[0, 0, 0, 0], rtol=1e-6
+        ), f"(00|00) mismatch: GBasis={eri_gbasis[0,0,0,0]:.10f}, PySCF={eri_pyscf[0,0,0,0]:.10f}"
 
         # (11|11) - Coulomb integral, both electrons on atom 2
-        assert np.isclose(eri_gbasis[1, 1, 1, 1], eri_pyscf[1, 1, 1, 1], rtol=1e-6), \
-            f"(11|11) mismatch: GBasis={eri_gbasis[1,1,1,1]:.10f}, PySCF={eri_pyscf[1,1,1,1]:.10f}"
+        assert np.isclose(
+            eri_gbasis[1, 1, 1, 1], eri_pyscf[1, 1, 1, 1], rtol=1e-6
+        ), f"(11|11) mismatch: GBasis={eri_gbasis[1,1,1,1]:.10f}, PySCF={eri_pyscf[1,1,1,1]:.10f}"
 
         # By symmetry, (00|00) == (11|11) for identical atoms
-        assert np.isclose(eri_gbasis[0, 0, 0, 0], eri_gbasis[1, 1, 1, 1], rtol=1e-6), \
-            "Identical atom diagonal integrals should be equal"
+        assert np.isclose(
+            eri_gbasis[0, 0, 0, 0], eri_gbasis[1, 1, 1, 1], rtol=1e-6
+        ), "Identical atom diagonal integrals should be equal"
 
         # (01|01) - exchange-type integral
-        assert np.isclose(eri_gbasis[0, 1, 0, 1], eri_pyscf[0, 1, 0, 1], rtol=1e-6), \
-            f"(01|01) mismatch"
+        assert np.isclose(
+            eri_gbasis[0, 1, 0, 1], eri_pyscf[0, 1, 0, 1], rtol=1e-6
+        ), "(01|01) mismatch"
 
     def test_h2_symmetries(self):
         """Test that PySCF and GBasis agree on 8-fold ERI symmetries."""
-        basis, mol = make_h2_sto3g()
+        basis, _mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral(basis, notation="chemist")
 
@@ -210,21 +229,24 @@ class TestPySCFOriginal:
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    for l in range(n):
-                        val = eri_gbasis[i, j, k, l]
-                        assert np.isclose(val, eri_gbasis[j, i, k, l], rtol=1e-10), \
-                            f"(ij|kl)!=(ji|kl) for ({i}{j}|{k}{l})"
-                        assert np.isclose(val, eri_gbasis[i, j, l, k], rtol=1e-10), \
-                            f"(ij|kl)!=(ij|lk) for ({i}{j}|{k}{l})"
-                        assert np.isclose(val, eri_gbasis[k, l, i, j], rtol=1e-10), \
-                            f"(ij|kl)!=(kl|ij) for ({i}{j}|{k}{l})"
+                    for m in range(n):
+                        val = eri_gbasis[i, j, k, m]
+                        assert np.isclose(
+                            val, eri_gbasis[j, i, k, m], rtol=1e-10
+                        ), f"(ij|kl)!=(ji|kl) for ({i}{j}|{k}{m})"
+                        assert np.isclose(
+                            val, eri_gbasis[i, j, m, k], rtol=1e-10
+                        ), f"(ij|kl)!=(ij|lk) for ({i}{j}|{k}{m})"
+                        assert np.isclose(
+                            val, eri_gbasis[k, m, i, j], rtol=1e-10
+                        ), f"(ij|kl)!=(kl|ij) for ({i}{j}|{k}{m})"
 
 
 # ---------------------------------------------------------------------------
 # Tests: Improved (OS+HGP) implementation vs PySCF
 # ---------------------------------------------------------------------------
 
-@pytest.mark.skipif(not HAS_PYSCF, reason="PySCF not installed")
+
 class TestPySCFImproved:
     """Compare improved OS+HGP GBasis ERIs with PySCF reference."""
 
@@ -233,41 +255,61 @@ class TestPySCFImproved:
         basis, mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral_improved(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf, rtol=1e-6, atol=1e-10,
-            err_msg="Improved H2/STO-3G chemist notation doesn't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="Improved H2/STO-3G chemist notation doesn't match PySCF",
+        )
 
     def test_h2_sto3g_physicist(self):
         """Test improved implementation H2/STO-3G in physicist notation."""
         basis, mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral_improved(basis, notation="physicist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
         eri_pyscf_physicist = eri_pyscf.transpose(0, 2, 1, 3)
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf_physicist, rtol=1e-6, atol=1e-10,
-            err_msg="Improved H2/STO-3G physicist notation doesn't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf_physicist,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="Improved H2/STO-3G physicist notation doesn't match PySCF",
+        )
 
     def test_h2_primitive(self):
         """Test improved implementation with single primitive."""
         basis, mol = make_h2_primitive()
 
         eri_gbasis = electron_repulsion_integral_improved(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf, rtol=1e-6, atol=1e-10,
-            err_msg="Improved single primitive H2 ERIs don't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="Improved single primitive H2 ERIs don't match PySCF",
+        )
 
     def test_h2_sp_basis(self):
         """Test improved implementation H2 with s+p basis."""
         basis, mol = make_h2_sp()
 
         eri_gbasis = electron_repulsion_integral_improved(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
-        np.testing.assert_allclose(eri_gbasis, eri_pyscf, rtol=1e-6, atol=1e-10,
-            err_msg="Improved H2 s+p basis ERIs don't match PySCF")
+        np.testing.assert_allclose(
+            eri_gbasis,
+            eri_pyscf,
+            rtol=1e-6,
+            atol=1e-10,
+            err_msg="Improved H2 s+p basis ERIs don't match PySCF",
+        )
 
     def test_improved_matches_original(self):
         """Test that improved and original implementations agree on PySCF test case."""
@@ -276,8 +318,9 @@ class TestPySCFImproved:
         eri_old = electron_repulsion_integral(basis, notation="chemist")
         eri_new = electron_repulsion_integral_improved(basis, notation="chemist")
 
-        np.testing.assert_allclose(eri_new, eri_old, rtol=1e-10,
-            err_msg="Improved doesn't match original for H2/STO-3G")
+        np.testing.assert_allclose(
+            eri_new, eri_old, rtol=1e-10, err_msg="Improved doesn't match original for H2/STO-3G"
+        )
 
     def test_improved_matches_original_sp(self):
         """Test that improved and original agree for s+p basis."""
@@ -286,15 +329,16 @@ class TestPySCFImproved:
         eri_old = electron_repulsion_integral(basis, notation="chemist")
         eri_new = electron_repulsion_integral_improved(basis, notation="chemist")
 
-        np.testing.assert_allclose(eri_new, eri_old, rtol=1e-10,
-            err_msg="Improved doesn't match original for H2 s+p")
+        np.testing.assert_allclose(
+            eri_new, eri_old, rtol=1e-10, err_msg="Improved doesn't match original for H2 s+p"
+        )
 
 
 # ---------------------------------------------------------------------------
 # Tests: Physical sanity checks
 # ---------------------------------------------------------------------------
 
-@pytest.mark.skipif(not HAS_PYSCF, reason="PySCF not installed")
+
 class TestPySCFPhysicalProperties:
     """Verify physical properties of ERIs using PySCF as cross-check."""
 
@@ -303,7 +347,7 @@ class TestPySCFPhysicalProperties:
         basis, mol = make_h2_sto3g()
 
         eri_gbasis = electron_repulsion_integral_improved(basis, notation="chemist")
-        eri_pyscf = mol.intor('int2e')
+        eri_pyscf = mol.intor("int2e")
 
         n = eri_gbasis.shape[0]
         for i in range(n):
@@ -316,15 +360,14 @@ class TestPySCFPhysicalProperties:
         For same-atom shells: (00|00) >= (01|01) because the exchange
         integral involves orbital overlap which reduces the value.
         """
-        basis, mol = make_h2_sto3g()
+        basis, _mol = make_h2_sto3g()
 
         eri = electron_repulsion_integral_improved(basis, notation="chemist")
 
         # Coulomb (00|00) should be > exchange (01|01)
         coulomb = eri[0, 0, 0, 0]
         exchange = eri[0, 1, 0, 1]
-        assert coulomb > exchange, \
-            f"Coulomb ({coulomb:.6f}) should be > exchange ({exchange:.6f})"
+        assert coulomb > exchange, f"Coulomb ({coulomb:.6f}) should be > exchange ({exchange:.6f})"
 
     def test_eri_values_physically_reasonable(self):
         """Test that ERI values are in a physically reasonable range.
@@ -341,13 +384,10 @@ class TestPySCFPhysicalProperties:
         # Diagonal integrals should be in reasonable range (0.1 - 2.0 a.u.)
         for i in range(eri.shape[0]):
             val = eri[i, i, i, i]
-            assert 0.01 < val < 10.0, \
-                f"Diagonal integral ({i}{i}|{i}{i}) = {val} outside reasonable range"
+            assert (
+                0.01 < val < 10.0
+            ), f"Diagonal integral ({i}{i}|{i}{i}) = {val} outside reasonable range"
 
 
-if __name__ == '__main__':
-    if not HAS_PYSCF:
-        print("PySCF not installed. Install with: pip install pyscf")
-        print("Skipping PySCF comparison tests.")
-    else:
-        pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
