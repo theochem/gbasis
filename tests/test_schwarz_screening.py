@@ -109,11 +109,9 @@ class TestShellPairPrescreening:
         # With loose threshold, should be significant
         sig_loose = shell_pair_significant(shell_a, shell_b, threshold=1e-30)
 
-        # The loose threshold should be at least as permissive
-        if not sig_strict:
-            assert sig_loose or not sig_loose  # may or may not be significant
-        if sig_loose:
-            assert True  # loose is at least as permissive
+        # Monotonicity: any pair significant under strict threshold must also be
+        # significant under loose threshold (smaller threshold = more permissive)
+        assert (not sig_strict) or sig_loose
 
 
 class TestSchwarzBounds:
