@@ -8,6 +8,9 @@ from gbasis.integrals._schwarz_screening import SchwarzScreener
 from gbasis.integrals._two_elec_int_improved import compute_two_electron_integrals_os_hgp
 from gbasis.integrals.point_charge import PointChargeIntegral
 
+# Cache for Schwarz screeners keyed by (basis_ids, threshold)
+_schwarz_screener_cache = {}
+
 
 class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
     """Class for constructing electron-electron repulsion integrals.
@@ -443,13 +446,16 @@ def electron_repulsion_integral_improved(
 
     screening_kwargs = {}
     if schwarz_threshold > 0:
+        cache_key = (tuple(id(shell) for shell in basis), schwarz_threshold)
+        if cache_key not in _schwarz_screener_cache:
+            _schwarz_screener_cache[cache_key] = SchwarzScreener(
+                list(basis),
+                ElectronRepulsionIntegralImproved.boys_func,
+                compute_two_electron_integrals_os_hgp,
+                schwarz_threshold,
+            )
+        screener = _schwarz_screener_cache[cache_key]
         index_map = {id(shell): i for i, shell in enumerate(basis)}
-        screener = SchwarzScreener(
-            list(basis),
-            ElectronRepulsionIntegralImproved.boys_func,
-            compute_two_electron_integrals_os_hgp,
-            schwarz_threshold,
-        )
         screening_kwargs = {"screener": screener, "contraction_index_map": index_map}
 
     coord_type = [ct for ct in [shell.coord_type for shell in basis]]
