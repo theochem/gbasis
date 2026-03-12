@@ -436,7 +436,7 @@ class TestPrimitiveScreening:
     def test_screening_zero_threshold(self):
         """With threshold=0, results match unscreened exactly."""
 
-        def boys_func(orders, weighted_dist):
+        def boys_func(orders, weighted_dist, rho=None):
             return hyp1f1(orders + 0.5, orders + 1.5, -weighted_dist) / (2 * orders + 1)
 
         coord_a = np.array([0.0, 0.0, 0.0])
@@ -500,7 +500,7 @@ class TestPrimitiveScreening:
     def test_screening_reasonable_threshold(self):
         """With reasonable threshold, results match within tolerance."""
 
-        def boys_func(orders, weighted_dist):
+        def boys_func(orders, weighted_dist, rho=None):
             return hyp1f1(orders + 0.5, orders + 1.5, -weighted_dist) / (2 * orders + 1)
 
         coord_a = np.array([0.0, 0.0, 0.0])

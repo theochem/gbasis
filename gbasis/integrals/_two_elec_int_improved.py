@@ -694,7 +694,7 @@ def compute_two_electron_integrals_os_hgp(
         prefactor = np.where(np.abs(prefactor) >= primitive_threshold, prefactor, 0.0)
 
     orders = np.arange(m_max)[:, None, None, None, None]
-    integrals_m = boys_func(orders, weighted_dist[None, :, :, :, :]) * prefactor
+    integrals_m = boys_func(orders, weighted_dist[None, :, :, :, :], rho=harm_mean) * prefactor
 
     # --- Step 2: VRR ---
     integrals_vert = _vertical_recursion_relation(
