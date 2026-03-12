@@ -276,11 +276,9 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
     """
 
     boys_func = PointChargeIntegral.boys_func
-    _screener = None
-    _contraction_index_map = None
 
     @classmethod
-    def construct_array_contraction(cls, cont_one, cont_two, cont_three, cont_four):
+    def construct_array_contraction(cls, cont_one, cont_two, cont_three, cont_four, **kwargs):
         r"""Return electron-electron repulsion integral using the OS+HGP algorithm.
 
         Parameters
@@ -316,13 +314,15 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
             raise TypeError("`cont_four` must be a `GeneralizedContractionShell` instance.")
 
         # --- Schwarz screening: skip negligible shell quartets ---
-        if cls._screener is not None and cls._contraction_index_map is not None:
-            i = cls._contraction_index_map.get(id(cont_one))
-            j = cls._contraction_index_map.get(id(cont_two))
-            k = cls._contraction_index_map.get(id(cont_three))
-            l_idx = cls._contraction_index_map.get(id(cont_four))
+        screener = kwargs.get("screener")
+        index_map = kwargs.get("contraction_index_map")
+        if screener is not None and index_map is not None:
+            i = index_map.get(id(cont_one))
+            j = index_map.get(id(cont_two))
+            k = index_map.get(id(cont_three))
+            l_idx = index_map.get(id(cont_four))
             if i is not None and j is not None and k is not None and l_idx is not None:
-                if not cls._screener.is_significant(i, j, k, l_idx):
+                if not screener.is_significant(i, j, k, l_idx):
                     shape = (
                         cont_one.coeffs.shape[1],
                         len(cont_one.angmom_components_cart),
@@ -441,6 +441,7 @@ def electron_repulsion_integral_improved(
     if notation not in ["physicist", "chemist"]:
         raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
 
+    screening_kwargs = {}
     if schwarz_threshold > 0:
         index_map = {id(shell): i for i, shell in enumerate(basis)}
         screener = SchwarzScreener(
@@ -449,25 +450,26 @@ def electron_repulsion_integral_improved(
             compute_two_electron_integrals_os_hgp,
             schwarz_threshold,
         )
-        ElectronRepulsionIntegralImproved._screener = screener
-        ElectronRepulsionIntegralImproved._contraction_index_map = index_map
+        screening_kwargs = {"screener": screener, "contraction_index_map": index_map}
 
-    try:
-        coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
 
-        if transform is not None:
-            array = ElectronRepulsionIntegralImproved(basis).construct_array_lincomb(
-                transform, coord_type
-            )
-        elif all(ct == "cartesian" for ct in coord_type):
-            array = ElectronRepulsionIntegralImproved(basis).construct_array_cartesian()
-        elif all(ct == "spherical" for ct in coord_type):
-            array = ElectronRepulsionIntegralImproved(basis).construct_array_spherical()
-        else:
-            array = ElectronRepulsionIntegralImproved(basis).construct_array_mix(coord_type)
-    finally:
-        ElectronRepulsionIntegralImproved._screener = None
-        ElectronRepulsionIntegralImproved._contraction_index_map = None
+    if transform is not None:
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_lincomb(
+            transform, coord_type, **screening_kwargs
+        )
+    elif all(ct == "cartesian" for ct in coord_type):
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_cartesian(
+            **screening_kwargs
+        )
+    elif all(ct == "spherical" for ct in coord_type):
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_spherical(
+            **screening_kwargs
+        )
+    else:
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_mix(
+            coord_type, **screening_kwargs
+        )
 
     if notation == "physicist":
         array = np.transpose(array, (0, 2, 1, 3))
