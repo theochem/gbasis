@@ -1,3 +1,29 @@
+"""
+Arbitrary-order N-center Gaussian overlap integrals.
+
+This module implements algorithms for computing overlap integrals
+between Cartesian Gaussian basis functions located on different
+centers. The implementation supports overlap integrals involving
+an arbitrary number of Gaussian shells.
+
+The evaluation follows the Gaussian product theorem and Hermite
+Gaussian expansion techniques commonly used in quantum chemistry
+integral engines.
+
+References
+----------
+Helgaker, T., Jørgensen, P., Olsen, J.
+Molecular Electronic-Structure Theory, Wiley (2000).
+
+Szabo, A., Ostlund, N. S.
+Modern Quantum Chemistry, Dover (1996).
+
+Obara, S., Saika, A. (1986)
+Efficient recursive computation of molecular integrals over
+Cartesian Gaussian functions.
+Journal of Chemical Physics.
+"""
+
 import numpy as np
 from scipy.sparse import coo_matrix
 from itertools import product
@@ -8,6 +34,50 @@ class PrimitiveNEngine:
     # Gaussian collapse
     @staticmethod
     def collapse_gaussians(alphas, centers):
+        """
+        Collapse multiple primitive Gaussian functions into a single
+        effective Gaussian using the Gaussian product theorem.
+
+        Given primitive Gaussian functions
+
+            exp(-α_i |r - A_i|²)
+
+        their product can be written as
+
+            exp(-α_tot |r - P|²) * exp(term2 - term1)
+
+        where
+
+            α_tot = Σ α_i
+            P = (Σ α_i A_i) / α_tot
+
+        This transformation simplifies the evaluation of Gaussian
+        integrals by reducing multiple Gaussians into a single
+        Gaussian centered at P.
+
+        Parameters
+        ----------
+        alphas : array_like
+            Exponents of the primitive Gaussian functions.
+
+        centers : array_like
+            Cartesian coordinates of the Gaussian centers.
+
+        Returns
+        -------
+        alpha_tot : float
+            Total Gaussian exponent.
+
+        P : ndarray
+            Product center of the collapsed Gaussian.
+
+        prefactor : float
+            Exponential prefactor arising from Gaussian collapse.
+            Raises:
+            ------
+            ValueError:
+            If the total Gaussian exponent is non-positive.
+        """
         alphas = np.asarray(alphas, dtype=np.float64)
         centers = np.asarray(centers, dtype=np.float64)
 
@@ -27,12 +97,35 @@ class PrimitiveNEngine:
         return alpha_tot, P, prefactor
 
     # Pure binomial Hermite shift
+
     @staticmethod
     def hermite_coefficients(l, PA):
         """
-        Expand (x - A)^l about P:
+        Compute Hermite translation coefficients.
 
-        (x - A)^l = sum_t E_t (x - P)^t
+        This function expands a polynomial centered at A in terms of
+        powers centered at the Gaussian product center P:
+
+        .. math::
+
+            (x - A)^l = \\sum_t E_t (x - P)^t
+
+        These coefficients are used in the Hermite Gaussian formalism
+        for evaluating molecular integrals.
+
+        Parameters
+        ----------
+        l : int
+            Angular momentum order.
+
+        PA : float
+            Distance between the product center P and the original
+            Gaussian center A.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array containing the Hermite expansion coefficients.
         """
         E = np.zeros(l + 1, dtype=np.float64)
         E[0] = 1.0
@@ -49,12 +142,33 @@ class PrimitiveNEngine:
         return E
 
     # Gaussian moments
+
     @staticmethod
     def gaussian_moments(alpha, max_order):
         """
-        Compute:
-        ∫ (x-P)^k exp(-alpha (x-P)^2) dx
-        over (-∞,∞)
+        Compute Gaussian moment integrals.
+
+        Evaluates integrals of the form
+
+        .. math::
+
+            \\int_{-\\infty}^{\\infty} (x-P)^k e^{-\\alpha (x-P)^2} dx
+
+        Only even moments are non-zero. Higher moments are computed
+        recursively from the zeroth moment.
+
+        Parameters
+        ----------
+        alpha : float
+            Gaussian exponent.
+
+        max_order : int
+            Maximum moment order to compute.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array containing Gaussian moments up to ``max_order``.
         """
         moments = np.zeros(max_order + 1, dtype=np.float64)
 
@@ -70,12 +184,55 @@ class PrimitiveNEngine:
     # Full primitive N-center overlap
     @staticmethod
     def primitive_overlap(alphas, centers, angmoms):
+        """
+        Compute primitive N-center Gaussian overlap integral.
 
+        This function evaluates the overlap integral between N primitive
+        Gaussian basis functions using the Hermite Gaussian formalism.
+
+        The primitive overlap integral is
+
+        .. math::
+
+            S = \\int \\prod_i \\phi_i(\\mathbf{r}) \\, d\\mathbf{r}
+
+        where each primitive Gaussian basis function has the form
+
+        .. math::
+
+            \\phi(\\mathbf{r}) =
+            (x-A_x)^l (y-A_y)^m (z-A_z)^n
+            e^{-\\alpha |\\mathbf{r}-A|^2}
+
+        Parameters
+        ----------
+        alphas : list
+            Gaussian exponents.
+
+        centers : list
+            Cartesian coordinates of Gaussian centers.
+
+        angmoms : list
+            Angular momentum tuples ``(l, m, n)``.
+
+        Returns
+        -------
+        float
+            Value of the primitive N-center overlap integral.
+
+        Notes
+        -----
+        The overlap integral factorizes into independent Cartesian
+        components (x, y, z). Each component is evaluated using
+        Gaussian moment integrals obtained from the Hermite expansion.
+        """
         alpha_tot, P, prefactor = PrimitiveNEngine.collapse_gaussians(alphas, centers)
 
         result = prefactor
 
         # factorize into x, y, z
+        # Evaluate overlap as product of x, y, z integrals
+
         for axis in range(3):
 
             # build total polynomial via convolution
@@ -101,8 +258,26 @@ class PrimitiveNEngine:
 # Screening Function
 def is_n_shell_overlap_screened(shells, tol=1e-12):
     """
-    Conservative exponential upper-bound screening
-    for N-center contracted overlap.
+    Determine whether an N-center overlap integral can be skipped
+    using a conservative exponential bound.
+
+    This screening estimates an upper bound for the magnitude of
+    the contracted overlap integral using Gaussian decay between
+    shell centers. If the bound is below the specified tolerance,
+    the integral is considered negligible.
+
+    Parameters
+    ----------
+    shells : list[GeneralizedContractionShell]
+        Shells involved in the overlap integral.
+
+    tol : float
+        Screening tolerance.
+
+    Returns
+    -------
+    bool
+        True if the integral is negligible and can be skipped.
     """
 
     alpha_mins = [np.min(shell.exps) for shell in shells]
@@ -197,9 +372,15 @@ def contracted_n_overlap(shells):
                     c = cart_indices[i]
 
                     alpha = shell.exps[p]
-                    coeff = shell.coeffs[p, m]
-                    norm = shell.norm_prim_cart[c, p]
-                    angmom = tuple(shell.angmom_components_cart[c])
+                    coeff = shell.coeffs[
+                        p, m
+                    ]  # contraction coefficient for primitive p in segment m
+                    norm = shell.norm_prim_cart[
+                        c, p
+                    ]  # normalization factor for primitive p and Cartesian component c
+                    angmom = tuple(
+                        shell.angmom_components_cart[c]
+                    )  # Cartesian angular momentum (lx, ly, lz)
 
                     alphas.append(alpha)
                     centers.append(shell.coord)
@@ -224,18 +405,32 @@ def contracted_n_overlap(shells):
 
 def build_n_overlap_tensor(shells, tol=1e-12):
     """
-    Build sparse N-center overlap tensor over shells.
+    Construct sparse N-center overlap tensor.
+
+    This function builds the full N-center overlap tensor over
+    Gaussian basis functions. Each tensor element corresponds
+    to the overlap integral between a combination of contracted
+    Gaussian shells.
+
+    To reduce computational cost, shell-level screening is
+    applied before evaluating the contracted integrals.
 
     Parameters
     ----------
     shells : list[GeneralizedContractionShell]
+        List of Gaussian shells participating in the overlap
+        integral.
+
     tol : float
-        Screening tolerance
+        Screening tolerance used to discard negligible
+        contributions.
 
     Returns
     -------
     scipy.sparse.coo_matrix
-        Flattened sparse tensor of shape (total_ao^N, 1)
+        Sparse tensor containing the N-center overlap integrals.
+        The tensor is flattened so that each N-index integral
+        maps to a single row index.
     """
 
     # Total AO dimension
@@ -302,17 +497,24 @@ def arbitrary_order_overlap(shells, tol=1e-12):
     """
     Compute arbitrary-order Gaussian overlap tensor.
 
-    This is the main public API for N-center overlap integrals.
+    This is the main public API for evaluating N-center overlap
+    integrals between Gaussian basis functions.
+
+    Internally this function constructs the overlap tensor using
+    ``build_n_overlap_tensor``.
 
     Parameters
     ----------
     shells : list[GeneralizedContractionShell]
+        List of Gaussian shells defining the basis functions.
 
     tol : float
+        Screening tolerance.
 
     Returns
     -------
     scipy.sparse.coo_matrix
+        Sparse representation of the N-center overlap tensor.
     """
 
     return build_n_overlap_tensor(shells, tol)
