@@ -10,6 +10,7 @@ from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals_angmom_zero,
 )
 from gbasis.integrals._two_elec_int_improved import compute_two_electron_integrals_os_hgp
+from gbasis.integrals.boys_functions import get_boys_function
 from gbasis.integrals.point_charge import PointChargeIntegral
 
 # Cache for Schwarz screeners keyed by (basis_ids, threshold)
@@ -299,7 +300,7 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
 
     """
 
-    boys_func = PointChargeIntegral.boys_func
+    boys_func = get_boys_function("coulomb")
 
     @classmethod
     def construct_array_contraction(cls, cont_one, cont_two, cont_three, cont_four, **kwargs):
