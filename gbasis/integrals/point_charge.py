@@ -1,10 +1,11 @@
 """Module for computing point charge integrals."""
+
 import numpy as np
-from scipy.special import hyp1f1  # pylint: disable=E0611
 
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
+from gbasis.integrals.boys_functions import boys_function_standard
 
 
 class PointChargeIntegral(BaseTwoIndexSymmetric):
@@ -114,7 +115,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         side.
 
         """
-        return hyp1f1(orders + 1 / 2, orders + 3 / 2, -weighted_dist) / (2 * orders + 1)
+        return boys_function_standard(orders, weighted_dist)
 
     @classmethod
     def construct_array_contraction(
