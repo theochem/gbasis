@@ -5,6 +5,10 @@ import numpy as np
 from gbasis.base_four_symm import BaseFourIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._schwarz_screening import SchwarzScreener
+from gbasis.integrals._two_elec_int import (
+    _compute_two_elec_integrals,
+    _compute_two_elec_integrals_angmom_zero,
+)
 from gbasis.integrals._two_elec_int_improved import compute_two_electron_integrals_os_hgp
 from gbasis.integrals.point_charge import PointChargeIntegral
 
@@ -159,29 +163,46 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
             raise TypeError("`cont_four` must be a `GeneralizedContractionShell` instance.")
 
         # TODO: we can probably swap the contractions to get the optimal time or memory usage
-        integrals = compute_two_electron_integrals_os_hgp(
-            cls.boys_func,
-            cont_one.coord,
-            cont_one.angmom,
-            cont_one.angmom_components_cart,
-            cont_one.exps,
-            cont_one.coeffs,
-            cont_two.coord,
-            cont_two.angmom,
-            cont_two.angmom_components_cart,
-            cont_two.exps,
-            cont_two.coeffs,
-            cont_three.coord,
-            cont_three.angmom,
-            cont_three.angmom_components_cart,
-            cont_three.exps,
-            cont_three.coeffs,
-            cont_four.coord,
-            cont_four.angmom,
-            cont_four.angmom_components_cart,
-            cont_four.exps,
-            cont_four.coeffs,
-        )
+        if cont_one.angmom == cont_two.angmom == cont_three.angmom == cont_four.angmom == 0:
+            integrals = _compute_two_elec_integrals_angmom_zero(
+                cls.boys_func,
+                cont_one.coord,
+                cont_one.exps,
+                cont_one.coeffs,
+                cont_two.coord,
+                cont_two.exps,
+                cont_two.coeffs,
+                cont_three.coord,
+                cont_three.exps,
+                cont_three.coeffs,
+                cont_four.coord,
+                cont_four.exps,
+                cont_four.coeffs,
+            )
+        else:
+            integrals = _compute_two_elec_integrals(
+                cls.boys_func,
+                cont_one.coord,
+                cont_one.angmom,
+                cont_one.angmom_components_cart,
+                cont_one.exps,
+                cont_one.coeffs,
+                cont_two.coord,
+                cont_two.angmom,
+                cont_two.angmom_components_cart,
+                cont_two.exps,
+                cont_two.coeffs,
+                cont_three.coord,
+                cont_three.angmom,
+                cont_three.angmom_components_cart,
+                cont_three.exps,
+                cont_three.coeffs,
+                cont_four.coord,
+                cont_four.angmom,
+                cont_four.angmom_components_cart,
+                cont_four.exps,
+                cont_four.coeffs,
+            )
         integrals = np.transpose(integrals, (4, 0, 5, 1, 6, 2, 7, 3))
 
         # TODO: if we swap the contractions, we need to unswap them here
