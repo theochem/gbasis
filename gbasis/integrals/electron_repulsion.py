@@ -472,7 +472,7 @@ def electron_repulsion_integral_improved(
         if cache_key not in _schwarz_screener_cache:
             _schwarz_screener_cache[cache_key] = SchwarzScreener(
                 list(basis),
-                ElectronRepulsionIntegralImproved.boys_func,
+                get_boys_function("coulomb"),
                 compute_two_electron_integrals_os_hgp,
                 schwarz_threshold,
             )
