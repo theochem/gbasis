@@ -17,6 +17,14 @@ gbasis.integrals.angular\_momentum module
    :undoc-members:
    :show-inheritance:
 
+gbasis.integrals.boys\_functions module
+---------------------------------------
+
+.. automodule:: gbasis.integrals.boys_functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gbasis.integrals.electron\_repulsion module
 -------------------------------------------
 
