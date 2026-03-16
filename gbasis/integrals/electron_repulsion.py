@@ -1,12 +1,20 @@
 """Electron-electron repulsion integral."""
+
+import numpy as np
+
 from gbasis.base_four_symm import BaseFourIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
+from gbasis.integrals._schwarz_screening import SchwarzScreener
 from gbasis.integrals._two_elec_int import (
     _compute_two_elec_integrals,
     _compute_two_elec_integrals_angmom_zero,
 )
+from gbasis.integrals._two_elec_int_improved import compute_two_electron_integrals_os_hgp
+from gbasis.integrals.boys_functions import get_boys_function
 from gbasis.integrals.point_charge import PointChargeIntegral
-import numpy as np
+
+# Cache for Schwarz screeners keyed by (basis_ids, threshold)
+_schwarz_screener_cache = {}
 
 
 class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
@@ -267,6 +275,229 @@ def electron_repulsion_integral(basis, transform=None, notation="physicist"):
         array = ElectronRepulsionIntegral(basis).construct_array_spherical()
     else:
         array = ElectronRepulsionIntegral(basis).construct_array_mix(coord_type)
+
+    if notation == "physicist":
+        array = np.transpose(array, (0, 2, 1, 3))
+    return array
+
+
+class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
+    """Class for constructing electron-electron repulsion integrals using OS+HGP algorithm.
+
+    This class uses the improved Obara-Saika + Head-Gordon-Pople recursion scheme,
+    which applies the Horizontal Recursion Relation (HRR) after contraction for
+    better computational efficiency.
+
+    The first four axes of the returned array are associated with the given set of contracted
+    Gaussian (or a linear combination of a set of Gaussians).
+
+    Attributes
+    ----------
+    _axes_contractions : tuple of tuple of GeneralizedContractionShell
+        Sets of contractions associated with each axis of the array.
+    contractions : tuple of GeneralizedContractionShell
+        Contractions that are associated with the four indices of the array.
+
+    """
+
+    boys_func = get_boys_function("coulomb")
+
+    @classmethod
+    def construct_array_contraction(cls, cont_one, cont_two, cont_three, cont_four, **kwargs):
+        r"""Return electron-electron repulsion integral using the OS+HGP algorithm.
+
+        Parameters
+        ----------
+        cont_one : GeneralizedContractionShell
+            Contracted Cartesian Gaussians (of the same shell) associated with the first index.
+        cont_two : GeneralizedContractionShell
+            Contracted Cartesian Gaussians (of the same shell) associated with the second index.
+        cont_three : GeneralizedContractionShell
+            Contracted Cartesian Gaussians (of the same shell) associated with the third index.
+        cont_four : GeneralizedContractionShell
+            Contracted Cartesian Gaussians (of the same shell) associated with the fourth index.
+
+        Returns
+        -------
+        array_cont : np.ndarray(M_1, L_cart_1, M_2, L_cart_2, M_3, L_cart_3, M_4, L_cart_4)
+            Electron-electron repulsion integral associated with the given contractions.
+            Integrals are in Chemists' notation.
+
+        Raises
+        ------
+        TypeError
+            If any contraction is not a `GeneralizedContractionShell` instance.
+
+        """
+        if not isinstance(cont_one, GeneralizedContractionShell):
+            raise TypeError("`cont_one` must be a `GeneralizedContractionShell` instance.")
+        if not isinstance(cont_two, GeneralizedContractionShell):
+            raise TypeError("`cont_two` must be a `GeneralizedContractionShell` instance.")
+        if not isinstance(cont_three, GeneralizedContractionShell):
+            raise TypeError("`cont_three` must be a `GeneralizedContractionShell` instance.")
+        if not isinstance(cont_four, GeneralizedContractionShell):
+            raise TypeError("`cont_four` must be a `GeneralizedContractionShell` instance.")
+
+        # --- Schwarz screening: skip negligible shell quartets ---
+        screener = kwargs.get("screener")
+        index_map = kwargs.get("contraction_index_map")
+        if screener is not None and index_map is not None:
+            i = index_map.get(id(cont_one))
+            j = index_map.get(id(cont_two))
+            k = index_map.get(id(cont_three))
+            l_idx = index_map.get(id(cont_four))
+            if i is not None and j is not None and k is not None and l_idx is not None:
+                if not screener.is_significant(i, j, k, l_idx):
+                    shape = (
+                        cont_one.coeffs.shape[1],
+                        len(cont_one.angmom_components_cart),
+                        cont_two.coeffs.shape[1],
+                        len(cont_two.angmom_components_cart),
+                        cont_three.coeffs.shape[1],
+                        len(cont_three.angmom_components_cart),
+                        cont_four.coeffs.shape[1],
+                        len(cont_four.angmom_components_cart),
+                    )
+                    return np.zeros(shape)
+
+        # --- Contraction reordering for efficiency (l_a >= l_b, l_c >= l_d, l_a >= l_c) ---
+        bra_swapped = cont_one.angmom < cont_two.angmom
+        if bra_swapped:
+            cont_one, cont_two = cont_two, cont_one
+
+        ket_swapped = cont_three.angmom < cont_four.angmom
+        if ket_swapped:
+            cont_three, cont_four = cont_four, cont_three
+
+        braket_swapped = cont_one.angmom < cont_three.angmom
+        if braket_swapped:
+            cont_one, cont_three = cont_three, cont_one
+            cont_two, cont_four = cont_four, cont_two
+
+        integrals = compute_two_electron_integrals_os_hgp(
+            cls.boys_func,
+            cont_one.coord,
+            cont_one.angmom,
+            cont_one.angmom_components_cart,
+            cont_one.exps,
+            cont_one.coeffs,
+            cont_two.coord,
+            cont_two.angmom,
+            cont_two.angmom_components_cart,
+            cont_two.exps,
+            cont_two.coeffs,
+            cont_three.coord,
+            cont_three.angmom,
+            cont_three.angmom_components_cart,
+            cont_three.exps,
+            cont_three.coeffs,
+            cont_four.coord,
+            cont_four.angmom,
+            cont_four.angmom_components_cart,
+            cont_four.exps,
+            cont_four.coeffs,
+        )
+
+        # --- Un-swap axes to restore original ordering ---
+        # Output shape from compute: (L_a, L_b, L_c, L_d, M_a, M_b, M_c, M_d)
+        if braket_swapped:
+            integrals = np.transpose(integrals, (2, 3, 0, 1, 6, 7, 4, 5))
+        if ket_swapped:
+            integrals = np.swapaxes(np.swapaxes(integrals, 2, 3), 6, 7)
+        if bra_swapped:
+            integrals = np.swapaxes(np.swapaxes(integrals, 0, 1), 4, 5)
+
+        integrals = np.transpose(integrals, (4, 0, 5, 1, 6, 2, 7, 3))
+
+        return integrals
+
+
+def electron_repulsion_integral_improved(
+    basis, transform=None, notation="physicist", schwarz_threshold=0.0
+):
+    r"""Return the electron repulsion integrals using the improved OS+HGP algorithm.
+
+    This function uses the Obara-Saika + Head-Gordon-Pople recursion scheme,
+    which is more efficient than the original implementation because HRR is
+    applied after contraction.
+
+    In the Chemists' notation, the integrals are:
+
+    .. math::
+
+        \int \phi^*_a(\mathbf{r}_1) \phi_b(\mathbf{r}_1)
+        \frac{1}{|\mathbf{r}_1 - \mathbf{r}_2|}
+        \phi^*_c(\mathbf{r}_2) \phi_d(\mathbf{r}_2) d\mathbf{r}
+
+    And in the Physicists' notation:
+
+    .. math::
+
+        \int \phi^*_a(\mathbf{r}_1) \phi^*_b(\mathbf{r}_2)
+        \frac{1}{|\mathbf{r}_1 - \mathbf{r}_2|}
+        \phi_c(\mathbf{r}_1) \phi_d(\mathbf{r}_2) d\mathbf{r}
+
+    Parameters
+    ----------
+    basis : list/tuple of GeneralizedContractionShell
+        Shells of generalized contractions.
+    transform : np.ndarray(K, K_cont)
+        Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
+        combinations of contractions (e.g. MO).
+        Default is no transformation.
+    notation : {"physicist", "chemist"}
+        Convention with which the integrals are ordered.
+        Default is Physicists' notation.
+    schwarz_threshold : float
+        Schwarz screening threshold. Shell quartets with Schwarz bound below
+        this threshold are skipped. Default is 0.0 (no screening).
+
+    Returns
+    -------
+    array : np.ndarray(K, K, K, K)
+        Electron-electron repulsion integral of the given basis set.
+
+    Raises
+    ------
+    ValueError
+        If `notation` is not one of "physicist" or "chemist".
+
+    """
+    if notation not in ["physicist", "chemist"]:
+        raise ValueError("`notation` must be one of 'physicist' or 'chemist'")
+
+    screening_kwargs = {}
+    if schwarz_threshold > 0:
+        cache_key = (tuple(id(shell) for shell in basis), schwarz_threshold)
+        if cache_key not in _schwarz_screener_cache:
+            _schwarz_screener_cache[cache_key] = SchwarzScreener(
+                list(basis),
+                get_boys_function("coulomb"),
+                compute_two_electron_integrals_os_hgp,
+                schwarz_threshold,
+            )
+        screener = _schwarz_screener_cache[cache_key]
+        index_map = {id(shell): i for i, shell in enumerate(basis)}
+        screening_kwargs = {"screener": screener, "contraction_index_map": index_map}
+
+    coord_type = [ct for ct in [shell.coord_type for shell in basis]]
+
+    if transform is not None:
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_lincomb(
+            transform, coord_type, **screening_kwargs
+        )
+    elif all(ct == "cartesian" for ct in coord_type):
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_cartesian(
+            **screening_kwargs
+        )
+    elif all(ct == "spherical" for ct in coord_type):
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_spherical(
+            **screening_kwargs
+        )
+    else:
+        array = ElectronRepulsionIntegralImproved(basis).construct_array_mix(
+            coord_type, **screening_kwargs
+        )
 
     if notation == "physicist":
         array = np.transpose(array, (0, 2, 1, 3))
