@@ -21,7 +21,7 @@ def evaluate_deriv_prim(coord, orders, center, angmom_comps, alpha):
     angmom_comps : np.ndarray(3,)
         Component of the angular momentum that corresponds to this dimension.
     alpha : float
-        Value of the exponential in the Guassian primitive.
+        Value of the exponential in the Gaussian primitive.
 
     Returns
     -------
