@@ -1,4 +1,5 @@
 """Test gbasis.integrals._moment_int."""
+
 import itertools as it
 
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals

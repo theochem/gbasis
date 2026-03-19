@@ -1,4 +1,5 @@
 """Test gbasis.integrals.overlap_asymm."""
+
 from gbasis.integrals.overlap import overlap_integral
 from gbasis.integrals.overlap_asymm import overlap_integral_asymmetric
 from gbasis.parsers import make_contractions, parse_nwchem, parse_gbs
@@ -119,6 +120,10 @@ def test_overlap_asymmetric_screening_accuracy(precision):
 
     #  the screening tolerance needs to be 1e-4 times the desired precision
     tol_screen = precision * 1e-4
-    overlap_asymmetric = overlap_integral_asymmetric(contraction, contraction, tol_screen=tol_screen)
-    overlap_asymmetric_no_screen = overlap_integral_asymmetric(contraction, contraction, screen_basis=False)
+    overlap_asymmetric = overlap_integral_asymmetric(
+        contraction, contraction, tol_screen=tol_screen
+    )
+    overlap_asymmetric_no_screen = overlap_integral_asymmetric(
+        contraction, contraction, screen_basis=False
+    )
     assert np.allclose(overlap_asymmetric, overlap_asymmetric_no_screen, atol=precision)

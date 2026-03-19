@@ -1,4 +1,5 @@
 """Test gbasis.integrals.kinetic_energy."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import _compute_differential_operator_integrals
 from gbasis.integrals.kinetic_energy import kinetic_energy_integral, KineticEnergyIntegral
@@ -250,10 +251,11 @@ def test_kinetic_energy_integral_horton_anorcc_bec():
     ke_int_values = kinetic_energy_integral(basis, screen_basis=False)
     assert np.allclose(ke_int_values, horton_kinetic_energy_integral)
 
+
 @pytest.mark.parametrize("precision", [1.0e-5, 1.0e-6, 1.0e-7, 1.0e-8])
 def test_kinetic_screening_accuracy(precision):
     """Test kinetic energy screening."""
-    
+
     basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
     atsymbols = ["H", "C", "Kr"]
     atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])

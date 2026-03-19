@@ -1,6 +1,5 @@
 import sys
 
-
 # Original string
 old_intor1 = '(gen-cint "intor1.c"'
 

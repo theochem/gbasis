@@ -29,7 +29,6 @@ from gbasis.wrappers import from_iodata
 
 from utils import find_datafile
 
-
 TEST_BASIS_SETS = [
     pytest.param("data_sto6g.nwchem", id="STO-6G"),
     pytest.param("data_631g.nwchem", id="6-31G"),
@@ -65,6 +64,7 @@ TEST_INTEGRALS = [
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
+
 
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
@@ -175,11 +175,10 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
 
 
-
 TEST_SYSTEMS_IODATA = [
     pytest.param("h2o_hf_ccpv5z_cart.fchk", ["O", "H", "H"], "Cartesian", id="h2o_cart"),
     pytest.param("h2o_hf_ccpv5z_sph.fchk", ["O", "H", "H"], "Spherical", id="h2o_sph"),
-    ]
+]
 
 TEST_COORD_TRANSFORM = [
     pytest.param(False, id="no-transform"),
@@ -192,10 +191,14 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("nuclear_attraction", id="NuclearAttraction"),
     pytest.param("momentum", id="Momentum"),
     pytest.param("angular_momentum", id="AngularMomentum"),
-    pytest.param("electron_repulsion", marks=pytest.mark.skip(reason='TOO SLOW'), id="ElectronRepulsion"),
+    pytest.param(
+        "electron_repulsion", marks=pytest.mark.skip(reason="TOO SLOW"), id="ElectronRepulsion"
+    ),
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
+
+
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
     len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.so*"))) == 0,
@@ -211,8 +214,8 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
 
     atol, rtol = 1e-6, 1e-6
 
-    mol=load_one(find_datafile(fname))
-    py_basis=from_iodata(mol)
+    mol = load_one(find_datafile(fname))
+    py_basis = from_iodata(mol)
 
     lc_basis = CBasis(py_basis, elements, mol.atcoords, coord_type=coord_type)
 
@@ -230,7 +233,9 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
 
     elif integral == "kinetic_energy":
         if transform:
-            py_int = kinetic_energy_integral(py_basis, transform=mol.mo.coeffs.T, screen_basis=False)
+            py_int = kinetic_energy_integral(
+                py_basis, transform=mol.mo.coeffs.T, screen_basis=False
+            )
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
             lc_int = lc_basis.kinetic_energy_integral(transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
@@ -242,8 +247,9 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
 
     elif integral == "nuclear_attraction":
         if transform:
-            py_int = nuclear_electron_attraction_integral(py_basis, mol.atcoords,
-                                                          mol.atnums, transform=mol.mo.coeffs.T)
+            py_int = nuclear_electron_attraction_integral(
+                py_basis, mol.atcoords, mol.atnums, transform=mol.mo.coeffs.T
+            )
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
             lc_int = lc_basis.nuclear_attraction_integral(transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
@@ -298,11 +304,13 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
         charges = np.asarray([1.0, 0.666, -3.1415926])
         if transform:
             for i in range(1, len(charges) + 1):
-                py_int = point_charge_integral(py_basis, charge_coords[:i],
-                                               charges[:i], transform=mol.mo.coeffs.T)
+                py_int = point_charge_integral(
+                    py_basis, charge_coords[:i], charges[:i], transform=mol.mo.coeffs.T
+                )
                 npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
-                lc_int = lc_basis.point_charge_integral(charge_coords[:i],
-                                                        charges[:i], transform=mol.mo.coeffs.T)
+                lc_int = lc_basis.point_charge_integral(
+                    charge_coords[:i], charges[:i], transform=mol.mo.coeffs.T
+                )
                 npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
 
         else:
@@ -329,7 +337,9 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
             ]
         )
         if transform:
-            py_int = moment_integral(py_basis, origin, orders, transform=mol.mo.coeffs.T, screen_basis=False)
+            py_int = moment_integral(
+                py_basis, origin, orders, transform=mol.mo.coeffs.T, screen_basis=False
+            )
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
             lc_int = lc_basis.moment_integral(orders, origin=origin, transform=mol.mo.coeffs.T)
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))

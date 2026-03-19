@@ -1,4 +1,5 @@
 """Test gbasis.base.BaseGuassianRelatedArray."""
+
 from gbasis.base import BaseGaussianRelatedArray
 from gbasis.contractions import GeneralizedContractionShell
 import numpy as np

@@ -1,4 +1,5 @@
 """Test gbasis.spherical."""
+
 import itertools as it
 
 from gbasis.spherical import (

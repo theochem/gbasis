@@ -1,4 +1,5 @@
 """Test gbasis.base_four_symmetric."""
+
 from gbasis.base_four_symm import BaseFourIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.spherical import generate_transformation

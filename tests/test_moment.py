@@ -1,4 +1,5 @@
 """Test gbasis.integrals.moment."""
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._moment_int import _compute_multipole_moment_integrals
 from gbasis.integrals.moment import Moment, moment_integral
