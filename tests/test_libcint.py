@@ -13,7 +13,10 @@ import numpy.testing as npt
 import gbasis
 
 from gbasis.integrals.angular_momentum import angular_momentum_integral
-from gbasis.integrals.electron_repulsion import electron_repulsion_integral
+from gbasis.integrals.electron_repulsion import (
+    electron_repulsion_integral,
+    electron_repulsion_integral_improved,
+)
 from gbasis.integrals.kinetic_energy import kinetic_energy_integral
 from gbasis.integrals.moment import moment_integral
 from gbasis.integrals.momentum import momentum_integral
@@ -80,7 +83,7 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
     against the GBasis Python integrals.
 
     """
-    atol, rtol = 1e-4, 1e-4
+    atol, rtol = 1e-6, 1e-6
 
     atcoords = atcoords / 0.5291772083
 
@@ -125,7 +128,7 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
     elif integral == "electron_repulsion":
-        py_int = electron_repulsion_integral(py_basis)
+        py_int = electron_repulsion_integral_improved(py_basis)
         npt.assert_array_equal(
             py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
         )
@@ -133,6 +136,8 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         npt.assert_array_equal(
             lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
         )
+        npt.assert_allclose(lc_int, py_int, atol=1e-4, rtol=1e-5)
+        return
 
     elif integral == "point_charge":
         charge_coords = np.asarray([[2.0, 2.0, 2.0], [-3.0, -3.0, -3.0], [-1.0, 2.0, -3.0]])
@@ -207,7 +212,7 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
     from iodata import load_one
     from gbasis.integrals.libcint import ELEMENTS, LIBCINT, CBasis
 
-    atol, rtol = 1e-4, 1e-4
+    atol, rtol = 1e-6, 1e-6
 
     mol = load_one(find_datafile(fname))
     py_basis = from_iodata(mol)

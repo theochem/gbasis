@@ -1,10 +1,11 @@
 """Module for computing point charge integrals."""
 
+import numpy as np
+
 from gbasis.base_two_symm import BaseTwoIndexSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._one_elec_int import _compute_one_elec_integrals
-import numpy as np
-from scipy.special import hyp1f1  # pylint: disable=E0611
+from gbasis.integrals.boys_functions import boys_function_standard
 
 
 class PointChargeIntegral(BaseTwoIndexSymmetric):
@@ -66,7 +67,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
     """
 
     @staticmethod
-    def boys_func(orders, weighted_dist):
+    def boys_func(orders, weighted_dist, rho=None):
         r"""Return the value of Boys function for the given orders and weighted distances.
 
         The Coulombic Boys function can be written as a renormalized special case of the Kummer
@@ -114,7 +115,7 @@ class PointChargeIntegral(BaseTwoIndexSymmetric):
         side.
 
         """
-        return hyp1f1(orders + 1 / 2, orders + 3 / 2, -weighted_dist) / (2 * orders + 1)
+        return boys_function_standard(orders, weighted_dist)
 
     @classmethod
     def construct_array_contraction(
