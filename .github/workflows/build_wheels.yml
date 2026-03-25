@@ -1,0 +1,23 @@
+name: GBasis Build Wheels Prototype
+
+on:
+  workflow_dispatch: # This allows you to trigger the build manually from GitHub
+
+jobs:
+  build_wheels:
+    name: Build wheels on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.22.0
+        env:
+          # For our prototype, we will just target Python 3.11 on Linux
+          CIBW_BUILD: cp311-manylinux_x86_64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gbasis-wheels
+          path: ./wheelhouse/*.whl
