@@ -57,7 +57,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
 
     @staticmethod
     def construct_array_contraction(
-        contractions_one, contractions_two, screen_basis=True, tol_screen=1e-8
+        contractions_one, contractions_two, screen_basis=False, tol_screen=1e-8
     ):
         """Return the integrals over the momentum operator of the given contractions.
 
@@ -70,7 +70,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the momentum energy integral.
         screen_basis : bool, optional
-            A toggle to enable or disable screening. Default value is True to enable screening.
+            A toggle to enable or disable screening. Default value is False.
         tol_screen : float, optional
             The tolerance used for screening overlap integrals. `tol_screen` is combined with the
             minimum contraction exponents to compute a cutoff which is compared to the distance
@@ -140,7 +140,7 @@ class MomentumIntegral(BaseTwoIndexSymmetric):
         return -1j * np.transpose(output, (1, 2, 3, 4, 0))
 
 
-def momentum_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):
+def momentum_integral(basis, transform=None, screen_basis=False, tol_screen=1e-8):
     r"""Return integral over momentum operator of the given basis set.
 
     .. math::
@@ -166,7 +166,7 @@ def momentum_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8)
         Default is no transformation.
         Default is no transformation.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is False.
     tol_screen : float, optional
         The tolerance used for screening overlap integrals. `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance

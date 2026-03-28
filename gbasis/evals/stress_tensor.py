@@ -1,4 +1,5 @@
 """Module for computing properties related to the stress tensor."""
+
 from gbasis.evals.density import (
     evaluate_density_laplacian,
     evaluate_deriv_density,
@@ -8,7 +9,16 @@ import numpy as np
 
 
 # TODO: need to be tested against reference
-def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
+def evaluate_stress_tensor(
+    one_density_matrix,
+    basis,
+    points,
+    alpha=1,
+    beta=0,
+    transform=None,
+    screen_basis=False,
+    tol_screen=1e-8,
+):
     r"""Return the stress tensor evaluated at the given coordinates.
 
     Stress tensor is defined here as:
@@ -70,6 +80,13 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
+    screen_basis : bool, optional
+        Whether to screen out points with negligible contributions. Default value is False.
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -99,6 +116,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 1:
                 output[i, j] += (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -108,6 +127,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if i == j and beta != 0:
                 output[i, j] -= (
@@ -118,6 +139,8 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 )
             output[j, i] = output[i, j]
@@ -125,7 +148,16 @@ def evaluate_stress_tensor(one_density_matrix, basis, points, alpha=1, beta=0, t
 
 
 # TODO: need to be tested against reference
-def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0, transform=None):
+def evaluate_ehrenfest_force(
+    one_density_matrix,
+    basis,
+    points,
+    alpha=1,
+    beta=0,
+    transform=None,
+    screen_basis=False,
+    tol_screen=1e-8,
+):
     r"""Return the Ehrenfest force.
 
     Ehrenfest force is the negative of the divergence of the stress tensor:
@@ -183,6 +215,13 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
     beta : {int, float}
         Second parameter of the stress tensor.
         Default value is 0.
+    screen_basis : bool, optional
+        Whether to screen out points with negligible contributions. Default value is False.
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -211,6 +250,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 1:
                 output[i] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -220,6 +261,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if alpha != 0.5:
                 output[i] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -229,6 +272,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                     basis,
                     points,
                     transform=transform,
+                    screen_basis=screen_basis,
+                    tol_screen=tol_screen,
                 )
             if beta != 0:
                 output[i] += (
@@ -240,6 +285,8 @@ def evaluate_ehrenfest_force(one_density_matrix, basis, points, alpha=1, beta=0,
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 )
     return output.T
@@ -254,6 +301,8 @@ def evaluate_ehrenfest_hessian(
     beta=0,
     transform=None,
     symmetric=False,
+    screen_basis=False,
+    tol_screen=1e-8,
 ):
     r"""Return the Ehrenfest Hessian.
 
@@ -326,6 +375,13 @@ def evaluate_ehrenfest_hessian(
         Flag for symmetrizing the Hessian.
         If True, then the Hessian is symmetrized by averaging it with its transpose.
         Default value is False.
+    screen_basis : bool, optional
+        Whether to screen out points with negligible contributions. Default value is False.
+    tol_screen : float
+        Screening tolerance for excluding evaluations. Points with values below this tolerance
+        will not be evaluated (they will be set to zero). Internal computed quantities that
+        affect the results below this tolerance will also be ignored to speed up the
+        evaluation. Default value is 1e-8.
 
     Returns
     -------
@@ -356,6 +412,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] += alpha * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one,
@@ -364,6 +422,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if alpha != 1:
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
@@ -373,6 +433,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] -= (1 - alpha) * evaluate_deriv_reduced_density_matrix(
                         2 * orders_one + orders_two,
@@ -381,6 +443,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if alpha != 0.5:
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
@@ -390,6 +454,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                     output[i, j] -= (1 - 2 * alpha) * evaluate_deriv_reduced_density_matrix(
                         orders_one + orders_two,
@@ -398,6 +464,8 @@ def evaluate_ehrenfest_hessian(
                         basis,
                         points,
                         transform=transform,
+                        screen_basis=screen_basis,
+                        tol_screen=tol_screen,
                     )
                 if beta != 0:
                     output[i, j] += (
@@ -409,6 +477,8 @@ def evaluate_ehrenfest_hessian(
                             basis,
                             points,
                             transform=transform,
+                            screen_basis=screen_basis,
+                            tol_screen=tol_screen,
                         )
                     )
     if symmetric:
