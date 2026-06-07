@@ -36,7 +36,6 @@ else()
     message(STATUS "Architecture: ARM/non-AVX detected → use libcint")
 endif()
 
-# ── FetchContent — libcint ya qcint download karo ─────────
 
 # Download libcint or qcint based on platform detection
 # Both are pinned to v6.1.2 for stability
