@@ -1,6 +1,12 @@
+# Replaced setuptools with scikit-build-core
+# Reason: setuptools cannot compile C code or call CMake
+# scikit-build-core can call CMake which will compile libcint
+
 [build-system]
 requires = ["numpy>=2.0", "scikit-build-core>=0.9"]
 build-backend = "scikit_build_core.build"
+
+
 
 [project]
 name = "qc-gbasis"
@@ -31,6 +37,8 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
+    # Updated to numpy>=2.0 required for scikit-build-core C extension support
+    # Note: Keep consistent with .github/workflows/pytest.yaml
     "numpy>=2.0",
     "scipy>=1.11.1",
     "importlib_resources",
@@ -39,15 +47,28 @@ dependencies = [
 dynamic = ["version"]
 
 [tool.scikit-build]
+# Build type: Release for optimized production build (no debug symbols)
 cmake.build-type = "Release"
+
+# Replaces [tool.setuptools.packages.find] from old setuptools config
+# Only pack gbasis folder in the wheel
 wheel.packages = ["gbasis"]
 
+
+
 [tool.scikit-build.metadata.version]
+# Automatically get version from git tags via setuptools_scm
 provider = "scikit_build_core.metadata.setuptools_scm"
 
+# Required to activate setuptools_scm for automatic versioning from git tags
 [tool.setuptools_scm]
 
+
+
 [project.optional-dependencies]
+
+# Install with: pip install gbasis[dev]
+
 dev = [
     "tox",
     "pre-commit",
@@ -61,6 +82,9 @@ dev = [
     "sphinx_autodoc_typehints",
     "sphinx-copybutton",
 ]
+
+# Install with: pip install gbasis[doc]
+
 doc = [
     "numpydoc",
     "sphinx_copybutton",
@@ -68,15 +92,26 @@ doc = [
     "nbsphinx",
     "sphinx_rtd_theme",
     "sphinx_autodoc_typehints",
-    "docutils==0.16",
+    "docutils==0.16", # Needed to show bullet points in sphinx_rtd_theme
     "nbsphinx-link"
 ]
+
+# iodata = [
+#  "qc-iodata@git+https://github.com/theochem/iodata.git@main"
+# ]
+
+# Install with: pip install gbasis[iodata]
+
 iodata = [
     "qc-iodata>=1.0.0a5"
 ]
+
+# Install with: pip install gbasis[pyscf]
+
 pyscf = [
     "pyscf>=1.6.1"
 ]
+
 
 [project.urls]
 Documentation = "https://gbasis.qcdevs.org"
@@ -89,6 +124,14 @@ Organization = "https://github.com/theochem/"
 line-length = 100
 
 [tool.ruff]
+# E is pycodestyle
+# F is pyflakes
+# UP is pyupgrade - automatically updates syntax
+# B is flake8-bugbear
+# I is sort imports alphabetically
+# PGH is pygrep-hooks
+# PL is pylint
+# RUF is Ruff-specific rules
 select = ["E", "F", "UP", "B", "I", "PGH", "PL", "RUF"]
 line-length = 100
 ignore = ["PLR2004", "PLR0913", "PLR0912", "PLW2901", "PLR0915", "RUF013"]
@@ -98,3 +141,8 @@ extend-exclude = ["doc/*", "doc/*/*"]
 minversion = "7.0"
 testpaths = ["tests"]
 addopts = "-v"
+
+#[tool.setuptools_scm]
+#write_to = "src/gbasis/_version.py"
+#version_scheme = "post-release"
+#local_scheme = "no-local-version"
