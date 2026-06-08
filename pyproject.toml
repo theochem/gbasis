@@ -1,6 +1,6 @@
 # Replaced setuptools with scikit-build-core
-# Reason: setuptools cannot compile C code or call CMake
-# scikit-build-core can call CMake which will compile libcint
+# Reason: use a CMake-based build (via scikit-build-core) to compile and bundle libcint/qcint
+# as part of the Python wheel build
 
 [build-system]
 requires = ["numpy>=2.0", "scikit-build-core>=0.9"]
