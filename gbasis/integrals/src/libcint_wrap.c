@@ -1,4 +1,6 @@
 
-/* libcint Python/C API bindings
- * PR 3 mein implement hoga
- */
+
+ /* libcint Python/C API bindings.
+  * The full bindings will be implemented in a follow-up PR.
+  */
+  
