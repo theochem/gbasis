@@ -1,8 +1,8 @@
 # CMakeLists.txt — Build C extension for GBasis libcint integration  (Issue: #229)
 
 # Usage:
-#   Default (all platforms):  pip install gbasis
-#   qcint (x86+AVX2 only):   pip install gbasis -C cmake.args="-DUSE_QCINT=ON"
+#   Default (all platforms):  pip install qc-gbasis
+#   qcint (x86+AVX2 only):   pip install qc-gbasis -C cmake.args="-DUSE_QCINT=ON"
 
 
 cmake_minimum_required(VERSION 3.17)
@@ -26,14 +26,22 @@ execute_process(
 # Detect platform: use qcint on x86+AVX2, libcint on ARM/non-AVX
 # qcint is an optimized version of libcint for x86 with SIMD support
 include(CheckCCompilerFlag)
-check_c_compiler_flag("-mavx2" HAS_AVX2)
 
-if(HAS_AVX2 AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-    set(USE_QCINT ON)
-    message(STATUS "Architecture: x86 + AVX2 detected → use qcint")
+if(MSVC)
+    check_c_compiler_flag("/arch:AVX2" HAS_AVX2)
 else()
-    set(USE_QCINT OFF)
-    message(STATUS "Architecture: ARM/non-AVX detected → use libcint")
+    check_c_compiler_flag("-mavx2" HAS_AVX2)
+endif()
+
+# Respect user override via -DUSE_QCINT=ON/OFF; otherwise auto-detect
+if(NOT DEFINED USE_QCINT)
+    if(HAS_AVX2 AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+        set(USE_QCINT ON CACHE BOOL "Use qcint instead of libcint" FORCE)
+        message(STATUS "Architecture: x86 + AVX2 detected — use qcint")
+    else()
+        set(USE_QCINT OFF CACHE BOOL "Use qcint instead of libcint" FORCE)
+        message(STATUS "Architecture: ARM/non-AVX detected — use libcint")
+    endif()
 endif()
 
 
