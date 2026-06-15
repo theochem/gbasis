@@ -75,6 +75,14 @@ python_add_library(libcint_bindings MODULE
     WITH_SOABI
 )
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set_property(TARGET libcint_bindings PROPERTY SUFFIX ".${SKBUILD_SOABI}.pyd")
+else()
+    set_property(TARGET libcint_bindings PROPERTY SUFFIX ".${SKBUILD_SOABI}${CMAKE_SHARED_MODULE_SUFFIX}")
+endif()
+
+
+
 # Include NumPy and libcint headers
 target_include_directories(libcint_bindings PRIVATE
     ${NumPy_INCLUDE_DIRS}
@@ -101,4 +109,5 @@ install(TARGETS libcint_bindings
 # Install libcint shared library alongside the extension
 install(FILES $<TARGET_FILE:cint>
     DESTINATION ${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib
+    RENAME libcint.6.dylib
 )
