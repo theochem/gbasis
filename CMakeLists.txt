@@ -75,11 +75,6 @@ python_add_library(libcint_bindings MODULE
     WITH_SOABI
 )
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set_property(TARGET libcint_bindings PROPERTY SUFFIX ".${SKBUILD_SOABI}.pyd")
-else()
-    set_property(TARGET libcint_bindings PROPERTY SUFFIX ".${SKBUILD_SOABI}${CMAKE_SHARED_MODULE_SUFFIX}")
-endif()
 
 
 
