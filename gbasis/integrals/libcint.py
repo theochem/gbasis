@@ -571,17 +571,16 @@ class CBasis:
         self._eri = self.make_int2e("int2e")
         self._rinv = self.make_int1e("int1e_rinv", inv_origin=True)
         self._mom = self.make_int1e(
-            "int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True
+            "int1e_ipovlp", components=(3,), constant=-1j, is_complex=True, origin=True
         )
-        self._amom = self.make_int1e(
-            "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
-        )
+        # self._amom = self.make_int1e(
+            # "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
+        # )
         self._d_ovlp = self.make_int1e("int1e_ipovlp", components=(3,))
         self._d_kin = self.make_int1e("int1e_ipkin", components=(3,))
         self._d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
         self._d_eri = self.make_int2e("int2e_ip1", components=(3,))
         self._d_rinv = self.make_int1e("int1e_iprinv", components=(3,), inv_origin=True)
-        self._moments = {}
         self._moments = {}
         # Order 1: int1e_r has 3 components (x, y, z)
         _r = self.make_int1e("int1e_r", components=(3,), origin=True)

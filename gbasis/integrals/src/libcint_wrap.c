@@ -34,6 +34,7 @@
  */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+#include <numpy/arrayobject.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -68,8 +69,8 @@ extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int 
 
 /*
  * DEFINE_INTEGRAL_INT1e(func_name, libcint_func)
- * Generates a Python wrapper for a 1-electron libcint integral.
- * Arguments passed as Python integers (pointer addresses).
+ * Generates a Python/C API wrapper for a 1-electron libcint integral.
+ * Accepts NumPy arrays directly — uses PyArray_GETPTR1 (NumPy C-API).
  */
 
 /* Macro for 1-electron wrappers */
@@ -77,18 +78,22 @@ extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int 
 static PyObject *                                                              \
 func_name(PyObject *self, PyObject *args)                                      \
 {                                                                              \
-    PyObject *out_obj, *dims_obj, *shls_obj, *atm_obj, *bas_obj, *env_obj;    \
+    PyArrayObject *out_arr, *dims_arr, *shls_arr, *atm_arr, *bas_arr, *env_arr; \
     int natm, nbas;                                                            \
-    if (!PyArg_ParseTuple(args, "OOOOiOiO",                                   \
-                          &out_obj, &dims_obj, &shls_obj,                      \
-                          &atm_obj, &natm, &bas_obj, &nbas, &env_obj))         \
+    if (!PyArg_ParseTuple(args, "O!O!O!O!iO!iO!",                             \
+                          &PyArray_Type, &out_arr,                             \
+                          &PyArray_Type, &dims_arr,                            \
+                          &PyArray_Type, &shls_arr,                            \
+                          &PyArray_Type, &atm_arr, &natm,                      \
+                          &PyArray_Type, &bas_arr, &nbas,                      \
+                          &PyArray_Type, &env_arr))                            \
         return NULL;                                                           \
-    double *out   = (double *)PyLong_AsVoidPtr(out_obj);                       \
-    int    *dims  = (int *)PyLong_AsVoidPtr(dims_obj);                         \
-    int    *shls  = (int *)PyLong_AsVoidPtr(shls_obj);                         \
-    int    *atm   = (int *)PyLong_AsVoidPtr(atm_obj);                          \
-    int    *bas   = (int *)PyLong_AsVoidPtr(bas_obj);                          \
-    double *env   = (double *)PyLong_AsVoidPtr(env_obj);                       \
+    double *out  = (double *)PyArray_GETPTR1(out_arr,  0);                     \
+    int    *dims = (int *)   PyArray_GETPTR1(dims_arr, 0);                     \
+    int    *shls = (int *)   PyArray_GETPTR1(shls_arr, 0);                     \
+    int    *atm  = (int *)   PyArray_GETPTR2(atm_arr,  0, 0);                  \
+    int    *bas  = (int *)   PyArray_GETPTR2(bas_arr,  0, 0);                  \
+    double *env  = (double *)PyArray_GETPTR1(env_arr,  0);                     \
     int result = libcint_func(out, dims, shls, atm, natm,                      \
                               bas, nbas, env, NULL, NULL);                     \
     return PyLong_FromLong(result);                                            \
@@ -108,24 +113,29 @@ DEFINE_INTEGRAL_INT1e(octupole_sph,        int1e_rrr_sph)
 
 /*
  * electron_repulsion_sph — 2-electron ERI wrapper.
+ * Uses PyArray_GETPTR1/2 for NumPy array access.
  * Same signature as 1-electron but uses int2e_sph (4-center integral).
  */
 
 static PyObject *
 electron_repulsion_sph(PyObject *self, PyObject *args)
 {
-    PyObject *out_obj, *dims_obj, *shls_obj, *atm_obj, *bas_obj, *env_obj;
+    PyArrayObject *out_arr, *dims_arr, *shls_arr, *atm_arr, *bas_arr, *env_arr;
     int natm, nbas;
-    if (!PyArg_ParseTuple(args, "OOOOiOiO",
-                          &out_obj, &dims_obj, &shls_obj,
-                          &atm_obj, &natm, &bas_obj, &nbas, &env_obj))
+    if (!PyArg_ParseTuple(args, "O!O!O!O!iO!iO!",
+                          &PyArray_Type, &out_arr,
+                          &PyArray_Type, &dims_arr,
+                          &PyArray_Type, &shls_arr,
+                          &PyArray_Type, &atm_arr, &natm,
+                          &PyArray_Type, &bas_arr, &nbas,
+                          &PyArray_Type, &env_arr))
         return NULL;
-    double *out   = (double *)PyLong_AsVoidPtr(out_obj);
-    int    *dims  = (int *)PyLong_AsVoidPtr(dims_obj);
-    int    *shls  = (int *)PyLong_AsVoidPtr(shls_obj);
-    int    *atm   = (int *)PyLong_AsVoidPtr(atm_obj);
-    int    *bas   = (int *)PyLong_AsVoidPtr(bas_obj);
-    double *env   = (double *)PyLong_AsVoidPtr(env_obj);
+    double *out  = (double *)PyArray_GETPTR1(out_arr,  0);
+    int    *dims = (int *)   PyArray_GETPTR1(dims_arr, 0);
+    int    *shls = (int *)   PyArray_GETPTR1(shls_arr, 0);
+    int    *atm  = (int *)   PyArray_GETPTR2(atm_arr,  0, 0);
+    int    *bas  = (int *)   PyArray_GETPTR2(bas_arr,  0, 0);
+    double *env  = (double *)PyArray_GETPTR1(env_arr,  0);
     int result = int2e_sph(out, dims, shls, atm, natm,
                            bas, nbas, env, NULL, NULL);
     return PyLong_FromLong(result);
@@ -156,5 +166,6 @@ static struct PyModuleDef libcintmodule = {
 PyMODINIT_FUNC
 PyInit_libcint_bindings(void)
 {
+    import_array();
     return PyModule_Create(&libcintmodule);
 }
