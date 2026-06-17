@@ -141,8 +141,60 @@ electron_repulsion_sph(PyObject *self, PyObject *args)
     return PyLong_FromLong(result);
 }
 
+/* overlap_integral_shellloop — shell-by-shell loop in C for overlap */
+static PyObject *
+overlap_integral_shellloop(PyObject *self, PyObject *args)
+{
+    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;
+    int natm, nbas, nbfn;
+
+    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i",
+                          &PyArray_Type, &out_arr,
+                          &natm,
+                          &PyArray_Type, &atm_arr,
+                          &nbas,
+                          &PyArray_Type, &bas_arr,
+                          &PyArray_Type, &env_arr,
+                          &PyArray_Type, &offs_arr,
+                          &nbfn))
+        return NULL;
+
+    double *out  = (double *)PyArray_DATA(out_arr);
+    int    *atm  = (int *)   PyArray_GETPTR2(atm_arr, 0, 0);
+    int    *bas  = (int *)   PyArray_GETPTR2(bas_arr, 0, 0);
+    double *env  = (double *)PyArray_GETPTR1(env_arr, 0);
+    int    *offs = (int *)   PyArray_GETPTR1(offs_arr, 0);
+
+    int shls[2];
+    double buf[10000] = {0};
+
+    int ipos = 0;
+    for (int ishl = 0; ishl < nbas; ishl++) {
+        shls[0] = ishl;
+        int p_off = offs[ishl];
+        int jpos = 0;
+        for (int jshl = 0; jshl <= ishl; jshl++) {
+            shls[1] = jshl;
+            int q_off = offs[jshl];
+            int1e_ovlp_sph(buf, NULL, shls, atm, natm, bas, nbas, env, NULL, NULL);
+            for (int p = 0; p < p_off; p++) {
+                for (int q = 0; q < q_off; q++) {
+                    double val = buf[p + q * p_off];
+                    out[(ipos+p) * nbfn + (jpos+q)] = val;
+                    out[(jpos+q) * nbfn + (ipos+p)] = val;
+                }
+            }
+            memset(buf, 0, sizeof(buf));
+            jpos += q_off;
+        }
+        ipos += p_off;
+    }
+    Py_RETURN_NONE;
+}
+
 static PyMethodDef LibcintMethods[] = {
     {"overlap_sph",          overlap_sph,          METH_VARARGS, "Overlap integral"},
+    {"overlap_integral_shellloop", overlap_integral_shellloop, METH_VARARGS, "Overlap integral (shell-by-shell)"},
     {"kinetic_sph",          kinetic_sph,          METH_VARARGS, "Kinetic energy integral"},
     {"nuclear_sph",          nuclear_sph,          METH_VARARGS, "Nuclear attraction integral"},
     {"momentum_sph",         momentum_sph,         METH_VARARGS, "Momentum integral"},
@@ -152,6 +204,7 @@ static PyMethodDef LibcintMethods[] = {
     {"quadrupole_sph",       quadrupole_sph,       METH_VARARGS, "Quadrupole moment integral"},
     {"octupole_sph",         octupole_sph,         METH_VARARGS, "Octupole moment integral"},
     {"electron_repulsion_sph", electron_repulsion_sph, METH_VARARGS, "Electron repulsion integral"},
+    {"overlap_integral_shellloop", overlap_integral_shellloop, METH_VARARGS, "Overlap integral shell loop in C"},
     {NULL, NULL, 0, NULL}
 };
 
