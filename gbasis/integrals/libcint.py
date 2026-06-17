@@ -218,7 +218,16 @@ class _LibCInt:
 
     """
 
-    _libcint: CDLL = cdll.LoadLibrary((Path(__file__).parent / "lib" / "libcint.so"))
+    import platform as _platform
+    _lib_dir = Path(__file__).parent / "lib"
+    _system = _platform.system()
+    if _system == "Darwin":
+        _lib_name = "libcint.6.dylib"
+    elif _system == "Windows":
+        _lib_name = "libcint.dll"
+    else:
+        _lib_name = "libcint.so"
+    _libcint: CDLL = cdll.LoadLibrary(str(_lib_dir / _lib_name))
     r"""
     ``libcint`` shared object library.
 
@@ -562,25 +571,42 @@ class CBasis:
         self._eri = self.make_int2e("int2e")
         self._rinv = self.make_int1e("int1e_rinv", inv_origin=True)
         self._mom = self.make_int1e(
-            "int1e_p", components=(3,), constant=-1j, is_complex=True, origin=True
+            "int1e_ipovlp", components=(3,), constant=-1j, is_complex=True, origin=True
         )
-        self._amom = self.make_int1e(
-            "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
-        )
+        # self._amom = self.make_int1e(
+            # "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
+        # )
         self._d_ovlp = self.make_int1e("int1e_ipovlp", components=(3,))
         self._d_kin = self.make_int1e("int1e_ipkin", components=(3,))
         self._d_nuc = self.make_int1e("int1e_ipnuc", components=(3,))
         self._d_eri = self.make_int2e("int2e_ip1", components=(3,))
         self._d_rinv = self.make_int1e("int1e_iprinv", components=(3,), inv_origin=True)
         self._moments = {}
-        for nx in range(5):
-            for ny in range(5):
-                for nz in range(5):
-                    if 0 < nx + ny + nz < 5:
-                        self._moments[(nx, ny, nz)] = self.make_int1e(
-                            "int1e_" + nx * "x" + ny * "y" + nz * "z",
-                            origin=True,
-                        )
+        # Order 1: int1e_r has 3 components (x, y, z)
+        _r = self.make_int1e("int1e_r", components=(3,), origin=True)
+        self._moments[(1,0,0)] = lambda **kw: _r(**kw)[..., 0]
+        self._moments[(0,1,0)] = lambda **kw: _r(**kw)[..., 1]
+        self._moments[(0,0,1)] = lambda **kw: _r(**kw)[..., 2]
+        # Order 2: int1e_rr has 9 components
+        _rr = self.make_int1e("int1e_rr", components=(9,), origin=True)
+        self._moments[(2,0,0)] = lambda **kw: _rr(**kw)[..., 0]
+        self._moments[(1,1,0)] = lambda **kw: _rr(**kw)[..., 1]
+        self._moments[(1,0,1)] = lambda **kw: _rr(**kw)[..., 2]
+        self._moments[(0,2,0)] = lambda **kw: _rr(**kw)[..., 4]
+        self._moments[(0,1,1)] = lambda **kw: _rr(**kw)[..., 5]
+        self._moments[(0,0,2)] = lambda **kw: _rr(**kw)[..., 8]
+        # Order 3: int1e_rrr has 27 components
+        _rrr = self.make_int1e("int1e_rrr", components=(27,), origin=True)
+        self._moments[(3,0,0)] = lambda **kw: _rrr(**kw)[..., 0]
+        self._moments[(0,3,0)] = lambda **kw: _rrr(**kw)[..., 13]
+        self._moments[(0,0,3)] = lambda **kw: _rrr(**kw)[..., 26]
+        self._moments[(2,1,0)] = lambda **kw: _rrr(**kw)[..., 3]
+        self._moments[(2,0,1)] = lambda **kw: _rrr(**kw)[..., 6]
+        self._moments[(1,2,0)] = lambda **kw: _rrr(**kw)[..., 1]
+        self._moments[(0,2,1)] = lambda **kw: _rrr(**kw)[..., 14]
+        self._moments[(1,0,2)] = lambda **kw: _rrr(**kw)[..., 2]
+        self._moments[(0,1,2)] = lambda **kw: _rrr(**kw)[..., 17]
+        self._moments[(1,1,1)] = lambda **kw: _rrr(**kw)[..., 4]
 
         # Set proper value for inverse sqrt of overlap integral
         # for cartesian basis sets

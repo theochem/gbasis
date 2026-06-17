@@ -169,4 +169,3 @@ PyInit_libcint_bindings(void)
     import_array();
     return PyModule_Create(&libcintmodule);
 }
-
