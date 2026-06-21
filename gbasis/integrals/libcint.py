@@ -1087,6 +1087,152 @@ class CBasis:
         """
         return self._nuc(notation=notation, transform=transform)
 
+    def overlap_shellloop(self):
+        r"""
+        Compute overlap integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.overlap_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def kinetic_energy_shellloop(self):
+        r"""
+        Compute kinetic energy integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.kinetic_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def nuclear_attraction_shellloop(self):
+        r"""
+        Compute nuclear attraction integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.nuclear_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def momentum_shellloop(self):
+        r"""
+        Compute momentum integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.momentum_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def rinv_shellloop(self):
+        r"""
+        Compute 1/r integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.rinv_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def dipole_shellloop(self):
+        r"""
+        Compute dipole integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.dipole_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def quadrupole_shellloop(self):
+        r"""
+        Compute quadrupole integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.quadrupole_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def octupole_shellloop(self):
+        r"""
+        Compute octupole integral using C shell loop.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Integral array.
+
+        """
+        from gbasis.integrals.lib import libcint_bindings
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.octupole_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    
+
     def electron_repulsion_integral(self, notation="physicist", transform=None):
         r"""
         Compute the electron repulsion integrals.
