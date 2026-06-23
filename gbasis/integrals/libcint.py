@@ -1088,14 +1088,21 @@ class CBasis:
         """
         return self._nuc(notation=notation, transform=transform)
 
-    def overlap_shellloop(self):
+    def overlap(self):
         r"""
-        Compute overlap integral using C shell loop.
+        Compute the overlap integrals.
+
+        The overlap integral measures the degree to which two basis functions
+        :math:`\phi_i` and :math:`\phi_j` occupy the same region of space,
+        and is defined as:
+
+        .. math::
+            S_{ij} = \langle \phi_i | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Overlap integral array.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
@@ -1105,14 +1112,21 @@ class CBasis:
         )
         return out
 
-    def kinetic_energy_shellloop(self):
+    def kinetic_energy(self):
         r"""
-        Compute kinetic energy integral using C shell loop.
+        Compute the kinetic energy integrals.
+
+        The kinetic energy integral represents the expectation value of the
+        kinetic energy operator between basis functions :math:`\phi_i` and
+        :math:`\phi_j`, and is defined as:
+
+        .. math::
+            T_{ij} = \langle \phi_i | -\frac{1}{2}\nabla^2 | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Kinetic energy integral array.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
@@ -1122,14 +1136,24 @@ class CBasis:
         )
         return out
 
-    def nuclear_attraction_shellloop(self):
+    def nuclear_attraction(self):
         r"""
-        Compute nuclear attraction integral using C shell loop.
+        Compute the nuclear attraction integrals.
+
+        The nuclear attraction integral represents the electrostatic attraction
+        between electrons and nuclei. For each pair of basis functions
+        :math:`\phi_i` and :math:`\phi_j`, it is defined as:
+
+        .. math::
+            V_{ij} = \langle \phi_i | \sum_A \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|} | \phi_j \rangle
+
+        where :math:`Z_A` is the nuclear charge and :math:`\mathbf{R}_A` is
+        the position of atom :math:`A`.
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Nuclear attraction integral array.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
@@ -1139,16 +1163,31 @@ class CBasis:
         )
         return out
 
-    def momentum_shellloop(self):
+    def momentum(self):
         r"""
-        Compute momentum integral using C shell loop.
+        Compute the momentum integrals.
+
+        The momentum integral represents the expectation value of the momentum
+        operator between basis functions :math:`\phi_i` and :math:`\phi_j`,
+        and is defined as:
+
+        .. math::
+            p_{ij} = \langle \phi_i | -i\nabla | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Momentum integral array.
+
+        Notes
+        -----
+        Returns the raw single-component output from ``int1e_ipovlp_sph``
+        without the :math:`-i` scaling factor. The full 3-component momentum
+        integral (x, y, z) with proper scaling is available via
+        ``momentum_integral()``.
 
         """
+
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.momentum_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1156,14 +1195,21 @@ class CBasis:
         )
         return out
 
-    def rinv_shellloop(self):
+    def rinv(self):
         r"""
-        Compute 1/r integral using C shell loop.
+        Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
+
+        The :math:`1/r` integral represents the electrostatic potential due to
+        a unit point charge at a given origin. For each pair of basis functions
+        :math:`\phi_i` and :math:`\phi_j`, it is defined as:
+
+        .. math::
+            V_{ij} = \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_\text{inv}|} | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            1/r integral array.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
@@ -1173,14 +1219,27 @@ class CBasis:
         )
         return out
 
-    def dipole_shellloop(self):
+    def dipole(self):
         r"""
-        Compute dipole integral using C shell loop.
+        Compute the dipole moment integrals.
+
+        The dipole moment integral represents the expectation value of the
+        position operator between basis functions :math:`\phi_i` and
+        :math:`\phi_j`, and is defined as:
+
+        .. math::
+            \mu_{ij} = \langle \phi_i | \mathbf{r} | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Dipole moment integral array.
+
+        Notes
+        -----
+        Returns the first component (x) of the dipole integral from
+        ``int1e_r_sph``. The full 3-component dipole integral is
+        available via ``moment_integral()``.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
@@ -1190,14 +1249,27 @@ class CBasis:
         )
         return out
 
-    def quadrupole_shellloop(self):
+    def quadrupole(self):
         r"""
-        Compute quadrupole integral using C shell loop.
+        Compute the quadrupole moment integrals.
+
+        The quadrupole moment integral represents the expectation value of the
+        second-order position operator between basis functions :math:`\phi_i`
+        and :math:`\phi_j`, and is defined as:
+
+        .. math::
+            Q_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r} | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Quadrupole moment integral array.
+
+        Notes
+        -----
+        Returns the first component of the quadrupole integral from
+        ``int1e_rr_sph``. The full 9-component quadrupole integral is
+        available via ``moment_integral()``.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
@@ -1207,14 +1279,27 @@ class CBasis:
         )
         return out
 
-    def octupole_shellloop(self):
+    def octupole(self):
         r"""
-        Compute octupole integral using C shell loop.
+        Compute the octupole moment integrals.
+
+        The octupole moment integral represents the expectation value of the
+        third-order position operator between basis functions :math:`\phi_i`
+        and :math:`\phi_j`, and is defined as:
+
+        .. math::
+            O_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r}\mathbf{r} | \phi_j \rangle
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Integral array.
+            Octupole moment integral array.
+
+        Notes
+        -----
+        Returns the first component of the octupole integral from
+        ``int1e_rrr_sph``. The full 27-component octupole integral is
+        available via ``moment_integral()``.
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
