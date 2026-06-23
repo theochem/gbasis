@@ -2,6 +2,7 @@ r"""
 Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
+from gbasis.integrals.lib import libcint_bindings
 
 from contextlib import contextmanager
 
@@ -1097,7 +1098,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.overlap_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1115,7 +1115,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.kinetic_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1133,7 +1132,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.nuclear_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1151,7 +1149,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.momentum_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1169,7 +1166,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.rinv_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1187,7 +1183,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.dipole_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1205,7 +1200,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.quadrupole_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
@@ -1223,7 +1217,6 @@ class CBasis:
             Integral array.
 
         """
-        from gbasis.integrals.lib import libcint_bindings
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
         libcint_bindings.octupole_integral_shellloop(
             out, self.natm, self.atm, self.nbas,
