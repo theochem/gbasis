@@ -1106,7 +1106,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.overlap_integral_shellloop(
+        libcint_bindings.overlap_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1130,7 +1130,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.kinetic_integral_shellloop(
+        libcint_bindings.kinetic_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1157,13 +1157,13 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.nuclear_integral_shellloop(
+        libcint_bindings.nuclear_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
         return out
 
-    def momentum(self):
+    def momentum(self, origin=None):
         r"""
         Compute the momentum integrals.
 
@@ -1174,26 +1174,26 @@ class CBasis:
         .. math::
             p_{ij} = \langle \phi_i | -i\nabla | \phi_j \rangle
 
+        Parameters
+        ----------
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
         Returns
         -------
-        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+        out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
             Momentum integral array.
 
         Notes
         -----
-        Returns the raw single-component output from ``int1e_ipovlp_sph``
-        without the :math:`-i` scaling factor. The full 3-component momentum
-        integral (x, y, z) with proper scaling is available via
-        ``momentum_integral()``.
-
+        Returns the full 3-component complex momentum integral (x, y, z)
+        with proper :math:`-i` scaling. Equivalent to ``momentum_integral()``.
         """
+        
+        if origin is None:
+            origin = np.zeros(3)
+        return self._mom(origin=origin)
 
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.momentum_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
-        )
-        return out
 
     def rinv(self):
         r"""
@@ -1213,7 +1213,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.rinv_integral_shellloop(
+        libcint_bindings.rinv_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1243,7 +1243,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.dipole_integral_shellloop(
+        libcint_bindings.dipole_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1273,7 +1273,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.quadrupole_integral_shellloop(
+        libcint_bindings.quadrupole_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1303,13 +1303,109 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.octupole_integral_shellloop(
+        libcint_bindings.octupole_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
         return out
 
-    
+    def point_charge(self, point_coords, point_charges):
+        r"""
+        Compute the point charge integrals.
+
+        The point charge integral represents the electrostatic potential due to
+        a set of point charges at given coordinates. For each pair of basis
+        functions :math:`\phi_i` and :math:`\phi_j`, it is defined as:
+
+        .. math::
+            V_{ij}^{(n)} = -q_n \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_n|} | \phi_j \rangle
+
+        Parameters
+        ----------
+        point_coords : np.ndarray(N, 3, dtype=float)
+            Coordinates of point charges.
+        point_charges : np.ndarray(N, dtype=float)
+            Charges of point charges.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
+            Point charge integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order='F')
+        for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
+            # Set inv_origin in env for this charge
+            self.env[4:7] = coord
+            val = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+            libcint_bindings.rinv_integral_array(
+                val, self.natm, self.atm, self.nbas,
+                self.bas, self.env, self._offs, self.nbfn
+            )
+            val *= -charge
+            out[:, :, icharge] = val
+        return out
+        
+    def moment(self, orders, origin=None):
+        r"""
+        Compute the moment integrals.
+
+        The moment integral represents the expectation value of the position
+        operator raised to a given order between basis functions :math:`\phi_i`
+        and :math:`\phi_j`.
+
+        Parameters
+        ----------
+        orders : np.ndarray(N, 3, dtype=int)
+            Moment orders :math:`\left[x, y, z\right]` to evaluate.
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
+            Moment integral array.
+
+        Notes
+        -----
+        Uses the C shell-loop bindings for dipole, quadrupole, and octupole
+        integrals internally. Supports up to 3rd order moments.
+
+        """
+        if origin is None:
+            origin = np.zeros(3)
+        out = np.zeros((self.nbfn, self.nbfn, len(orders)), dtype=np.float64)
+        for i, order in enumerate(orders):
+            self.env[1:4] = origin
+            if sum(order) == 0:
+                out[:, :, i] = self.overlap()
+            else:
+                out[:, :, i] = self._moments[tuple(order)](origin=origin)        
+        return out
+
+    def electron_repulsion(self):
+        r"""
+        Compute the electron repulsion integrals.
+
+        The two-electron repulsion integral between basis functions
+        :math:`\phi_i`, :math:`\phi_j`, :math:`\phi_k`, and :math:`\phi_l`
+        is defined as:
+
+        .. math::
+            g_{ijkl} = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \phi_l \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, dtype=float)
+            Electron repulsion integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
+        libcint_bindings.eri_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):
         r"""
