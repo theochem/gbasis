@@ -1,108 +1,66 @@
-# CMakeLists.txt — Build C extension for GBasis libcint integration  (Issue: #229)
 
-# Usage:
-#   Default (all platforms):  pip install gbasis
-#   qcint (x86+AVX2 only):   pip install gbasis -C cmake.args="-DUSE_QCINT=ON"
+# Require (a relatively recent) version of CMake.
+cmake_minimum_required(VERSION 3.18)
 
+# Declare project.
+project(gbasis LANGUAGES C)
 
-cmake_minimum_required(VERSION 3.17)
-project(gbasis_libcint C)
+# Import necessary Python modules.
+find_package(Python REQUIRED COMPONENTS Interpreter Development.Module NumPy)
 
-# Python and NumPy are required to build the C extension module
-
-find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
-find_package(Python COMPONENTS NumPy REQUIRED)
-
-# Get NumPy include path for C extension (numpy/arrayobject.h)
-
-execute_process(
-    COMMAND "${Python_EXECUTABLE}" "-c"
-            "import numpy; print(numpy.get_include())"
-    OUTPUT_VARIABLE NumPy_INCLUDE_DIRS
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-# ── Platform Detection — x86 vs ARM ──────────────────────
-# Detect platform: use qcint on x86+AVX2, libcint on ARM/non-AVX
-# qcint is an optimized version of libcint for x86 with SIMD support
+# Use qcint on x86 systems with (at least) SSE3, and libcint on non-x86/non-SSE3 systems.
+# qcint is an optimized version of libcint for x86 systems with SIMD support;
+# both are pinned to v6.1.2 for stability.
 include(CheckCCompilerFlag)
-check_c_compiler_flag("-mavx2" HAS_AVX2)
-
-if(HAS_AVX2 AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-    set(USE_QCINT ON)
-    message(STATUS "Architecture: x86 + AVX2 detected → use qcint")
+set(GBASIS_CINT_REPO "https://github.com/sunqm/libcint.git")
+set(GBASIS_CINT_VERSION "v6.1.2")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)|(amd64)|(AMD64)|(i386)|(i686)")
+    check_c_compiler_flag("-msse3" GBASIS_HAS_SSE3)
+    if(GBASIS_HAS_SSE3)
+        message(STATUS "Architecture: x86 with (at least) SSE3 -> use qcint")
+        set(GBASIS_CINT_REPO "https://github.com/sunqm/qcint.git")
+    else()
+        message(STATUS "Architecture: x86 without SSE3 -> use libcint")
+    endif()
 else()
-    set(USE_QCINT OFF)
-    message(STATUS "Architecture: ARM/non-AVX detected → use libcint")
+    message(STATUS "Architecture: not x86 -> use libcint")
 endif()
 
-
-# Download libcint or qcint based on platform detection
-# Both are pinned to v6.1.2 for stability
-# qcint: optimized for x86+AVX2
-# libcint: generic, works on all platforms
-
+# Download libcint or qcint based on platform.
 include(FetchContent)
+FetchContent_Declare(cint
+    GIT_REPOSITORY ${GBASIS_CINT_REPO}
+    GIT_TAG ${GBASIS_CINT_VERSION}
+    GIT_SHALLOW
+    EXCLUDE_FROM_ALL)
 
-if(USE_QCINT)
-    FetchContent_Declare(
-        libcint
-        GIT_REPOSITORY https://github.com/sunqm/qcint.git
-        GIT_TAG        v6.1.2
-    )
-else()
-    FetchContent_Declare(
-        libcint
-        GIT_REPOSITORY https://github.com/sunqm/libcint.git
-        GIT_TAG        v6.1.2
-    )
-endif()
+# Configure libcint/qcint.
+set(ENABLE_STATIC ON)
+set(WITH_FORTRAN OFF)
+set(WITH_RANGE_COULOMB ON)
 
-# Compile libcint — Fortran disabled, range-separated Coulomb enabled
+# Import libcint/qcint CMake project.
+FetchContent_MakeAvailable(cint)
 
-set(WITH_FORTRAN OFF CACHE BOOL "" FORCE)
-# Enable range-separated Coulomb integrals
-set(WITH_RANGE_COULOMB ON CACHE BOOL "" FORCE)
+# Declare C extension module.
+set(GBASIS_EXTENSION_SOURCE "gbasis/integrals/src/libcint_wrap.c")
+python_add_library(gbasis_ext MODULE WITH_SOABI ${GBASIS_EXTENSION_SOURCE})
 
-# Redirect libcint's install to build directory to avoid permission issues
-set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/local" CACHE PATH "" FORCE)
-set(SKIP_INSTALL_ALL ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(libcint)
-
-# Build Python C extension module from libcint_wrap.c
-python_add_library(libcint_bindings MODULE
-    gbasis/integrals/src/libcint_wrap.c
-    WITH_SOABI
-)
-
-
-
-
-# Include NumPy and libcint headers
-target_include_directories(libcint_bindings PRIVATE
-    ${NumPy_INCLUDE_DIRS}
-    ${libcint_SOURCE_DIR}/include
-)
-
-# Link C extension with libcint
-target_link_libraries(libcint_bindings PRIVATE cint)
-
-# Prevent libcint from installing to system directories
-set(CINT_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/cint_install CACHE PATH "" FORCE)
-
-# Set RPATH so libcint.dylib is found at runtime
-set_target_properties(libcint_bindings PROPERTIES
+# Set C extension module properties.
+set_target_properties(gbasis_ext PROPERTIES
+    # Set target library output name.
+    OUTPUT_NAME libcint_bindings
+    # Set RPATH so libcint.dylib is found at runtime.
     INSTALL_RPATH "@loader_path"
-    BUILD_WITH_INSTALL_RPATH TRUE
-)
+    BUILD_WITH_INSTALL_RPATH TRUE)
 
-# Install only the Python extension into the wheel
-install(TARGETS libcint_bindings
-    LIBRARY DESTINATION ${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib
-)
+# Expose Python and NumPy include directories to C extension module.
+target_include_directories(gbasis_ext PRIVATE
+    ${Python_INCLUDE_DIRS} ${Python_NumPy_INCLUDE_DIRS})
 
-# Install libcint shared library alongside the extension
-install(FILES $<TARGET_FILE:cint>
-    DESTINATION ${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib
-    RENAME libcint.6.dylib
-)
+# Link C extension module with libcint/qcint.
+target_link_libraries(gbasis_ext PRIVATE cint)
+
+# Install C extension module.
+set(GBASIS_WHEEL_DIRECTORY "${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib")
+install(TARGETS gbasis_ext LIBRARY DESTINATION ${GBASIS_WHEEL_DIRECTORY})

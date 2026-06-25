@@ -2,6 +2,7 @@ r"""
 Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
+from gbasis.integrals.lib import libcint_bindings
 
 from contextlib import contextmanager
 
@@ -1086,6 +1087,229 @@ class CBasis:
 
         """
         return self._nuc(notation=notation, transform=transform)
+
+    def overlap(self):
+        r"""
+        Compute the overlap integrals.
+
+        The overlap integral measures the degree to which two basis functions
+        :math:`\phi_i` and :math:`\phi_j` occupy the same region of space,
+        and is defined as:
+
+        .. math::
+            S_{ij} = \langle \phi_i | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Overlap integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.overlap_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def kinetic_energy(self):
+        r"""
+        Compute the kinetic energy integrals.
+
+        The kinetic energy integral represents the expectation value of the
+        kinetic energy operator between basis functions :math:`\phi_i` and
+        :math:`\phi_j`, and is defined as:
+
+        .. math::
+            T_{ij} = \langle \phi_i | -\frac{1}{2}\nabla^2 | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Kinetic energy integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.kinetic_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def nuclear_attraction(self):
+        r"""
+        Compute the nuclear attraction integrals.
+
+        The nuclear attraction integral represents the electrostatic attraction
+        between electrons and nuclei. For each pair of basis functions
+        :math:`\phi_i` and :math:`\phi_j`, it is defined as:
+
+        .. math::
+            V_{ij} = \langle \phi_i | \sum_A \frac{Z_A}{|\mathbf{r} - \mathbf{R}_A|} | \phi_j \rangle
+
+        where :math:`Z_A` is the nuclear charge and :math:`\mathbf{R}_A` is
+        the position of atom :math:`A`.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Nuclear attraction integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.nuclear_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def momentum(self):
+        r"""
+        Compute the momentum integrals.
+
+        The momentum integral represents the expectation value of the momentum
+        operator between basis functions :math:`\phi_i` and :math:`\phi_j`,
+        and is defined as:
+
+        .. math::
+            p_{ij} = \langle \phi_i | -i\nabla | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Momentum integral array.
+
+        Notes
+        -----
+        Returns the raw single-component output from ``int1e_ipovlp_sph``
+        without the :math:`-i` scaling factor. The full 3-component momentum
+        integral (x, y, z) with proper scaling is available via
+        ``momentum_integral()``.
+
+        """
+
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.momentum_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def rinv(self):
+        r"""
+        Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
+
+        The :math:`1/r` integral represents the electrostatic potential due to
+        a unit point charge at a given origin. For each pair of basis functions
+        :math:`\phi_i` and :math:`\phi_j`, it is defined as:
+
+        .. math::
+            V_{ij} = \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_\text{inv}|} | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            1/r integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.rinv_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def dipole(self):
+        r"""
+        Compute the dipole moment integrals.
+
+        The dipole moment integral represents the expectation value of the
+        position operator between basis functions :math:`\phi_i` and
+        :math:`\phi_j`, and is defined as:
+
+        .. math::
+            \mu_{ij} = \langle \phi_i | \mathbf{r} | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Dipole moment integral array.
+
+        Notes
+        -----
+        Returns the first component (x) of the dipole integral from
+        ``int1e_r_sph``. The full 3-component dipole integral is
+        available via ``moment_integral()``.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.dipole_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def quadrupole(self):
+        r"""
+        Compute the quadrupole moment integrals.
+
+        The quadrupole moment integral represents the expectation value of the
+        second-order position operator between basis functions :math:`\phi_i`
+        and :math:`\phi_j`, and is defined as:
+
+        .. math::
+            Q_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r} | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Quadrupole moment integral array.
+
+        Notes
+        -----
+        Returns the first component of the quadrupole integral from
+        ``int1e_rr_sph``. The full 9-component quadrupole integral is
+        available via ``moment_integral()``.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.quadrupole_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def octupole(self):
+        r"""
+        Compute the octupole moment integrals.
+
+        The octupole moment integral represents the expectation value of the
+        third-order position operator between basis functions :math:`\phi_i`
+        and :math:`\phi_j`, and is defined as:
+
+        .. math::
+            O_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r}\mathbf{r} | \phi_j \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Octupole moment integral array.
+
+        Notes
+        -----
+        Returns the first component of the octupole integral from
+        ``int1e_rrr_sph``. The full 27-component octupole integral is
+        available via ``moment_integral()``.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.octupole_integral_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):
         r"""
