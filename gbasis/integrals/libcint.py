@@ -1163,7 +1163,7 @@ class CBasis:
         )
         return out
 
-    def momentum(self):
+    def momentum(self, origin=None):
         r"""
         Compute the momentum integrals.
 
@@ -1174,26 +1174,21 @@ class CBasis:
         .. math::
             p_{ij} = \langle \phi_i | -i\nabla | \phi_j \rangle
 
+        Parameters
+        ----------
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
         Returns
         -------
-        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+        out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
             Momentum integral array.
 
-        Notes
-        -----
-        Returns the raw single-component output from ``int1e_ipovlp_sph``
-        without the :math:`-i` scaling factor. The full 3-component momentum
-        integral (x, y, z) with proper scaling is available via
-        ``momentum_integral()``.
-
         """
+        if origin is None:
+            origin = np.zeros(3)
+        return self._mom(origin=origin)
 
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.momentum_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
-        )
-        return out
 
     def rinv(self):
         r"""
