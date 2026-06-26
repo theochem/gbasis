@@ -1345,7 +1345,7 @@ class CBasis:
             val *= -charge
             out[:, :, icharge] = val
         return out
-
+        
     def moment(self, orders, origin=None):
         r"""
         Compute the moment integrals.
@@ -1380,7 +1380,7 @@ class CBasis:
             if sum(order) == 0:
                 out[:, :, i] = self.overlap()
             else:
-                out[:, :, i] = self._moments[tuple(order)]()
+                out[:, :, i] = self._moments[tuple(order)](origin=origin)        
         return out
 
     def electron_repulsion(self):
