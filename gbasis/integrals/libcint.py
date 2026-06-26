@@ -1326,12 +1326,12 @@ class CBasis:
             Electron repulsion integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
         libcint_bindings.eri_shellloop(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
-        return out.transpose(0, 2, 1, 3)
+        return out
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):
         r"""

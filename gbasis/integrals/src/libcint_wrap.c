@@ -261,15 +261,14 @@ eri_shellloop(PyObject *self, PyObject *args)
                                 for (int s = 0; s < s_off; s++) {
                                     double val = buf[p + p_off*(q + q_off*(r + r_off*s))];
                                     int i = ipos+p, j = jpos+q, k = kpos+r, l = lpos+s;
-                                    out[i*nbfn*nbfn*nbfn + j*nbfn*nbfn + k*nbfn + l] = val;
-                                    out[i*nbfn*nbfn*nbfn + j*nbfn*nbfn + l*nbfn + k] = val;
-                                    out[j*nbfn*nbfn*nbfn + i*nbfn*nbfn + k*nbfn + l] = val;
-                                    out[j*nbfn*nbfn*nbfn + i*nbfn*nbfn + l*nbfn + k] = val;
-                                    out[k*nbfn*nbfn*nbfn + l*nbfn*nbfn + i*nbfn + j] = val;
-                                    out[k*nbfn*nbfn*nbfn + l*nbfn*nbfn + j*nbfn + i] = val;
-                                    out[l*nbfn*nbfn*nbfn + k*nbfn*nbfn + i*nbfn + j] = val;
-                                    out[l*nbfn*nbfn*nbfn + k*nbfn*nbfn + j*nbfn + i] = val;
-                                }
+                                    out[i*nbfn*nbfn*nbfn + k*nbfn*nbfn + j*nbfn + l] = val;
+                                    out[i*nbfn*nbfn*nbfn + l*nbfn*nbfn + j*nbfn + k] = val;
+                                    out[j*nbfn*nbfn*nbfn + k*nbfn*nbfn + i*nbfn + l] = val;
+                                    out[j*nbfn*nbfn*nbfn + l*nbfn*nbfn + i*nbfn + k] = val;
+                                    out[k*nbfn*nbfn*nbfn + i*nbfn*nbfn + l*nbfn + j] = val;
+                                    out[k*nbfn*nbfn*nbfn + j*nbfn*nbfn + l*nbfn + i] = val;
+                                    out[l*nbfn*nbfn*nbfn + i*nbfn*nbfn + k*nbfn + j] = val;
+                                    out[l*nbfn*nbfn*nbfn + j*nbfn*nbfn + k*nbfn + i] = val;                                }
                             }
                         }
                     }
