@@ -1309,7 +1309,29 @@ class CBasis:
         )
         return out
 
-    
+    def electron_repulsion(self):
+        r"""
+        Compute the electron repulsion integrals.
+
+        The two-electron repulsion integral between basis functions
+        :math:`\phi_i`, :math:`\phi_j`, :math:`\phi_k`, and :math:`\phi_l`
+        is defined as:
+
+        .. math::
+            g_{ijkl} = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \phi_l \rangle
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, dtype=float)
+            Electron repulsion integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
+        libcint_bindings.eri_shellloop(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):
         r"""

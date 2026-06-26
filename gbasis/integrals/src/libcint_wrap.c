@@ -68,13 +68,13 @@ extern int int1e_rrr_sph(double *out, int *dims, int *shls, int *atm, int natm, 
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 
 /*
- * DEFINE_INTEGRAL_INT1e(func_name, libcint_func)
+ * DEFINE_INT1E_ARRAY_FN(func_name, libcint_func)
  * Generates a Python/C API wrapper for a 1-electron libcint integral.
  * Accepts NumPy arrays directly — uses PyArray_GETPTR1 (NumPy C-API).
  */
 
 /* Macro for 1-electron wrappers */
-#define DEFINE_INTEGRAL_INT1e(func_name, libcint_func)                        \
+#define DEFINE_INT1E_ARRAY_FN(func_name, libcint_func)                        \
 static PyObject *                                                              \
 func_name(PyObject *self, PyObject *args)                                      \
 {                                                                              \
@@ -99,15 +99,15 @@ func_name(PyObject *self, PyObject *args)                                      \
     return PyLong_FromLong(result);                                            \
 }
 
-DEFINE_INTEGRAL_INT1e(overlap_sph,         int1e_ovlp_sph)
-DEFINE_INTEGRAL_INT1e(kinetic_sph,         int1e_kin_sph)
-DEFINE_INTEGRAL_INT1e(nuclear_sph,         int1e_nuc_sph)
-DEFINE_INTEGRAL_INT1e(momentum_sph,        int1e_ipovlp_sph)
-DEFINE_INTEGRAL_INT1e(angular_momentum_sph, int1e_cg_irxp_sph)
-DEFINE_INTEGRAL_INT1e(rinv_sph,            int1e_rinv_sph)
-DEFINE_INTEGRAL_INT1e(dipole_sph,          int1e_r_sph)
-DEFINE_INTEGRAL_INT1e(quadrupole_sph,      int1e_rr_sph)
-DEFINE_INTEGRAL_INT1e(octupole_sph,        int1e_rrr_sph)
+DEFINE_INT1E_ARRAY_FN(overlap_sph,         int1e_ovlp_sph)
+DEFINE_INT1E_ARRAY_FN(kinetic_sph,         int1e_kin_sph)
+DEFINE_INT1E_ARRAY_FN(nuclear_sph,         int1e_nuc_sph)
+DEFINE_INT1E_ARRAY_FN(momentum_sph,        int1e_ipovlp_sph)
+DEFINE_INT1E_ARRAY_FN(angular_momentum_sph, int1e_cg_irxp_sph)
+DEFINE_INT1E_ARRAY_FN(rinv_sph,            int1e_rinv_sph)
+DEFINE_INT1E_ARRAY_FN(dipole_sph,          int1e_r_sph)
+DEFINE_INT1E_ARRAY_FN(quadrupole_sph,      int1e_rr_sph)
+DEFINE_INT1E_ARRAY_FN(octupole_sph,        int1e_rrr_sph)
 
 /* 2-electron wrapper */
 
@@ -142,13 +142,13 @@ electron_repulsion_sph(PyObject *self, PyObject *args)
 }
 
 /*
- * DEFINE_SHELLLOOP_INT1e(func_name, libcint_func)
+ * DEFINE_INT1E_SHELLLOOP_FN(func_name, libcint_func)
  * Generates a C shell-loop wrapper for a 1-electron libcint integral that
  * returns the FULL integral array over all shells (not just one shell pair).
  * Loops over shells I, J; calls libcint_func per shell pair; fills the
  * symmetric output matrix using PyArray_GETPTR (NumPy C-API).
  */
-#define DEFINE_SHELLLOOP_INT1e(func_name, libcint_func)                           \
+#define DEFINE_INT1E_SHELLLOOP_FN(func_name, libcint_func)                           \
 static PyObject *                                                                  \
 func_name(PyObject *self, PyObject *args)                                          \
 {                                                                                  \
@@ -196,17 +196,93 @@ func_name(PyObject *self, PyObject *args)                                       
 }
 
 /* Generate shell-loop wrappers for all 1-electron integrals using the macro */
-DEFINE_SHELLLOOP_INT1e(overlap_integral_shellloop,    int1e_ovlp_sph)
-DEFINE_SHELLLOOP_INT1e(kinetic_integral_shellloop,    int1e_kin_sph)
-DEFINE_SHELLLOOP_INT1e(nuclear_integral_shellloop,    int1e_nuc_sph)
-DEFINE_SHELLLOOP_INT1e(momentum_integral_shellloop,   int1e_ipovlp_sph)
-DEFINE_SHELLLOOP_INT1e(rinv_integral_shellloop,       int1e_rinv_sph)
-DEFINE_SHELLLOOP_INT1e(dipole_integral_shellloop,     int1e_r_sph)
-DEFINE_SHELLLOOP_INT1e(quadrupole_integral_shellloop, int1e_rr_sph)
-DEFINE_SHELLLOOP_INT1e(octupole_integral_shellloop,   int1e_rrr_sph)
+DEFINE_INT1E_SHELLLOOP_FN(overlap_integral_shellloop,    int1e_ovlp_sph)
+DEFINE_INT1E_SHELLLOOP_FN(kinetic_integral_shellloop,    int1e_kin_sph)
+DEFINE_INT1E_SHELLLOOP_FN(nuclear_integral_shellloop,    int1e_nuc_sph)
+DEFINE_INT1E_SHELLLOOP_FN(momentum_integral_shellloop,   int1e_ipovlp_sph)
+DEFINE_INT1E_SHELLLOOP_FN(rinv_integral_shellloop,       int1e_rinv_sph)
+DEFINE_INT1E_SHELLLOOP_FN(dipole_integral_shellloop,     int1e_r_sph)
+DEFINE_INT1E_SHELLLOOP_FN(quadrupole_integral_shellloop, int1e_rr_sph)
+DEFINE_INT1E_SHELLLOOP_FN(octupole_integral_shellloop,   int1e_rrr_sph)
 
 /* eri_shellloop — shell-by-shell loop in C for 2-electron ERI (4 shells: I,J,K,L) */
+static PyObject *
+eri_shellloop(PyObject *self, PyObject *args)
+{
+    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;
+    int natm, nbas, nbfn;
 
+    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i",
+                          &PyArray_Type, &out_arr,
+                          &natm,
+                          &PyArray_Type, &atm_arr,
+                          &nbas,
+                          &PyArray_Type, &bas_arr,
+                          &PyArray_Type, &env_arr,
+                          &PyArray_Type, &offs_arr,
+                          &nbfn))
+        return NULL;
+
+    double *out  = (double *)PyArray_DATA(out_arr);
+    int    *atm  = (int *)   PyArray_GETPTR2(atm_arr, 0, 0);
+    int    *bas  = (int *)   PyArray_GETPTR2(bas_arr, 0, 0);
+    double *env  = (double *)PyArray_GETPTR1(env_arr, 0);
+    int    *offs = (int *)   PyArray_GETPTR1(offs_arr, 0);
+
+    int shls[4];
+    double buf[100000] = {0};
+
+    int ipos = 0;
+    for (int ishl = 0; ishl < nbas; ishl++) {
+        shls[0] = ishl;
+        int p_off = offs[ishl];
+        int jpos = 0;
+        for (int jshl = 0; jshl <= ishl; jshl++) {
+            int ij = ((ishl + 1) * ishl) / 2 + jshl;
+            shls[1] = jshl;
+            int q_off = offs[jshl];
+            int kpos = 0;
+            for (int kshl = 0; kshl < nbas; kshl++) {
+                shls[2] = kshl;
+                int r_off = offs[kshl];
+                int lpos = 0;
+                for (int lshl = 0; lshl <= kshl; lshl++) {
+                    int kl = ((kshl + 1) * kshl) / 2 + lshl;
+                    if (ij < kl) {
+                        lpos += offs[lshl];
+                        continue;
+                    }
+                    shls[3] = lshl;
+                    int s_off = offs[lshl];
+                    int2e_sph(buf, NULL, shls, atm, natm, bas, nbas, env, NULL, NULL);
+                    for (int p = 0; p < p_off; p++) {
+                        for (int q = 0; q < q_off; q++) {
+                            for (int r = 0; r < r_off; r++) {
+                                for (int s = 0; s < s_off; s++) {
+                                    double val = buf[p + p_off*(q + q_off*(r + r_off*s))];
+                                    int i = ipos+p, j = jpos+q, k = kpos+r, l = lpos+s;
+                                    out[i*nbfn*nbfn*nbfn + k*nbfn*nbfn + j*nbfn + l] = val;
+                                    out[i*nbfn*nbfn*nbfn + l*nbfn*nbfn + j*nbfn + k] = val;
+                                    out[j*nbfn*nbfn*nbfn + k*nbfn*nbfn + i*nbfn + l] = val;
+                                    out[j*nbfn*nbfn*nbfn + l*nbfn*nbfn + i*nbfn + k] = val;
+                                    out[k*nbfn*nbfn*nbfn + i*nbfn*nbfn + l*nbfn + j] = val;
+                                    out[k*nbfn*nbfn*nbfn + j*nbfn*nbfn + l*nbfn + i] = val;
+                                    out[l*nbfn*nbfn*nbfn + i*nbfn*nbfn + k*nbfn + j] = val;
+                                    out[l*nbfn*nbfn*nbfn + j*nbfn*nbfn + k*nbfn + i] = val;                                }
+                            }
+                        }
+                    }
+                    memset(buf, 0, sizeof(buf));
+                    lpos += s_off;
+                }
+                kpos += r_off;
+            }
+            jpos += q_off;
+        }
+        ipos += p_off;
+    }
+    Py_RETURN_NONE;
+}
 
 
 static PyMethodDef LibcintMethods[] = {
@@ -228,6 +304,7 @@ static PyMethodDef LibcintMethods[] = {
     {"dipole_integral_shellloop", dipole_integral_shellloop, METH_VARARGS, "Dipole integral shell loop in C"},
     {"quadrupole_integral_shellloop", quadrupole_integral_shellloop, METH_VARARGS, "Quadrupole integral shell loop in C"},
     {"octupole_integral_shellloop", octupole_integral_shellloop, METH_VARARGS, "Octupole integral shell loop in C"},
+    {"eri_shellloop", eri_shellloop, METH_VARARGS, "ERI 2-electron shell loop in C"},
     {NULL, NULL, 0, NULL}
 };
 
