@@ -1184,7 +1184,12 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
             Momentum integral array.
 
+        Notes
+        -----
+        Returns the full 3-component complex momentum integral (x, y, z)
+        with proper :math:`-i` scaling. Equivalent to ``momentum_integral()``.
         """
+        
         if origin is None:
             origin = np.zeros(3)
         return self._mom(origin=origin)
