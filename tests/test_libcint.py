@@ -68,7 +68,7 @@ TEST_INTEGRALS = [
 
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.so*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
@@ -198,7 +198,7 @@ TEST_INTEGRALS_IODATA = [
 ]
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.so*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
@@ -343,3 +343,217 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
         raise ValueError("Invalid integral name '{integral}' passed")
 
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# New test list for C shell-loop bindings introduced in PR-5 and PR-6
+# ─────────────────────────────────────────────────────────────────────────
+
+TEST_C_SHELLLOOP_INTEGRALS = [
+    pytest.param("overlap", id="C-Overlap"),
+    pytest.param("kinetic_energy", id="C-KineticEnergy"),
+    pytest.param("nuclear_attraction", id="C-NuclearAttraction"),
+    pytest.param("rinv", id="C-Rinv"),
+    pytest.param("dipole", id="C-Dipole"),
+    pytest.param("quadrupole", id="C-Quadrupole"),
+    pytest.param("octupole", id="C-Octupole"),
+    pytest.param("point_charge", id="C-PointCharge"),
+    pytest.param("moment", id="C-Moment"),
+    pytest.param("electron_repulsion", id="C-ElectronRepulsion"),
+]
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
+    r"""
+    Test the C shell-loop bindings (PR-5: 1-electron, PR-6: ERI) added to
+    ``gbasis.integrals.libcint.CBasis`` against the existing GBasis Python
+    integral implementations.
+
+    These are the ``.overlap()``, ``.kinetic_energy()``,
+    ``.nuclear_attraction()``, ``.rinv()``, ``.dipole()``, ``.quadrupole()``,
+    ``.octupole()``, and ``.electron_repulsion()`` methods, which loop over
+    shells directly in C (as opposed to the ``*_integral()`` methods, which
+    loop over shells in Python and only call into C per shell pair).
+
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atol, rtol = 1e-6, 1e-6
+
+    atcoords = atcoords / 0.5291772083
+
+    atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+
+    # C shell-loop bindings are implemented for spherical only
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
+
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+
+    if integral == "overlap":
+        py_int = overlap_integral(py_basis, screen_basis=False)
+        lc_int = lc_basis.overlap()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "kinetic_energy":
+        py_int = kinetic_energy_integral(py_basis, screen_basis=False)
+        lc_int = lc_basis.kinetic_energy()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "nuclear_attraction":
+        py_int = nuclear_electron_attraction_integral(py_basis, atcoords, atnums)
+        lc_int = lc_basis.nuclear_attraction()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "rinv":
+        # Compare against the point_charge Python integral with a single
+        # unit charge at the origin, since rinv == 1/|r - origin|
+        origin = np.zeros(3)
+        py_int = point_charge_integral(
+            py_basis, origin.reshape(1, 3), np.asarray([-1.0])
+        )[:, :, 0]
+        lc_int = lc_basis.rinv()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "dipole":
+        origin = np.zeros(3)
+        orders = np.asarray([[1, 0, 0]])
+        py_int = moment_integral(py_basis, origin, orders, screen_basis=False)[:, :, 0]
+        lc_int = lc_basis.dipole()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "quadrupole":
+        origin = np.zeros(3)
+        orders = np.asarray([[2, 0, 0]])
+        py_int = moment_integral(py_basis, origin, orders, screen_basis=False)[:, :, 0]
+        lc_int = lc_basis.quadrupole()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "octupole":
+        origin = np.zeros(3)
+        orders = np.asarray([[3, 0, 0]])
+        py_int = moment_integral(py_basis, origin, orders, screen_basis=False)[:, :, 0]
+        lc_int = lc_basis.octupole()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "point_charge":
+        charge_coords = np.asarray([[2.0, 2.0, 2.0], [-3.0, -3.0, -3.0], [-1.0, 2.0, -3.0]])
+        charges = np.asarray([1.0, 0.666, -3.1415926])
+        for i in range(1, len(charges) + 1):
+            py_int = point_charge_integral(py_basis, charge_coords[:i], charges[:i])
+            lc_int = lc_basis.point_charge(charge_coords[:i], charges[:i])
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+            npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "moment":
+        origin = np.zeros(3)
+        orders = np.asarray(
+            [
+                [0, 0, 0],
+                [1, 0, 0],
+                [0, 1, 0],
+                [0, 0, 1],
+                [2, 0, 0],
+                [0, 2, 0],
+                [0, 0, 2],
+                [1, 1, 0],
+                [1, 0, 1],
+                [0, 1, 1],
+                [3, 0, 0],
+                [0, 3, 0],
+                [0, 0, 3],
+            ]
+        )
+        py_int = moment_integral(py_basis, origin, orders, screen_basis=False)
+        lc_int = lc_basis.moment(orders, origin=origin)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "electron_repulsion":
+        py_int = electron_repulsion_integral_improved(py_basis)
+        lc_int = lc_basis.electron_repulsion()
+        npt.assert_array_equal(
+            lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+        )
+        # ERI uses a looser tolerance, consistent with the existing
+        # electron_repulsion_integral test above
+        npt.assert_allclose(lc_int, py_int, atol=1e-4, rtol=1e-5)
+
+    else:
+        raise ValueError(f"Invalid integral name '{integral}' passed")
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+
+def test_c_shellloop_matches_make_int1e(basis, atsyms, atcoords):
+    r"""
+    Cross-check the new C shell-loop bindings (``.overlap()``,
+    ``.kinetic_energy()``, ``.nuclear_attraction()``, ``.electron_repulsion()``)
+    directly against the existing ``make_int1e``/``make_int2e``-based methods
+    (``.overlap_integral()``, ``.kinetic_energy_integral()``,
+    ``.nuclear_attraction_integral()``, ``.electron_repulsion_integral()``)
+    on the *same* ``CBasis`` instance.
+
+    This isolates the C shell-loop logic itself (PR-5/PR-6) from any
+    differences against the pure-Python GBasis implementation, since both
+    sides here come from libcint.
+
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atcoords = atcoords / 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
+
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+
+    # 1-electron integrals: C shell-loop vs. make_int1e shell-loop
+    npt.assert_allclose(
+        lc_basis.overlap(), lc_basis.overlap_integral(), atol=1e-10, rtol=1e-10
+    )
+    npt.assert_allclose(
+        lc_basis.kinetic_energy(),
+        lc_basis.kinetic_energy_integral(),
+        atol=1e-10,
+        rtol=1e-10,
+    )
+    npt.assert_allclose(
+        lc_basis.nuclear_attraction(),
+        lc_basis.nuclear_attraction_integral(),
+        atol=1e-10,
+        rtol=1e-10,
+    )
+
+    # 2-electron ERI: C shell-loop vs. make_int2e shell-loop
+    npt.assert_allclose(
+        lc_basis.electron_repulsion(),
+        lc_basis.electron_repulsion_integral(),
+        atol=1e-8,
+        rtol=1e-8,
+    )
