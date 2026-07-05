@@ -67,20 +67,22 @@ extern int int1e_rr_sph(double *out, int *dims, int *shls, int *atm, int natm, i
 extern int int1e_rrr_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 
 /* Optimizer forward declarations */
-extern void int1e_ovlp_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_kin_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_nuc_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_ipovlp_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_cg_irxp_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_rinv_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_r_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_rr_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int1e_rrr_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
-extern void int2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ovlp_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_kin_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_nuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ipovlp_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_cg_irxp_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_rinv_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_r_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_rr_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_rrr_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void cint2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void CINTall_1e_optimizer(CINTOpt **, int *, int, int *, int, double *);
 /* Forward declaration — 2-electron integral */
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 /* Optimizer macro using token pasting */
-#define MAKE_OPTIMIZER(func) func##_optimizer
+#define MAKE_OPTIMIZER(func) c##func##_optimizer
+
 /*
  * DEFINE_INT1E_ARRAY_FN(func_name, libcint_func)
  * Generates a Python/C API wrapper for a 1-electron libcint integral.
@@ -183,7 +185,7 @@ func_name(PyObject *self, PyObject *args)                                       
     double *buf = calloc(buf_size, sizeof(double));                                \
     if (!buf) { PyErr_NoMemory(); return NULL; }                                   \
     CINTOpt *opt = NULL;                                                            \
-    MAKE_OPTIMIZER(libcint_func)(&opt, atm, natm, bas, nbas, env);                 \
+    CINTall_1e_optimizer(&opt, atm, natm, bas, nbas, env);                    \
     int shls[2];                                                                    \
     int ipos = 0;                                                                   \
     for (int ishl = 0; ishl < nbas; ishl++) {                                      \
@@ -248,7 +250,7 @@ func_name(PyObject *self, PyObject *args)                                       
     double *buf = calloc(buf_size, sizeof(double));                               \
     if (!buf) { PyErr_NoMemory(); return NULL; }                                   \
     CINTOpt *opt = NULL;                                                               \
-    /*MAKE_OPTIMIZER(libcint_func)(&opt, atm, natm, bas, nbas, env);*/                   \
+    /* CINTall_1e_optimizer(&opt, atm, natm, bas, nbas, env); */                   \
     int ipos = 0;                                                                  \
     for (int ishl = 0; ishl < nbas; ishl++) {                                     \
         shls[0] = ishl;                                                            \
@@ -276,9 +278,9 @@ func_name(PyObject *self, PyObject *args)                                       
 }
 
 /* Generate shell-loop wrappers for all 1-electron integrals using the macro */
-DEFINE_INT1E_LOOP_FN(overlap_integral_array,    int1e_ovlp_sph)
-DEFINE_INT1E_LOOP_FN(kinetic_integral_array,    int1e_kin_sph)
-DEFINE_INT1E_LOOP_FN(nuclear_integral_array,    int1e_nuc_sph)
+DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array,    int1e_ovlp_sph)
+DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array,    int1e_kin_sph)
+DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array,    int1e_nuc_sph)
 DEFINE_INT1E_LOOP_FN(momentum_integral_array,   int1e_ipovlp_sph)
 DEFINE_INT1E_LOOP_FN(rinv_integral_array,       int1e_rinv_sph)
 DEFINE_INT1E_LOOP_FN(dipole_integral_array,     int1e_r_sph)
@@ -318,7 +320,7 @@ eri_array(PyObject *self, PyObject *args)
     double *buf = calloc(buf_size, sizeof(double));
     if (!buf) { PyErr_NoMemory(); return NULL; }
     CINTOpt *opt = NULL;
-    /*int2e_sph_optimizer(&opt, atm, natm, bas, nbas, env);*/
+    cint2e_sph_optimizer(&opt, atm, natm, bas, nbas, env);
     int ipos = 0;
     for (int ishl = 0; ishl < nbas; ishl++) {
         shls[0] = ishl;
