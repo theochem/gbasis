@@ -37,7 +37,9 @@
 #include <numpy/arrayobject.h>
 #include <stdlib.h>
 #include <string.h>
-
+/* CINTOpt forward declaration */
+typedef struct CINTOpt CINTOpt;
+extern void CINTdel_optimizer(CINTOpt **);
 
 /* Forward declarations for libcint spherical integral functions.
  * Signature: (out, dims, shls, atm, natm, bas, nbas, env, opt, cache)
@@ -64,9 +66,21 @@ extern int int1e_r_sph(double *out, int *dims, int *shls, int *atm, int natm, in
 extern int int1e_rr_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 extern int int1e_rrr_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 
+/* Optimizer forward declarations */
+extern void int1e_ovlp_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_kin_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_nuc_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ipovlp_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_cg_irxp_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_rinv_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_r_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_rr_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_rrr_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
 /* Forward declaration — 2-electron integral */
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
-
+/* Optimizer macro using token pasting */
+#define MAKE_OPTIMIZER(func) func##_optimizer
 /*
  * DEFINE_INT1E_ARRAY_FN(func_name, libcint_func)
  * Generates a Python/C API wrapper for a 1-electron libcint integral.
@@ -141,6 +155,62 @@ electron_repulsion_sph(PyObject *self, PyObject *args)
     return PyLong_FromLong(result);
 }
 
+/* Macro for integrals WITH optimizer support */
+#define DEFINE_INT1E_LOOP_FN_OPT(func_name, libcint_func)                         \
+static PyObject *                                                                   \
+func_name(PyObject *self, PyObject *args)                                           \
+{                                                                                   \
+    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;               \
+    int natm, nbas, nbfn;                                                           \
+    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i",                                   \
+                          &PyArray_Type, &out_arr, &natm,                           \
+                          &PyArray_Type, &atm_arr, &nbas,                           \
+                          &PyArray_Type, &bas_arr,                                  \
+                          &PyArray_Type, &env_arr,                                  \
+                          &PyArray_Type, &offs_arr,                                 \
+                          &nbfn))                                                   \
+        return NULL;                                                                \
+    double *out  = (double *)PyArray_DATA(out_arr);                                \
+    int    *atm  = (int *)   PyArray_GETPTR2(atm_arr, 0, 0);                       \
+    int    *bas  = (int *)   PyArray_GETPTR2(bas_arr, 0, 0);                       \
+    double *env  = (double *)PyArray_GETPTR1(env_arr, 0);                          \
+    int    *offs = (int *)   PyArray_GETPTR1(offs_arr, 0);                         \
+    int max_off = 0;                                                                \
+    for (int i = 0; i < nbas; i++) {                                               \
+        if (offs[i] > max_off) max_off = offs[i];                                  \
+    }                                                                               \
+    size_t buf_size = (size_t)max_off * max_off;                                   \
+    double *buf = calloc(buf_size, sizeof(double));                                \
+    if (!buf) { PyErr_NoMemory(); return NULL; }                                   \
+    CINTOpt *opt = NULL;                                                            \
+    MAKE_OPTIMIZER(libcint_func)(&opt, atm, natm, bas, nbas, env);                 \
+    int shls[2];                                                                    \
+    int ipos = 0;                                                                   \
+    for (int ishl = 0; ishl < nbas; ishl++) {                                      \
+        shls[0] = ishl;                                                             \
+        int p_off = offs[ishl];                                                     \
+        int jpos = 0;                                                               \
+        for (int jshl = 0; jshl <= ishl; jshl++) {                                 \
+            shls[1] = jshl;                                                         \
+            int q_off = offs[jshl];                                                 \
+            libcint_func(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);   \
+            for (int p = 0; p < p_off; p++) {                                      \
+                for (int q = 0; q < q_off; q++) {                                  \
+                    double val = buf[p + q * p_off];                               \
+                    out[(ipos+p) * nbfn + (jpos+q)] = val;                         \
+                    out[(jpos+q) * nbfn + (ipos+p)] = val;                         \
+                }                                                                   \
+            }                                                                       \
+            memset(buf, 0, buf_size * sizeof(double));                              \
+            jpos += q_off;                                                          \
+        }                                                                           \
+        ipos += p_off;                                                              \
+    }                                                                               \
+    CINTdel_optimizer(&opt);                                                        \
+    free(buf);                                                                      \
+    Py_RETURN_NONE;                                                                 \
+}
+
 /*
  * DEFINE_INT1E_LOOP_FN(func_name, libcint_func)
  * Generates a C shell-loop wrapper for a 1-electron libcint integral that
@@ -177,6 +247,8 @@ func_name(PyObject *self, PyObject *args)                                       
     size_t buf_size = (size_t)max_off * max_off;                                  \
     double *buf = calloc(buf_size, sizeof(double));                               \
     if (!buf) { PyErr_NoMemory(); return NULL; }                                   \
+    CINTOpt *opt = NULL;                                                               \
+    /*MAKE_OPTIMIZER(libcint_func)(&opt, atm, natm, bas, nbas, env);*/                   \
     int ipos = 0;                                                                  \
     for (int ishl = 0; ishl < nbas; ishl++) {                                     \
         shls[0] = ishl;                                                            \
@@ -185,7 +257,7 @@ func_name(PyObject *self, PyObject *args)                                       
         for (int jshl = 0; jshl <= ishl; jshl++) {                                \
             shls[1] = jshl;                                                        \
             int q_off = offs[jshl];                                               \
-            libcint_func(buf, NULL, shls, atm, natm, bas, nbas, env, NULL, NULL); \
+            libcint_func(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);  \
             for (int p = 0; p < p_off; p++) {                                     \
                 for (int q = 0; q < q_off; q++) {                                 \
                     double val = buf[p + q * p_off];                              \
@@ -198,6 +270,7 @@ func_name(PyObject *self, PyObject *args)                                       
         }                                                                          \
         ipos += p_off;                                                             \
     }                            \
+    CINTdel_optimizer(&opt);      \  
     free(buf);                                                                          \
     Py_RETURN_NONE;                                                                \
 }
@@ -244,6 +317,8 @@ eri_array(PyObject *self, PyObject *args)
     size_t buf_size = (size_t)max_off * max_off * max_off * max_off;
     double *buf = calloc(buf_size, sizeof(double));
     if (!buf) { PyErr_NoMemory(); return NULL; }
+    CINTOpt *opt = NULL;
+    /*int2e_sph_optimizer(&opt, atm, natm, bas, nbas, env);*/
     int ipos = 0;
     for (int ishl = 0; ishl < nbas; ishl++) {
         shls[0] = ishl;
@@ -266,7 +341,7 @@ eri_array(PyObject *self, PyObject *args)
                     }
                     shls[3] = lshl;
                     int s_off = offs[lshl];
-                    int2e_sph(buf, NULL, shls, atm, natm, bas, nbas, env, NULL, NULL);
+                    int2e_sph(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);
                     for (int p = 0; p < p_off; p++) {
                         for (int q = 0; q < q_off; q++) {
                             for (int r = 0; r < r_off; r++) {
@@ -293,6 +368,7 @@ eri_array(PyObject *self, PyObject *args)
         }
         ipos += p_off;
     }
+    CINTdel_optimizer(&opt);
     free(buf);
     Py_RETURN_NONE;
 }
