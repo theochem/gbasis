@@ -56,6 +56,7 @@ set_target_properties(gbasis_ext PROPERTIES
 
 # Expose Python and NumPy include directories to C extension module.
 target_include_directories(gbasis_ext PRIVATE
+    ${cint_SOURCE_DIR}/include
     ${Python_INCLUDE_DIRS} ${Python_NumPy_INCLUDE_DIRS})
 
 # Link C extension module with libcint/qcint.
