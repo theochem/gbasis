@@ -1106,7 +1106,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.overlap_integral_shellloop(
+        libcint_bindings.overlap_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1130,7 +1130,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.kinetic_integral_shellloop(
+        libcint_bindings.kinetic_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1157,7 +1157,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.nuclear_integral_shellloop(
+        libcint_bindings.nuclear_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1213,7 +1213,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.rinv_integral_shellloop(
+        libcint_bindings.rinv_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1243,7 +1243,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.dipole_integral_shellloop(
+        libcint_bindings.dipole_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1273,7 +1273,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.quadrupole_integral_shellloop(
+        libcint_bindings.quadrupole_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1303,7 +1303,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.octupole_integral_shellloop(
+        libcint_bindings.octupole_integral_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
@@ -1338,7 +1338,7 @@ class CBasis:
             # Set inv_origin in env for this charge
             self.env[4:7] = coord
             val = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-            libcint_bindings.rinv_integral_shellloop(
+            libcint_bindings.rinv_integral_array(
                 val, self.natm, self.atm, self.nbas,
                 self.bas, self.env, self._offs, self.nbfn
             )
@@ -1401,7 +1401,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
-        libcint_bindings.eri_shellloop(
+        libcint_bindings.eri_array(
             out, self.natm, self.atm, self.nbas,
             self.bas, self.env, self._offs, self.nbfn
         )
