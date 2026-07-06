@@ -185,7 +185,7 @@ func_name(PyObject *self, PyObject *args)                                       
     double *buf = calloc(buf_size, sizeof(double));                                \
     if (!buf) { PyErr_NoMemory(); return NULL; }                                   \
     CINTOpt *opt = NULL;                                                            \
-    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);      \
+    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);     \
     int shls[2];                                                                    \
     int ipos = 0;                                                                   \
     for (int ishl = 0; ishl < nbas; ishl++) {                                      \
@@ -248,7 +248,7 @@ func_name(PyObject *self, PyObject *args)                                       
     double *buf = calloc(buf_size, sizeof(double));                                \
     if (!buf) { PyErr_NoMemory(); return NULL; }                                   \
     CINTOpt *opt = NULL;                                                            \
-    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);                         \
+    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);                       \
     int ipos = 0;                                                                   \
     for (int ishl = 0; ishl < nbas; ishl++) {                                      \
         shls[0] = ishl;                                                             \
