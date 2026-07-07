@@ -356,6 +356,7 @@ TEST_C_SHELLLOOP_INTEGRALS = [
     pytest.param("kinetic_energy", id="C-KineticEnergy"),
     pytest.param("nuclear_attraction", id="C-NuclearAttraction"),
     pytest.param("rinv", id="C-Rinv"),
+    pytest.param("momentum", id="C-Momentum"),
     pytest.param("dipole", id="C-Dipole"),
     pytest.param("quadrupole", id="C-Quadrupole"),
     pytest.param("octupole", id="C-Octupole"),
@@ -406,18 +407,33 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.overlap()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.overlap(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "kinetic_energy":
         py_int = kinetic_energy_integral(py_basis, screen_basis=False)
         lc_int = lc_basis.kinetic_energy()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.kinetic_energy(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "nuclear_attraction":
         py_int = nuclear_electron_attraction_integral(py_basis, atcoords, atnums)
         lc_int = lc_basis.nuclear_attraction()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.nuclear_attraction(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "rinv":
         # Compare against the point_charge Python integral with a single
@@ -429,6 +445,13 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.rinv()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with inv_origin
+        lc_int_inv = lc_basis.rinv(inv_origin=np.zeros(3))
+        npt.assert_allclose(lc_int_inv, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.rinv(transform=transform)
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "dipole":
         origin = np.zeros(3)
@@ -437,6 +460,12 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.dipole()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.dipole(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
+
 
     elif integral == "quadrupole":
         origin = np.zeros(3)
@@ -445,6 +474,11 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.quadrupole()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.quadrupole(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "octupole":
         origin = np.zeros(3)
@@ -453,6 +487,22 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.octupole()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.octupole(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
+
+    elif integral == "momentum":
+        py_int = momentum_integral(py_basis, screen_basis=False)
+        lc_int = lc_basis.momentum(origin=np.zeros(3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.momentum(origin=np.zeros(3), transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "point_charge":
         charge_coords = np.asarray([[2.0, 2.0, 2.0], [-3.0, -3.0, -3.0], [-1.0, 2.0, -3.0]])
@@ -489,14 +539,20 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
 
     elif integral == "electron_repulsion":
         py_int = electron_repulsion_integral_improved(py_basis)
-        lc_int = lc_basis.electron_repulsion()
+        lc_int = lc_basis.electron_repulsion(notation="physicist")
         npt.assert_array_equal(
             lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
         )
         # ERI uses a looser tolerance, consistent with the existing
         # electron_repulsion_integral test above
         npt.assert_allclose(lc_int, py_int, atol=1e-4, rtol=1e-5)
-
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.electron_repulsion(notation="physicist",transform=transform)
+        npt.assert_array_equal(
+            lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+        )
+        npt.assert_allclose(lc_int_t, py_int, atol=1e-4, rtol=1e-5)
     else:
         raise ValueError(f"Invalid integral name '{integral}' passed")
 
@@ -549,11 +605,194 @@ def test_c_shellloop_matches_make_int1e(basis, atsyms, atcoords):
         atol=1e-10,
         rtol=1e-10,
     )
+    # overlap with transform
+    transform = np.eye(lc_basis.nbfn)
+    npt.assert_allclose(
+        lc_basis.overlap(transform=transform),
+        lc_basis.overlap_integral(transform=transform),
+        atol=1e-10,
+        rtol=1e-10,
+    )
+
+    # kinetic_energy with transform
+    npt.assert_allclose(
+        lc_basis.kinetic_energy(transform=transform),
+        lc_basis.kinetic_energy_integral(transform=transform),
+        atol=1e-10, rtol=1e-10,
+    )
+
+    # nuclear_attraction with transform
+    npt.assert_allclose(
+        lc_basis.nuclear_attraction(transform=transform),
+        lc_basis.nuclear_attraction_integral(transform=transform),
+        atol=1e-10, rtol=1e-10,
+    )
+
+    # rinv with inv_origin and transform
+    npt.assert_allclose(
+        lc_basis.rinv(inv_origin=np.zeros(3), transform=transform),
+        lc_basis.r_inv_integral(origin=np.zeros(3), transform=transform),
+        atol=1e-10, rtol=1e-10,
+    )
+
+    # momentum with transform
+    npt.assert_allclose(
+        lc_basis.momentum(origin=np.zeros(3), transform=transform),
+        lc_basis.momentum_integral(origin=np.zeros(3), transform=transform),
+        atol=1e-10, rtol=1e-10,
+    )
+    
 
     # 2-electron ERI: C shell-loop vs. make_int2e shell-loop
     npt.assert_allclose(
-        lc_basis.electron_repulsion(),
-        lc_basis.electron_repulsion_integral(),
+        lc_basis.electron_repulsion(notation="chemist"),
+        lc_basis.electron_repulsion_integral(notation="chemist"),
         atol=1e-8,
         rtol=1e-8,
     )
+
+    # electron_repulsion with transform
+    npt.assert_allclose(
+        lc_basis.electron_repulsion(notation="chemist", transform=transform),
+        lc_basis.electron_repulsion_integral(notation="chemist", transform=transform),
+        atol=1e-8, rtol=1e-8,
+    )
+
+# ─────────────────────────────────────────────────────────────────────────
+# Tests for gradient integral bindings 
+# ─────────────────────────────────────────────────────────────────────────
+
+TEST_GRADIENT_INTEGRALS = [
+    pytest.param("gradient_kinetic", id="C-GradKinetic"),
+    pytest.param("gradient_nuclear", id="C-GradNuclear"),
+    pytest.param("gradient_rinv",    id="C-GradRinv"),
+]
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("integral", TEST_GRADIENT_INTEGRALS)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_c_gradient_integral(basis, atsyms, atcoords, integral):
+    r"""
+    Test the C shell-loop gradient integral bindings (PR-8) added to
+    ``gbasis.integrals.libcint.CBasis`` against the existing make_int1e
+    based implementations.
+
+    These are the ``.gradient_kinetic()``, ``.gradient_nuclear()``,
+    and ``.gradient_rinv()`` methods which are the building blocks
+    for computing nuclear coordinate gradients.
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atcoords = atcoords / 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+
+    if integral == "gradient_kinetic":
+        # Compare C shell-loop against make_int1e path on same CBasis instance
+        py_int = lc_basis._d_kin()
+        lc_int = lc_basis.gradient_kinetic()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.gradient_kinetic(transform=transform)
+        npt.assert_allclose(lc_int_t, py_int[..., 0], atol=1e-10, rtol=1e-10)
+
+    elif integral == "gradient_nuclear":
+        py_int = lc_basis._d_nuc()
+        lc_int = lc_basis.gradient_nuclear()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.gradient_nuclear(transform=transform)
+        npt.assert_allclose(lc_int_t, py_int[..., 0], atol=1e-10, rtol=1e-10)
+
+    elif integral == "gradient_rinv":
+        py_int = lc_basis._d_rinv(inv_origin=np.zeros(3))
+        lc_int = lc_basis.gradient_rinv(inv_origin=np.zeros(3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.gradient_rinv(inv_origin=np.zeros(3), transform=transform)
+        npt.assert_allclose(lc_int_t, py_int[..., 0], atol=1e-10, rtol=1e-10)
+    else:
+        raise ValueError(f"Invalid integral name '{integral}' passed")
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Tests for GIAO/magnetic integral bindings 
+# ─────────────────────────────────────────────────────────────────────────
+
+TEST_GIAO_INTEGRALS = [
+    pytest.param("ia01p",  id="C-ia01p"),
+    pytest.param("ircxp",  id="C-ircxp"),
+    pytest.param("iking",  id="C-iking"),
+    pytest.param("iovlpg", id="C-iovlpg"),
+    pytest.param("inucg",  id="C-inucg"),
+]
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("integral", TEST_GIAO_INTEGRALS)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_c_giao_integral(basis, atsyms, atcoords, integral):
+    r"""
+    Test the GIAO/magnetic integral bindings (PR-8) added to
+    ``gbasis.integrals.libcint.CBasis``.
+
+    These are the ``.ia01p()``, ``.ircxp()``, ``.iking()``,
+    ``.iovlpg()``, and ``.inucg()`` methods which are building
+    blocks for NMR/magnetic property calculations.
+
+    Since GBasis has no Python reference implementation for GIAO
+    integrals, we verify shape and that results are finite and
+    non-trivially zero for multi-atom systems.
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atcoords = atcoords / 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+
+    if integral == "ia01p":
+        lc_int = lc_basis.ia01p()
+    elif integral == "ircxp":
+        lc_int = lc_basis.ircxp()
+    elif integral == "iking":
+        lc_int = lc_basis.iking()
+    elif integral == "iovlpg":
+        lc_int = lc_basis.iovlpg()
+    elif integral == "inucg":
+        lc_int = lc_basis.inucg()
+    else:
+        raise ValueError(f"Invalid integral name '{integral}' passed")
+
+    # Shape check
+    npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+
+    # Finiteness check — no NaN or Inf
+    assert np.all(np.isfinite(lc_int)), f"{integral} contains NaN or Inf"
+    # Test with transform
+    transform = np.eye(lc_basis.nbfn)
+    func = getattr(lc_basis, integral)
+    lc_int_t = func(transform=transform)
+    npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+    assert np.all(np.isfinite(lc_int_t)), f"{integral} with transform contains NaN or Inf"
