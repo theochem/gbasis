@@ -65,6 +65,10 @@ extern int int1e_rinv_sph(double *out, int *dims, int *shls, int *atm, int natm,
 extern int int1e_r_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 extern int int1e_rr_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 extern int int1e_rrr_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+extern int int1e_ipkin_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+extern int int1e_ipnuc_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+extern int int1e_iprinv_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+
 
 /* Optimizer forward declarations */
 extern void int1e_ovlp_optimizer(CINTOpt **, int *, int, int *, int, double *);
@@ -78,6 +82,10 @@ extern void int1e_rr_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_rrr_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void cint2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void CINTall_1e_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ipkin_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ipnuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_iprinv_optimizer(CINTOpt **, int *, int, int *, int, double *);
+
 /* Forward declaration — 2-electron integral */
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 /* Optimizer macro using token pasting */
@@ -275,6 +283,7 @@ func_name(PyObject *self, PyObject *args)                                       
     Py_RETURN_NONE;                                                                 \
 }
 
+
 /* Generate shell-loop wrappers for all 1-electron integrals using the macro */
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, int1e_ovlp_sph, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, int1e_kin_sph,  int1e_kin)
@@ -284,6 +293,9 @@ DEFINE_INT1E_LOOP_FN(rinv_integral_array,       int1e_rinv_sph,   int1e_rinv)
 DEFINE_INT1E_LOOP_FN(dipole_integral_array,     int1e_r_sph,      int1e_r)
 DEFINE_INT1E_LOOP_FN(quadrupole_integral_array, int1e_rr_sph,     int1e_rr)
 DEFINE_INT1E_LOOP_FN(octupole_integral_array,   int1e_rrr_sph,    int1e_rrr)
+DEFINE_INT1E_LOOP_FN(ipkin_integral_array,  int1e_ipkin_sph,  int1e_ipkin)
+DEFINE_INT1E_LOOP_FN(ipnuc_integral_array,  int1e_ipnuc_sph,  int1e_ipnuc)
+DEFINE_INT1E_LOOP_FN(iprinv_integral_array, int1e_iprinv_sph, int1e_iprinv)
 
 /* eri_array — array-based loop in C for 2-electron ERI (4 shells: I,J,K,L) */
 static PyObject *
@@ -393,6 +405,9 @@ static PyMethodDef LibcintMethods[] = {
     {"dipole_integral_array", dipole_integral_array, METH_VARARGS, "Dipole integral array in C"},
     {"quadrupole_integral_array", quadrupole_integral_array, METH_VARARGS, "Quadrupole integral array in C"},
     {"octupole_integral_array", octupole_integral_array, METH_VARARGS, "Octupole integral array in C"},
+    {"ipkin_integral_array", ipkin_integral_array, METH_VARARGS, "Momentum kinetic integral array in C"},
+    {"ipnuc_integral_array", ipnuc_integral_array, METH_VARARGS, "Momentum nuclear attraction integral array in C"},
+    {"iprinv_integral_array", iprinv_integral_array, METH_VARARGS, "Momentum 1/r integral array in C"},
     {"eri_array", eri_array, METH_VARARGS, "ERI 2-electron array in C"},
     {NULL, NULL, 0, NULL}
 };

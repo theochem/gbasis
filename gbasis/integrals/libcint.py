@@ -1309,6 +1309,54 @@ class CBasis:
         )
         return out
 
+    def gradient_kinetic(self):
+        r"""
+        Compute the gradient of kinetic energy integrals (i∇ kinetic).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Gradient kinetic integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.ipkin_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def gradient_nuclear(self):
+        r"""
+        Compute the gradient of nuclear attraction integrals (i∇ nuclear).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Gradient nuclear integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.ipnuc_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def gradient_rinv(self):
+        r"""
+        Compute the gradient of 1/r integrals (i∇ rinv).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Gradient 1/r integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.iprinv_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
     def point_charge(self, point_coords, point_charges):
         r"""
         Compute the point charge integrals.
