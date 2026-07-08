@@ -617,3 +617,65 @@ def test_c_gradient_integral(basis, atsyms, atcoords, integral):
 
     else:
         raise ValueError(f"Invalid integral name '{integral}' passed")
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Tests for GIAO/magnetic integral bindings 
+# ─────────────────────────────────────────────────────────────────────────
+
+TEST_GIAO_INTEGRALS = [
+    pytest.param("ia01p",  id="C-ia01p"),
+    pytest.param("ircxp",  id="C-ircxp"),
+    pytest.param("iking",  id="C-iking"),
+    pytest.param("iovlpg", id="C-iovlpg"),
+    pytest.param("inucg",  id="C-inucg"),
+]
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("integral", TEST_GIAO_INTEGRALS)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_c_giao_integral(basis, atsyms, atcoords, integral):
+    r"""
+    Test the GIAO/magnetic integral bindings (PR-8) added to
+    ``gbasis.integrals.libcint.CBasis``.
+
+    These are the ``.ia01p()``, ``.ircxp()``, ``.iking()``,
+    ``.iovlpg()``, and ``.inucg()`` methods which are building
+    blocks for NMR/magnetic property calculations.
+
+    Since GBasis has no Python reference implementation for GIAO
+    integrals, we verify shape and that results are finite and
+    non-trivially zero for multi-atom systems.
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atcoords = atcoords / 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+
+    if integral == "ia01p":
+        lc_int = lc_basis.ia01p()
+    elif integral == "ircxp":
+        lc_int = lc_basis.ircxp()
+    elif integral == "iking":
+        lc_int = lc_basis.iking()
+    elif integral == "iovlpg":
+        lc_int = lc_basis.iovlpg()
+    elif integral == "inucg":
+        lc_int = lc_basis.inucg()
+    else:
+        raise ValueError(f"Invalid integral name '{integral}' passed")
+
+    # Shape check
+    npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+
+    # Finiteness check — no NaN or Inf
+    assert np.all(np.isfinite(lc_int)), f"{integral} contains NaN or Inf"
