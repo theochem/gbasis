@@ -2,14 +2,16 @@ r"""
 Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
+
 from gbasis.integrals.lib import libcint_bindings
 
 from contextlib import contextmanager
 
 # to Remove 1
 from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double
+
 # to Remove 2
-#from itertools import chain
+# from itertools import chain
 
 from operator import attrgetter
 
@@ -20,8 +22,9 @@ import re
 import numpy as np
 
 from scipy.special import factorial
+
 # to Remove 3
-#from gbasis.utils import factorial2
+# from gbasis.utils import factorial2
 
 
 __all__ = [
@@ -195,6 +198,7 @@ def ndptr(enable_null=False, **kwargs):
 
 class PairData(Structure):
     r"""``libcint`` ``PairData`` class."""
+
     _fields_ = [
         ("rij", c_double * 3),
         ("eij", c_double),
@@ -204,6 +208,7 @@ class PairData(Structure):
 
 class CINTOpt(Structure):
     r"""``libcint`` ``CINTOpt`` class."""
+
     _fields_ = [
         ("index_xyz_array", POINTER(POINTER(c_int))),
         ("non0ctr", POINTER(POINTER(c_int))),
@@ -221,6 +226,7 @@ class _LibCInt:
     """
 
     import platform as _platform
+
     _lib_dir = Path(__file__).parent / "lib"
     _system = _platform.system()
     if _system == "Darwin":
@@ -310,7 +316,12 @@ class _LibCInt:
                     # opt
                     POINTER(CINTOpt),
                     # cache
-                    ndptr(enable_null=True, dtype=c_double, ndim=1, flags=("C_CONTIGUOUS",)),
+                    ndptr(
+                        enable_null=True,
+                        dtype=c_double,
+                        ndim=1,
+                        flags=("C_CONTIGUOUS",),
+                    ),
                 )
                 cfunc.restype = c_int
 
@@ -397,10 +408,12 @@ class CBasis:
 
     Methods
     -------
-    make_int1e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
-        Make an instance-bound 1-electron integral method from a ``libcint`` function.
-    make_int2e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
-        Make an instance-bound 2-electron integral method from a ``libcint`` function.
+    make_int1e(self, func_name, components=tuple(), constant=None,
+               is_complex=False, origin=False, inv_origin=False)
+    Make an instance-bound 1-electron integral method from a ``libcint`` function.
+    make_int2e(self, func_name, components=tuple(), constant=None,
+               is_complex=False, origin=False, inv_origin=False)
+    Make an instance-bound 2-electron integral method from a ``libcint`` function.
     overlap(self)
         Compute the overlap integrals.
     kinetic_energy(self)
@@ -576,7 +589,7 @@ class CBasis:
             "int1e_ipovlp", components=(3,), constant=-1j, is_complex=True, origin=True
         )
         # self._amom = self.make_int1e(
-            # "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
+        # "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
         # )
         self._d_ovlp = self.make_int1e("int1e_ipovlp", components=(3,))
         self._d_kin = self.make_int1e("int1e_ipkin", components=(3,))
@@ -586,29 +599,29 @@ class CBasis:
         self._moments = {}
         # Order 1: int1e_r has 3 components (x, y, z)
         _r = self.make_int1e("int1e_r", components=(3,), origin=True)
-        self._moments[(1,0,0)] = lambda **kw: _r(**kw)[..., 0]
-        self._moments[(0,1,0)] = lambda **kw: _r(**kw)[..., 1]
-        self._moments[(0,0,1)] = lambda **kw: _r(**kw)[..., 2]
+        self._moments[(1, 0, 0)] = lambda **kw: _r(**kw)[..., 0]
+        self._moments[(0, 1, 0)] = lambda **kw: _r(**kw)[..., 1]
+        self._moments[(0, 0, 1)] = lambda **kw: _r(**kw)[..., 2]
         # Order 2: int1e_rr has 9 components
         _rr = self.make_int1e("int1e_rr", components=(9,), origin=True)
-        self._moments[(2,0,0)] = lambda **kw: _rr(**kw)[..., 0]
-        self._moments[(1,1,0)] = lambda **kw: _rr(**kw)[..., 1]
-        self._moments[(1,0,1)] = lambda **kw: _rr(**kw)[..., 2]
-        self._moments[(0,2,0)] = lambda **kw: _rr(**kw)[..., 4]
-        self._moments[(0,1,1)] = lambda **kw: _rr(**kw)[..., 5]
-        self._moments[(0,0,2)] = lambda **kw: _rr(**kw)[..., 8]
+        self._moments[(2, 0, 0)] = lambda **kw: _rr(**kw)[..., 0]
+        self._moments[(1, 1, 0)] = lambda **kw: _rr(**kw)[..., 1]
+        self._moments[(1, 0, 1)] = lambda **kw: _rr(**kw)[..., 2]
+        self._moments[(0, 2, 0)] = lambda **kw: _rr(**kw)[..., 4]
+        self._moments[(0, 1, 1)] = lambda **kw: _rr(**kw)[..., 5]
+        self._moments[(0, 0, 2)] = lambda **kw: _rr(**kw)[..., 8]
         # Order 3: int1e_rrr has 27 components
         _rrr = self.make_int1e("int1e_rrr", components=(27,), origin=True)
-        self._moments[(3,0,0)] = lambda **kw: _rrr(**kw)[..., 0]
-        self._moments[(0,3,0)] = lambda **kw: _rrr(**kw)[..., 13]
-        self._moments[(0,0,3)] = lambda **kw: _rrr(**kw)[..., 26]
-        self._moments[(2,1,0)] = lambda **kw: _rrr(**kw)[..., 3]
-        self._moments[(2,0,1)] = lambda **kw: _rrr(**kw)[..., 6]
-        self._moments[(1,2,0)] = lambda **kw: _rrr(**kw)[..., 1]
-        self._moments[(0,2,1)] = lambda **kw: _rrr(**kw)[..., 14]
-        self._moments[(1,0,2)] = lambda **kw: _rrr(**kw)[..., 2]
-        self._moments[(0,1,2)] = lambda **kw: _rrr(**kw)[..., 17]
-        self._moments[(1,1,1)] = lambda **kw: _rrr(**kw)[..., 4]
+        self._moments[(3, 0, 0)] = lambda **kw: _rrr(**kw)[..., 0]
+        self._moments[(0, 3, 0)] = lambda **kw: _rrr(**kw)[..., 13]
+        self._moments[(0, 0, 3)] = lambda **kw: _rrr(**kw)[..., 26]
+        self._moments[(2, 1, 0)] = lambda **kw: _rrr(**kw)[..., 3]
+        self._moments[(2, 0, 1)] = lambda **kw: _rrr(**kw)[..., 6]
+        self._moments[(1, 2, 0)] = lambda **kw: _rrr(**kw)[..., 1]
+        self._moments[(0, 2, 1)] = lambda **kw: _rrr(**kw)[..., 14]
+        self._moments[(1, 0, 2)] = lambda **kw: _rrr(**kw)[..., 2]
+        self._moments[(0, 1, 2)] = lambda **kw: _rrr(**kw)[..., 17]
+        self._moments[(1, 1, 1)] = lambda **kw: _rrr(**kw)[..., 4]
 
         # Set proper value for inverse sqrt of overlap integral
         # for cartesian basis sets
@@ -1106,10 +1119,16 @@ class CBasis:
             Overlap integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.overlap_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1130,10 +1149,16 @@ class CBasis:
             Kinetic energy integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.kinetic_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1157,10 +1182,16 @@ class CBasis:
             Nuclear attraction integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.nuclear_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1190,11 +1221,9 @@ class CBasis:
         Returns the full 3-component complex momentum integral (x, y, z)
         with proper :math:`-i` scaling. Equivalent to ``momentum_integral()``.
         """
-        
         if origin is None:
             origin = np.zeros(3)
         return self._mom(origin=origin)
-
 
     def rinv(self):
         r"""
@@ -1213,10 +1242,16 @@ class CBasis:
             1/r integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.rinv_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1243,10 +1278,16 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.dipole_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1273,10 +1314,16 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.quadrupole_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1303,10 +1350,16 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.octupole_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1319,10 +1372,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Gradient kinetic integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.ipkin_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1335,10 +1394,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Gradient nuclear integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.ipnuc_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1351,10 +1416,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Gradient 1/r integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.iprinv_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1367,10 +1438,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             GIAO ia01p integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.ia01p_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1383,10 +1460,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             GIAO ircxp integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.ircxp_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1399,10 +1482,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             GIAO igkin integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.igkin_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1415,10 +1504,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             GIAO igovlp integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.igovlp_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1431,10 +1526,16 @@ class CBasis:
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             GIAO ignuc integral array.
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.ignuc_integral_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
@@ -1462,19 +1563,25 @@ class CBasis:
             Point charge integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order='F')
+        out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order="F")
         for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
             # Set inv_origin in env for this charge
             self.env[4:7] = coord
-            val = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+            val = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
             libcint_bindings.rinv_integral_array(
-                val, self.natm, self.atm, self.nbas,
-                self.bas, self.env, self._offs, self.nbfn
+                val,
+                self.natm,
+                self.atm,
+                self.nbas,
+                self.bas,
+                self.env,
+                self._offs,
+                self.nbfn,
             )
             val *= -charge
             out[:, :, icharge] = val
         return out
-        
+
     def moment(self, orders, origin=None):
         r"""
         Compute the moment integrals.
@@ -1509,7 +1616,7 @@ class CBasis:
             if sum(order) == 0:
                 out[:, :, i] = self.overlap()
             else:
-                out[:, :, i] = self._moments[tuple(order)](origin=origin)        
+                out[:, :, i] = self._moments[tuple(order)](origin=origin)
         return out
 
     def electron_repulsion(self):
@@ -1531,8 +1638,14 @@ class CBasis:
         """
         out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
         libcint_bindings.eri_array(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
         return out
 
