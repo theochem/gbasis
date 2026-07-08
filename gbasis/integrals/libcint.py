@@ -6,9 +6,10 @@ from gbasis.integrals.lib import libcint_bindings
 
 from contextlib import contextmanager
 
-from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double, c_void_p
-
-from itertools import chain
+# to Remove 1
+from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double
+# to Remove 2
+#from itertools import chain
 
 from operator import attrgetter
 
@@ -19,8 +20,8 @@ import re
 import numpy as np
 
 from scipy.special import factorial
-
-from gbasis.utils import factorial2
+# to Remove 3
+#from gbasis.utils import factorial2
 
 
 __all__ = [
