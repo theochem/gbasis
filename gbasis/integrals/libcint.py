@@ -1357,6 +1357,86 @@ class CBasis:
         )
         return out
 
+    def ia01p(self):
+        r"""
+        Compute the GIAO paramagnetic shielding integrals (ia01p).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO ia01p integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.ia01p_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def ircxp(self):
+        r"""
+        Compute the GIAO angular momentum integrals (ircxp).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO ircxp integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.ircxp_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def iking(self):
+        r"""
+        Compute the GIAO kinetic energy integrals (igkin).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO igkin integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.igkin_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def iovlpg(self):
+        r"""
+        Compute the GIAO overlap gradient integrals (igovlp).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO igovlp integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.igovlp_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
+    def inucg(self):
+        r"""
+        Compute the GIAO nuclear attraction integrals (ignuc).
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO ignuc integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
+        libcint_bindings.ignuc_integral_array(
+            out, self.natm, self.atm, self.nbas,
+            self.bas, self.env, self._offs, self.nbfn
+        )
+        return out
+
     def point_charge(self, point_coords, point_charges):
         r"""
         Compute the point charge integrals.

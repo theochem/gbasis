@@ -68,7 +68,10 @@ extern int int1e_rrr_sph(double *out, int *dims, int *shls, int *atm, int natm, 
 extern int int1e_ipkin_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 extern int int1e_ipnuc_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 extern int int1e_iprinv_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
-
+extern int int1e_ia01p_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+extern int int1e_igkin_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+extern int int1e_igovlp_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
+extern int int1e_ignuc_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
 
 /* Optimizer forward declarations */
 extern void int1e_ovlp_optimizer(CINTOpt **, int *, int, int *, int, double *);
@@ -85,6 +88,10 @@ extern void CINTall_1e_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_ipkin_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_ipnuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_iprinv_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ia01p_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_igkin_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_igovlp_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void int1e_ignuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
 
 /* Forward declaration — 2-electron integral */
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm, int *bas, int nbas, double *env, void *opt, double *cache);
@@ -296,6 +303,11 @@ DEFINE_INT1E_LOOP_FN(octupole_integral_array,   int1e_rrr_sph,    int1e_rrr)
 DEFINE_INT1E_LOOP_FN(ipkin_integral_array,  int1e_ipkin_sph,  int1e_ipkin)
 DEFINE_INT1E_LOOP_FN(ipnuc_integral_array,  int1e_ipnuc_sph,  int1e_ipnuc)
 DEFINE_INT1E_LOOP_FN(iprinv_integral_array, int1e_iprinv_sph, int1e_iprinv)
+DEFINE_INT1E_LOOP_FN(ia01p_integral_array,  int1e_ia01p_sph,  int1e_ia01p)
+DEFINE_INT1E_LOOP_FN(ircxp_integral_array,  int1e_cg_irxp_sph, int1e_cg_irxp)
+DEFINE_INT1E_LOOP_FN(igkin_integral_array,  int1e_igkin_sph,  int1e_igkin)
+DEFINE_INT1E_LOOP_FN(igovlp_integral_array, int1e_igovlp_sph, int1e_igovlp)
+DEFINE_INT1E_LOOP_FN(ignuc_integral_array,  int1e_ignuc_sph,  int1e_ignuc)
 
 /* eri_array — array-based loop in C for 2-electron ERI (4 shells: I,J,K,L) */
 static PyObject *
@@ -408,6 +420,11 @@ static PyMethodDef LibcintMethods[] = {
     {"ipkin_integral_array", ipkin_integral_array, METH_VARARGS, "Momentum kinetic integral array in C"},
     {"ipnuc_integral_array", ipnuc_integral_array, METH_VARARGS, "Momentum nuclear attraction integral array in C"},
     {"iprinv_integral_array", iprinv_integral_array, METH_VARARGS, "Momentum 1/r integral array in C"},
+    {"ia01p_integral_array",  ia01p_integral_array,  METH_VARARGS, "GIAO ia01p integral array in C"},
+    {"ircxp_integral_array",  ircxp_integral_array,  METH_VARARGS, "GIAO ircxp integral array in C"},
+    {"igkin_integral_array",  igkin_integral_array,  METH_VARARGS, "GIAO igkin integral array in C"},
+    {"igovlp_integral_array", igovlp_integral_array, METH_VARARGS, "GIAO igovlp integral array in C"},
+    {"ignuc_integral_array",  ignuc_integral_array,  METH_VARARGS, "GIAO ignuc integral array in C"},
     {"eri_array", eri_array, METH_VARARGS, "ERI 2-electron array in C"},
     {NULL, NULL, 0, NULL}
 };
