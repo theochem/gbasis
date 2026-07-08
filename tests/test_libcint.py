@@ -557,3 +557,63 @@ def test_c_shellloop_matches_make_int1e(basis, atsyms, atcoords):
         atol=1e-8,
         rtol=1e-8,
     )
+
+# ─────────────────────────────────────────────────────────────────────────
+# Tests for gradient integral bindings 
+# ─────────────────────────────────────────────────────────────────────────
+
+TEST_GRADIENT_INTEGRALS = [
+    pytest.param("gradient_kinetic", id="C-GradKinetic"),
+    pytest.param("gradient_nuclear", id="C-GradNuclear"),
+    pytest.param("gradient_rinv",    id="C-GradRinv"),
+]
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("integral", TEST_GRADIENT_INTEGRALS)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_c_gradient_integral(basis, atsyms, atcoords, integral):
+    r"""
+    Test the C shell-loop gradient integral bindings (PR-8) added to
+    ``gbasis.integrals.libcint.CBasis`` against the existing make_int1e
+    based implementations.
+
+    These are the ``.gradient_kinetic()``, ``.gradient_nuclear()``,
+    and ``.gradient_rinv()`` methods which are the building blocks
+    for computing nuclear coordinate gradients.
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atcoords = atcoords / 0.5291772083
+
+    basis_dict = parse_nwchem(find_datafile(basis))
+
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+
+    if integral == "gradient_kinetic":
+        # Compare C shell-loop against make_int1e path on same CBasis instance
+        py_int = lc_basis._d_kin()
+        lc_int = lc_basis.gradient_kinetic()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+
+    elif integral == "gradient_nuclear":
+        py_int = lc_basis._d_nuc()
+        lc_int = lc_basis.gradient_nuclear()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+
+    elif integral == "gradient_rinv":
+        py_int = lc_basis._d_rinv(inv_origin=np.zeros(3))
+        lc_int = lc_basis.gradient_rinv()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+
+    else:
+        raise ValueError(f"Invalid integral name '{integral}' passed")
