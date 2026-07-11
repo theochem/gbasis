@@ -1102,7 +1102,7 @@ class CBasis:
         """
         return self._nuc(notation=notation, transform=transform)
 
-    def overlap(self):
+    def overlap(self, transform=None):
         r"""
         Compute the overlap integrals.
 
@@ -1112,6 +1112,12 @@ class CBasis:
 
         .. math::
             S_{ij} = \langle \phi_i | \phi_j \rangle
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1130,6 +1136,13 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
     def kinetic_energy(self):
