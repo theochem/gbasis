@@ -417,6 +417,11 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.kinetic_energy()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.kinetic_energy(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "nuclear_attraction":
         py_int = nuclear_electron_attraction_integral(py_basis, atcoords, atnums)
@@ -561,6 +566,13 @@ def test_c_shellloop_matches_make_int1e(basis, atsyms, atcoords):
         lc_basis.overlap_integral(transform=transform),
         atol=1e-10,
         rtol=1e-10,
+    )
+
+    # kinetic_energy with transform
+    npt.assert_allclose(
+        lc_basis.kinetic_energy(transform=transform),
+        lc_basis.kinetic_energy_integral(transform=transform),
+        atol=1e-10, rtol=1e-10,
     )
 
     # 2-electron ERI: C shell-loop vs. make_int2e shell-loop
