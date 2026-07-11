@@ -1265,7 +1265,7 @@ class CBasis:
             origin = np.zeros(3)
         return self._mom(origin=origin)
 
-    def rinv(self):
+    def rinv(self, inv_origin=None, transform=None):
         r"""
         Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
 
@@ -1275,13 +1275,24 @@ class CBasis:
 
         .. math::
             V_{ij} = \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_\text{inv}|} | \phi_j \rangle
-
-        Returns
-        -------
-        out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            1/r integral array.
-
+        
+        Parameters
+        ----------
+        inv_origin : np.ndarray(3, dtype=float), optional
+            Origin for 1/|r - R| operator.
+            Default is [0, 0, 0].
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Returns
+            -------
+            out : np.ndarray(Nbasis, Nbasis, dtype=float)
+                1/r integral array.
+        
         """
+        if inv_origin is None:
+            inv_origin = np.zeros(3)
+        self.env[4:7] = inv_origin
+
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.rinv_integral_array(
             out,
@@ -1293,7 +1304,15 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
+
 
     def dipole(self):
         r"""
