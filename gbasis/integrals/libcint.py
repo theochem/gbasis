@@ -1189,7 +1189,7 @@ class CBasis:
             out = np.swapaxes(out, 0, 1)
         return out
 
-    def nuclear_attraction(self):
+    def nuclear_attraction(self, transform=None):
         r"""
         Compute the nuclear attraction integrals.
 
@@ -1202,7 +1202,12 @@ class CBasis:
 
         where :math:`Z_A` is the nuclear charge and :math:`\mathbf{R}_A` is
         the position of atom :math:`A`.
-
+        
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
@@ -1220,7 +1225,15 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
+        
 
     def momentum(self, origin=None):
         r"""
