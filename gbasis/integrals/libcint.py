@@ -1235,7 +1235,7 @@ class CBasis:
         return out
         
 
-    def momentum(self, origin=None):
+    def momentum(self, origin=None, transform=None):
         r"""
         Compute the momentum integrals.
 
@@ -1250,7 +1250,10 @@ class CBasis:
         ----------
         origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
             Origin about which to evaluate integrals.
-
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+        
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
@@ -1263,7 +1266,7 @@ class CBasis:
         """
         if origin is None:
             origin = np.zeros(3)
-        return self._mom(origin=origin)
+        return self._mom(origin=origin, transform=transform)
 
     def rinv(self, inv_origin=None, transform=None):
         r"""
@@ -1678,7 +1681,7 @@ class CBasis:
                 out[:, :, i] = self._moments[tuple(order)](origin=origin)
         return out
 
-    def electron_repulsion(self):
+    def electron_repulsion(self, notation="physicist", transform=None):
         r"""
         Compute the electron repulsion integrals.
 
@@ -1689,12 +1692,23 @@ class CBasis:
         .. math::
             g_{ijkl} = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \phi_l \rangle
 
+        Parameters
+        ----------
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, dtype=float)
             Electron repulsion integral array.
 
         """
+        if notation not in ("physicist", "chemist"):
+            raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
+
         out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
         libcint_bindings.eri_array(
             out,
@@ -1706,6 +1720,22 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+
+        # Apply permutation
+        out = out[self._permutations]
+        out = out[:, self._permutations]
+        out = out[:, :, self._permutations]
+        out = out[:, :, :, self._permutations]
+        # Apply notation
+        if notation == "chemist":
+            out = out.transpose(0, 2, 1, 3)
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.tensordot(transform, out, (1, 2))
+            out = np.tensordot(transform, out, (1, 3))
+            out = np.swapaxes(np.swapaxes(out, 0, 3), 1, 2)
         return out
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):

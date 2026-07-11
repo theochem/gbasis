@@ -356,6 +356,7 @@ TEST_C_SHELLLOOP_INTEGRALS = [
     pytest.param("kinetic_energy", id="C-KineticEnergy"),
     pytest.param("nuclear_attraction", id="C-NuclearAttraction"),
     pytest.param("rinv", id="C-Rinv"),
+    pytest.param("momentum", id="C-Momentum"),
     pytest.param("dipole", id="C-Dipole"),
     pytest.param("quadrupole", id="C-Quadrupole"),
     pytest.param("octupole", id="C-Octupole"),
@@ -476,6 +477,17 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
 
+    elif integral == "momentum":
+        py_int = momentum_integral(py_basis, screen_basis=False)
+        lc_int = lc_basis.momentum(origin=np.zeros(3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.momentum(origin=np.zeros(3), transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
+
     elif integral == "point_charge":
         charge_coords = np.asarray([[2.0, 2.0, 2.0], [-3.0, -3.0, -3.0], [-1.0, 2.0, -3.0]])
         charges = np.asarray([1.0, 0.666, -3.1415926])
@@ -511,14 +523,20 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
 
     elif integral == "electron_repulsion":
         py_int = electron_repulsion_integral_improved(py_basis)
-        lc_int = lc_basis.electron_repulsion()
+        lc_int = lc_basis.electron_repulsion(notation="physicist")
         npt.assert_array_equal(
             lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
         )
         # ERI uses a looser tolerance, consistent with the existing
         # electron_repulsion_integral test above
         npt.assert_allclose(lc_int, py_int, atol=1e-4, rtol=1e-5)
-
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.electron_repulsion(notation="physicist",transform=transform)
+        npt.assert_array_equal(
+            lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
+        )
+        npt.assert_allclose(lc_int_t, py_int, atol=1e-4, rtol=1e-5)
     else:
         raise ValueError(f"Invalid integral name '{integral}' passed")
 
@@ -600,14 +618,28 @@ def test_c_shellloop_matches_make_int1e(basis, atsyms, atcoords):
         lc_basis.r_inv_integral(origin=np.zeros(3), transform=transform),
         atol=1e-10, rtol=1e-10,
     )
+
+    # momentum with transform
+    npt.assert_allclose(
+        lc_basis.momentum(origin=np.zeros(3), transform=transform),
+        lc_basis.momentum_integral(origin=np.zeros(3), transform=transform),
+        atol=1e-10, rtol=1e-10,
+    )
     
 
     # 2-electron ERI: C shell-loop vs. make_int2e shell-loop
     npt.assert_allclose(
-        lc_basis.electron_repulsion(),
-        lc_basis.electron_repulsion_integral(),
+        lc_basis.electron_repulsion(notation="chemist"),
+        lc_basis.electron_repulsion_integral(notation="chemist"),
         atol=1e-8,
         rtol=1e-8,
+    )
+
+    # electron_repulsion with transform
+    npt.assert_allclose(
+        lc_basis.electron_repulsion(notation="chemist", transform=transform),
+        lc_basis.electron_repulsion_integral(notation="chemist", transform=transform),
+        atol=1e-8, rtol=1e-8,
     )
 
 # ─────────────────────────────────────────────────────────────────────────
