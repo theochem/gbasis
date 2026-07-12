@@ -460,6 +460,12 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.dipole()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.dipole(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
+
 
     elif integral == "quadrupole":
         origin = np.zeros(3)
@@ -468,6 +474,11 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.quadrupole()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.quadrupole(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "octupole":
         origin = np.zeros(3)
@@ -476,7 +487,12 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.octupole()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
-
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.octupole(transform=transform)
+        npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
+        
     elif integral == "momentum":
         py_int = momentum_integral(py_basis, screen_basis=False)
         lc_int = lc_basis.momentum(origin=np.zeros(3))

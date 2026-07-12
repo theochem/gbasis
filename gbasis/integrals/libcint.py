@@ -1317,7 +1317,7 @@ class CBasis:
         return out
 
 
-    def dipole(self):
+    def dipole(self, transform=None):
         r"""
         Compute the dipole moment integrals.
 
@@ -1327,6 +1327,12 @@ class CBasis:
 
         .. math::
             \mu_{ij} = \langle \phi_i | \mathbf{r} | \phi_j \rangle
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1351,9 +1357,17 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
+        
 
-    def quadrupole(self):
+    def quadrupole(self, transform=None):
         r"""
         Compute the quadrupole moment integrals.
 
@@ -1363,6 +1377,13 @@ class CBasis:
 
         .. math::
             Q_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r} | \phi_j \rangle
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
 
         Returns
         -------
@@ -1387,9 +1408,17 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def octupole(self):
+
+    def octupole(self, transform=None):
         r"""
         Compute the octupole moment integrals.
 
@@ -1399,6 +1428,12 @@ class CBasis:
 
         .. math::
             O_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r}\mathbf{r} | \phi_j \rangle
+        
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1423,6 +1458,13 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
     def gradient_kinetic(self):
