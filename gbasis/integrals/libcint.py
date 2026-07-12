@@ -1467,9 +1467,15 @@ class CBasis:
             out = np.swapaxes(out, 0, 1)
         return out
 
-    def gradient_kinetic(self):
+    def gradient_kinetic(self, transform=None):
         r"""
         Compute the gradient of kinetic energy integrals (i∇ kinetic).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1487,11 +1493,25 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def gradient_nuclear(self):
+    def gradient_nuclear(self, transform=None):
         r"""
         Compute the gradient of nuclear attraction integrals (i∇ nuclear).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
 
         Returns
         -------
@@ -1509,17 +1529,35 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def gradient_rinv(self):
+    def gradient_rinv(self, inv_origin=None, transform=None):
         r"""
         Compute the gradient of 1/r integrals (i∇ rinv).
+
+        Parameters
+        ----------
+        inv_origin : np.ndarray(3, dtype=float), optional
+            Origin for 1/|r - R| operator. Default is [0, 0, 0].
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Gradient 1/r integral array.
         """
+        if inv_origin is None:
+            inv_origin = np.zeros(3)
+        self.env[4:7] = inv_origin
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
         libcint_bindings.iprinv_integral_array(
             out,
@@ -1531,6 +1569,13 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
     def ia01p(self):

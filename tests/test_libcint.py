@@ -492,7 +492,7 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         lc_int_t = lc_basis.octupole(transform=transform)
         npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
-        
+
     elif integral == "momentum":
         py_int = momentum_integral(py_basis, screen_basis=False)
         lc_int = lc_basis.momentum(origin=np.zeros(3))
@@ -702,19 +702,30 @@ def test_c_gradient_integral(basis, atsyms, atcoords, integral):
         lc_int = lc_basis.gradient_kinetic()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.gradient_kinetic(transform=transform)
+        npt.assert_allclose(lc_int_t, py_int[..., 0], atol=1e-10, rtol=1e-10)
 
     elif integral == "gradient_nuclear":
         py_int = lc_basis._d_nuc()
         lc_int = lc_basis.gradient_nuclear()
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.gradient_nuclear(transform=transform)
+        npt.assert_allclose(lc_int_t, py_int[..., 0], atol=1e-10, rtol=1e-10)
 
     elif integral == "gradient_rinv":
         py_int = lc_basis._d_rinv(inv_origin=np.zeros(3))
-        lc_int = lc_basis.gradient_rinv()
+        lc_int = lc_basis.gradient_rinv(inv_origin=np.zeros(3))
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
         npt.assert_allclose(lc_int, py_int[..., 0], atol=1e-10, rtol=1e-10)
-
+        # Test with transform
+        transform = np.eye(lc_basis.nbfn)
+        lc_int_t = lc_basis.gradient_rinv(inv_origin=np.zeros(3), transform=transform)
+        npt.assert_allclose(lc_int_t, py_int[..., 0], atol=1e-10, rtol=1e-10)
     else:
         raise ValueError(f"Invalid integral name '{integral}' passed")
 
