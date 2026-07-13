@@ -790,3 +790,9 @@ def test_c_giao_integral(basis, atsyms, atcoords, integral):
 
     # Finiteness check — no NaN or Inf
     assert np.all(np.isfinite(lc_int)), f"{integral} contains NaN or Inf"
+    # Test with transform
+    transform = np.eye(lc_basis.nbfn)
+    func = getattr(lc_basis, integral)
+    lc_int_t = func(transform=transform)
+    npt.assert_array_equal(lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn))
+    assert np.all(np.isfinite(lc_int_t)), f"{integral} with transform contains NaN or Inf"

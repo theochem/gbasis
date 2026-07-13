@@ -1578,9 +1578,16 @@ class CBasis:
             out = np.swapaxes(out, 0, 1)
         return out
 
-    def ia01p(self):
+    def ia01p(self, transform=None):
         r"""
         Compute the GIAO paramagnetic shielding integrals (ia01p).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
 
         Returns
         -------
@@ -1598,12 +1605,25 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def ircxp(self):
+    def ircxp(self, transform=None):
         r"""
         Compute the GIAO angular momentum integrals (ircxp).
 
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+            
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
@@ -1620,11 +1640,25 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def iking(self):
+
+    def iking(self, transform=None):
         r"""
         Compute the GIAO kinetic energy integrals (igkin).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1642,11 +1676,24 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def iovlpg(self):
+    def iovlpg(self, transform=None):
         r"""
         Compute the GIAO overlap gradient integrals (igovlp).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1664,11 +1711,24 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def inucg(self):
+    def inucg(self, transform=None):
         r"""
         Compute the GIAO nuclear attraction integrals (ignuc).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1686,6 +1746,13 @@ class CBasis:
             self._offs,
             self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
     def point_charge(self, point_coords, point_charges):
