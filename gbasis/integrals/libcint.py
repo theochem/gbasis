@@ -2,13 +2,16 @@ r"""
 Python C-API bindings for ``libcint`` GTO integrals library.
 
 """
+
 from gbasis.integrals.lib import libcint_bindings
 
 from contextlib import contextmanager
 
-from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double, c_void_p
+# to Remove 1
+from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double
 
-from itertools import chain
+# to Remove 2
+# from itertools import chain
 
 from operator import attrgetter
 
@@ -20,7 +23,8 @@ import numpy as np
 
 from scipy.special import factorial
 
-from gbasis.utils import factorial2
+# to Remove 3
+# from gbasis.utils import factorial2
 
 
 __all__ = [
@@ -194,6 +198,7 @@ def ndptr(enable_null=False, **kwargs):
 
 class PairData(Structure):
     r"""``libcint`` ``PairData`` class."""
+
     _fields_ = [
         ("rij", c_double * 3),
         ("eij", c_double),
@@ -203,6 +208,7 @@ class PairData(Structure):
 
 class CINTOpt(Structure):
     r"""``libcint`` ``CINTOpt`` class."""
+
     _fields_ = [
         ("index_xyz_array", POINTER(POINTER(c_int))),
         ("non0ctr", POINTER(POINTER(c_int))),
@@ -220,6 +226,7 @@ class _LibCInt:
     """
 
     import platform as _platform
+
     _lib_dir = Path(__file__).parent / "lib"
     _system = _platform.system()
     if _system == "Darwin":
@@ -309,7 +316,12 @@ class _LibCInt:
                     # opt
                     POINTER(CINTOpt),
                     # cache
-                    ndptr(enable_null=True, dtype=c_double, ndim=1, flags=("C_CONTIGUOUS",)),
+                    ndptr(
+                        enable_null=True,
+                        dtype=c_double,
+                        ndim=1,
+                        flags=("C_CONTIGUOUS",),
+                    ),
                 )
                 cfunc.restype = c_int
 
@@ -396,10 +408,12 @@ class CBasis:
 
     Methods
     -------
-    make_int1e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
-        Make an instance-bound 1-electron integral method from a ``libcint`` function.
-    make_int2e(self, func_name, components=tuple(), constant=None, is_complex=False, origin=False, inv_origin=False)
-        Make an instance-bound 2-electron integral method from a ``libcint`` function.
+    make_int1e(self, func_name, components=tuple(), constant=None,
+               is_complex=False, origin=False, inv_origin=False)
+    Make an instance-bound 1-electron integral method from a ``libcint`` function.
+    make_int2e(self, func_name, components=tuple(), constant=None,
+               is_complex=False, origin=False, inv_origin=False)
+    Make an instance-bound 2-electron integral method from a ``libcint`` function.
     overlap(self)
         Compute the overlap integrals.
     kinetic_energy(self)
@@ -575,7 +589,7 @@ class CBasis:
             "int1e_ipovlp", components=(3,), constant=-1j, is_complex=True, origin=True
         )
         # self._amom = self.make_int1e(
-            # "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
+        # "int1e_rxp", components=(3,), constant=-1j, is_complex=True, origin=True
         # )
         self._d_ovlp = self.make_int1e("int1e_ipovlp", components=(3,))
         self._d_kin = self.make_int1e("int1e_ipkin", components=(3,))
@@ -585,29 +599,29 @@ class CBasis:
         self._moments = {}
         # Order 1: int1e_r has 3 components (x, y, z)
         _r = self.make_int1e("int1e_r", components=(3,), origin=True)
-        self._moments[(1,0,0)] = lambda **kw: _r(**kw)[..., 0]
-        self._moments[(0,1,0)] = lambda **kw: _r(**kw)[..., 1]
-        self._moments[(0,0,1)] = lambda **kw: _r(**kw)[..., 2]
+        self._moments[(1, 0, 0)] = lambda **kw: _r(**kw)[..., 0]
+        self._moments[(0, 1, 0)] = lambda **kw: _r(**kw)[..., 1]
+        self._moments[(0, 0, 1)] = lambda **kw: _r(**kw)[..., 2]
         # Order 2: int1e_rr has 9 components
         _rr = self.make_int1e("int1e_rr", components=(9,), origin=True)
-        self._moments[(2,0,0)] = lambda **kw: _rr(**kw)[..., 0]
-        self._moments[(1,1,0)] = lambda **kw: _rr(**kw)[..., 1]
-        self._moments[(1,0,1)] = lambda **kw: _rr(**kw)[..., 2]
-        self._moments[(0,2,0)] = lambda **kw: _rr(**kw)[..., 4]
-        self._moments[(0,1,1)] = lambda **kw: _rr(**kw)[..., 5]
-        self._moments[(0,0,2)] = lambda **kw: _rr(**kw)[..., 8]
+        self._moments[(2, 0, 0)] = lambda **kw: _rr(**kw)[..., 0]
+        self._moments[(1, 1, 0)] = lambda **kw: _rr(**kw)[..., 1]
+        self._moments[(1, 0, 1)] = lambda **kw: _rr(**kw)[..., 2]
+        self._moments[(0, 2, 0)] = lambda **kw: _rr(**kw)[..., 4]
+        self._moments[(0, 1, 1)] = lambda **kw: _rr(**kw)[..., 5]
+        self._moments[(0, 0, 2)] = lambda **kw: _rr(**kw)[..., 8]
         # Order 3: int1e_rrr has 27 components
         _rrr = self.make_int1e("int1e_rrr", components=(27,), origin=True)
-        self._moments[(3,0,0)] = lambda **kw: _rrr(**kw)[..., 0]
-        self._moments[(0,3,0)] = lambda **kw: _rrr(**kw)[..., 13]
-        self._moments[(0,0,3)] = lambda **kw: _rrr(**kw)[..., 26]
-        self._moments[(2,1,0)] = lambda **kw: _rrr(**kw)[..., 3]
-        self._moments[(2,0,1)] = lambda **kw: _rrr(**kw)[..., 6]
-        self._moments[(1,2,0)] = lambda **kw: _rrr(**kw)[..., 1]
-        self._moments[(0,2,1)] = lambda **kw: _rrr(**kw)[..., 14]
-        self._moments[(1,0,2)] = lambda **kw: _rrr(**kw)[..., 2]
-        self._moments[(0,1,2)] = lambda **kw: _rrr(**kw)[..., 17]
-        self._moments[(1,1,1)] = lambda **kw: _rrr(**kw)[..., 4]
+        self._moments[(3, 0, 0)] = lambda **kw: _rrr(**kw)[..., 0]
+        self._moments[(0, 3, 0)] = lambda **kw: _rrr(**kw)[..., 13]
+        self._moments[(0, 0, 3)] = lambda **kw: _rrr(**kw)[..., 26]
+        self._moments[(2, 1, 0)] = lambda **kw: _rrr(**kw)[..., 3]
+        self._moments[(2, 0, 1)] = lambda **kw: _rrr(**kw)[..., 6]
+        self._moments[(1, 2, 0)] = lambda **kw: _rrr(**kw)[..., 1]
+        self._moments[(0, 2, 1)] = lambda **kw: _rrr(**kw)[..., 14]
+        self._moments[(1, 0, 2)] = lambda **kw: _rrr(**kw)[..., 2]
+        self._moments[(0, 1, 2)] = lambda **kw: _rrr(**kw)[..., 17]
+        self._moments[(1, 1, 1)] = lambda **kw: _rrr(**kw)[..., 4]
 
         # Set proper value for inverse sqrt of overlap integral
         # for cartesian basis sets
@@ -1088,7 +1102,7 @@ class CBasis:
         """
         return self._nuc(notation=notation, transform=transform)
 
-    def overlap(self):
+    def overlap(self, transform=None):
         r"""
         Compute the overlap integrals.
 
@@ -1099,20 +1113,39 @@ class CBasis:
         .. math::
             S_{ij} = \langle \phi_i | \phi_j \rangle
 
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Overlap integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.overlap_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.overlap_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def kinetic_energy(self):
+    def kinetic_energy(self, transform=None):
         r"""
         Compute the kinetic energy integrals.
 
@@ -1123,20 +1156,40 @@ class CBasis:
         .. math::
             T_{ij} = \langle \phi_i | -\frac{1}{2}\nabla^2 | \phi_j \rangle
 
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Kinetic energy integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.kinetic_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.kinetic_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def nuclear_attraction(self):
+    def nuclear_attraction(self, transform=None):
         r"""
         Compute the nuclear attraction integrals.
 
@@ -1149,21 +1202,40 @@ class CBasis:
 
         where :math:`Z_A` is the nuclear charge and :math:`\mathbf{R}_A` is
         the position of atom :math:`A`.
-
+        
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
             Nuclear attraction integral array.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.nuclear_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.nuclear_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
+        
 
-    def momentum(self):
+    def momentum(self, origin=None, transform=None):
         r"""
         Compute the momentum integrals.
 
@@ -1174,28 +1246,29 @@ class CBasis:
         .. math::
             p_{ij} = \langle \phi_i | -i\nabla | \phi_j \rangle
 
+        Parameters
+        ----------
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+        
         Returns
         -------
-        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+        out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
             Momentum integral array.
 
         Notes
         -----
-        Returns the raw single-component output from ``int1e_ipovlp_sph``
-        without the :math:`-i` scaling factor. The full 3-component momentum
-        integral (x, y, z) with proper scaling is available via
-        ``momentum_integral()``.
-
+        Returns the full 3-component complex momentum integral (x, y, z)
+        with proper :math:`-i` scaling. Equivalent to ``momentum_integral()``.
         """
+        if origin is None:
+            origin = np.zeros(3)
+        return self._mom(origin=origin, transform=transform)
 
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.momentum_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
-        )
-        return out
-
-    def rinv(self):
+    def rinv(self, inv_origin=None, transform=None):
         r"""
         Compute the :math:`1/\left|\mathbf{r} - \mathbf{R}_\text{inv}\right|` integrals.
 
@@ -1205,21 +1278,46 @@ class CBasis:
 
         .. math::
             V_{ij} = \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_\text{inv}|} | \phi_j \rangle
-
-        Returns
-        -------
-        out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            1/r integral array.
-
+        
+        Parameters
+        ----------
+        inv_origin : np.ndarray(3, dtype=float), optional
+            Origin for 1/|r - R| operator.
+            Default is [0, 0, 0].
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Returns
+            -------
+            out : np.ndarray(Nbasis, Nbasis, dtype=float)
+                1/r integral array.
+        
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.rinv_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        if inv_origin is None:
+            inv_origin = np.zeros(3)
+        self.env[4:7] = inv_origin
+
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.rinv_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def dipole(self):
+
+    def dipole(self, transform=None):
         r"""
         Compute the dipole moment integrals.
 
@@ -1229,6 +1327,12 @@ class CBasis:
 
         .. math::
             \mu_{ij} = \langle \phi_i | \mathbf{r} | \phi_j \rangle
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1242,14 +1346,28 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.dipole_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.dipole_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
+        
 
-    def quadrupole(self):
+    def quadrupole(self, transform=None):
         r"""
         Compute the quadrupole moment integrals.
 
@@ -1259,6 +1377,13 @@ class CBasis:
 
         .. math::
             Q_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r} | \phi_j \rangle
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
 
         Returns
         -------
@@ -1272,14 +1397,28 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.quadrupole_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.quadrupole_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    def octupole(self):
+
+    def octupole(self, transform=None):
         r"""
         Compute the octupole moment integrals.
 
@@ -1289,6 +1428,12 @@ class CBasis:
 
         .. math::
             O_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r}\mathbf{r} | \phi_j \rangle
+        
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
 
         Returns
         -------
@@ -1302,14 +1447,450 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order='F')
-        libcint_bindings.octupole_integral_shellloop(
-            out, self.natm, self.atm, self.nbas,
-            self.bas, self.env, self._offs, self.nbfn
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.octupole_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
         )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
         return out
 
-    
+    def gradient_kinetic(self, transform=None):
+        r"""
+        Compute the gradient of kinetic energy integrals (i∇ kinetic).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Gradient kinetic integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.ipkin_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def gradient_nuclear(self, transform=None):
+        r"""
+        Compute the gradient of nuclear attraction integrals (i∇ nuclear).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Gradient nuclear integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.ipnuc_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def gradient_rinv(self, inv_origin=None, transform=None):
+        r"""
+        Compute the gradient of 1/r integrals (i∇ rinv).
+
+        Parameters
+        ----------
+        inv_origin : np.ndarray(3, dtype=float), optional
+            Origin for 1/|r - R| operator. Default is [0, 0, 0].
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            Gradient 1/r integral array.
+        """
+        if inv_origin is None:
+            inv_origin = np.zeros(3)
+        self.env[4:7] = inv_origin
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.iprinv_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def ia01p(self, transform=None):
+        r"""
+        Compute the GIAO paramagnetic shielding integrals (ia01p).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO ia01p integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.ia01p_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def ircxp(self, transform=None):
+        r"""
+        Compute the GIAO angular momentum integrals (ircxp).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+            
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO ircxp integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.ircxp_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+
+    def iking(self, transform=None):
+        r"""
+        Compute the GIAO kinetic energy integrals (igkin).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO igkin integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.igkin_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def iovlpg(self, transform=None):
+        r"""
+        Compute the GIAO overlap gradient integrals (igovlp).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO igovlp integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.igovlp_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def inucg(self, transform=None):
+        r"""
+        Compute the GIAO nuclear attraction integrals (ignuc).
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            GIAO ignuc integral array.
+        """
+        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        libcint_bindings.ignuc_integral_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations, :][:, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.swapaxes(out, 0, 1)
+        return out
+
+    def point_charge(self, point_coords, point_charges):
+        r"""
+        Compute the point charge integrals.
+
+        The point charge integral represents the electrostatic potential due to
+        a set of point charges at given coordinates. For each pair of basis
+        functions :math:`\phi_i` and :math:`\phi_j`, it is defined as:
+
+        .. math::
+            V_{ij}^{(n)} = -q_n \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_n|} | \phi_j \rangle
+
+        Parameters
+        ----------
+        point_coords : np.ndarray(N, 3, dtype=float)
+            Coordinates of point charges.
+        point_charges : np.ndarray(N, dtype=float)
+            Charges of point charges.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
+            Point charge integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double, order="F")
+        for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
+            # Set inv_origin in env for this charge
+            self.env[4:7] = coord
+            val = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+            libcint_bindings.rinv_integral_array(
+                val,
+                self.natm,
+                self.atm,
+                self.nbas,
+                self.bas,
+                self.env,
+                self._offs,
+                self.nbfn,
+            )
+            val *= -charge
+            out[:, :, icharge] = val
+        return out
+
+    def moment(self, orders, origin=None):
+        r"""
+        Compute the moment integrals.
+
+        The moment integral represents the expectation value of the position
+        operator raised to a given order between basis functions :math:`\phi_i`
+        and :math:`\phi_j`.
+
+        Parameters
+        ----------
+        orders : np.ndarray(N, 3, dtype=int)
+            Moment orders :math:`\left[x, y, z\right]` to evaluate.
+        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
+            Origin about which to evaluate integrals.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
+            Moment integral array.
+
+        Notes
+        -----
+        Uses the C shell-loop bindings for dipole, quadrupole, and octupole
+        integrals internally. Supports up to 3rd order moments.
+
+        """
+        if origin is None:
+            origin = np.zeros(3)
+        out = np.zeros((self.nbfn, self.nbfn, len(orders)), dtype=np.float64)
+        for i, order in enumerate(orders):
+            self.env[1:4] = origin
+            if sum(order) == 0:
+                out[:, :, i] = self.overlap()
+            else:
+                out[:, :, i] = self._moments[tuple(order)](origin=origin)
+        return out
+
+    def electron_repulsion(self, notation="physicist", transform=None):
+        r"""
+        Compute the electron repulsion integrals.
+
+        The two-electron repulsion integral between basis functions
+        :math:`\phi_i`, :math:`\phi_j`, :math:`\phi_k`, and :math:`\phi_l`
+        is defined as:
+
+        .. math::
+            g_{ijkl} = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \phi_l \rangle
+
+        Parameters
+        ----------
+        notation : ("physicist" | "chemist"), default="physicist"
+            Axis order convention.
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, dtype=float)
+            Electron repulsion integral array.
+
+        """
+        if notation not in ("physicist", "chemist"):
+            raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
+
+        out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
+        libcint_bindings.eri_array(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+
+        # Apply permutation
+        out = out[self._permutations]
+        out = out[:, self._permutations]
+        out = out[:, :, self._permutations]
+        out = out[:, :, :, self._permutations]
+        # Apply notation
+        if notation == "chemist":
+            out = out.transpose(0, 2, 1, 3)
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.tensordot(transform, out, (1, 2))
+            out = np.tensordot(transform, out, (1, 3))
+            out = np.swapaxes(np.swapaxes(out, 0, 3), 1, 2)
+        return out
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):
         r"""
