@@ -10,8 +10,6 @@ from contextlib import contextmanager
 # to Remove 1
 from ctypes import CDLL, POINTER, Structure, cdll, byref, c_int, c_double
 
-# to Remove 2
-# from itertools import chain
 
 from operator import attrgetter
 
@@ -23,8 +21,6 @@ import numpy as np
 
 from scipy.special import factorial
 
-# to Remove 3
-# from gbasis.utils import factorial2
 
 
 __all__ = [
@@ -557,6 +553,8 @@ class CBasis:
 
         # Save coord type
         self.coord_type = coord_type
+        # Save coord type suffix for C bindings
+        self._ct = "sph" if coord_type == "spherical" else "cart"
 
         # Save inputs to `libcint` functions
         self.natm = natm
@@ -1126,7 +1124,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.overlap_integral_array(
+        getattr(libcint_bindings, f"overlap_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1169,7 +1167,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.kinetic_integral_array(
+        getattr(libcint_bindings, f"kinetic_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1215,7 +1213,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.nuclear_integral_array(
+        getattr(libcint_bindings, f"nuclear_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1297,7 +1295,7 @@ class CBasis:
         self.env[4:7] = inv_origin
 
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.rinv_integral_array(
+        getattr(libcint_bindings, f"rinv_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1347,7 +1345,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.dipole_integral_array(
+        getattr(libcint_bindings, f"dipole_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1398,7 +1396,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.quadrupole_integral_array(
+        getattr(libcint_bindings, f"quadrupole_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1448,7 +1446,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.octupole_integral_array(
+        getattr(libcint_bindings, f"octupole_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1483,7 +1481,7 @@ class CBasis:
             Gradient kinetic integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.ipkin_integral_array(
+        getattr(libcint_bindings, f"ipkin_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1519,7 +1517,7 @@ class CBasis:
             Gradient nuclear integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.ipnuc_integral_array(
+        getattr(libcint_bindings, f"ipnuc_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1559,7 +1557,7 @@ class CBasis:
             inv_origin = np.zeros(3)
         self.env[4:7] = inv_origin
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.iprinv_integral_array(
+        getattr(libcint_bindings, f"iprinv_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1595,7 +1593,7 @@ class CBasis:
             GIAO ia01p integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.ia01p_integral_array(
+        getattr(libcint_bindings, f"ia01p_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1630,7 +1628,7 @@ class CBasis:
             GIAO ircxp integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.ircxp_integral_array(
+        getattr(libcint_bindings, f"ircxp_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1666,7 +1664,7 @@ class CBasis:
             GIAO igkin integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.igkin_integral_array(
+        getattr(libcint_bindings, f"igkin_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1701,7 +1699,7 @@ class CBasis:
             GIAO igovlp integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.igovlp_integral_array(
+        getattr(libcint_bindings, f"igovlp_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1736,7 +1734,7 @@ class CBasis:
             GIAO ignuc integral array.
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-        libcint_bindings.ignuc_integral_array(
+        getattr(libcint_bindings, f"ignuc_integral_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
@@ -1784,7 +1782,7 @@ class CBasis:
             # Set inv_origin in env for this charge
             self.env[4:7] = coord
             val = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
-            libcint_bindings.rinv_integral_array(
+            getattr(libcint_bindings, f"rinv_integral_array_{self._ct}")(
                 val,
                 self.natm,
                 self.atm,
@@ -1890,6 +1888,52 @@ class CBasis:
             out = np.tensordot(transform, out, (1, 2))
             out = np.tensordot(transform, out, (1, 3))
             out = np.swapaxes(np.swapaxes(out, 0, 3), 1, 2)
+        return out
+
+    def three_center_two_electron(self, transform=None):
+        r"""
+        Compute the 3-center 2-electron integrals.
+
+        The 3-center 2-electron integral between basis functions
+        :math:`\phi_i`, :math:`\phi_j`, and auxiliary basis function
+        :math:`\phi_k` is defined as:
+
+        .. math::
+            (ij|k) = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \rangle
+
+        Parameters
+        ----------
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, Nbasis, dtype=float)
+            3-center 2-electron integral array.
+
+        """
+        out = np.zeros((self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
+        getattr(libcint_bindings, f"int3c2e_array_{self._ct}")(
+            out,
+            self.natm,
+            self.atm,
+            self.nbas,
+            self.bas,
+            self.env,
+            self._offs,
+            self.nbfn,
+        )
+        # Apply permutation
+        out = out[self._permutations]
+        out = out[:, self._permutations]
+        out = out[:, :, self._permutations]
+        # Apply transformation
+        if transform is not None:
+            out = np.tensordot(transform, out, (1, 0))
+            out = np.tensordot(transform, out, (1, 1))
+            out = np.tensordot(transform, out, (1, 2))
+            out = np.moveaxis(out, [0, 1, 2], [2, 0, 1])
         return out
 
     def electron_repulsion_integral(self, notation="physicist", transform=None):
