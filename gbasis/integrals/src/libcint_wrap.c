@@ -496,7 +496,8 @@ static PyObject *eri_array(PyObject *self, PyObject *args) {
               }
             }
           }
-          memset(buf, 0, buf_size * sizeof(double));
+          //memset(buf, 0, buf_size * sizeof(double));
+          memset(buf, 0, (size_t)p_off * q_off * r_off * s_off * sizeof(double));
           lpos += s_off;
         }
         kpos += r_off;
@@ -565,7 +566,8 @@ static PyObject *int3c2e_array(PyObject *self, PyObject *args) {
             }
           }
         }
-        memset(buf, 0, buf_size * sizeof(double));
+        //memset(buf, 0, buf_size * sizeof(double));
+        memset(buf, 0, (size_t)p_off * q_off * r_off * sizeof(double));
         kpos += r_off;
       }
       jpos += q_off;
