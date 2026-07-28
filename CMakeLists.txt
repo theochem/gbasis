@@ -35,9 +35,10 @@ FetchContent_Declare(cint
     EXCLUDE_FROM_ALL)
 
 # Configure libcint/qcint.
-set(ENABLE_STATIC ON)
+set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
 set(WITH_FORTRAN OFF)
 set(WITH_RANGE_COULOMB ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON CACHE BOOL "" FORCE)  
 
 # Import libcint/qcint CMake project.
 FetchContent_MakeAvailable(cint)
@@ -51,7 +52,7 @@ set_target_properties(gbasis_ext PROPERTIES
     # Set target library output name.
     OUTPUT_NAME libcint_bindings
     # Set RPATH so libcint.dylib is found at runtime.
-    INSTALL_RPATH "@loader_path"
+    INSTALL_RPATH "$<IF:$<PLATFORM_ID:Darwin>,@loader_path,$ORIGIN>"
     BUILD_WITH_INSTALL_RPATH TRUE)
 
 # Expose Python and NumPy include directories to C extension module.
@@ -65,3 +66,9 @@ target_link_libraries(gbasis_ext PRIVATE cint)
 # Install C extension module.
 set(GBASIS_WHEEL_DIRECTORY "${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib")
 install(TARGETS gbasis_ext LIBRARY DESTINATION ${GBASIS_WHEEL_DIRECTORY})
+
+
+
+# Install libcint shared library alongside the extension module.
+install(FILES $<TARGET_FILE:cint>
+    DESTINATION ${GBASIS_WHEEL_DIRECTORY})
