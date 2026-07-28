@@ -67,8 +67,3 @@ set(GBASIS_WHEEL_DIRECTORY "${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib")
 install(TARGETS gbasis_ext LIBRARY DESTINATION ${GBASIS_WHEEL_DIRECTORY})
 
 
-# Install libcint/qcint shared library alongside the extension module.
-install(FILES
-    $<TARGET_FILE:cint>
-    DESTINATION ${GBASIS_WHEEL_DIRECTORY}
-    RENAME $<IF:$<PLATFORM_ID:Darwin>,libcint.6.dylib,libcint.so>)
