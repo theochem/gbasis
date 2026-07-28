@@ -837,3 +837,95 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
     our_t = lc_basis.three_center_two_electron(transform=transform)
     npt.assert_array_equal(our_t.shape, ref.shape)
     npt.assert_allclose(our_t, ref, atol=1e-10, rtol=1e-10)
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Tests for C shell-loop bindings with cartesian coord_type
+# ─────────────────────────────────────────────────────────────────────────
+
+@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
+@pytest.mark.skipif(
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    reason="The libcint shared library object was not found",
+)
+@pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
+@pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
+@pytest.mark.parametrize("basis", TEST_BASIS_SETS)
+def test_c_shellloop_integral_cart(basis, atsyms, atcoords, integral):
+    r"""
+    Test the C shell-loop bindings for cartesian coord_type against
+    the existing GBasis Python integral implementations.
+    """
+    from gbasis.integrals.libcint import ELEMENTS, CBasis
+
+    atol, rtol = 1e-6, 1e-6
+
+    atcoords = atcoords / 0.5291772083
+    atnums = np.asarray([ELEMENTS.index(i) for i in atsyms], dtype=float)
+    basis_dict = parse_nwchem(find_datafile(basis))
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="cartesian")
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="cartesian")
+
+    if integral == "overlap":
+        lc_int = lc_basis.overlap()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+        assert np.all(np.diag(lc_int) > 0)
+
+    elif integral == "kinetic_energy":
+        lc_int = lc_basis.kinetic_energy()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "nuclear_attraction":
+        lc_int = lc_basis.nuclear_attraction()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "rinv":
+        lc_int = lc_basis.rinv()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "dipole":
+        lc_int = lc_basis.dipole()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "quadrupole":
+        lc_int = lc_basis.quadrupole()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "octupole":
+        lc_int = lc_basis.octupole()
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "momentum":
+        lc_int = lc_basis.momentum(origin=np.zeros(3))
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "point_charge":
+        charge_coords = np.asarray([[2.0, 2.0, 2.0], [-3.0, -3.0, -3.0], [-1.0, 2.0, -3.0]])
+        charges = np.asarray([1.0, 0.666, -3.1415926])
+        for i in range(1, len(charges) + 1):
+            lc_int = lc_basis.point_charge(charge_coords[:i], charges[:i])
+            npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, i))
+            assert np.all(np.isfinite(lc_int))
+
+    elif integral == "moment":
+        origin = np.zeros(3)
+        orders = np.asarray([[0,0,0],[1,0,0],[0,1,0],[0,0,1],[2,0,0],[0,2,0],[0,0,2],[1,1,0],[1,0,1],[0,1,1],[3,0,0],[0,3,0],[0,0,3]])
+        lc_int = lc_basis.moment(orders, origin=origin)
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
+        assert np.all(np.isfinite(lc_int))
+
+    elif integral == "electron_repulsion":
+        lc_int = lc_basis.electron_repulsion(notation="physicist")
+        npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn))
+        assert np.all(np.isfinite(lc_int))
+        
+    else:
+        raise ValueError(f"Invalid integral name '{integral}' passed")
