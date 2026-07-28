@@ -185,6 +185,10 @@ extern int int3c2e_sph(double *out, int *dims, int *shls, int *atm, int natm,
 int *bas, int nbas, double *env, void *opt, double *cache);
 extern void cint3c2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
 
+extern int int3c2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
+int *bas, int nbas, double *env, void *opt, double *cache);
+extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *);
+
 /* Optimizer macro using token pasting */
 #define MAKE_OPTIMIZER(func) c##func##_optimizer
 
@@ -511,74 +515,77 @@ static PyObject *eri_array(PyObject *self, PyObject *args) {
   Py_RETURN_NONE;
 }
 
-/* int3c2e_array — 3-center 2-electron integral (3 shells: I,J,K) */
-static PyObject *int3c2e_array(PyObject *self, PyObject *args) {
-  PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;
-  int natm, nbas, nbfn;
 
-  if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr, &natm,
-                        &PyArray_Type, &atm_arr, &nbas, &PyArray_Type, &bas_arr,
-                        &PyArray_Type, &env_arr, &PyArray_Type, &offs_arr,
-                        &nbfn))
-    return NULL;
-
-  double *out = (double *)PyArray_DATA(out_arr);
-  int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);
-  int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);
-  double *env = (double *)PyArray_GETPTR1(env_arr, 0);
-  int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);
-
-  int shls[4];
-  shls[3] = 0;  /* 4th shell unused for 3-center integral */
-  int max_off = 0;
-  for (int i = 0; i < nbas; i++) {
-    if (offs[i] > max_off)
-      max_off = offs[i];
-  }
-  size_t buf_size = (size_t)max_off * max_off * max_off;
-  double *buf = calloc(buf_size, sizeof(double));
-  if (!buf) {
-    PyErr_NoMemory();
-    return NULL;
-  }
-  CINTOpt *opt = NULL;
-  cint3c2e_sph_optimizer(&opt, atm, natm, bas, nbas, env);
-  int ipos = 0;
-  for (int ishl = 0; ishl < nbas; ishl++) {
-    shls[0] = ishl;
-    int p_off = offs[ishl];
-    int jpos = 0;
-    for (int jshl = 0; jshl <= ishl; jshl++) {
-      shls[1] = jshl;
-      int q_off = offs[jshl];
-      int kpos = 0;
-      for (int kshl = 0; kshl < nbas; kshl++) {
-        shls[2] = kshl;
-        int r_off = offs[kshl];
-        int3c2e_sph(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);
-        for (int p = 0; p < p_off; p++) {
-          for (int q = 0; q < q_off; q++) {
-            for (int r = 0; r < r_off; r++) {
-              double val = buf[p + p_off * (q + q_off * r)];
-              int i = ipos + p, j = jpos + q, k = kpos + r;
-              out[i * nbfn * nbfn + j * nbfn + k] = val;
-              out[j * nbfn * nbfn + i * nbfn + k] = val;
-            }
-          }
-        }
-        //memset(buf, 0, buf_size * sizeof(double));
-        memset(buf, 0, (size_t)p_off * q_off * r_off * sizeof(double));
-        kpos += r_off;
-      }
-      jpos += q_off;
-    }
-    ipos += p_off;
-  }
-  CINTdel_optimizer(&opt);
-  free(buf);
-  Py_RETURN_NONE;
+/* DEFINE_INT3C2E_ARRAY_FN — generates sph and cart variants via token pasting */
+#define DEFINE_INT3C2E_ARRAY_FN(type, optimizer)\
+/* int3c2e_array — 3-center 2-electron integral (3 shells: I,J,K) */\
+static PyObject *int3c2e_array_##type(PyObject *self, PyObject *args) {\
+  PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;\
+  int natm, nbas, nbfn;\
+\
+  if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr, &natm,\
+                        &PyArray_Type, &atm_arr, &nbas, &PyArray_Type, &bas_arr,\
+                        &PyArray_Type, &env_arr, &PyArray_Type, &offs_arr,\
+                        &nbfn))\
+    return NULL;\
+\
+  double *out = (double *)PyArray_DATA(out_arr);\
+  int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);\
+  int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);\
+  double *env = (double *)PyArray_GETPTR1(env_arr, 0);\
+  int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);\
+\
+  int shls[4];\
+  shls[3] = 0;  /* 4th shell unused for 3-center integral */\
+  int max_off = 0;\
+  for (int i = 0; i < nbas; i++) {\
+    if (offs[i] > max_off)\
+      max_off = offs[i];\
+  }\
+  size_t buf_size = (size_t)max_off * max_off * max_off;\
+  double *buf = calloc(buf_size, sizeof(double));\
+  if (!buf) {\
+    PyErr_NoMemory();\
+    return NULL;\
+  }\
+  CINTOpt *opt = NULL;\
+  optimizer(&opt, atm, natm, bas, nbas, env);\
+  int ipos = 0;\
+  for (int ishl = 0; ishl < nbas; ishl++) {\
+    shls[0] = ishl;\
+    int p_off = offs[ishl];\
+    int jpos = 0;\
+    for (int jshl = 0; jshl <= ishl; jshl++) {\
+      shls[1] = jshl;\
+      int q_off = offs[jshl];\
+      int kpos = 0;\
+      for (int kshl = 0; kshl < nbas; kshl++) {\
+        shls[2] = kshl;\
+        int r_off = offs[kshl];\
+        int3c2e_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);\
+        for (int p = 0; p < p_off; p++) {\
+          for (int q = 0; q < q_off; q++) {\
+            for (int r = 0; r < r_off; r++) {\
+              double val = buf[p + p_off * (q + q_off * r)];\
+              int i = ipos + p, j = jpos + q, k = kpos + r;\
+              out[i * nbfn * nbfn + j * nbfn + k] = val;\
+              out[j * nbfn * nbfn + i * nbfn + k] = val;\
+            }\
+          }\
+        }\
+        memset(buf, 0, (size_t)p_off * q_off * r_off * sizeof(double));\
+        kpos += r_off;\
+      }\
+      jpos += q_off;\
+    }\
+    ipos += p_off;\
+  }\
+  CINTdel_optimizer(&opt);\
+  free(buf);\
+  Py_RETURN_NONE;\
 }
-
+DEFINE_INT3C2E_ARRAY_FN(sph, cint3c2e_sph_optimizer)
+DEFINE_INT3C2E_ARRAY_FN(cart, cint3c2e_cart_optimizer)
 
 static PyMethodDef LibcintMethods[] = {
     /* Per-shell-pair wrappers (spherical) */
@@ -639,7 +646,8 @@ static PyMethodDef LibcintMethods[] = {
     {"ignuc_integral_array_cart", ignuc_integral_array_cart, METH_VARARGS, "ignuc integral array (cart)"},
     /* ERI */
     {"eri_array", eri_array, METH_VARARGS, "ERI 2-electron array in C"},
-    {"int3c2e_array", int3c2e_array, METH_VARARGS, "3-center 2-electron array in C"},
+    {"int3c2e_array_sph", int3c2e_array_sph, METH_VARARGS, "3-center 2-electron array (sph)"},
+    {"int3c2e_array_cart", int3c2e_array_cart, METH_VARARGS, "3-center 2-electron array (cart)"},
     {NULL, NULL, 0, NULL}};
 
 static struct PyModuleDef libcintmodule = {

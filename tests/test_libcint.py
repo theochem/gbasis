@@ -803,39 +803,36 @@ def test_c_giao_integral(basis, atsyms, atcoords, integral):
 # ─────────────────────────────────────────────────────────────────────────
 
 TEST_3C2E_SYSTEMS = [
-    pytest.param(["He"], np.asarray([[0.0, 0.0, 0.0]]), "He", id="He"),
-    pytest.param(["C"], np.asarray([[0.0, 0.0, 0.0]]), "C", id="C"),
-    pytest.param(["H", "He"], np.asarray([[0.0, 0.0, 0.0], [1.5117, 0.0, 0.0]]), "H_He", id="H_He"),
-    pytest.param(["Be", "C"], np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]]), "Be_C", id="Be_C"),
+    pytest.param(["He"], np.asarray([[0.0, 0.0, 0.0]]), "He", "spherical", id="He-sph"),
+    pytest.param(["C"], np.asarray([[0.0, 0.0, 0.0]]), "C", "spherical", id="C-sph"),
+    pytest.param(["H", "He"], np.asarray([[0.0, 0.0, 0.0], [1.5117, 0.0, 0.0]]), "H_He", "spherical", id="H_He-sph"),
+    pytest.param(["Be", "C"], np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]]), "Be_C", "spherical", id="Be_C-sph"),
+    pytest.param(["He"], np.asarray([[0.0, 0.0, 0.0]]), "He", "cartesian", id="He-cart"),
+    pytest.param(["C"], np.asarray([[0.0, 0.0, 0.0]]), "C", "cartesian", id="C-cart"),
+    pytest.param(["H", "He"], np.asarray([[0.0, 0.0, 0.0], [1.5117, 0.0, 0.0]]), "H_He", "cartesian", id="H_He-cart"),
+    pytest.param(["Be", "C"], np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]]), "Be_C", "cartesian", id="Be_C-cart"),
 ]
-
 
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
     len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
-@pytest.mark.parametrize("atsyms, atcoords, fname", TEST_3C2E_SYSTEMS)
-def test_c_3center_2electron(atsyms, atcoords, fname):
-    r"""
-    Test the 3-center 2-electron integral binding against PySCF reference values.
-
-    Reference values were generated using PySCF's mol.intor('int3c2e_sph')
-    and saved as .npy files in the tests/ directory.
-    """
+@pytest.mark.parametrize("atsyms, atcoords, fname, coord_type", TEST_3C2E_SYSTEMS)
+def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
+    prefix = "cart" if coord_type == "cartesian" else "sph"
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
-    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types="spherical")
-    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type="spherical")
+    py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
+    lc_basis = CBasis(py_basis, atsyms, atcoords, coord_type=coord_type)
 
-    ref = np.load(find_datafile(f"data_3c2e_sto6g_{fname}.npy"))
+    ref = np.load(find_datafile(f"data_3c2e_{prefix}_sto6g_{fname}.npy"))
     our = lc_basis.three_center_two_electron()
 
     npt.assert_array_equal(our.shape, ref.shape)
     npt.assert_allclose(our, ref, atol=1e-10, rtol=1e-10)
 
-    # Test with transform
     transform = np.eye(lc_basis.nbfn)
     our_t = lc_basis.three_center_two_electron(transform=transform)
     npt.assert_array_equal(our_t.shape, ref.shape)

@@ -1914,7 +1914,7 @@ class CBasis:
 
         """
         out = np.zeros((self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
-        libcint_bindings.int3c2e_array(
+        getattr(libcint_bindings, f"int3c2e_array_{self._ct}")(
             out,
             self.natm,
             self.atm,
