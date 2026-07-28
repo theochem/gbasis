@@ -29,6 +29,13 @@ jobs:
         with:
           python-version: ${{ matrix.py }}
 
+
+      - name: Install CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: '3.27'
+
+          
       - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}
         run: pip install numpy==2.0 scipy==1.13.0
