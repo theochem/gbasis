@@ -51,7 +51,7 @@ set_target_properties(gbasis_ext PROPERTIES
     # Set target library output name.
     OUTPUT_NAME libcint_bindings
     # Set RPATH so libcint.dylib is found at runtime.
-    INSTALL_RPATH "@loader_path"
+    INSTALL_RPATH "$<IF:$<PLATFORM_ID:Darwin>,@loader_path,$ORIGIN>"
     BUILD_WITH_INSTALL_RPATH TRUE)
 
 # Expose Python and NumPy include directories to C extension module.
@@ -65,3 +65,10 @@ target_link_libraries(gbasis_ext PRIVATE cint)
 # Install C extension module.
 set(GBASIS_WHEEL_DIRECTORY "${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib")
 install(TARGETS gbasis_ext LIBRARY DESTINATION ${GBASIS_WHEEL_DIRECTORY})
+
+
+# Install libcint/qcint shared library alongside the extension module.
+install(FILES
+    $<TARGET_FILE:cint>
+    DESTINATION ${GBASIS_WHEEL_DIRECTORY}
+    RENAME $<IF:$<PLATFORM_ID:Darwin>,libcint.6.dylib,libcint.so>)
