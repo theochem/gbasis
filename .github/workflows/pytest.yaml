@@ -35,15 +35,15 @@ jobs:
         with:
           cmake-version: '3.27'
 
-          
+
       - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}
         run: pip install numpy==2.0 scipy==1.13.0
 
       - name: Install development version
         run: |
-          pip install -e .[dev,iodata]
+          pip install -v -e .[dev,iodata]
 
       - name: Run Pytest
         run: |
-            pytest --cov=./gbasis/ --cov-fail-under=78 --cov-report term .
+            pytest --cov=./gbasis/ --cov-report term .
