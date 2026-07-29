@@ -46,4 +46,5 @@ jobs:
 
       - name: Run Pytest
         run: |
-            pytest --cov=./gbasis/ --cov-report term .
+            pip install scikit-build-core cmake ninja
+            pip install --no-build-isolation -v -e .[dev,iodata]
