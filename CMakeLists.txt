@@ -35,7 +35,7 @@ FetchContent_Declare(cint
     EXCLUDE_FROM_ALL)
 
 # Configure libcint/qcint.
-set(ENABLE_STATIC ON)
+set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
 set(WITH_FORTRAN OFF)
 set(WITH_RANGE_COULOMB ON)
 
@@ -67,3 +67,7 @@ set(GBASIS_WHEEL_DIRECTORY "${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib")
 install(TARGETS gbasis_ext LIBRARY DESTINATION ${GBASIS_WHEEL_DIRECTORY})
 
 
+
+# Install libcint shared library alongside the extension module.
+install(FILES $<TARGET_FILE:cint>
+    DESTINATION ${GBASIS_WHEEL_DIRECTORY})
