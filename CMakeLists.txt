@@ -38,6 +38,7 @@ FetchContent_Declare(cint
 set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
 set(WITH_FORTRAN OFF)
 set(WITH_RANGE_COULOMB ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON CACHE BOOL "" FORCE)  
 
 # Import libcint/qcint CMake project.
 FetchContent_MakeAvailable(cint)
