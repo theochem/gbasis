@@ -384,12 +384,74 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;                                                            \
   }
 
+/*
+ * DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func, ncomp)
+ * Same as DEFINE_INT1E_LOOP_FN but handles multi-component integrals.
+ * libcint buffer layout: buf[comp * p_off * q_off + p + q * p_off]
+ * Output layout: out[(ipos+p) * nbfn * ncomp + (jpos+q) * ncomp + c]
+ */
+#define DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func, ncomp) \
+  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                \
+    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;                   \
+    int natm, nbas, nbfn;                                                              \
+    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr,             \
+                          &natm, &PyArray_Type, &atm_arr, &nbas,                       \
+                          &PyArray_Type, &bas_arr, &PyArray_Type, &env_arr,            \
+                          &PyArray_Type, &offs_arr, &nbfn))                            \
+      return NULL;                                                                     \
+    double *out = (double *)PyArray_DATA(out_arr);                                     \
+    int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);                                 \
+    int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);                                 \
+    double *env = (double *)PyArray_GETPTR1(env_arr, 0);                              \
+    int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);                                  \
+    int shls[2];                                                                       \
+    int max_off = 0;                                                                   \
+    for (int i = 0; i < nbas; i++) {                                                   \
+      if (offs[i] > max_off)                                                           \
+        max_off = offs[i];                                                             \
+    }                                                                                  \
+    size_t buf_size = (size_t)max_off * max_off * ncomp;                               \
+    double *buf = calloc(buf_size, sizeof(double));                                    \
+    if (!buf) {                                                                        \
+      PyErr_NoMemory();                                                                \
+      return NULL;                                                                     \
+    }                                                                                  \
+    CINTOpt *opt = NULL;                                                               \
+    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);                             \
+    int ipos = 0;                                                                      \
+    for (int ishl = 0; ishl < nbas; ishl++) {                                          \
+      shls[0] = ishl;                                                                  \
+      int p_off = offs[ishl];                                                          \
+      int jpos = 0;                                                                    \
+      for (int jshl = 0; jshl <= ishl; jshl++) {                                       \
+        shls[1] = jshl;                                                                \
+        int q_off = offs[jshl];                                                        \
+        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL); \
+        for (int c = 0; c < ncomp; c++) {                                              \
+          for (int p = 0; p < p_off; p++) {                                            \
+            for (int q = 0; q < q_off; q++) {                                          \
+              double val = buf[c * p_off * q_off + p + q * p_off];                     \
+              out[(ipos + p) * nbfn * ncomp + (jpos + q) * ncomp + c] = val;          \
+              out[(jpos + q) * nbfn * ncomp + (ipos + p) * ncomp + c] = val;          \
+            }                                                                          \
+          }                                                                            \
+        }                                                                              \
+        memset(buf, 0, buf_size * sizeof(double));                                     \
+        jpos += q_off;                                                                 \
+      }                                                                                \
+      ipos += p_off;                                                                   \
+    }                                                                                  \
+    CINTdel_optimizer(&opt);                                                           \
+    free(buf);                                                                         \
+    Py_RETURN_NONE;                                                                    \
+  }
+
 /* Generate shell-loop wrappers for all 1-electron integrals using the macro */
 /* Spherical */
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, sph, int1e_ovlp, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, sph, int1e_kin, int1e_kin)
 DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array, sph, int1e_nuc, int1e_nuc)
-DEFINE_INT1E_LOOP_FN(momentum_integral_array, sph, int1e_ipovlp, int1e_ipovlp)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(momentum_integral_array, sph, int1e_ipovlp, int1e_ipovlp, 3)
 DEFINE_INT1E_LOOP_FN(rinv_integral_array, sph, int1e_rinv, int1e_rinv)
 DEFINE_INT1E_LOOP_FN(dipole_integral_array, sph, int1e_r, int1e_r)
 DEFINE_INT1E_LOOP_FN(quadrupole_integral_array, sph, int1e_rr, int1e_rr)
@@ -407,8 +469,7 @@ DEFINE_INT1E_LOOP_FN(ignuc_integral_array, sph, int1e_ignuc, int1e_ignuc)
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, cart, int1e_ovlp, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, cart, int1e_kin, int1e_kin)
 DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array, cart, int1e_nuc, int1e_nuc)
-DEFINE_INT1E_LOOP_FN(momentum_integral_array, cart, int1e_ipovlp, int1e_ipovlp)
-DEFINE_INT1E_LOOP_FN(rinv_integral_array, cart, int1e_rinv, int1e_rinv)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(momentum_integral_array, cart, int1e_ipovlp, int1e_ipovlp, 3)DEFINE_INT1E_LOOP_FN(rinv_integral_array, cart, int1e_rinv, int1e_rinv)
 DEFINE_INT1E_LOOP_FN(dipole_integral_array, cart, int1e_r, int1e_r)
 DEFINE_INT1E_LOOP_FN(quadrupole_integral_array, cart, int1e_rr, int1e_rr)
 DEFINE_INT1E_LOOP_FN(octupole_integral_array, cart, int1e_rrr, int1e_rrr)

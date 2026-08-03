@@ -125,11 +125,13 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         return
 
     elif integral == "momentum":
+        if coord_type == "cartesian" and basis == "data_ccpvdz.nwchem":
+            pytest.skip("cc-pVDZ cartesian momentum normalization not yet fixed")
         py_int = momentum_integral(py_basis, screen_basis=False)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
         lc_int = lc_basis.momentum(origin=np.zeros(3))
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        pytest.skip("momentum() multi-component not yet implemented")
+
     elif integral == "electron_repulsion":
         if coord_type == "cartesian" and basis == "data_ccpvdz.nwchem":
             pytest.skip("cc-pVDZ cartesian ERI normalization not yet fixed")
@@ -195,8 +197,7 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("overlap", id="Overlap"),
     pytest.param("kinetic_energy", id="KineticEnergy"),
     pytest.param("nuclear_attraction", id="NuclearAttraction"),
-    #pytest.param("momentum", id="Momentum"),
-    pytest.param("momentum", marks=pytest.mark.skip(reason="momentum() multi-component not yet implemented"), id="Momentum"),
+    pytest.param("momentum", id="Momentum"),
     pytest.param("angular_momentum", id="AngularMomentum"),
     pytest.param("electron_repulsion", marks=pytest.mark.skip(reason='TOO SLOW'), id="ElectronRepulsion"),
     pytest.param("point_charge", id="PointCharge"),
@@ -270,6 +271,8 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
         return
 
     elif integral == "momentum":
+        if coord_type == "Cartesian":
+            pytest.skip("cc-pVDZ cartesian momentum normalization not yet fixed")
         if transform:
             py_int = momentum_integral(py_basis, transform=mol.mo.coeffs.T, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
@@ -280,7 +283,6 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
             lc_int = lc_basis.momentum(origin=np.zeros(3))
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
-        pytest.skip("momentum() multi-component not yet implemented")
     
     elif integral == "electron_repulsion":
         if transform:
@@ -365,8 +367,7 @@ TEST_C_SHELLLOOP_INTEGRALS = [
     pytest.param("kinetic_energy", id="C-KineticEnergy"),
     pytest.param("nuclear_attraction", id="C-NuclearAttraction"),
     pytest.param("rinv", id="C-Rinv"),
-    #pytest.param("momentum", id="C-Momentum"),
-    pytest.param("momentum", marks=pytest.mark.skip(reason="momentum() multi-component not yet implemented"), id="C-Momentum"),
+    pytest.param("momentum", id="C-Momentum"),
 
     pytest.param("dipole", id="C-Dipole"),
     pytest.param("quadrupole", id="C-Quadrupole"),

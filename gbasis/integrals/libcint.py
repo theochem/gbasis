@@ -578,9 +578,9 @@ class CBasis:
         if origin is None:
             origin = np.zeros(3)
         self.env[1:4] = origin
-        out = np.zeros((self.nbfn, self.nbfn, 3), dtype=np.complex128)
+        out_real = np.zeros((self.nbfn, self.nbfn, 3), dtype=np.float64)
         getattr(libcint_bindings, f"momentum_integral_array_{self._ct}")(
-            out,
+            out_real,
             self.natm,
             self.atm,
             self.nbas,
@@ -590,8 +590,9 @@ class CBasis:
             self.nbfn,
         )
         # Apply permutation
-        out *= -1j
-        out = out[self._permutations, :][:, self._permutations]
+        out_real = out_real[self._permutations, :][:, self._permutations]
+        # Momentum is purely imaginary: p = -i * (real buffer)
+        out = -1j * out_real
         # Apply transformation
         if transform is not None:
             out = np.tensordot(transform, out, (1, 0))
