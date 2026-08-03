@@ -63,9 +63,7 @@ TEST_INTEGRALS = [
     pytest.param("angular_momentum", id="AngularMomentum"),
     pytest.param("electron_repulsion", id="ElectronRepulsion"),
     pytest.param("point_charge", id="PointCharge"),
-    #moment-skip for now 
-    # pytest.param("moment", id="Moment"),
-    pytest.param("moment", marks=pytest.mark.skip(reason="moment() mixed orders not yet implemented"), id="Moment"),
+    pytest.param("moment", id="Moment"),
 
 ]
 
@@ -201,9 +199,7 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("angular_momentum", id="AngularMomentum"),
     pytest.param("electron_repulsion", marks=pytest.mark.skip(reason='TOO SLOW'), id="ElectronRepulsion"),
     pytest.param("point_charge", id="PointCharge"),
-   #moment-skip for now
-   # pytest.param("moment", id="Moment"),
-   pytest.param("moment", marks=pytest.mark.skip(reason="moment() mixed orders not yet implemented"), id="Moment"),
+    pytest.param("moment", id="Moment"),
 ]
 @pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
@@ -373,9 +369,7 @@ TEST_C_SHELLLOOP_INTEGRALS = [
     pytest.param("quadrupole", id="C-Quadrupole"),
     pytest.param("octupole", id="C-Octupole"),
     pytest.param("point_charge", id="C-PointCharge"),
-    #moment-skip for now
-    # pytest.param("moment", id="C-Moment"),
-    pytest.param("moment", marks=pytest.mark.skip(reason="moment() mixed orders not yet implemented"), id="C-Moment"),
+    pytest.param("moment", id="C-Moment"),
 
     pytest.param("electron_repulsion", id="C-ElectronRepulsion"),
 ]

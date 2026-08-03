@@ -629,7 +629,7 @@ class CBasis:
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        out = np.zeros((self.nbfn, self.nbfn, 3), dtype=np.float64)
         getattr(libcint_bindings, f"dipole_integral_array_{self._ct}")(
             out,
             self.natm,
@@ -644,8 +644,9 @@ class CBasis:
         out = out[self._permutations, :][:, self._permutations]
         # Normalize cartesian
         if self._ovlp_minhalf is not None:
-            out = np.einsum("a,b,ab->ab", self._ovlp_minhalf, self._ovlp_minhalf, out)
-        # Apply transformation
+            out = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, out)
+        # x-component only for dipole()
+        out = out[:, :, 0]
         # Apply transformation
         if transform is not None:
             out = np.tensordot(transform, out, (1, 0))
@@ -671,7 +672,6 @@ class CBasis:
             Transformation matrix from AO to MO basis.
             Default is no transformation.
 
-
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
@@ -679,12 +679,12 @@ class CBasis:
 
         Notes
         -----
-        Returns the first component of the quadrupole integral from
+        Returns the first component (xx) of the quadrupole integral from
         ``int1e_rr_sph``. The full 9-component quadrupole integral is
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        out = np.zeros((self.nbfn, self.nbfn, 9), dtype=np.float64)
         getattr(libcint_bindings, f"quadrupole_integral_array_{self._ct}")(
             out,
             self.natm,
@@ -699,8 +699,9 @@ class CBasis:
         out = out[self._permutations, :][:, self._permutations]
         # Normalize cartesian
         if self._ovlp_minhalf is not None:
-            out = np.einsum("a,b,ab->ab", self._ovlp_minhalf, self._ovlp_minhalf, out)
-        # Apply transformation
+            out = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, out)
+        # xx-component only for quadrupole()
+        out = out[:, :, 0]
         # Apply transformation
         if transform is not None:
             out = np.tensordot(transform, out, (1, 0))
@@ -719,7 +720,7 @@ class CBasis:
 
         .. math::
             O_{ij} = \langle \phi_i | \mathbf{r}\mathbf{r}\mathbf{r} | \phi_j \rangle
-        
+
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
@@ -733,12 +734,12 @@ class CBasis:
 
         Notes
         -----
-        Returns the first component of the octupole integral from
+        Returns the first component (xxx) of the octupole integral from
         ``int1e_rrr_sph``. The full 27-component octupole integral is
         available via ``moment_integral()``.
 
         """
-        out = np.zeros((self.nbfn, self.nbfn), dtype=c_double, order="F")
+        out = np.zeros((self.nbfn, self.nbfn, 27), dtype=np.float64)
         getattr(libcint_bindings, f"octupole_integral_array_{self._ct}")(
             out,
             self.natm,
@@ -753,7 +754,9 @@ class CBasis:
         out = out[self._permutations, :][:, self._permutations]
         # Normalize cartesian
         if self._ovlp_minhalf is not None:
-            out = np.einsum("a,b,ab->ab", self._ovlp_minhalf, self._ovlp_minhalf, out)
+            out = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, out)
+        # xxx-component only for octupole()
+        out = out[:, :, 0]
         # Apply transformation
         if transform is not None:
             out = np.tensordot(transform, out, (1, 0))
@@ -1132,48 +1135,75 @@ class CBasis:
         r"""
         Compute the moment integrals.
 
-        The moment integral represents the expectation value of the position
-        operator raised to a given order between basis functions :math:`\phi_i`
-        and :math:`\phi_j`.
-
         Parameters
         ----------
         orders : np.ndarray(N, 3, dtype=int)
-            Moment orders :math:`\left[x, y, z\right]` to evaluate.
+            Moment orders [x, y, z] to evaluate.
         origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
             Origin about which to evaluate integrals.
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
-            Default is no transformation.
 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
             Moment integral array.
-
-        Notes
-        -----
-        Uses the C shell-loop bindings for dipole, quadrupole, and octupole
-        integrals internally. Supports up to 3rd order moments.
-
         """
         if origin is None:
             origin = np.zeros(3)
+        self.env[1:4] = origin
+
+        # Pre-fetch full multi-component buffers
+        dip = np.zeros((self.nbfn, self.nbfn, 3), dtype=np.float64)
+        getattr(libcint_bindings, f"dipole_integral_array_{self._ct}")(
+            dip, self.natm, self.atm, self.nbas, self.bas, self.env, self._offs, self.nbfn)
+        dip = dip[self._permutations, :][:, self._permutations]
+
+        quad = np.zeros((self.nbfn, self.nbfn, 9), dtype=np.float64)
+        getattr(libcint_bindings, f"quadrupole_integral_array_{self._ct}")(
+            quad, self.natm, self.atm, self.nbas, self.bas, self.env, self._offs, self.nbfn)
+        quad = quad[self._permutations, :][:, self._permutations]
+
+        oct_ = np.zeros((self.nbfn, self.nbfn, 27), dtype=np.float64)
+        getattr(libcint_bindings, f"octupole_integral_array_{self._ct}")(
+            oct_, self.natm, self.atm, self.nbas, self.bas, self.env, self._offs, self.nbfn)
+        oct_ = oct_[self._permutations, :][:, self._permutations]
+
+        # Cartesian normalization
+        if self._ovlp_minhalf is not None:
+            s = self._ovlp_minhalf
+            dip  = np.einsum("a,b,abc->abc", s, s, dip)
+            quad = np.einsum("a,b,abc->abc", s, s, quad)
+            oct_ = np.einsum("a,b,abc->abc", s, s, oct_)
+
         out = np.zeros((self.nbfn, self.nbfn, len(orders)), dtype=np.float64)
         for i, order in enumerate(orders):
-            self.env[1:4] = origin
-            total = sum(order)
+            ox, oy, oz = int(order[0]), int(order[1]), int(order[2])
+            total = ox + oy + oz
             if total == 0:
                 out[:, :, i] = self.overlap()
             elif total == 1:
-                out[:, :, i] = self.dipole()
+                # libcint int1e_r layout: x=0, y=1, z=2
+                c = 0 * ox + 1 * oy + 2 * oz
+                out[:, :, i] = dip[:, :, c]
             elif total == 2:
-                out[:, :, i] = self.quadrupole()
+                # libcint int1e_rr layout: xx=0,xy=1,xz=2,yx=3,yy=4,yz=5,zx=6,zy=7,zz=8
+                comp_map = {(2,0,0):0, (1,1,0):1, (1,0,1):2,
+                            (0,2,0):4, (0,1,1):5, (0,0,2):8}
+                out[:, :, i] = quad[:, :, comp_map[(ox,oy,oz)]]
             elif total == 3:
-                out[:, :, i] = self.octupole()
+                # libcint int1e_rrr layout: xxx=0,xxy=1,xxz=2,xyx=3,xyy=4,xyz=5,
+                #                           xzx=6,xzy=7,xzz=8,yxx=9,...,zzz=26
+                comp_map = {
+                    (3,0,0):0,  (2,1,0):1,  (2,0,1):2,
+                    (1,2,0):4,  (1,1,1):5,  (1,0,2):8,
+                    (0,3,0):13, (0,2,1):14, (0,1,2):17, (0,0,3):26
+                }
+                out[:, :, i] = oct_[:, :, comp_map[(ox,oy,oz)]]
             else:
-                raise NotImplementedError(f"moment() for order {order} (sum={total}) not yet implemented")
-        # Apply transformation
+                raise NotImplementedError(
+                    f"moment() for order {order} (sum={total}) not yet implemented")
+
         if transform is not None:
             out = np.tensordot(transform, out, (1, 0))
             out = np.tensordot(transform, out, (1, 1))
