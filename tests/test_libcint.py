@@ -131,8 +131,6 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
 
     elif integral == "electron_repulsion":
-        if coord_type == "cartesian" and basis == "data_ccpvdz.nwchem":
-            pytest.skip("cc-pVDZ cartesian ERI normalization not yet fixed")
         py_int = electron_repulsion_integral_improved(py_basis)
         npt.assert_array_equal(
             py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)

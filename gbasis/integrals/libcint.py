@@ -347,13 +347,14 @@ class CBasis:
 
         # Compute overlap-based normalization for cartesian coordinates
         if coord_type == "cartesian":
-            S = self.overlap()
-            self._ovlp_minhalf = 1.0 / np.sqrt(np.diag(S))
+            raw_S = np.zeros((nbfn, nbfn), dtype=c_double, order="F")
+            libcint_bindings.overlap_integral_array_cart(
+                raw_S, natm, atm, nbas, bas, env, offs, nbfn
+            )
+            raw_S = raw_S[permutations, :][:, permutations]
+            self._ovlp_minhalf = 1.0 / np.sqrt(np.diag(raw_S))
         else:
             self._ovlp_minhalf = None
-
-
-    
     
     
     def overlap(self, transform=None):
@@ -1172,9 +1173,9 @@ class CBasis:
         # Cartesian normalization
         if self._ovlp_minhalf is not None:
             s = self._ovlp_minhalf
-            dip  = np.einsum("a,b,abc->abc", s, s, dip)
-            quad = np.einsum("a,b,abc->abc", s, s, quad)
-            oct_ = np.einsum("a,b,abc->abc", s, s, oct_)
+            dip  = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, dip)
+            quad = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, quad)
+            oct_ = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, oct_)
 
         out = np.zeros((self.nbfn, self.nbfn, len(orders)), dtype=np.float64)
         for i, order in enumerate(orders):
@@ -1239,16 +1240,14 @@ class CBasis:
             raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
 
         out = np.zeros((self.nbfn, self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
-        libcint_bindings.eri_array(
-            out,
-            self.natm,
-            self.atm,
-            self.nbas,
-            self.bas,
-            self.env,
-            self._offs,
-            self.nbfn,
-        )
+        if self._ct == "cart":
+            libcint_bindings.eri_array_cart(
+                out, self.natm, self.atm, self.nbas, self.bas, self.env, self._offs, self.nbfn,
+            )
+        else:
+            libcint_bindings.eri_array(
+                out, self.natm, self.atm, self.nbas, self.bas, self.env, self._offs, self.nbfn,
+            )
 
         # Apply permutation
         out = out[self._permutations]
@@ -1258,8 +1257,7 @@ class CBasis:
         # Normalize cartesian
         if self._ovlp_minhalf is not None:
             s = self._ovlp_minhalf
-            out = np.einsum("a,b,c,d,abcd->abcd", s, s, s, s, out)
-        # Apply notation
+            out = np.einsum("a,b,c,d,abcd->abcd", self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf, out)        # Apply notation
         if notation == "chemist":
             out = out.transpose(0, 2, 1, 3)
         # Apply transformation

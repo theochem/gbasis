@@ -166,6 +166,7 @@ extern void int1e_r_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_rr_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_rrr_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void cint2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+extern void cint2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void CINTall_1e_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_ipkin_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_ipnuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
@@ -577,6 +578,75 @@ static PyObject *eri_array(PyObject *self, PyObject *args) {
   Py_RETURN_NONE;
 }
 
+/* Forward declaration — 2-electron cartesian integral */
+extern int int2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
+                      int *bas, int nbas, double *env, void *opt, double *cache);
+
+/* eri_array_cart — cartesian ERI using int2e_cart and cint2e_cart_optimizer */
+static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
+  PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;
+  int natm, nbas, nbfn;
+  if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr, &natm,
+                        &PyArray_Type, &atm_arr, &nbas, &PyArray_Type, &bas_arr,
+                        &PyArray_Type, &env_arr, &PyArray_Type, &offs_arr, &nbfn))
+    return NULL;
+  double *out = (double *)PyArray_DATA(out_arr);
+  int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);
+  int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);
+  double *env = (double *)PyArray_GETPTR1(env_arr, 0);
+  int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);
+  int shls[4];
+  int max_off = 0;
+  for (int i = 0; i < nbas; i++) {
+    if (offs[i] > max_off) max_off = offs[i];
+  }
+  size_t buf_size = (size_t)max_off * max_off * max_off * max_off;
+  double *buf = calloc(buf_size, sizeof(double));
+  if (!buf) { PyErr_NoMemory(); return NULL; }
+  CINTOpt *opt = NULL;
+  cint2e_cart_optimizer(&opt, atm, natm, bas, nbas, env);
+  int ipos = 0;
+  for (int ishl = 0; ishl < nbas; ishl++) {
+    shls[0] = ishl; int p_off = offs[ishl]; int jpos = 0;
+    for (int jshl = 0; jshl <= ishl; jshl++) {
+      int ij = ((ishl+1)*ishl)/2 + jshl;
+      shls[1] = jshl; int q_off = offs[jshl]; int kpos = 0;
+      for (int kshl = 0; kshl < nbas; kshl++) {
+        shls[2] = kshl; int r_off = offs[kshl]; int lpos = 0;
+        for (int lshl = 0; lshl <= kshl; lshl++) {
+          int kl = ((kshl+1)*kshl)/2 + lshl;
+          if (ij < kl) { lpos += offs[lshl]; continue; }
+          shls[3] = lshl; int s_off = offs[lshl];
+          int2e_cart(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);
+          for (int p = 0; p < p_off; p++)
+            for (int q = 0; q < q_off; q++)
+              for (int r = 0; r < r_off; r++)
+                for (int s = 0; s < s_off; s++) {
+                  double val = buf[p + p_off*(q + q_off*(r + r_off*s))];
+                  int i=ipos+p, j=jpos+q, k=kpos+r, l=lpos+s;
+                  out[i*nbfn*nbfn*nbfn + k*nbfn*nbfn + j*nbfn + l] = val;
+                  out[i*nbfn*nbfn*nbfn + l*nbfn*nbfn + j*nbfn + k] = val;
+                  out[j*nbfn*nbfn*nbfn + k*nbfn*nbfn + i*nbfn + l] = val;
+                  out[j*nbfn*nbfn*nbfn + l*nbfn*nbfn + i*nbfn + k] = val;
+                  out[k*nbfn*nbfn*nbfn + i*nbfn*nbfn + l*nbfn + j] = val;
+                  out[k*nbfn*nbfn*nbfn + j*nbfn*nbfn + l*nbfn + i] = val;
+                  out[l*nbfn*nbfn*nbfn + i*nbfn*nbfn + k*nbfn + j] = val;
+                  out[l*nbfn*nbfn*nbfn + j*nbfn*nbfn + k*nbfn + i] = val;
+                }
+          memset(buf, 0, (size_t)p_off*q_off*r_off*s_off*sizeof(double));
+          lpos += s_off;
+        }
+        kpos += r_off;
+      }
+      jpos += q_off;
+    }
+    ipos += p_off;
+  }
+  CINTdel_optimizer(&opt);
+  free(buf);
+  Py_RETURN_NONE;
+}
+
 
 /* DEFINE_INT3C2E_ARRAY_FN — generates sph and cart variants via token pasting */
 #define DEFINE_INT3C2E_ARRAY_FN(type, optimizer)\
@@ -708,6 +778,7 @@ static PyMethodDef LibcintMethods[] = {
     {"ignuc_integral_array_cart", ignuc_integral_array_cart, METH_VARARGS, "ignuc integral array (cart)"},
     /* ERI */
     {"eri_array", eri_array, METH_VARARGS, "ERI 2-electron array in C"},
+    {"eri_array_cart", eri_array_cart, METH_VARARGS, "ERI 2-electron array in C (cartesian)"},
     {"int3c2e_array_sph", int3c2e_array_sph, METH_VARARGS, "3-center 2-electron array (sph)"},
     {"int3c2e_array_cart", int3c2e_array_cart, METH_VARARGS, "3-center 2-electron array (cart)"},
     {NULL, NULL, 0, NULL}};
