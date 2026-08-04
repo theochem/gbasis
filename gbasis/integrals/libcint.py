@@ -592,6 +592,10 @@ class CBasis:
         )
         # Apply permutation
         out_real = out_real[self._permutations, :][:, self._permutations]
+        # Normalize cartesian
+        if self._ovlp_minhalf is not None:
+            out_real = np.einsum("a,b,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, out_real)
+
         # Momentum is purely imaginary: p = -i * (real buffer)
         out = -1j * out_real
         # Apply transformation

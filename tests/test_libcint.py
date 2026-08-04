@@ -123,8 +123,6 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         return
 
     elif integral == "momentum":
-        if coord_type == "cartesian" and basis == "data_ccpvdz.nwchem":
-            pytest.skip("cc-pVDZ cartesian momentum normalization not yet fixed")
         py_int = momentum_integral(py_basis, screen_basis=False)
         npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
         lc_int = lc_basis.momentum(origin=np.zeros(3))
@@ -265,8 +263,6 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
         return
 
     elif integral == "momentum":
-        if coord_type == "Cartesian":
-            pytest.skip("cc-pVDZ cartesian momentum normalization not yet fixed")
         if transform:
             py_int = momentum_integral(py_basis, transform=mol.mo.coeffs.T, screen_basis=False)
             npt.assert_array_equal(py_int.shape, (lc_basis.nbfn, lc_basis.nbfn, 3))
