@@ -29,7 +29,16 @@ jobs:
         with:
           python-version: ${{ matrix.py }}
 
-      - name: Install CMake
+      - name: Setup MinGW (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
+          path-type: inherit
+
+      - name: Install CMake (non-Windows)
+        if: ${{ runner.os != 'Windows' }}
         uses: jwlawson/actions-setup-cmake@v2
         with:
           cmake-version: '3.27'
@@ -38,11 +47,26 @@ jobs:
         if: ${{ matrix.py == '3.9'}}
         run: pip install numpy==2.0 scipy==1.13.0
 
-      - name: Install development version
+      - name: Install development version (non-Windows)
+        if: ${{ runner.os != 'Windows' }}
         run: |
           pip install numpy>=2.0 setuptools_scm scikit-build-core cmake ninja
           pip install --no-build-isolation -v -e .[dev,iodata]
 
-      - name: Run Pytest
+      - name: Install development version (Windows MinGW)
+        if: ${{ runner.os == 'Windows' }}
+        shell: msys2 {0}
+        run: |
+          pip install numpy>=2.0 setuptools_scm scikit-build-core cmake ninja
+          pip install --no-build-isolation -v -e .[dev,iodata]
+
+      - name: Run Pytest (non-Windows)
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          pytest tests/ -x --timeout=300
+
+      - name: Run Pytest (Windows MinGW)
+        if: ${{ runner.os == 'Windows' }}
+        shell: msys2 {0}
         run: |
           pytest tests/ -x --timeout=300

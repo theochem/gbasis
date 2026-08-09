@@ -2,6 +2,12 @@
 # Require (a relatively recent) version of CMake.
 cmake_minimum_required(VERSION 3.18)
 
+# Force MinGW compiler on Windows before project() declaration
+if(WIN32)
+    set(CMAKE_C_COMPILER "gcc" CACHE STRING "" FORCE)
+    set(CMAKE_CXX_COMPILER "g++" CACHE STRING "" FORCE)
+endif()
+
 # Declare project.
 project(gbasis LANGUAGES C)
 
