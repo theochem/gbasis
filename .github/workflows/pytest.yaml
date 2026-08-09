@@ -55,6 +55,10 @@ jobs:
 
       - name: Install development version (Windows MinGW)
         if: ${{ runner.os == 'Windows' }}
+        env:
+          CMAKE_GENERATOR: "MinGW Makefiles"
+          CC: gcc
+          CXX: g++
         shell: msys2 {0}
         run: |
           pip install numpy>=2.0 setuptools_scm scikit-build-core cmake ninja
