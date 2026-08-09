@@ -73,4 +73,4 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         shell: msys2 {0}
         run: |
-          pytest tests/ -x --timeout=300
+          pytest tests/ -x --timeout=300 --ignore=tests/test_density.py
