@@ -38,14 +38,7 @@ jobs:
         if: ${{ matrix.py == '3.9'}}
         run: pip install numpy==2.0 scipy==1.13.0
 
-      - name: Install development version (non-Windows)
-        if: ${{ runner.os != 'Windows' }}
-        run: |
-          pip install scikit-build-core cmake ninja
-          pip install --no-build-isolation -v -e .[dev,iodata]
-
-      - name: Install development version (Windows)
-        if: ${{ runner.os == 'Windows' }}
+      - name: Install development version
         run: |
           pip install setuptools_scm scikit-build-core cmake ninja
           pip install --no-build-isolation -v -e .[dev,iodata]
