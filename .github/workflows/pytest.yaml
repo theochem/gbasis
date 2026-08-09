@@ -40,7 +40,7 @@ jobs:
 
       - name: Install development version
         run: |
-          pip install setuptools_scm scikit-build-core cmake ninja
+          pip install numpy>=2.0 setuptools_scm scikit-build-core cmake ninja
           pip install --no-build-isolation -v -e .[dev,iodata]
 
       - name: Run Pytest
