@@ -41,16 +41,15 @@ jobs:
       - name: Install development version (non-Windows)
         if: ${{ runner.os != 'Windows' }}
         run: |
-          pip install -v -e .[dev,iodata]
+          pip install scikit-build-core cmake ninja
+          pip install --no-build-isolation -v -e .[dev,iodata]
 
       - name: Install development version (Windows)
         if: ${{ runner.os == 'Windows' }}
         run: |
-          pip install scikit-build-core cmake ninja
+          pip install setuptools_scm scikit-build-core cmake ninja
           pip install --no-build-isolation -v -e .[dev,iodata]
 
       - name: Run Pytest
         run: |
-          pip install scikit-build-core cmake ninja
-          pip install --no-build-isolation -v -e .[dev,iodata]
           pytest tests/ -x --timeout=300
