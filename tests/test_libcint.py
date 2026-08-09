@@ -67,9 +67,8 @@ TEST_INTEGRALS = [
 
 ]
 
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
@@ -197,9 +196,8 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
@@ -369,9 +367,8 @@ TEST_C_SHELLLOOP_INTEGRALS = [
 ]
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
@@ -574,9 +571,8 @@ TEST_GRADIENT_INTEGRALS = [
 ]
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_GRADIENT_INTEGRALS)
@@ -648,9 +644,8 @@ TEST_GIAO_INTEGRALS = [
 ]
 
 
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_GIAO_INTEGRALS)
@@ -718,9 +713,8 @@ TEST_3C2E_SYSTEMS = [
     pytest.param(["Be", "C"], np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]]), "Be_C", "cartesian", id="Be_C-cart"),
 ]
 
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("atsyms, atcoords, fname, coord_type", TEST_3C2E_SYSTEMS)
@@ -748,9 +742,8 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
 # Tests for C shell-loop bindings with cartesian coord_type
 # ─────────────────────────────────────────────────────────────────────────
 
-@pytest.mark.skipif(sys.platform == "win32", reason="This test does not work on Windows")
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)

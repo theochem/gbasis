@@ -54,6 +54,8 @@ cmake.build-type = "Release"
 # Only pack gbasis folder in the wheel
 wheel.packages = ["gbasis"]
 
+cmake.args = ["-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++"]
+
 
 
 [tool.scikit-build.metadata.version]
