@@ -40,7 +40,7 @@ dependencies = [
     # Updated to numpy>=2.0 required for scikit-build-core C extension support
     # Note: Keep consistent with .github/workflows/pytest.yaml
     "numpy>=2.0",
-    "scipy>=1.13.0",
+    "scipy>=1.18.0",
     "importlib_resources",
     "sympy",
 ]
