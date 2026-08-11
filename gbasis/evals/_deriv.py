@@ -130,7 +130,7 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         # evaluating the hermite polynomial at different orders (in sequence) may be nice in the
         # future.
         hermite = np.sum(
-            coeffs * eval_hermite(indices_herm, alphas**0.5 * nonzero_coords), axis=0
+            coeffs * eval_hermite(indices_herm.astype(np.intp), (alphas**0.5 * nonzero_coords).astype(np.float64)), axis=0
         )
         hermite = np.prod(hermite, axis=1)
 
