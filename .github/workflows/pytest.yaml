@@ -68,5 +68,8 @@ jobs:
       - name: Run Pytest (Windows MinGW)
         if: ${{ runner.os == 'Windows' }}
         shell: msys2 {0}
+        env:
+          PATH: /mingw64/bin:$PATH
         run: |
+          export PATH="/mingw64/bin:$PATH"
           pytest tests/ -x --timeout=300 
