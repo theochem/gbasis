@@ -41,7 +41,12 @@ FetchContent_Declare(cint
     EXCLUDE_FROM_ALL)
 
 # Configure libcint/qcint.
-set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
+# On Windows, build shared library so libcint_bindings.pyd can load it at runtime.
+if(WIN32)
+    set(ENABLE_STATIC OFF CACHE BOOL "" FORCE)
+else()
+    set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
+endif()
 set(WITH_FORTRAN OFF)
 set(WITH_RANGE_COULOMB ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON CACHE BOOL "" FORCE)  
