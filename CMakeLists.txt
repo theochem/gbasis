@@ -74,7 +74,13 @@ target_link_libraries(gbasis_ext PRIVATE cint)
 
 # On Windows/MinGW, statically link runtime to avoid DLL dependency issues.
 if(WIN32 AND MINGW)
-    target_link_options(gbasis_ext PRIVATE -static-libgcc -static-libstdc++ -Wl,-Bstatic -lpthread -Wl,-Bdynamic)
+    target_link_options(gbasis_ext PRIVATE
+        -static-libgcc
+        -static-libstdc++
+        -Wl,-Bstatic
+        -lpthread
+        -Wl,-Bdynamic
+    )
 endif()
 
 # Install C extension module.
