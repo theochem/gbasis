@@ -68,6 +68,10 @@ TEST_INTEGRALS = [
 ]
 
 @pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
+@pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
@@ -196,6 +200,10 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
 @pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
@@ -367,6 +375,10 @@ TEST_C_SHELLLOOP_INTEGRALS = [
 ]
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
 @pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
@@ -572,6 +584,10 @@ TEST_GRADIENT_INTEGRALS = [
 
 
 @pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
+@pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
@@ -645,6 +661,10 @@ TEST_GIAO_INTEGRALS = [
 
 
 @pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
+@pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
@@ -714,6 +734,10 @@ TEST_3C2E_SYSTEMS = [
 ]
 
 @pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
+@pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
@@ -742,6 +766,10 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
 # Tests for C shell-loop bindings with cartesian coord_type
 # ─────────────────────────────────────────────────────────────────────────
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="libcint not supported on Windows CI",
+)
 @pytest.mark.skipif(
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
