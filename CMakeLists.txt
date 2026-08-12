@@ -85,3 +85,15 @@ install(TARGETS gbasis_ext LIBRARY DESTINATION ${GBASIS_WHEEL_DIRECTORY})
 # Install libcint shared library alongside the extension module.
 install(FILES $<TARGET_FILE:cint>
     DESTINATION ${GBASIS_WHEEL_DIRECTORY})
+
+# On Windows/MinGW, copy runtime DLLs alongside the extension module.
+if(WIN32)
+    include(InstallRequiredSystemLibraries)
+    file(GET_RUNTIME_DEPENDENCIES
+        LIBRARIES $<TARGET_FILE:cint>
+        RESOLVED_DEPENDENCIES_VAR _resolved_deps
+        UNRESOLVED_DEPENDENCIES_VAR _unresolved_deps
+        DIRECTORIES "D:/a/_temp/msys64/mingw64/bin"
+    )
+    install(FILES ${_resolved_deps} DESTINATION ${GBASIS_WHEEL_DIRECTORY})
+endif()
