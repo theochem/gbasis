@@ -68,7 +68,11 @@ TEST_INTEGRALS = [
 ]
 
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
@@ -197,7 +201,11 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("moment", id="Moment"),
 ]
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
@@ -368,7 +376,11 @@ TEST_C_SHELLLOOP_INTEGRALS = [
 
 
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
@@ -572,7 +584,11 @@ TEST_GRADIENT_INTEGRALS = [
 
 
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_GRADIENT_INTEGRALS)
@@ -645,7 +661,11 @@ TEST_GIAO_INTEGRALS = [
 
 
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_GIAO_INTEGRALS)
@@ -714,7 +734,11 @@ TEST_3C2E_SYSTEMS = [
 ]
 
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("atsyms, atcoords, fname, coord_type", TEST_3C2E_SYSTEMS)
@@ -743,7 +767,11 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
 # ─────────────────────────────────────────────────────────────────────────
 
 @pytest.mark.skipif(
-    not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
+    not (lambda: (
+        __import__('os').add_dll_directory(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib')) or True
+        if __import__('sys').platform == 'win32' and __import__('os').path.isdir(__import__('os').path.join(__import__('os').path.dirname(__import__('gbasis').__file__), 'integrals', 'lib'))
+        else True
+    ) and __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings') is not None)(),
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
