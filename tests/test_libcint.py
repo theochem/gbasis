@@ -68,7 +68,7 @@ TEST_INTEGRALS = [
 ]
 
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_INTEGRALS)
@@ -197,7 +197,7 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("moment", id="Moment"),
 ]
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("fname, elements, coord_type", TEST_SYSTEMS_IODATA)
@@ -368,7 +368,7 @@ TEST_C_SHELLLOOP_INTEGRALS = [
 
 
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
@@ -572,7 +572,7 @@ TEST_GRADIENT_INTEGRALS = [
 
 
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_GRADIENT_INTEGRALS)
@@ -645,7 +645,7 @@ TEST_GIAO_INTEGRALS = [
 
 
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_GIAO_INTEGRALS)
@@ -714,7 +714,7 @@ TEST_3C2E_SYSTEMS = [
 ]
 
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("atsyms, atcoords, fname, coord_type", TEST_3C2E_SYSTEMS)
@@ -743,7 +743,7 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
 # ─────────────────────────────────────────────────────────────────────────
 
 @pytest.mark.skipif(
-    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint.*"))) == 0,
+    len(glob(join(dirname(gbasis.__file__), "integrals", "lib", "libcint*.*"))) == 0,
     reason="The libcint shared library object was not found",
 )
 @pytest.mark.parametrize("integral", TEST_C_SHELLLOOP_INTEGRALS)
