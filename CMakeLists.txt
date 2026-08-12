@@ -42,13 +42,9 @@ FetchContent_Declare(cint
 
 # Configure libcint/qcint.
 # On Windows, build shared library so libcint_bindings.pyd can load it at runtime.
-if(WIN32)
-    set(ENABLE_STATIC OFF CACHE BOOL "" FORCE)
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-else()
-    set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-endif()
+# Static everywhere — no runtime DLL issues
+set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(WITH_FORTRAN OFF)
 set(WITH_RANGE_COULOMB ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON CACHE BOOL "" FORCE)  
@@ -75,6 +71,11 @@ target_include_directories(gbasis_ext PRIVATE
 
 # Link C extension module with libcint/qcint.
 target_link_libraries(gbasis_ext PRIVATE cint)
+
+# On Windows/MinGW, statically link runtime to avoid DLL dependency issues.
+if(WIN32 AND MINGW)
+    target_link_options(gbasis_ext PRIVATE -static-libgcc -static-libstdc++ -Wl,-Bstatic -lpthread -Wl,-Bdynamic)
+endif()
 
 # Install C extension module.
 set(GBASIS_WHEEL_DIRECTORY "${SKBUILD_PLATLIB_DIR}/gbasis/integrals/lib")
