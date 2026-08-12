@@ -37,11 +37,7 @@ jobs:
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
           path-type: inherit
 
-      - name: Install CMake (non-Windows)
-        if: ${{ runner.os != 'Windows' }}
-        uses: jwlawson/actions-setup-cmake@v2
-        with:
-          cmake-version: '3.27'
+      
 
       - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}
