@@ -6,11 +6,16 @@ Python C-API bindings for ``libcint`` GTO integrals library.
 import os
 import sys
 
-# On Windows, add the lib directory to the DLL search path
+# On Windows, add the lib directory to the DLL search path and pre-load libcint.dll
 if sys.platform == "win32":
+    import ctypes
     _lib_dir = os.path.join(os.path.dirname(__file__), "lib")
     if os.path.isdir(_lib_dir):
         os.add_dll_directory(_lib_dir)
+        # Pre-load libcint.dll so libcint_bindings.pyd can find it
+        _dll_path = os.path.join(_lib_dir, "libcint.dll")
+        if os.path.exists(_dll_path):
+            ctypes.WinDLL(_dll_path)
 
 from gbasis.integrals.lib import libcint_bindings
 
