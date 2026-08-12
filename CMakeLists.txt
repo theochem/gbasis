@@ -44,8 +44,10 @@ FetchContent_Declare(cint
 # On Windows, build shared library so libcint_bindings.pyd can load it at runtime.
 if(WIN32)
     set(ENABLE_STATIC OFF CACHE BOOL "" FORCE)
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
 else()
     set(ENABLE_STATIC ON CACHE BOOL "" FORCE)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 endif()
 set(WITH_FORTRAN OFF)
 set(WITH_RANGE_COULOMB ON)
