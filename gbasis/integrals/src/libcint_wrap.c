@@ -25,8 +25,9 @@
  *   ignuc            — int1e_ignuc  — GIAO nuclear attraction
  *
  * 2-electron integrals:
- *   eri_array        — int2e_sph    — electron repulsion integrals (ERI, spherical)
- *   eri_array_cart   — int2e_cart   — electron repulsion integrals (ERI, cartesian)
+ *   eri_array        — int2e_sph    — electron repulsion integrals (ERI,
+ * spherical) eri_array_cart   — int2e_cart   — electron repulsion integrals
+ * (ERI, cartesian)
  *
  * 3-center 2-electron integrals:
  *   int3c2e_array_sph  — int3c2e_sph  — 3-center ERI (spherical)
@@ -72,7 +73,7 @@ extern void CINTdel_optimizer(CINTOpt **);
  *   opt   — libcint optimizer (NULL = no optimization)
  *   cache — work buffer (NULL = auto-allocate internally)
  */
- 
+
 /* ─────────────────────────────────────────────────────────────────────────
  * Forward declarations — 1-electron integrals (spherical)
  * ───────────────────────────────────────────────────────────────────────── */
@@ -103,8 +104,8 @@ extern int int1e_rr_sph(double *out, int *dims, int *shls, int *atm, int natm,
 extern int int1e_rrr_sph(double *out, int *dims, int *shls, int *atm, int natm,
                          int *bas, int nbas, double *env, void *opt,
                          double *cache);
-extern int int1e_ovlp_cart(double *out, int *dims, int *shls, int *atm, int natm,
-                           int *bas, int nbas, double *env, void *opt,
+extern int int1e_ovlp_cart(double *out, int *dims, int *shls, int *atm,
+                           int natm, int *bas, int nbas, double *env, void *opt,
                            double *cache);
 extern int int1e_kin_cart(double *out, int *dims, int *shls, int *atm, int natm,
                           int *bas, int nbas, double *env, void *opt,
@@ -118,8 +119,8 @@ extern int int1e_ipovlp_cart(double *out, int *dims, int *shls, int *atm,
 extern int int1e_cg_irxp_cart(double *out, int *dims, int *shls, int *atm,
                               int natm, int *bas, int nbas, double *env,
                               void *opt, double *cache);
-extern int int1e_rinv_cart(double *out, int *dims, int *shls, int *atm, int natm,
-                           int *bas, int nbas, double *env, void *opt,
+extern int int1e_rinv_cart(double *out, int *dims, int *shls, int *atm,
+                           int natm, int *bas, int nbas, double *env, void *opt,
                            double *cache);
 extern int int1e_r_cart(double *out, int *dims, int *shls, int *atm, int natm,
                         int *bas, int nbas, double *env, void *opt,
@@ -152,31 +153,30 @@ extern int int1e_ignuc_sph(double *out, int *dims, int *shls, int *atm,
                            int natm, int *bas, int nbas, double *env, void *opt,
                            double *cache);
 
-
 /* ─────────────────────────────────────────────────────────────────────────
  * Forward declarations — 1-electron integrals (cartesian)
- * ───────────────────────────────────────────────────────────────────────── */                           
+ * ───────────────────────────────────────────────────────────────────────── */
 extern int int1e_ipkin_cart(double *out, int *dims, int *shls, int *atm,
-                            int natm, int *bas, int nbas, double *env, void *opt,
-                            double *cache);
+                            int natm, int *bas, int nbas, double *env,
+                            void *opt, double *cache);
 extern int int1e_ipnuc_cart(double *out, int *dims, int *shls, int *atm,
-                            int natm, int *bas, int nbas, double *env, void *opt,
-                            double *cache);
+                            int natm, int *bas, int nbas, double *env,
+                            void *opt, double *cache);
 extern int int1e_iprinv_cart(double *out, int *dims, int *shls, int *atm,
                              int natm, int *bas, int nbas, double *env,
                              void *opt, double *cache);
 extern int int1e_ia01p_cart(double *out, int *dims, int *shls, int *atm,
-                            int natm, int *bas, int nbas, double *env, void *opt,
-                            double *cache);
+                            int natm, int *bas, int nbas, double *env,
+                            void *opt, double *cache);
 extern int int1e_igkin_cart(double *out, int *dims, int *shls, int *atm,
-                            int natm, int *bas, int nbas, double *env, void *opt,
-                            double *cache);
+                            int natm, int *bas, int nbas, double *env,
+                            void *opt, double *cache);
 extern int int1e_igovlp_cart(double *out, int *dims, int *shls, int *atm,
                              int natm, int *bas, int nbas, double *env,
                              void *opt, double *cache);
 extern int int1e_ignuc_cart(double *out, int *dims, int *shls, int *atm,
-                            int natm, int *bas, int nbas, double *env, void *opt,
-                            double *cache);
+                            int natm, int *bas, int nbas, double *env,
+                            void *opt, double *cache);
 
 /* ─────────────────────────────────────────────────────────────────────────
  * Forward declarations — optimizer functions
@@ -205,24 +205,28 @@ extern void int1e_igovlp_optimizer(CINTOpt **, int *, int, int *, int,
                                    double *);
 extern void int1e_ignuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
 
- 
 /* ─────────────────────────────────────────────────────────────────────────
  * Forward declarations — 2-electron integrals
  * ───────────────────────────────────────────────────────────────────────── */
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm,
                      int *bas, int nbas, double *env, void *opt, double *cache);
 extern int int2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
-                     int *bas, int nbas, double *env, void *opt, double *cache);
+                      int *bas, int nbas, double *env, void *opt,
+                      double *cache);
 /* ─────────────────────────────────────────────────────────────────────────
  * Forward declarations — 3-center 2-electron integrals
  * ───────────────────────────────────────────────────────────────────────── */
 extern int int3c2e_sph(double *out, int *dims, int *shls, int *atm, int natm,
-                       int *bas, int nbas, double *env, void *opt, double *cache);
-extern void cint3c2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
+                       int *bas, int nbas, double *env, void *opt,
+                       double *cache);
+extern void cint3c2e_sph_optimizer(CINTOpt **, int *, int, int *, int,
+                                   double *);
 
 extern int int3c2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
-                        int *bas, int nbas, double *env, void *opt, double *cache);
-extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *);
+                        int *bas, int nbas, double *env, void *opt,
+                        double *cache);
+extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int,
+                                    double *);
 
 /* Optimizer macro using token pasting */
 #define MAKE_OPTIMIZER(func) c##func##_optimizer
@@ -245,8 +249,8 @@ extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *
  * ───────────────────────────────────────────────────────────────────────── */
 
 /* Macro for 1-electron wrappers */
-#define DEFINE_INT1E_ARRAY_FN(func_name,type, libcint_func)                         \
-  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                 \
+#define DEFINE_INT1E_ARRAY_FN(func_name, type, libcint_func)                   \
+  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {        \
     PyArrayObject *out_arr, *dims_arr, *shls_arr, *atm_arr, *bas_arr,          \
         *env_arr;                                                              \
     int natm, nbas;                                                            \
@@ -261,8 +265,8 @@ extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *
     int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);                          \
     int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);                          \
     double *env = (double *)PyArray_GETPTR1(env_arr, 0);                       \
-    int result =                                                               \
-        libcint_func##_##type(out, dims, shls, atm, natm, bas, nbas, env, NULL, NULL);  \
+    int result = libcint_func##_##type(out, dims, shls, atm, natm, bas, nbas,  \
+                                       env, NULL, NULL);                       \
     return PyLong_FromLong(result);                                            \
   }
 
@@ -314,7 +318,6 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
   return PyLong_FromLong(result);
 }
 
-
 /* ─────────────────────────────────────────────────────────────────────────
  * DEFINE_INT1E_LOOP_FN_OPT(func_name, type, libcint_func, opt_func)
  *
@@ -328,8 +331,8 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
  * Output layout: out[i * nbfn + j] = out[j * nbfn + i] = val
  * ───────────────────────────────────────────────────────────────────────── */
 /* Macro for integrals WITH optimizer support */
-#define DEFINE_INT1E_LOOP_FN_OPT(func_name,type, libcint_func, opt_func)            \
-  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                 \
+#define DEFINE_INT1E_LOOP_FN_OPT(func_name, type, libcint_func, opt_func)      \
+  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {        \
     PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;           \
     int natm, nbas, nbfn;                                                      \
     if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr,      \
@@ -364,7 +367,8 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
       for (int jshl = 0; jshl <= ishl; jshl++) {                               \
         shls[1] = jshl;                                                        \
         int q_off = offs[jshl];                                                \
-        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);   \
+        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, \
+                              NULL);                                           \
         for (int p = 0; p < p_off; p++) {                                      \
           for (int q = 0; q < q_off; q++) {                                    \
             double val = buf[p + q * p_off];                                   \
@@ -391,8 +395,8 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
  *
  * Output layout: out[i * nbfn + j] = out[j * nbfn + i] = val
  * ───────────────────────────────────────────────────────────────────────── */
-#define DEFINE_INT1E_LOOP_FN(func_name,type, libcint_func, opt_func)                \
-  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                 \
+#define DEFINE_INT1E_LOOP_FN(func_name, type, libcint_func, opt_func)          \
+  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {        \
     PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;           \
     int natm, nbas, nbfn;                                                      \
     if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr,      \
@@ -427,7 +431,8 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
       for (int jshl = 0; jshl <= ishl; jshl++) {                               \
         shls[1] = jshl;                                                        \
         int q_off = offs[jshl];                                                \
-        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);   \
+        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, \
+                              NULL);                                           \
         for (int p = 0; p < p_off; p++) {                                      \
           for (int q = 0; q < q_off; q++) {                                    \
             double val = buf[p + q * p_off];                                   \
@@ -445,9 +450,9 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;                                                            \
   }
 
-
 /* ─────────────────────────────────────────────────────────────────────────
- * DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func, ncomp)
+ * DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func,
+ * ncomp)
  *
  * Same as DEFINE_INT1E_LOOP_FN but handles multi-component integrals.
  *
@@ -463,60 +468,62 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
  *   quadrupole (ncomp=9): xx, xy, xz, yx, yy, yz, zx, zy, zz
  *   octupole  (ncomp=27): xxx, xxy, ..., zzz
  * ───────────────────────────────────────────────────────────────────────── */
-#define DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func, ncomp) \
-  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                \
-    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;                   \
-    int natm, nbas, nbfn;                                                              \
-    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr,             \
-                          &natm, &PyArray_Type, &atm_arr, &nbas,                       \
-                          &PyArray_Type, &bas_arr, &PyArray_Type, &env_arr,            \
-                          &PyArray_Type, &offs_arr, &nbfn))                            \
-      return NULL;                                                                     \
-    double *out = (double *)PyArray_DATA(out_arr);                                     \
-    int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);                                 \
-    int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);                                 \
-    double *env = (double *)PyArray_GETPTR1(env_arr, 0);                              \
-    int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);                                  \
-    int shls[2];                                                                       \
-    int max_off = 0;                                                                   \
-    for (int i = 0; i < nbas; i++) {                                                   \
-      if (offs[i] > max_off)                                                           \
-        max_off = offs[i];                                                             \
-    }                                                                                  \
-    size_t buf_size = (size_t)max_off * max_off * ncomp;                               \
-    double *buf = calloc(buf_size, sizeof(double));                                    \
-    if (!buf) {                                                                        \
-      PyErr_NoMemory();                                                                \
-      return NULL;                                                                     \
-    }                                                                                  \
-    CINTOpt *opt = NULL;                                                               \
-    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);                             \
-    int ipos = 0;                                                                      \
-    for (int ishl = 0; ishl < nbas; ishl++) {                                          \
-      shls[0] = ishl;                                                                  \
-      int p_off = offs[ishl];                                                          \
-      int jpos = 0;                                                                    \
-      for (int jshl = 0; jshl <= ishl; jshl++) {                                       \
-        shls[1] = jshl;                                                                \
-        int q_off = offs[jshl];                                                        \
-        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL); \
-        for (int c = 0; c < ncomp; c++) {                                              \
-          for (int p = 0; p < p_off; p++) {                                            \
-            for (int q = 0; q < q_off; q++) {                                          \
-              double val = buf[c * p_off * q_off + p + q * p_off];                     \
-              out[(ipos + p) * nbfn * ncomp + (jpos + q) * ncomp + c] = val;          \
-              out[(jpos + q) * nbfn * ncomp + (ipos + p) * ncomp + c] = val;          \
-            }                                                                          \
-          }                                                                            \
-        }                                                                              \
-        memset(buf, 0, buf_size * sizeof(double));                                     \
-        jpos += q_off;                                                                 \
-      }                                                                                \
-      ipos += p_off;                                                                   \
-    }                                                                                  \
-    CINTdel_optimizer(&opt);                                                           \
-    free(buf);                                                                         \
-    Py_RETURN_NONE;                                                                    \
+#define DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func,          \
+                                       opt_func, ncomp)                        \
+  static PyObject *func_name##_##type(PyObject *self, PyObject *args) {        \
+    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;           \
+    int natm, nbas, nbfn;                                                      \
+    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr,      \
+                          &natm, &PyArray_Type, &atm_arr, &nbas,               \
+                          &PyArray_Type, &bas_arr, &PyArray_Type, &env_arr,    \
+                          &PyArray_Type, &offs_arr, &nbfn))                    \
+      return NULL;                                                             \
+    double *out = (double *)PyArray_DATA(out_arr);                             \
+    int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);                          \
+    int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);                          \
+    double *env = (double *)PyArray_GETPTR1(env_arr, 0);                       \
+    int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);                           \
+    int shls[2];                                                               \
+    int max_off = 0;                                                           \
+    for (int i = 0; i < nbas; i++) {                                           \
+      if (offs[i] > max_off)                                                   \
+        max_off = offs[i];                                                     \
+    }                                                                          \
+    size_t buf_size = (size_t)max_off * max_off * ncomp;                       \
+    double *buf = calloc(buf_size, sizeof(double));                            \
+    if (!buf) {                                                                \
+      PyErr_NoMemory();                                                        \
+      return NULL;                                                             \
+    }                                                                          \
+    CINTOpt *opt = NULL;                                                       \
+    opt_func##_optimizer(&opt, atm, natm, bas, nbas, env);                     \
+    int ipos = 0;                                                              \
+    for (int ishl = 0; ishl < nbas; ishl++) {                                  \
+      shls[0] = ishl;                                                          \
+      int p_off = offs[ishl];                                                  \
+      int jpos = 0;                                                            \
+      for (int jshl = 0; jshl <= ishl; jshl++) {                               \
+        shls[1] = jshl;                                                        \
+        int q_off = offs[jshl];                                                \
+        libcint_func##_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, \
+                              NULL);                                           \
+        for (int c = 0; c < ncomp; c++) {                                      \
+          for (int p = 0; p < p_off; p++) {                                    \
+            for (int q = 0; q < q_off; q++) {                                  \
+              double val = buf[c * p_off * q_off + p + q * p_off];             \
+              out[(ipos + p) * nbfn * ncomp + (jpos + q) * ncomp + c] = val;   \
+              out[(jpos + q) * nbfn * ncomp + (ipos + p) * ncomp + c] = val;   \
+            }                                                                  \
+          }                                                                    \
+        }                                                                      \
+        memset(buf, 0, buf_size * sizeof(double));                             \
+        jpos += q_off;                                                         \
+      }                                                                        \
+      ipos += p_off;                                                           \
+    }                                                                          \
+    CINTdel_optimizer(&opt);                                                   \
+    free(buf);                                                                 \
+    Py_RETURN_NONE;                                                            \
   }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -525,11 +532,14 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, sph, int1e_ovlp, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, sph, int1e_kin, int1e_kin)
 DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array, sph, int1e_nuc, int1e_nuc)
-DEFINE_INT1E_LOOP_FN_MULTICOMP(momentum_integral_array, sph, int1e_ipovlp, int1e_ipovlp, 3)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(momentum_integral_array, sph, int1e_ipovlp,
+                               int1e_ipovlp, 3)
 DEFINE_INT1E_LOOP_FN(rinv_integral_array, sph, int1e_rinv, int1e_rinv)
 DEFINE_INT1E_LOOP_FN_MULTICOMP(dipole_integral_array, sph, int1e_r, int1e_r, 3)
-DEFINE_INT1E_LOOP_FN_MULTICOMP(quadrupole_integral_array, sph, int1e_rr, int1e_rr, 9)
-DEFINE_INT1E_LOOP_FN_MULTICOMP(octupole_integral_array, sph, int1e_rrr, int1e_rrr, 27)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(quadrupole_integral_array, sph, int1e_rr,
+                               int1e_rr, 9)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(octupole_integral_array, sph, int1e_rrr,
+                               int1e_rrr, 27)
 DEFINE_INT1E_LOOP_FN(ipkin_integral_array, sph, int1e_ipkin, int1e_ipkin)
 DEFINE_INT1E_LOOP_FN(ipnuc_integral_array, sph, int1e_ipnuc, int1e_ipnuc)
 DEFINE_INT1E_LOOP_FN(iprinv_integral_array, sph, int1e_iprinv, int1e_iprinv)
@@ -545,11 +555,14 @@ DEFINE_INT1E_LOOP_FN(ignuc_integral_array, sph, int1e_ignuc, int1e_ignuc)
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, cart, int1e_ovlp, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, cart, int1e_kin, int1e_kin)
 DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array, cart, int1e_nuc, int1e_nuc)
-DEFINE_INT1E_LOOP_FN_MULTICOMP(momentum_integral_array, cart, int1e_ipovlp, int1e_ipovlp, 3)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(momentum_integral_array, cart, int1e_ipovlp,
+                               int1e_ipovlp, 3)
 DEFINE_INT1E_LOOP_FN(rinv_integral_array, cart, int1e_rinv, int1e_rinv)
 DEFINE_INT1E_LOOP_FN_MULTICOMP(dipole_integral_array, cart, int1e_r, int1e_r, 3)
-DEFINE_INT1E_LOOP_FN_MULTICOMP(quadrupole_integral_array, cart, int1e_rr, int1e_rr, 9)
-DEFINE_INT1E_LOOP_FN_MULTICOMP(octupole_integral_array, cart, int1e_rrr, int1e_rrr, 27)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(quadrupole_integral_array, cart, int1e_rr,
+                               int1e_rr, 9)
+DEFINE_INT1E_LOOP_FN_MULTICOMP(octupole_integral_array, cart, int1e_rrr,
+                               int1e_rrr, 27)
 DEFINE_INT1E_LOOP_FN(ipkin_integral_array, cart, int1e_ipkin, int1e_ipkin)
 DEFINE_INT1E_LOOP_FN(ipnuc_integral_array, cart, int1e_ipnuc, int1e_ipnuc)
 DEFINE_INT1E_LOOP_FN(iprinv_integral_array, cart, int1e_iprinv, int1e_iprinv)
@@ -650,8 +663,9 @@ static PyObject *eri_array(PyObject *self, PyObject *args) {
               }
             }
           }
-          //memset(buf, 0, buf_size * sizeof(double));
-          memset(buf, 0, (size_t)p_off * q_off * r_off * s_off * sizeof(double));
+          // memset(buf, 0, buf_size * sizeof(double));
+          memset(buf, 0,
+                 (size_t)p_off * q_off * r_off * s_off * sizeof(double));
           lpos += s_off;
         }
         kpos += r_off;
@@ -667,7 +681,8 @@ static PyObject *eri_array(PyObject *self, PyObject *args) {
 
 /* Forward declaration — 2-electron cartesian integral */
 extern int int2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
-                      int *bas, int nbas, double *env, void *opt, double *cache);
+                      int *bas, int nbas, double *env, void *opt,
+                      double *cache);
 
 /* ─────────────────────────────────────────────────────────────────────────
  * eri_array_cart — cartesian 2-electron ERI shell-loop wrapper.
@@ -680,7 +695,8 @@ static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
   int natm, nbas, nbfn;
   if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr, &natm,
                         &PyArray_Type, &atm_arr, &nbas, &PyArray_Type, &bas_arr,
-                        &PyArray_Type, &env_arr, &PyArray_Type, &offs_arr, &nbfn))
+                        &PyArray_Type, &env_arr, &PyArray_Type, &offs_arr,
+                        &nbfn))
     return NULL;
   double *out = (double *)PyArray_DATA(out_arr);
   int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);
@@ -690,42 +706,65 @@ static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
   int shls[4];
   int max_off = 0;
   for (int i = 0; i < nbas; i++) {
-    if (offs[i] > max_off) max_off = offs[i];
+    if (offs[i] > max_off)
+      max_off = offs[i];
   }
   size_t buf_size = (size_t)max_off * max_off * max_off * max_off;
   double *buf = calloc(buf_size, sizeof(double));
-  if (!buf) { PyErr_NoMemory(); return NULL; }
+  if (!buf) {
+    PyErr_NoMemory();
+    return NULL;
+  }
   CINTOpt *opt = NULL;
   cint2e_cart_optimizer(&opt, atm, natm, bas, nbas, env);
   int ipos = 0;
   for (int ishl = 0; ishl < nbas; ishl++) {
-    shls[0] = ishl; int p_off = offs[ishl]; int jpos = 0;
+    shls[0] = ishl;
+    int p_off = offs[ishl];
+    int jpos = 0;
     for (int jshl = 0; jshl <= ishl; jshl++) {
-      int ij = ((ishl+1)*ishl)/2 + jshl;
-      shls[1] = jshl; int q_off = offs[jshl]; int kpos = 0;
+      int ij = ((ishl + 1) * ishl) / 2 + jshl;
+      shls[1] = jshl;
+      int q_off = offs[jshl];
+      int kpos = 0;
       for (int kshl = 0; kshl < nbas; kshl++) {
-        shls[2] = kshl; int r_off = offs[kshl]; int lpos = 0;
+        shls[2] = kshl;
+        int r_off = offs[kshl];
+        int lpos = 0;
         for (int lshl = 0; lshl <= kshl; lshl++) {
-          int kl = ((kshl+1)*kshl)/2 + lshl;
-          if (ij < kl) { lpos += offs[lshl]; continue; }
-          shls[3] = lshl; int s_off = offs[lshl];
+          int kl = ((kshl + 1) * kshl) / 2 + lshl;
+          if (ij < kl) {
+            lpos += offs[lshl];
+            continue;
+          }
+          shls[3] = lshl;
+          int s_off = offs[lshl];
           int2e_cart(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);
           for (int p = 0; p < p_off; p++)
             for (int q = 0; q < q_off; q++)
               for (int r = 0; r < r_off; r++)
                 for (int s = 0; s < s_off; s++) {
-                  double val = buf[p + p_off*(q + q_off*(r + r_off*s))];
-                  int i=ipos+p, j=jpos+q, k=kpos+r, l=lpos+s;
-                  out[i*nbfn*nbfn*nbfn + k*nbfn*nbfn + j*nbfn + l] = val;
-                  out[i*nbfn*nbfn*nbfn + l*nbfn*nbfn + j*nbfn + k] = val;
-                  out[j*nbfn*nbfn*nbfn + k*nbfn*nbfn + i*nbfn + l] = val;
-                  out[j*nbfn*nbfn*nbfn + l*nbfn*nbfn + i*nbfn + k] = val;
-                  out[k*nbfn*nbfn*nbfn + i*nbfn*nbfn + l*nbfn + j] = val;
-                  out[k*nbfn*nbfn*nbfn + j*nbfn*nbfn + l*nbfn + i] = val;
-                  out[l*nbfn*nbfn*nbfn + i*nbfn*nbfn + k*nbfn + j] = val;
-                  out[l*nbfn*nbfn*nbfn + j*nbfn*nbfn + k*nbfn + i] = val;
+                  double val = buf[p + p_off * (q + q_off * (r + r_off * s))];
+                  int i = ipos + p, j = jpos + q, k = kpos + r, l = lpos + s;
+                  out[i * nbfn * nbfn * nbfn + k * nbfn * nbfn + j * nbfn + l] =
+                      val;
+                  out[i * nbfn * nbfn * nbfn + l * nbfn * nbfn + j * nbfn + k] =
+                      val;
+                  out[j * nbfn * nbfn * nbfn + k * nbfn * nbfn + i * nbfn + l] =
+                      val;
+                  out[j * nbfn * nbfn * nbfn + l * nbfn * nbfn + i * nbfn + k] =
+                      val;
+                  out[k * nbfn * nbfn * nbfn + i * nbfn * nbfn + l * nbfn + j] =
+                      val;
+                  out[k * nbfn * nbfn * nbfn + j * nbfn * nbfn + l * nbfn + i] =
+                      val;
+                  out[l * nbfn * nbfn * nbfn + i * nbfn * nbfn + k * nbfn + j] =
+                      val;
+                  out[l * nbfn * nbfn * nbfn + j * nbfn * nbfn + k * nbfn + i] =
+                      val;
                 }
-          memset(buf, 0, (size_t)p_off*q_off*r_off*s_off*sizeof(double));
+          memset(buf, 0,
+                 (size_t)p_off * q_off * r_off * s_off * sizeof(double));
           lpos += s_off;
         }
         kpos += r_off;
@@ -739,8 +778,6 @@ static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
   Py_RETURN_NONE;
 }
 
-
-
 /* ─────────────────────────────────────────────────────────────────────────
  * DEFINE_INT3C2E_ARRAY_FN(type, optimizer)
  *
@@ -753,73 +790,74 @@ static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
  *
  * Output layout: out[i * nbfn * nbfn + j * nbfn + k]
  * ───────────────────────────────────────────────────────────────────────── */
-#define DEFINE_INT3C2E_ARRAY_FN(type, optimizer)\
-/* int3c2e_array — 3-center 2-electron integral (3 shells: I,J,K) */\
-static PyObject *int3c2e_array_##type(PyObject *self, PyObject *args) {\
-  PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;\
-  int natm, nbas, nbfn;\
-\
-  if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr, &natm,\
-                        &PyArray_Type, &atm_arr, &nbas, &PyArray_Type, &bas_arr,\
-                        &PyArray_Type, &env_arr, &PyArray_Type, &offs_arr,\
-                        &nbfn))\
-    return NULL;\
-\
-  double *out = (double *)PyArray_DATA(out_arr);\
-  int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);\
-  int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);\
-  double *env = (double *)PyArray_GETPTR1(env_arr, 0);\
-  int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);\
-\
-  int shls[4];\
-  shls[3] = 0;  /* 4th shell unused for 3-center integral */\
-  int max_off = 0;\
-  for (int i = 0; i < nbas; i++) {\
-    if (offs[i] > max_off)\
-      max_off = offs[i];\
-  }\
-  size_t buf_size = (size_t)max_off * max_off * max_off;\
-  double *buf = calloc(buf_size, sizeof(double));\
-  if (!buf) {\
-    PyErr_NoMemory();\
-    return NULL;\
-  }\
-  CINTOpt *opt = NULL;\
-  optimizer(&opt, atm, natm, bas, nbas, env);\
-  int ipos = 0;\
-  for (int ishl = 0; ishl < nbas; ishl++) {\
-    shls[0] = ishl;\
-    int p_off = offs[ishl];\
-    int jpos = 0;\
-    for (int jshl = 0; jshl <= ishl; jshl++) {\
-      shls[1] = jshl;\
-      int q_off = offs[jshl];\
-      int kpos = 0;\
-      for (int kshl = 0; kshl < nbas; kshl++) {\
-        shls[2] = kshl;\
-        int r_off = offs[kshl];\
-        int3c2e_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt, NULL);\
-        for (int p = 0; p < p_off; p++) {\
-          for (int q = 0; q < q_off; q++) {\
-            for (int r = 0; r < r_off; r++) {\
-              double val = buf[p + p_off * (q + q_off * r)];\
-              int i = ipos + p, j = jpos + q, k = kpos + r;\
-              out[i * nbfn * nbfn + j * nbfn + k] = val;\
-              out[j * nbfn * nbfn + i * nbfn + k] = val;\
-            }\
-          }\
-        }\
-        memset(buf, 0, (size_t)p_off * q_off * r_off * sizeof(double));\
-        kpos += r_off;\
-      }\
-      jpos += q_off;\
-    }\
-    ipos += p_off;\
-  }\
-  CINTdel_optimizer(&opt);\
-  free(buf);\
-  Py_RETURN_NONE;\
-}
+#define DEFINE_INT3C2E_ARRAY_FN(type, optimizer)                               \
+  /* int3c2e_array — 3-center 2-electron integral (3 shells: I,J,K) */         \
+  static PyObject *int3c2e_array_##type(PyObject *self, PyObject *args) {      \
+    PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;           \
+    int natm, nbas, nbfn;                                                      \
+                                                                               \
+    if (!PyArg_ParseTuple(args, "O!iO!iO!O!O!i", &PyArray_Type, &out_arr,      \
+                          &natm, &PyArray_Type, &atm_arr, &nbas,               \
+                          &PyArray_Type, &bas_arr, &PyArray_Type, &env_arr,    \
+                          &PyArray_Type, &offs_arr, &nbfn))                    \
+      return NULL;                                                             \
+                                                                               \
+    double *out = (double *)PyArray_DATA(out_arr);                             \
+    int *atm = (int *)PyArray_GETPTR2(atm_arr, 0, 0);                          \
+    int *bas = (int *)PyArray_GETPTR2(bas_arr, 0, 0);                          \
+    double *env = (double *)PyArray_GETPTR1(env_arr, 0);                       \
+    int *offs = (int *)PyArray_GETPTR1(offs_arr, 0);                           \
+                                                                               \
+    int shls[4];                                                               \
+    shls[3] = 0; /* 4th shell unused for 3-center integral */                  \
+    int max_off = 0;                                                           \
+    for (int i = 0; i < nbas; i++) {                                           \
+      if (offs[i] > max_off)                                                   \
+        max_off = offs[i];                                                     \
+    }                                                                          \
+    size_t buf_size = (size_t)max_off * max_off * max_off;                     \
+    double *buf = calloc(buf_size, sizeof(double));                            \
+    if (!buf) {                                                                \
+      PyErr_NoMemory();                                                        \
+      return NULL;                                                             \
+    }                                                                          \
+    CINTOpt *opt = NULL;                                                       \
+    optimizer(&opt, atm, natm, bas, nbas, env);                                \
+    int ipos = 0;                                                              \
+    for (int ishl = 0; ishl < nbas; ishl++) {                                  \
+      shls[0] = ishl;                                                          \
+      int p_off = offs[ishl];                                                  \
+      int jpos = 0;                                                            \
+      for (int jshl = 0; jshl <= ishl; jshl++) {                               \
+        shls[1] = jshl;                                                        \
+        int q_off = offs[jshl];                                                \
+        int kpos = 0;                                                          \
+        for (int kshl = 0; kshl < nbas; kshl++) {                              \
+          shls[2] = kshl;                                                      \
+          int r_off = offs[kshl];                                              \
+          int3c2e_##type(buf, NULL, shls, atm, natm, bas, nbas, env, opt,      \
+                         NULL);                                                \
+          for (int p = 0; p < p_off; p++) {                                    \
+            for (int q = 0; q < q_off; q++) {                                  \
+              for (int r = 0; r < r_off; r++) {                                \
+                double val = buf[p + p_off * (q + q_off * r)];                 \
+                int i = ipos + p, j = jpos + q, k = kpos + r;                  \
+                out[i * nbfn * nbfn + j * nbfn + k] = val;                     \
+                out[j * nbfn * nbfn + i * nbfn + k] = val;                     \
+              }                                                                \
+            }                                                                  \
+          }                                                                    \
+          memset(buf, 0, (size_t)p_off * q_off * r_off * sizeof(double));      \
+          kpos += r_off;                                                       \
+        }                                                                      \
+        jpos += q_off;                                                         \
+      }                                                                        \
+      ipos += p_off;                                                           \
+    }                                                                          \
+    CINTdel_optimizer(&opt);                                                   \
+    free(buf);                                                                 \
+    Py_RETURN_NONE;                                                            \
+  }
 DEFINE_INT3C2E_ARRAY_FN(sph, cint3c2e_sph_optimizer)
 DEFINE_INT3C2E_ARRAY_FN(cart, cint3c2e_cart_optimizer)
 
@@ -833,76 +871,119 @@ static PyMethodDef LibcintMethods[] = {
     {"kinetic_sph", kinetic_sph, METH_VARARGS, "Kinetic energy integral"},
     {"nuclear_sph", nuclear_sph, METH_VARARGS, "Nuclear attraction integral"},
     {"momentum_sph", momentum_sph, METH_VARARGS, "Momentum integral"},
-    {"angular_momentum_sph", angular_momentum_sph, METH_VARARGS, "Angular momentum integral"},
+    {"angular_momentum_sph", angular_momentum_sph, METH_VARARGS,
+     "Angular momentum integral"},
     {"rinv_sph", rinv_sph, METH_VARARGS, "1/r integral"},
     {"dipole_sph", dipole_sph, METH_VARARGS, "Dipole moment integral"},
-    {"quadrupole_sph", quadrupole_sph, METH_VARARGS, "Quadrupole moment integral"},
+    {"quadrupole_sph", quadrupole_sph, METH_VARARGS,
+     "Quadrupole moment integral"},
     {"octupole_sph", octupole_sph, METH_VARARGS, "Octupole moment integral"},
     /* Per-shell-pair wrappers (cartesian) */
-    {"overlap_cart", overlap_cart, METH_VARARGS, "Overlap integral (cartesian)"},
-    {"kinetic_cart", kinetic_cart, METH_VARARGS, "Kinetic energy integral (cartesian)"},
-    {"nuclear_cart", nuclear_cart, METH_VARARGS, "Nuclear attraction integral (cartesian)"},
-    {"momentum_cart", momentum_cart, METH_VARARGS, "Momentum integral (cartesian)"},
-    {"angular_momentum_cart", angular_momentum_cart, METH_VARARGS, "Angular momentum integral (cartesian)"},
+    {"overlap_cart", overlap_cart, METH_VARARGS,
+     "Overlap integral (cartesian)"},
+    {"kinetic_cart", kinetic_cart, METH_VARARGS,
+     "Kinetic energy integral (cartesian)"},
+    {"nuclear_cart", nuclear_cart, METH_VARARGS,
+     "Nuclear attraction integral (cartesian)"},
+    {"momentum_cart", momentum_cart, METH_VARARGS,
+     "Momentum integral (cartesian)"},
+    {"angular_momentum_cart", angular_momentum_cart, METH_VARARGS,
+     "Angular momentum integral (cartesian)"},
     {"rinv_cart", rinv_cart, METH_VARARGS, "1/r integral (cartesian)"},
-    {"dipole_cart", dipole_cart, METH_VARARGS, "Dipole moment integral (cartesian)"},
-    {"quadrupole_cart", quadrupole_cart, METH_VARARGS, "Quadrupole moment integral (cartesian)"},
-    {"octupole_cart", octupole_cart, METH_VARARGS, "Octupole moment integral (cartesian)"},
+    {"dipole_cart", dipole_cart, METH_VARARGS,
+     "Dipole moment integral (cartesian)"},
+    {"quadrupole_cart", quadrupole_cart, METH_VARARGS,
+     "Quadrupole moment integral (cartesian)"},
+    {"octupole_cart", octupole_cart, METH_VARARGS,
+     "Octupole moment integral (cartesian)"},
     /* 2-electron */
-    {"electron_repulsion_sph", electron_repulsion_sph, METH_VARARGS, "Electron repulsion integral"},
+    {"electron_repulsion_sph", electron_repulsion_sph, METH_VARARGS,
+     "Electron repulsion integral"},
     /* Shell-loop arrays (spherical) */
-    {"overlap_integral_array_sph", overlap_integral_array_sph, METH_VARARGS, "Overlap integral array (sph)"},
-    {"kinetic_integral_array_sph", kinetic_integral_array_sph, METH_VARARGS, "Kinetic integral array (sph)"},
-    {"nuclear_integral_array_sph", nuclear_integral_array_sph, METH_VARARGS, "Nuclear integral array (sph)"},
-    {"momentum_integral_array_sph", momentum_integral_array_sph, METH_VARARGS, "Momentum integral array (sph)"},
-    {"rinv_integral_array_sph", rinv_integral_array_sph, METH_VARARGS, "1/r integral array (sph)"},
-    {"dipole_integral_array_sph", dipole_integral_array_sph, METH_VARARGS, "Dipole integral array (sph)"},
-    {"quadrupole_integral_array_sph", quadrupole_integral_array_sph, METH_VARARGS, "Quadrupole integral array (sph)"},
-    {"octupole_integral_array_sph", octupole_integral_array_sph, METH_VARARGS, "Octupole integral array (sph)"},
-    {"ipkin_integral_array_sph", ipkin_integral_array_sph, METH_VARARGS, "ipkin integral array (sph)"},
-    {"ipnuc_integral_array_sph", ipnuc_integral_array_sph, METH_VARARGS, "ipnuc integral array (sph)"},
-    {"iprinv_integral_array_sph", iprinv_integral_array_sph, METH_VARARGS, "iprinv integral array (sph)"},
-    {"ia01p_integral_array_sph", ia01p_integral_array_sph, METH_VARARGS, "ia01p integral array (sph)"},
-    {"ircxp_integral_array_sph", ircxp_integral_array_sph, METH_VARARGS, "ircxp integral array (sph)"},
-    {"igkin_integral_array_sph", igkin_integral_array_sph, METH_VARARGS, "igkin integral array (sph)"},
-    {"igovlp_integral_array_sph", igovlp_integral_array_sph, METH_VARARGS, "igovlp integral array (sph)"},
-    {"ignuc_integral_array_sph", ignuc_integral_array_sph, METH_VARARGS, "ignuc integral array (sph)"},
+    {"overlap_integral_array_sph", overlap_integral_array_sph, METH_VARARGS,
+     "Overlap integral array (sph)"},
+    {"kinetic_integral_array_sph", kinetic_integral_array_sph, METH_VARARGS,
+     "Kinetic integral array (sph)"},
+    {"nuclear_integral_array_sph", nuclear_integral_array_sph, METH_VARARGS,
+     "Nuclear integral array (sph)"},
+    {"momentum_integral_array_sph", momentum_integral_array_sph, METH_VARARGS,
+     "Momentum integral array (sph)"},
+    {"rinv_integral_array_sph", rinv_integral_array_sph, METH_VARARGS,
+     "1/r integral array (sph)"},
+    {"dipole_integral_array_sph", dipole_integral_array_sph, METH_VARARGS,
+     "Dipole integral array (sph)"},
+    {"quadrupole_integral_array_sph", quadrupole_integral_array_sph,
+     METH_VARARGS, "Quadrupole integral array (sph)"},
+    {"octupole_integral_array_sph", octupole_integral_array_sph, METH_VARARGS,
+     "Octupole integral array (sph)"},
+    {"ipkin_integral_array_sph", ipkin_integral_array_sph, METH_VARARGS,
+     "ipkin integral array (sph)"},
+    {"ipnuc_integral_array_sph", ipnuc_integral_array_sph, METH_VARARGS,
+     "ipnuc integral array (sph)"},
+    {"iprinv_integral_array_sph", iprinv_integral_array_sph, METH_VARARGS,
+     "iprinv integral array (sph)"},
+    {"ia01p_integral_array_sph", ia01p_integral_array_sph, METH_VARARGS,
+     "ia01p integral array (sph)"},
+    {"ircxp_integral_array_sph", ircxp_integral_array_sph, METH_VARARGS,
+     "ircxp integral array (sph)"},
+    {"igkin_integral_array_sph", igkin_integral_array_sph, METH_VARARGS,
+     "igkin integral array (sph)"},
+    {"igovlp_integral_array_sph", igovlp_integral_array_sph, METH_VARARGS,
+     "igovlp integral array (sph)"},
+    {"ignuc_integral_array_sph", ignuc_integral_array_sph, METH_VARARGS,
+     "ignuc integral array (sph)"},
     /* Shell-loop arrays (cartesian) */
-    {"overlap_integral_array_cart", overlap_integral_array_cart, METH_VARARGS, "Overlap integral array (cart)"},
-    {"kinetic_integral_array_cart", kinetic_integral_array_cart, METH_VARARGS, "Kinetic integral array (cart)"},
-    {"nuclear_integral_array_cart", nuclear_integral_array_cart, METH_VARARGS, "Nuclear integral array (cart)"},
-    {"momentum_integral_array_cart", momentum_integral_array_cart, METH_VARARGS, "Momentum integral array (cart)"},
-    {"rinv_integral_array_cart", rinv_integral_array_cart, METH_VARARGS, "1/r integral array (cart)"},
-    {"dipole_integral_array_cart", dipole_integral_array_cart, METH_VARARGS, "Dipole integral array (cart)"},
-    {"quadrupole_integral_array_cart", quadrupole_integral_array_cart, METH_VARARGS, "Quadrupole integral array (cart)"},
-    {"octupole_integral_array_cart", octupole_integral_array_cart, METH_VARARGS, "Octupole integral array (cart)"},
-    {"ipkin_integral_array_cart", ipkin_integral_array_cart, METH_VARARGS, "ipkin integral array (cart)"},
-    {"ipnuc_integral_array_cart", ipnuc_integral_array_cart, METH_VARARGS, "ipnuc integral array (cart)"},
-    {"iprinv_integral_array_cart", iprinv_integral_array_cart, METH_VARARGS, "iprinv integral array (cart)"},
-    {"ia01p_integral_array_cart", ia01p_integral_array_cart, METH_VARARGS, "ia01p integral array (cart)"},
-    {"ircxp_integral_array_cart", ircxp_integral_array_cart, METH_VARARGS, "ircxp integral array (cart)"},
-    {"igkin_integral_array_cart", igkin_integral_array_cart, METH_VARARGS, "igkin integral array (cart)"},
-    {"igovlp_integral_array_cart", igovlp_integral_array_cart, METH_VARARGS, "igovlp integral array (cart)"},
-    {"ignuc_integral_array_cart", ignuc_integral_array_cart, METH_VARARGS, "ignuc integral array (cart)"},
+    {"overlap_integral_array_cart", overlap_integral_array_cart, METH_VARARGS,
+     "Overlap integral array (cart)"},
+    {"kinetic_integral_array_cart", kinetic_integral_array_cart, METH_VARARGS,
+     "Kinetic integral array (cart)"},
+    {"nuclear_integral_array_cart", nuclear_integral_array_cart, METH_VARARGS,
+     "Nuclear integral array (cart)"},
+    {"momentum_integral_array_cart", momentum_integral_array_cart, METH_VARARGS,
+     "Momentum integral array (cart)"},
+    {"rinv_integral_array_cart", rinv_integral_array_cart, METH_VARARGS,
+     "1/r integral array (cart)"},
+    {"dipole_integral_array_cart", dipole_integral_array_cart, METH_VARARGS,
+     "Dipole integral array (cart)"},
+    {"quadrupole_integral_array_cart", quadrupole_integral_array_cart,
+     METH_VARARGS, "Quadrupole integral array (cart)"},
+    {"octupole_integral_array_cart", octupole_integral_array_cart, METH_VARARGS,
+     "Octupole integral array (cart)"},
+    {"ipkin_integral_array_cart", ipkin_integral_array_cart, METH_VARARGS,
+     "ipkin integral array (cart)"},
+    {"ipnuc_integral_array_cart", ipnuc_integral_array_cart, METH_VARARGS,
+     "ipnuc integral array (cart)"},
+    {"iprinv_integral_array_cart", iprinv_integral_array_cart, METH_VARARGS,
+     "iprinv integral array (cart)"},
+    {"ia01p_integral_array_cart", ia01p_integral_array_cart, METH_VARARGS,
+     "ia01p integral array (cart)"},
+    {"ircxp_integral_array_cart", ircxp_integral_array_cart, METH_VARARGS,
+     "ircxp integral array (cart)"},
+    {"igkin_integral_array_cart", igkin_integral_array_cart, METH_VARARGS,
+     "igkin integral array (cart)"},
+    {"igovlp_integral_array_cart", igovlp_integral_array_cart, METH_VARARGS,
+     "igovlp integral array (cart)"},
+    {"ignuc_integral_array_cart", ignuc_integral_array_cart, METH_VARARGS,
+     "ignuc integral array (cart)"},
     /* ERI */
     {"eri_array", eri_array, METH_VARARGS, "ERI 2-electron array in C"},
-    {"eri_array_cart", eri_array_cart, METH_VARARGS, "ERI 2-electron array in C (cartesian)"},
-    {"int3c2e_array_sph", int3c2e_array_sph, METH_VARARGS, "3-center 2-electron array (sph)"},
-    {"int3c2e_array_cart", int3c2e_array_cart, METH_VARARGS, "3-center 2-electron array (cart)"},
+    {"eri_array_cart", eri_array_cart, METH_VARARGS,
+     "ERI 2-electron array in C (cartesian)"},
+    {"int3c2e_array_sph", int3c2e_array_sph, METH_VARARGS,
+     "3-center 2-electron array (sph)"},
+    {"int3c2e_array_cart", int3c2e_array_cart, METH_VARARGS,
+     "3-center 2-electron array (cart)"},
     {NULL, NULL, 0, NULL}};
 
 /* ─────────────────────────────────────────────────────────────────────────
  * Module definition and initialization.
  * ───────────────────────────────────────────────────────────────────────── */
 static struct PyModuleDef libcintmodule = {
-    PyModuleDef_HEAD_INIT,
-    "libcint_bindings",
+    PyModuleDef_HEAD_INIT, "libcint_bindings",
     "Python/C API bindings for the libcint GTO integral library.\n"
     "Exposes C shell-loop implementations of 1e, 2e, and 3c2e integrals\n"
     "for both spherical and cartesian coordinate types.",
-    -1,
-    LibcintMethods
-};
+    -1, LibcintMethods};
 
 PyMODINIT_FUNC PyInit_libcint_bindings(void) {
   import_array();

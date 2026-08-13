@@ -241,13 +241,13 @@ class CBasis:
             Element corresponding to each atomic center.
         atcoords : List of length-3 array-like of floats
             X, Y, and Z coordinates for each atomic center.
-        coord_type : ('spherical'|'cartesian')
+        coord_type : ("spherical" | "cartesian")
             Type of coordinates.
 
         Raises
         ------
         ValueError
-            If ``coord_type`` is not 'spherical' or 'cartesian'.
+            If ``coord_type`` is not "spherical" or "cartesian".
  
 
         """
@@ -259,7 +259,7 @@ class CBasis:
             num_angmom = attrgetter("num_cart")
         else:
             raise ValueError(
-                "``coord_type`` parameter must be 'spherical' or 'cartesian'; "
+                "``coord_type`` parameter must be \"spherical\" or \"cartesian\"; "
                 f"the provided value, '{coord_type}', is invalid"
             )
 

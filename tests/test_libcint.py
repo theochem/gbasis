@@ -729,15 +729,23 @@ def test_c_giao_integral(basis, atsyms, atcoords, integral):
 # Tests for 3-center 2-electron integral bindings
 # ─────────────────────────────────────────────────────────────────────────
 
+# Mapping from fname to (atsyms, atcoords) for 3c2e test systems
+_3C2E_COORDS = {
+    "He":   (["He"],        np.asarray([[0.0, 0.0, 0.0]])),
+    "C":    (["C"],         np.asarray([[0.0, 0.0, 0.0]])),
+    "H_He": (["H", "He"],  np.asarray([[0.0, 0.0, 0.0], [1.5117, 0.0, 0.0]])),
+    "Be_C": (["Be", "C"],  np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]])),
+}
+
 TEST_3C2E_SYSTEMS = [
-    pytest.param(["He"], np.asarray([[0.0, 0.0, 0.0]]), "He", "spherical", id="He-sph"),
-    pytest.param(["C"], np.asarray([[0.0, 0.0, 0.0]]), "C", "spherical", id="C-sph"),
-    pytest.param(["H", "He"], np.asarray([[0.0, 0.0, 0.0], [1.5117, 0.0, 0.0]]), "H_He", "spherical", id="H_He-sph"),
-    pytest.param(["Be", "C"], np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]]), "Be_C", "spherical", id="Be_C-sph"),
-    pytest.param(["He"], np.asarray([[0.0, 0.0, 0.0]]), "He", "cartesian", id="He-cart"),
-    pytest.param(["C"], np.asarray([[0.0, 0.0, 0.0]]), "C", "cartesian", id="C-cart"),
-    pytest.param(["H", "He"], np.asarray([[0.0, 0.0, 0.0], [1.5117, 0.0, 0.0]]), "H_He", "cartesian", id="H_He-cart"),
-    pytest.param(["Be", "C"], np.asarray([[0.0, 0.0, 0.0], [1.8897, 0.0, 0.0]]), "Be_C", "cartesian", id="Be_C-cart"),
+    pytest.param("He",   "spherical", id="He-sph"),
+    pytest.param("C",    "spherical", id="C-sph"),
+    pytest.param("H_He", "spherical", id="H_He-sph"),
+    pytest.param("Be_C", "spherical", id="Be_C-sph"),
+    pytest.param("He",   "cartesian", id="He-cart"),
+    pytest.param("C",    "cartesian", id="C-cart"),
+    pytest.param("H_He", "cartesian", id="H_He-cart"),
+    pytest.param("Be_C", "cartesian", id="Be_C-cart"),
 ]
 
 @pytest.mark.skipif(
@@ -748,8 +756,8 @@ TEST_3C2E_SYSTEMS = [
     not __import__('importlib.util', fromlist=['find_spec']).find_spec('gbasis.integrals.lib.libcint_bindings'),
     reason="The libcint shared library object was not found",
 )
-@pytest.mark.parametrize("atsyms, atcoords, fname, coord_type", TEST_3C2E_SYSTEMS)
-def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
+@pytest.mark.parametrize("fname, coord_type", TEST_3C2E_SYSTEMS)
+def test_c_3center_2electron(fname, coord_type):
     r"""
     Test 3-center 2-electron integral bindings against precomputed reference arrays.
  
@@ -760,6 +768,7 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
 
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
+    atsyms, atcoords = _3C2E_COORDS[fname]
     prefix = "cart" if coord_type == "cartesian" else "sph"
     basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
     py_basis = make_contractions(basis_dict, atsyms, atcoords, coord_types=coord_type)
