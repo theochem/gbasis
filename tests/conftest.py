@@ -1,4 +1,10 @@
+"""
+pytest configuration for gbasis test suite.
 
+Adds MinGW64 bin directory to PATH on Windows CI so that MinGW runtime
+DLLs (libgcc, libstdc++, libwinpthread) are found when importing the
+libcint extension module.
+"""
 import os
 import sys
 
@@ -11,7 +17,11 @@ if sys.platform == "win32":
             os.add_dll_directory(mingw_bin)
 
 def pytest_configure(config):
-    """Add MinGW bin to PATH before test collection on Windows."""
+    """Add MinGW64 bin to PATH before test collection on Windows CI.
+
+    Checks both the GitHub Actions MSYS2 path and the local MSYS2 install
+    path so the hook works in both CI and local Windows environments.
+    """    
     import os, sys
     if sys.platform == "win32":
         for mingw_bin in [

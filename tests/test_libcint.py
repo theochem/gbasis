@@ -80,13 +80,16 @@ TEST_INTEGRALS = [
 @pytest.mark.parametrize("atsyms, atcoords", TEST_SYSTEMS)
 @pytest.mark.parametrize("basis", TEST_BASIS_SETS)
 def test_integral(basis, atsyms, atcoords, coord_type, integral):
+    r"""
+    Test ``CBasis`` integrals against the GBasis Python integral implementations.
+ 
+    Verifies that the C shell-loop implementation produces results consistent
+    with the pure-Python GBasis reference implementations for all supported
+    integral types and coordinate systems.
+    """
+
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
-    r"""
-    Test gbasis.integrals.libcint.CBasis integrals
-    against the GBasis Python integrals.
-
-    """
     atol, rtol = 1e-6, 1e-6
 
     atcoords = atcoords / 0.5291772083
@@ -174,11 +177,15 @@ def test_integral(basis, atsyms, atcoords, coord_type, integral):
         npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
 
     else:
-        raise ValueError("Invalid integral name '{integral}' passed")
+        raise ValueError(f"Invalid integral name '{integral}' passed")
 
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
 
-
+ 
+# ─────────────────────────────────────────────────────────────────────────
+# Tests against iodata reference systems (H2O cc-pV5Z cartesian/spherical)
+# ─────────────────────────────────────────────────────────────────────────
+ 
 
 TEST_SYSTEMS_IODATA = [
     pytest.param("h2o_hf_ccpv5z_cart.fchk", ["O", "H", "H"], "Cartesian", id="h2o_cart"),
@@ -200,6 +207,7 @@ TEST_INTEGRALS_IODATA = [
     pytest.param("point_charge", id="PointCharge"),
     pytest.param("moment", id="Moment"),
 ]
+
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason="libcint not supported on Windows CI",
@@ -212,6 +220,13 @@ TEST_INTEGRALS_IODATA = [
 @pytest.mark.parametrize("transform", TEST_COORD_TRANSFORM)
 @pytest.mark.parametrize("integral", TEST_INTEGRALS_IODATA)
 def test_integral_iodata(fname, elements, coord_type, integral, transform):
+    r"""
+    Test ``CBasis`` integrals against iodata reference systems.
+ 
+    Uses H2O cc-pV5Z Cartesian and Spherical fchk files as reference,
+    and optionally applies MO transformation matrices.
+    """
+
     pytest.importorskip("iodata")
     from iodata import load_one
     from gbasis.integrals.libcint import ELEMENTS, CBasis
@@ -220,7 +235,6 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
 
     mol=load_one(find_datafile(fname))
     py_basis=from_iodata(mol)
-
     lc_basis = CBasis(py_basis, elements, mol.atcoords, coord_type=coord_type)
 
     if integral == "overlap":
@@ -347,16 +361,16 @@ def test_integral_iodata(fname, elements, coord_type, integral, transform):
             npt.assert_array_equal(lc_int.shape, (lc_basis.nbfn, lc_basis.nbfn, len(orders)))
 
     else:
-        raise ValueError("Invalid integral name '{integral}' passed")
+        raise ValueError(f"Invalid integral name '{integral}' passed")
 
     npt.assert_allclose(lc_int, py_int, atol=atol, rtol=rtol)
 
 
 
-
 # ─────────────────────────────────────────────────────────────────────────
-# New test list for C shell-loop bindings introduced in PR-5 and PR-6
+# C shell-loop bindings: spherical coordinate type
 # ─────────────────────────────────────────────────────────────────────────
+ 
 
 TEST_C_SHELLLOOP_INTEGRALS = [
     pytest.param("overlap", id="C-Overlap"),
@@ -388,17 +402,15 @@ TEST_C_SHELLLOOP_INTEGRALS = [
 @pytest.mark.parametrize("basis", TEST_BASIS_SETS)
 def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
     r"""
-    Test the C shell-loop bindings (PR-5: 1-electron, PR-6: ERI) added to
-    ``gbasis.integrals.libcint.CBasis`` against the existing GBasis Python
-    integral implementations.
-
-    These are the ``.overlap()``, ``.kinetic_energy()``,
-    ``.nuclear_attraction()``, ``.rinv()``, ``.dipole()``, ``.quadrupole()``,
-    ``.octupole()``, and ``.electron_repulsion()`` methods, which loop over
-    shells directly in C (as opposed to the ``*_integral()`` methods, which
-    loop over shells in Python and only call into C per shell pair).
-
+    Test C shell-loop bindings (spherical) against GBasis Python implementations.
+ 
+    Covers the ``.overlap()``, ``.kinetic_energy()``, ``.nuclear_attraction()``,
+    ``.rinv()``, ``.dipole()``, ``.quadrupole()``, ``.octupole()``,
+    ``.momentum()``, ``.point_charge()``, ``.moment()``, and
+    ``.electron_repulsion()`` methods, which loop over shells directly in C
+    rather than in Python.
     """
+
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
     atol, rtol = 1e-6, 1e-6
@@ -448,8 +460,8 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         npt.assert_allclose(lc_int_t, py_int, atol=atol, rtol=rtol)
 
     elif integral == "rinv":
-        # Compare against the point_charge Python integral with a single
-        # unit charge at the origin, since rinv == 1/|r - origin|
+        # rinv == 1/|r - origin|; compare against point_charge with unit charge at origin
+
         origin = np.zeros(3)
         py_int = point_charge_integral(
             py_basis, origin.reshape(1, 3), np.asarray([-1.0])
@@ -560,7 +572,7 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
         npt.assert_allclose(lc_int, py_int, atol=1e-4, rtol=1e-5)
         # Test with transform
         transform = np.eye(lc_basis.nbfn)
-        lc_int_t = lc_basis.electron_repulsion(notation="physicist",transform=transform)
+        lc_int_t = lc_basis.electron_repulsion(notation="physicist", transform=transform)
         npt.assert_array_equal(
             lc_int_t.shape, (lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn, lc_basis.nbfn)
         )
@@ -573,7 +585,7 @@ def test_c_shellloop_integral(basis, atsyms, atcoords, integral):
 
 
 # ─────────────────────────────────────────────────────────────────────────
-# Tests for gradient integral bindings 
+# Gradient integral bindings
 # ─────────────────────────────────────────────────────────────────────────
 
 TEST_GRADIENT_INTEGRALS = [
@@ -596,13 +608,12 @@ TEST_GRADIENT_INTEGRALS = [
 @pytest.mark.parametrize("basis", TEST_BASIS_SETS)
 def test_c_gradient_integral(basis, atsyms, atcoords, integral):
     r"""
-    Test the C shell-loop gradient integral bindings (PR-8) added to
-    ``gbasis.integrals.libcint.CBasis`` against the existing make_int1e
-    based implementations.
-
-    These are the ``.gradient_kinetic()``, ``.gradient_nuclear()``,
-    and ``.gradient_rinv()`` methods which are the building blocks
-    for computing nuclear coordinate gradients.
+    Test gradient integral bindings against shape and finiteness criteria.
+ 
+    Covers ``.gradient_kinetic()``, ``.gradient_nuclear()``, and
+    ``.gradient_rinv()``, which are building blocks for computing
+    nuclear coordinate gradients. No Python reference is available,
+    so only shape and finiteness are verified.
     """
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
@@ -673,16 +684,12 @@ TEST_GIAO_INTEGRALS = [
 @pytest.mark.parametrize("basis", TEST_BASIS_SETS)
 def test_c_giao_integral(basis, atsyms, atcoords, integral):
     r"""
-    Test the GIAO/magnetic integral bindings (PR-8) added to
-    ``gbasis.integrals.libcint.CBasis``.
-
-    These are the ``.ia01p()``, ``.ircxp()``, ``.iking()``,
-    ``.iovlpg()``, and ``.inucg()`` methods which are building
-    blocks for NMR/magnetic property calculations.
-
-    Since GBasis has no Python reference implementation for GIAO
-    integrals, we verify shape and that results are finite and
-    non-trivially zero for multi-atom systems.
+    Test GIAO/magnetic integral bindings against shape and finiteness criteria.
+ 
+    Covers ``.ia01p()``, ``.ircxp()``, ``.iking()``, ``.iovlpg()``, and
+    ``.inucg()``, which are building blocks for NMR shielding tensor and
+    magnetic susceptibility calculations. Since GBasis has no Python reference
+    for GIAO integrals, only shape and finiteness are verified.
     """
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
@@ -710,7 +717,7 @@ def test_c_giao_integral(basis, atsyms, atcoords, integral):
 
     # Finiteness check — no NaN or Inf
     assert np.all(np.isfinite(lc_int)), f"{integral} contains NaN or Inf"
-    # Test with transform
+    # Verify transform does not alter shape or introduce non-finite values
     transform = np.eye(lc_basis.nbfn)
     func = getattr(lc_basis, integral)
     lc_int_t = func(transform=transform)
@@ -743,6 +750,14 @@ TEST_3C2E_SYSTEMS = [
 )
 @pytest.mark.parametrize("atsyms, atcoords, fname, coord_type", TEST_3C2E_SYSTEMS)
 def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
+    r"""
+    Test 3-center 2-electron integral bindings against precomputed reference arrays.
+ 
+    Verifies both spherical and cartesian coordinate types against saved
+    ``.npy`` reference files, and checks that the optional transform
+    leaves results unchanged when using the identity matrix.
+    """
+
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 
     prefix = "cart" if coord_type == "cartesian" else "sph"
@@ -779,8 +794,10 @@ def test_c_3center_2electron(atsyms, atcoords, fname, coord_type):
 @pytest.mark.parametrize("basis", TEST_BASIS_SETS)
 def test_c_shellloop_integral_cart(basis, atsyms, atcoords, integral):
     r"""
-    Test the C shell-loop bindings for cartesian coord_type against
-    the existing GBasis Python integral implementations.
+    Test C shell-loop bindings for cartesian coordinate type.
+ 
+    Verifies shape and finiteness for all integral types. Cartesian
+    overlap diagonals are additionally checked to be positive.
     """
     from gbasis.integrals.libcint import ELEMENTS, CBasis
 

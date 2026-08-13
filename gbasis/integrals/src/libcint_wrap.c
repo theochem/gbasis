@@ -1,30 +1,44 @@
 /*
- * libcint_wrap.c — Python/C API bindings for libcint GTO integral library.
+ * libcint_wrap.c — Python/C API bindings for the libcint GTO integral library.
  *
- * This file wraps libcint's spherical (sph) integral functions using the
- * Python/C API. It exposes the following integrals to Python as the
- * `libcint_bindings` extension module:
+ * This file wraps libcint's spherical (sph) and cartesian (cart) integral
+ * functions using the Python/C API. It exposes the following integrals to
+ * Python as the `libcint_bindings` extension module:
  *
- * 1-electron integrals (spherical):
- *   overlap_sph          — int1e_ovlp  — overlap matrix S
- *   kinetic_sph          — int1e_kin   — kinetic energy matrix T
- *   nuclear_sph          — int1e_nuc   — nuclear attraction matrix V
- *   momentum_sph         — int1e_ipovlp — momentum integral p
- *   angular_momentum_sph — int1e_cg_irxp — angular momentum L
- *   rinv_sph             — int1e_rinv  — 1/r operator
- *   dipole_sph           — int1e_r     — dipole moment (order 1)
- *   quadrupole_sph       — int1e_rr    — quadrupole moment (order 2)
- *   octupole_sph         — int1e_rrr   — octupole moment (order 3)
+ * 1-electron integrals (spherical and cartesian):
+ *   overlap          — int1e_ovlp   — overlap matrix S
+ *   kinetic          — int1e_kin    — kinetic energy matrix T
+ *   nuclear          — int1e_nuc    — nuclear attraction matrix V
+ *   momentum         — int1e_ipovlp — momentum integral p
+ *   angular_momentum — int1e_cg_irxp — angular momentum L
+ *   rinv             — int1e_rinv   — 1/r operator
+ *   dipole           — int1e_r      — dipole moment (order 1, 3 components)
+ *   quadrupole       — int1e_rr     — quadrupole moment (order 2, 9 components)
+ *   octupole         — int1e_rrr    — octupole moment (order 3, 27 components)
+ *   ipkin            — int1e_ipkin  — gradient of kinetic energy
+ *   ipnuc            — int1e_ipnuc  — gradient of nuclear attraction
+ *   iprinv           — int1e_iprinv — gradient of 1/r
+ *   ia01p            — int1e_ia01p  — GIAO paramagnetic shielding
+ *   ircxp            — int1e_cg_irxp — GIAO angular momentum
+ *   igkin            — int1e_igkin  — GIAO kinetic energy
+ *   igovlp           — int1e_igovlp — GIAO overlap gradient
+ *   ignuc            — int1e_ignuc  — GIAO nuclear attraction
  *
- * 2-electron integrals (spherical):
- *   electron_repulsion_sph — int2e — electron repulsion integrals (ERI)
+ * 2-electron integrals:
+ *   eri_array        — int2e_sph    — electron repulsion integrals (ERI, spherical)
+ *   eri_array_cart   — int2e_cart   — electron repulsion integrals (ERI, cartesian)
  *
- * All wrapper functions accept pointer arguments as Python integers
- * (via PyLong_AsVoidPtr) — matching the calling convention used by
- * gbasis/integrals/libcint.py (ctypes-based high-level interface).
+ * 3-center 2-electron integrals:
+ *   int3c2e_array_sph  — int3c2e_sph  — 3-center ERI (spherical)
+ *   int3c2e_array_cart — int3c2e_cart — 3-center ERI (cartesian)
  *
- * The DEFINE_INTEGRAL_INT1e macro generates all 1-electron wrappers
- * from a single pattern — following the mentor's design in cint.h.
+ * Two wrapper patterns are provided for 1-electron integrals:
+ *   - DEFINE_INT1E_ARRAY_FN: per-shell-pair wrapper (accepts dims/shls arrays).
+ *   - DEFINE_INT1E_LOOP_FN / DEFINE_INT1E_LOOP_FN_OPT: full shell-loop wrapper
+ *     that builds the complete integral matrix over all shells in C, using
+ *     libcint's optimizer for significant speedup (~49x observed).
+ *   - DEFINE_INT1E_LOOP_FN_MULTICOMP: like DEFINE_INT1E_LOOP_FN but handles
+ *     multi-component integrals (momentum: 3, quadrupole: 9, octupole: 27).
  *
  * References:
  *   - libcint paper: Qiming Sun, J. Comp. Chem., 2015, 36, 1664
@@ -41,21 +55,27 @@
 typedef struct CINTOpt CINTOpt;
 extern void CINTdel_optimizer(CINTOpt **);
 
-/* Forward declarations for libcint spherical integral functions.
- * Signature: (out, dims, shls, atm, natm, bas, nbas, env, opt, cache)
- * - out: output buffer
- * - dims: dimensions of output
- * - shls: shell indices
- * - atm: atom info array
- * - natm: number of atoms
- * - bas: basis shell info array
- * - nbas: number of shells
- * - env: numerical data (coords, exponents, coeffs)
- * - opt: optimizer (NULL = no optimization)
- * - cache: work buffer (NULL = auto-allocate)
+/*
+ * libcint integral function signature:
+ *   int integralname(double *out, int *dims, int *shls,
+ *                    int *atm, int natm, int *bas, int nbas,
+ *                    double *env, CINTOpt *opt, double *cache)
+ *
+ *   out   — output buffer
+ *   dims  — dimensions of output (NULL = use default)
+ *   shls  — shell indices (2 for 1e, 4 for 2e)
+ *   atm   — atom info array (natm x 6)
+ *   natm  — number of atoms
+ *   bas   — basis shell info array (nbas x 8)
+ *   nbas  — number of shells
+ *   env   — numerical data (coordinates, exponents, coefficients)
+ *   opt   — libcint optimizer (NULL = no optimization)
+ *   cache — work buffer (NULL = auto-allocate internally)
  */
-
-/* Forward declarations — 1-electron integrals */
+ 
+/* ─────────────────────────────────────────────────────────────────────────
+ * Forward declarations — 1-electron integrals (spherical)
+ * ───────────────────────────────────────────────────────────────────────── */
 extern int int1e_ovlp_sph(double *out, int *dims, int *shls, int *atm, int natm,
                           int *bas, int nbas, double *env, void *opt,
                           double *cache);
@@ -131,6 +151,11 @@ extern int int1e_igovlp_sph(double *out, int *dims, int *shls, int *atm,
 extern int int1e_ignuc_sph(double *out, int *dims, int *shls, int *atm,
                            int natm, int *bas, int nbas, double *env, void *opt,
                            double *cache);
+
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * Forward declarations — 1-electron integrals (cartesian)
+ * ───────────────────────────────────────────────────────────────────────── */                           
 extern int int1e_ipkin_cart(double *out, int *dims, int *shls, int *atm,
                             int natm, int *bas, int nbas, double *env, void *opt,
                             double *cache);
@@ -153,7 +178,9 @@ extern int int1e_ignuc_cart(double *out, int *dims, int *shls, int *atm,
                             int natm, int *bas, int nbas, double *env, void *opt,
                             double *cache);
 
-/* Optimizer forward declarations */
+/* ─────────────────────────────────────────────────────────────────────────
+ * Forward declarations — optimizer functions
+ * ───────────────────────────────────────────────────────────────────────── */
 extern void int1e_ovlp_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_kin_optimizer(CINTOpt **, int *, int, int *, int, double *);
 extern void int1e_nuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
@@ -178,26 +205,44 @@ extern void int1e_igovlp_optimizer(CINTOpt **, int *, int, int *, int,
                                    double *);
 extern void int1e_ignuc_optimizer(CINTOpt **, int *, int, int *, int, double *);
 
-/* Forward declaration — 2-electron integral */
+ 
+/* ─────────────────────────────────────────────────────────────────────────
+ * Forward declarations — 2-electron integrals
+ * ───────────────────────────────────────────────────────────────────────── */
 extern int int2e_sph(double *out, int *dims, int *shls, int *atm, int natm,
                      int *bas, int nbas, double *env, void *opt, double *cache);
-
+extern int int2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
+                     int *bas, int nbas, double *env, void *opt, double *cache);
+/* ─────────────────────────────────────────────────────────────────────────
+ * Forward declarations — 3-center 2-electron integrals
+ * ───────────────────────────────────────────────────────────────────────── */
 extern int int3c2e_sph(double *out, int *dims, int *shls, int *atm, int natm,
-int *bas, int nbas, double *env, void *opt, double *cache);
+                       int *bas, int nbas, double *env, void *opt, double *cache);
 extern void cint3c2e_sph_optimizer(CINTOpt **, int *, int, int *, int, double *);
 
 extern int int3c2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
-int *bas, int nbas, double *env, void *opt, double *cache);
+                        int *bas, int nbas, double *env, void *opt, double *cache);
 extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *);
 
 /* Optimizer macro using token pasting */
 #define MAKE_OPTIMIZER(func) c##func##_optimizer
 
-/*
- * DEFINE_INT1E_ARRAY_FN(func_name, libcint_func)
- * Generates a Python/C API wrapper for a 1-electron libcint integral.
- * Accepts NumPy arrays directly — uses PyArray_GETPTR1 (NumPy C-API).
- */
+/* ─────────────────────────────────────────────────────────────────────────
+ * DEFINE_INT1E_ARRAY_FN(func_name, type, libcint_func)
+ *
+ * Generates a per-shell-pair Python/C API wrapper for a 1-electron libcint
+ * integral. Accepts NumPy arrays directly via PyArray_GETPTR (NumPy C-API).
+ *
+ * Parameters (Python side):
+ *   out_arr  — output buffer array
+ *   dims_arr — dimensions array
+ *   shls_arr — shell indices [i, j]
+ *   atm_arr  — atom info array
+ *   natm     — number of atoms
+ *   bas_arr  — basis shell info array
+ *   nbas     — number of shells
+ *   env_arr  — numerical data array
+ * ───────────────────────────────────────────────────────────────────────── */
 
 /* Macro for 1-electron wrappers */
 #define DEFINE_INT1E_ARRAY_FN(func_name,type, libcint_func)                         \
@@ -221,7 +266,7 @@ extern void cint3c2e_cart_optimizer(CINTOpt **, int *, int, int *, int, double *
     return PyLong_FromLong(result);                                            \
   }
 
-/* Spherical */
+/* Spherical per-shell-pair wrappers */
 DEFINE_INT1E_ARRAY_FN(overlap, sph, int1e_ovlp)
 DEFINE_INT1E_ARRAY_FN(kinetic, sph, int1e_kin)
 DEFINE_INT1E_ARRAY_FN(nuclear, sph, int1e_nuc)
@@ -232,7 +277,7 @@ DEFINE_INT1E_ARRAY_FN(dipole, sph, int1e_r)
 DEFINE_INT1E_ARRAY_FN(quadrupole, sph, int1e_rr)
 DEFINE_INT1E_ARRAY_FN(octupole, sph, int1e_rrr)
 
-/* Cartesian */
+/* Cartesian per-shell-pair wrappers */
 DEFINE_INT1E_ARRAY_FN(overlap, cart, int1e_ovlp)
 DEFINE_INT1E_ARRAY_FN(kinetic, cart, int1e_kin)
 DEFINE_INT1E_ARRAY_FN(nuclear, cart, int1e_nuc)
@@ -242,12 +287,12 @@ DEFINE_INT1E_ARRAY_FN(rinv, cart, int1e_rinv)
 DEFINE_INT1E_ARRAY_FN(dipole, cart, int1e_r)
 DEFINE_INT1E_ARRAY_FN(quadrupole, cart, int1e_rr)
 DEFINE_INT1E_ARRAY_FN(octupole, cart, int1e_rrr)
-/* 2-electron wrapper */
 
 /*
- * electron_repulsion_sph — 2-electron ERI wrapper.
- * Uses PyArray_GETPTR1/2 for NumPy array access.
- * Same signature as 1-electron but uses int2e_sph (4-center integral).
+ * electron_repulsion_sph — 2-electron ERI per-shell-quad wrapper (spherical).
+ *
+ * Same parameter convention as the 1-electron wrappers above, but uses
+ * int2e_sph which requires 4 shell indices (I, J, K, L).
  */
 
 static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
@@ -269,6 +314,19 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
   return PyLong_FromLong(result);
 }
 
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * DEFINE_INT1E_LOOP_FN_OPT(func_name, type, libcint_func, opt_func)
+ *
+ * Generates a full shell-loop wrapper for symmetric 1-electron integrals
+ * with optimizer support. Loops over shell pairs (I <= J), calls libcint
+ * per pair, and fills the symmetric output matrix.
+ *
+ * Uses the libcint optimizer for significantly faster integral evaluation.
+ * The optimizer is allocated once before the loop and freed after.
+ *
+ * Output layout: out[i * nbfn + j] = out[j * nbfn + i] = val
+ * ───────────────────────────────────────────────────────────────────────── */
 /* Macro for integrals WITH optimizer support */
 #define DEFINE_INT1E_LOOP_FN_OPT(func_name,type, libcint_func, opt_func)            \
   static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                 \
@@ -324,13 +382,15 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;                                                            \
   }
 
-/*
- * DEFINE_INT1E_LOOP_FN(func_name, libcint_func)
- * Generates a C shell-loop wrapper for a 1-electron libcint integral that
- * returns the FULL integral array over all shells (not just one shell pair).
- * Loops over shells I, J; calls libcint_func per shell pair; fills the
- * symmetric output matrix using PyArray_GETPTR (NumPy C-API).
- */
+/* ─────────────────────────────────────────────────────────────────────────
+ * DEFINE_INT1E_LOOP_FN(func_name, type, libcint_func, opt_func)
+ *
+ * Same as DEFINE_INT1E_LOOP_FN_OPT but allocates a larger buffer (x27)
+ * to accommodate multi-component integrals. Used for single-component
+ * integrals that don't need the multi-component layout.
+ *
+ * Output layout: out[i * nbfn + j] = out[j * nbfn + i] = val
+ * ───────────────────────────────────────────────────────────────────────── */
 #define DEFINE_INT1E_LOOP_FN(func_name,type, libcint_func, opt_func)                \
   static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                 \
     PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;           \
@@ -385,12 +445,24 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;                                                            \
   }
 
-/*
+
+/* ─────────────────────────────────────────────────────────────────────────
  * DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func, ncomp)
+ *
  * Same as DEFINE_INT1E_LOOP_FN but handles multi-component integrals.
- * libcint buffer layout: buf[comp * p_off * q_off + p + q * p_off]
- * Output layout: out[(ipos+p) * nbfn * ncomp + (jpos+q) * ncomp + c]
- */
+ *
+ * libcint buffer layout (column-major, component-major):
+ *   buf[c * p_off * q_off + p + q * p_off]
+ *
+ * Output layout (row-major, last index = component):
+ *   out[(i) * nbfn * ncomp + (j) * ncomp + c]
+ *
+ * Used for:
+ *   momentum  (ncomp=3):  px, py, pz
+ *   dipole    (ncomp=3):  x, y, z
+ *   quadrupole (ncomp=9): xx, xy, xz, yx, yy, yz, zx, zy, zz
+ *   octupole  (ncomp=27): xxx, xxy, ..., zzz
+ * ───────────────────────────────────────────────────────────────────────── */
 #define DEFINE_INT1E_LOOP_FN_MULTICOMP(func_name, type, libcint_func, opt_func, ncomp) \
   static PyObject *func_name##_##type(PyObject *self, PyObject *args) {                \
     PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;                   \
@@ -447,8 +519,9 @@ static PyObject *electron_repulsion_sph(PyObject *self, PyObject *args) {
     Py_RETURN_NONE;                                                                    \
   }
 
-/* Generate shell-loop wrappers for all 1-electron integrals using the macro */
-/* Spherical */
+/* ─────────────────────────────────────────────────────────────────────────
+ * Shell-loop array wrappers — spherical
+ * ───────────────────────────────────────────────────────────────────────── */
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, sph, int1e_ovlp, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, sph, int1e_kin, int1e_kin)
 DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array, sph, int1e_nuc, int1e_nuc)
@@ -466,7 +539,9 @@ DEFINE_INT1E_LOOP_FN(igkin_integral_array, sph, int1e_igkin, int1e_igkin)
 DEFINE_INT1E_LOOP_FN(igovlp_integral_array, sph, int1e_igovlp, int1e_igovlp)
 DEFINE_INT1E_LOOP_FN(ignuc_integral_array, sph, int1e_ignuc, int1e_ignuc)
 
-/* Cartesian */
+/* ─────────────────────────────────────────────────────────────────────────
+ * Shell-loop array wrappers — cartesian
+ * ───────────────────────────────────────────────────────────────────────── */
 DEFINE_INT1E_LOOP_FN_OPT(overlap_integral_array, cart, int1e_ovlp, int1e_ovlp)
 DEFINE_INT1E_LOOP_FN_OPT(kinetic_integral_array, cart, int1e_kin, int1e_kin)
 DEFINE_INT1E_LOOP_FN_OPT(nuclear_integral_array, cart, int1e_nuc, int1e_nuc)
@@ -483,7 +558,19 @@ DEFINE_INT1E_LOOP_FN(ircxp_integral_array, cart, int1e_cg_irxp, int1e_cg_irxp)
 DEFINE_INT1E_LOOP_FN(igkin_integral_array, cart, int1e_igkin, int1e_igkin)
 DEFINE_INT1E_LOOP_FN(igovlp_integral_array, cart, int1e_igovlp, int1e_igovlp)
 DEFINE_INT1E_LOOP_FN(ignuc_integral_array, cart, int1e_ignuc, int1e_ignuc)
-/* eri_array — array-based loop in C for 2-electron ERI (4 shells: I,J,K,L) */
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * eri_array — spherical 2-electron ERI shell-loop wrapper.
+ *
+ * Loops over 4 shell indices (I, J, K, L) using the compound index
+ * ij = I*(I+1)/2 + J and kl = K*(K+1)/2 + L to exploit 8-fold symmetry.
+ * Only computes shell quads where ij >= kl, then fills all 8 permutations.
+ *
+ * Output index convention (physicist notation):
+ *   out[i, k, j, l] = <ij|1/r12|kl>
+ *
+ * Uses cint2e_sph_optimizer for significantly faster evaluation.
+ * ───────────────────────────────────────────────────────────────────────── */
 static PyObject *eri_array(PyObject *self, PyObject *args) {
   PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;
   int natm, nbas, nbfn;
@@ -582,7 +669,12 @@ static PyObject *eri_array(PyObject *self, PyObject *args) {
 extern int int2e_cart(double *out, int *dims, int *shls, int *atm, int natm,
                       int *bas, int nbas, double *env, void *opt, double *cache);
 
-/* eri_array_cart — cartesian ERI using int2e_cart and cint2e_cart_optimizer */
+/* ─────────────────────────────────────────────────────────────────────────
+ * eri_array_cart — cartesian 2-electron ERI shell-loop wrapper.
+ *
+ * Identical shell-loop and 8-fold symmetry as eri_array (spherical), but
+ * uses int2e_cart and cint2e_cart_optimizer for cartesian basis functions.
+ * ───────────────────────────────────────────────────────────────────────── */
 static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
   PyArrayObject *out_arr, *atm_arr, *bas_arr, *env_arr, *offs_arr;
   int natm, nbas, nbfn;
@@ -648,7 +740,19 @@ static PyObject *eri_array_cart(PyObject *self, PyObject *args) {
 }
 
 
-/* DEFINE_INT3C2E_ARRAY_FN — generates sph and cart variants via token pasting */
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * DEFINE_INT3C2E_ARRAY_FN(type, optimizer)
+ *
+ * Generates sph and cart variants of the 3-center 2-electron integral
+ * shell-loop wrapper via token pasting.
+ *
+ * Loops over 3 shells (I, J, K); exploits I <= J symmetry to halve
+ * the number of integral evaluations, then fills both out[i,j,k] and
+ * out[j,i,k] simultaneously.
+ *
+ * Output layout: out[i * nbfn * nbfn + j * nbfn + k]
+ * ───────────────────────────────────────────────────────────────────────── */
 #define DEFINE_INT3C2E_ARRAY_FN(type, optimizer)\
 /* int3c2e_array — 3-center 2-electron integral (3 shells: I,J,K) */\
 static PyObject *int3c2e_array_##type(PyObject *self, PyObject *args) {\
@@ -719,6 +823,10 @@ static PyObject *int3c2e_array_##type(PyObject *self, PyObject *args) {\
 DEFINE_INT3C2E_ARRAY_FN(sph, cint3c2e_sph_optimizer)
 DEFINE_INT3C2E_ARRAY_FN(cart, cint3c2e_cart_optimizer)
 
+/* ─────────────────────────────────────────────────────────────────────────
+ * Method table — maps Python function names to C implementations.
+ * ───────────────────────────────────────────────────────────────────────── */
+
 static PyMethodDef LibcintMethods[] = {
     /* Per-shell-pair wrappers (spherical) */
     {"overlap_sph", overlap_sph, METH_VARARGS, "Overlap integral"},
@@ -783,8 +891,18 @@ static PyMethodDef LibcintMethods[] = {
     {"int3c2e_array_cart", int3c2e_array_cart, METH_VARARGS, "3-center 2-electron array (cart)"},
     {NULL, NULL, 0, NULL}};
 
+/* ─────────────────────────────────────────────────────────────────────────
+ * Module definition and initialization.
+ * ───────────────────────────────────────────────────────────────────────── */
 static struct PyModuleDef libcintmodule = {
-    PyModuleDef_HEAD_INIT, "libcint_bindings", NULL, -1, LibcintMethods};
+    PyModuleDef_HEAD_INIT,
+    "libcint_bindings",
+    "Python/C API bindings for the libcint GTO integral library.\n"
+    "Exposes C shell-loop implementations of 1e, 2e, and 3c2e integrals\n"
+    "for both spherical and cartesian coordinate types.",
+    -1,
+    LibcintMethods
+};
 
 PyMODINIT_FUNC PyInit_libcint_bindings(void) {
   import_array();

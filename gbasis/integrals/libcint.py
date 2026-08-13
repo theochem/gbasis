@@ -1,6 +1,11 @@
 r"""
 Python C-API bindings for ``libcint`` GTO integrals library.
 
+This module provides the :class:`CBasis` class, which wraps the ``libcint``
+C library to compute one- and two-electron integrals over Gaussian-type
+orbitals (GTOs) for molecular systems. Integrals are computed using
+C shell-loop implementations for efficiency, achieving significant speedups
+over pure-Python implementations.
 """
 
 import os
@@ -202,6 +207,25 @@ class CBasis:
         Compute the point charge integrals.
     moment(self, orders, origin=None)
         Compute the moment integrals.
+    gradient_kinetic(transform=None)
+        Compute the gradient of kinetic energy integrals.
+    gradient_nuclear(transform=None)
+        Compute the gradient of nuclear attraction integrals.
+    gradient_rinv(inv_origin=None, transform=None)
+        Compute the gradient of 1/r integrals.
+    ia01p(transform=None)
+        Compute the GIAO paramagnetic shielding integrals.
+    ircxp(transform=None)
+        Compute the GIAO angular momentum integrals.
+    iking(transform=None)
+        Compute the GIAO kinetic energy integrals.
+    iovlpg(transform=None)
+        Compute the GIAO overlap gradient integrals.
+    inucg(transform=None)
+        Compute the GIAO nuclear attraction integrals.
+    three_center_two_electron(transform=None)
+        Compute the 3-center 2-electron integrals.
+    
 
     """
 
@@ -219,6 +243,12 @@ class CBasis:
             X, Y, and Z coordinates for each atomic center.
         coord_type : ('spherical'|'cartesian')
             Type of coordinates.
+
+        Raises
+        ------
+        ValueError
+            If ``coord_type`` is not 'spherical' or 'cartesian'.
+ 
 
         """
         # Set coord type
@@ -522,10 +552,12 @@ class CBasis:
             Default is [0, 0, 0].
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
-            Returns
-            -------
-            out : np.ndarray(Nbasis, Nbasis, dtype=float)
-                1/r integral array.
+            Default is no transformation.
+
+        Returns
+        -------
+        out : np.ndarray(Nbasis, Nbasis, dtype=float)
+            :math:`1/r` integral array.
         
         """
         if inv_origin is None:
@@ -577,7 +609,7 @@ class CBasis:
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
-            Momentum integral array.
+            Momentum integral array with three Cartesian components.
         """
         if origin is None:
             origin = np.zeros(3)
@@ -628,12 +660,12 @@ class CBasis:
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Dipole moment integral array.
+            Dipole moment integral array(x-component only).
 
         Notes
         -----
         Returns the first component (x) of the dipole integral from
-        ``int1e_r_sph``. The full 3-component dipole integral is
+        ``int1e_r``. The full 3-component dipole integral is
         available via ``moment_integral()``.
 
         """
@@ -683,12 +715,12 @@ class CBasis:
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Quadrupole moment integral array.
+            Quadrupole moment integral array(xx-component only).
 
         Notes
         -----
         Returns the first component (xx) of the quadrupole integral from
-        ``int1e_rr_sph``. The full 9-component quadrupole integral is
+        ``int1e_rr``. The full 9-component quadrupole integral is
         available via ``moment_integral()``.
 
         """
@@ -738,12 +770,12 @@ class CBasis:
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Octupole moment integral array.
+            Octupole moment integral array(xxx-component only).
 
         Notes
         -----
         Returns the first component (xxx) of the octupole integral from
-        ``int1e_rrr_sph``. The full 27-component octupole integral is
+        ``int1e_rrr``. The full 27-component octupole integral is
         available via ``moment_integral()``.
 
         """
@@ -775,6 +807,9 @@ class CBasis:
     def gradient_kinetic(self, transform=None):
         r"""
         Compute the gradient of kinetic energy integrals (i∇ kinetic).
+
+        This integral is a building block for computing nuclear coordinate
+        gradients of the kinetic energy contribution.
 
         Parameters
         ----------
@@ -814,6 +849,9 @@ class CBasis:
         r"""
         Compute the gradient of nuclear attraction integrals (i∇ nuclear).
 
+        This integral is a building block for computing nuclear coordinate
+        gradients of the nuclear attraction contribution.
+
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
@@ -851,12 +889,16 @@ class CBasis:
 
     def gradient_rinv(self, inv_origin=None, transform=None):
         r"""
-        Compute the gradient of 1/r integrals (i∇ rinv).
+        Compute the gradient of :math:`1/r` integrals (:math:`i\nabla\, 1/r`).
+ 
+        This integral is a building block for computing nuclear coordinate
+        gradients of the electron-nucleus attraction.
 
         Parameters
         ----------
         inv_origin : np.ndarray(3, dtype=float), optional
-            Origin for 1/|r - R| operator. Default is [0, 0, 0].
+            Origin for 1/|r - R| operator. 
+            Default is [0, 0, 0].
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
@@ -864,7 +906,7 @@ class CBasis:
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            Gradient 1/r integral array.
+            Gradient: math:`1/r` integral array.
         """
         if inv_origin is None:
             inv_origin = np.zeros(3)
@@ -894,19 +936,22 @@ class CBasis:
 
     def ia01p(self, transform=None):
         r"""
-        Compute the GIAO paramagnetic shielding integrals (ia01p).
-
+        Compute the GIAO paramagnetic shielding integrals (``int1e_ia01p``).
+ 
+        This integral is a building block for NMR paramagnetic shielding
+        tensor calculations using gauge-including atomic orbitals (GIAOs).
+ 
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            GIAO ia01p integral array.
+            GIAO paramagnetic shielding integral array.
+ 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
         getattr(libcint_bindings, f"ia01p_integral_array_{self._ct}")(
@@ -933,18 +978,22 @@ class CBasis:
 
     def ircxp(self, transform=None):
         r"""
-        Compute the GIAO angular momentum integrals (ircxp).
-
+        Compute the GIAO angular momentum integrals (``int1e_ircxp``).
+ 
+        This integral is a building block for NMR shielding tensor and
+        magnetic susceptibility calculations using GIAOs.
+ 
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-            
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            GIAO ircxp integral array.
+            GIAO angular momentum integral array.
+ 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
         getattr(libcint_bindings, f"ircxp_integral_array_{self._ct}")(
@@ -972,18 +1021,22 @@ class CBasis:
 
     def iking(self, transform=None):
         r"""
-        Compute the GIAO kinetic energy integrals (igkin).
-
+        Compute the GIAO kinetic energy integrals (``int1e_igkin``).
+ 
+        This integral is a building block for NMR shielding tensor
+        calculations using gauge-including atomic orbitals (GIAOs).
+ 
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            GIAO igkin integral array.
+            GIAO kinetic energy integral array.
+ 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
         getattr(libcint_bindings, f"igkin_integral_array_{self._ct}")(
@@ -998,8 +1051,6 @@ class CBasis:
         )
         # Apply permutation
         out = out[self._permutations, :][:, self._permutations]
-        # Apply permutation
-        out = out[self._permutations, :][:, self._permutations]
         # Normalize cartesian
         if self._ovlp_minhalf is not None:
             out = np.einsum("a,b,ab->ab", self._ovlp_minhalf, self._ovlp_minhalf, out)
@@ -1012,19 +1063,24 @@ class CBasis:
 
     def iovlpg(self, transform=None):
         r"""
-        Compute the GIAO overlap gradient integrals (igovlp).
-
+        Compute the GIAO overlap gradient integrals (``int1e_igovlp``).
+ 
+        This integral is a building block for NMR shielding tensor
+        calculations using gauge-including atomic orbitals (GIAOs).
+ 
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            GIAO igovlp integral array.
+            GIAO overlap gradient integral array.
+ 
         """
+
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
         getattr(libcint_bindings, f"igovlp_integral_array_{self._ct}")(
             out,
@@ -1050,18 +1106,22 @@ class CBasis:
 
     def inucg(self, transform=None):
         r"""
-        Compute the GIAO nuclear attraction integrals (ignuc).
-
+        Compute the GIAO nuclear attraction integrals (``int1e_ignuc``).
+ 
+        This integral is a building block for NMR shielding tensor
+        calculations using gauge-including atomic orbitals (GIAOs).
+ 
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, dtype=float)
-            GIAO ignuc integral array.
+            GIAO nuclear attraction integral array.
+ 
         """
         out = np.zeros((self.nbfn, self.nbfn), dtype=c_double)
         getattr(libcint_bindings, f"ignuc_integral_array_{self._ct}")(
@@ -1086,29 +1146,34 @@ class CBasis:
             out = np.swapaxes(out, 0, 1)
         return out
 
-    def point_charge(self, point_coords, point_charges,transform=None):
+    def point_charge(self, point_coords, point_charges, transform=None):
+
         r"""
         Compute the point charge integrals.
-
+ 
         The point charge integral represents the electrostatic potential due to
         a set of point charges at given coordinates. For each pair of basis
-        functions :math:`\phi_i` and :math:`\phi_j`, it is defined as:
-
+        functions :math:`\phi_i` and :math:`\phi_j` and point charge :math:`q_n`
+        at position :math:`\mathbf{R}_n`, it is defined as:
+ 
         .. math::
             V_{ij}^{(n)} = -q_n \langle \phi_i | \frac{1}{|\mathbf{r} - \mathbf{R}_n|} | \phi_j \rangle
-
+ 
         Parameters
         ----------
         point_coords : np.ndarray(N, 3, dtype=float)
-            Coordinates of point charges.
+            Coordinates of point charges in Bohr.
         point_charges : np.ndarray(N, dtype=float)
-            Charges of point charges.
-
+            Magnitude of each point charge.
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
+            Default is no transformation.
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
-            Point charge integral array.
-
+            Point charge integral array, one matrix per point charge.
+ 
         """
         out = np.zeros((self.nbfn, self.nbfn, len(point_charges)), dtype=c_double)
         for icharge, (coord, charge) in enumerate(zip(point_coords, point_charges)):
@@ -1141,21 +1206,37 @@ class CBasis:
 
     def moment(self, orders, origin=None, transform=None):
         r"""
-        Compute the moment integrals.
-
+        Compute the moment integrals up to third order.
+ 
+        For each pair of basis functions :math:`\phi_i` and :math:`\phi_j`
+        and a given moment order :math:`(n_x, n_y, n_z)`, the integral is:
+ 
+        .. math::
+            M_{ij} = \langle \phi_i | (x - X_0)^{n_x} (y - Y_0)^{n_y} (z - Z_0)^{n_z} | \phi_j \rangle
+ 
+        where :math:`\mathbf{R}_0 = (X_0, Y_0, Z_0)` is the origin.
+ 
         Parameters
         ----------
         orders : np.ndarray(N, 3, dtype=int)
-            Moment orders [x, y, z] to evaluate.
-        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
-            Origin about which to evaluate integrals.
+            Moment orders :math:`[n_x, n_y, n_z]` to evaluate. Each row
+            specifies one moment; the sum of each row must be 0, 1, 2, or 3.
+        origin : np.ndarray(3, dtype=float), optional
+            Origin about which to evaluate integrals. Default is ``[0, 0, 0]``.
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
-
+            Default is no transformation.
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, N, dtype=float)
-            Moment integral array.
+            Moment integral array, one matrix per requested order.
+ 
+        Raises
+        ------
+        NotImplementedError
+            If any order has a sum greater than 3.
+ 
         """
         if origin is None:
             origin = np.zeros(3)
@@ -1220,28 +1301,33 @@ class CBasis:
 
     def electron_repulsion(self, notation="physicist", transform=None):
         r"""
-        Compute the electron repulsion integrals.
-
+        Compute the electron repulsion integrals (ERIs).
+ 
         The two-electron repulsion integral between basis functions
         :math:`\phi_i`, :math:`\phi_j`, :math:`\phi_k`, and :math:`\phi_l`
         is defined as:
-
+ 
         .. math::
             g_{ijkl} = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \phi_l \rangle
-
+ 
         Parameters
         ----------
-        notation : ("physicist" | "chemist"), default="physicist"
-            Axis order convention.
+        notation : ("physicist" | "chemist"), optional
+            Index ordering convention. Default is ``"physicist"``.
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, Nbasis, Nbasis, dtype=float)
             Electron repulsion integral array.
-
+ 
+        Raises
+        ------
+        ValueError
+            If ``notation`` is not ``'physicist'`` or ``'chemist'``.
+ 
         """
         if notation not in ("physicist", "chemist"):
             raise ValueError("``notation`` must be one of 'physicist' or 'chemist'")
@@ -1279,25 +1365,25 @@ class CBasis:
     def three_center_two_electron(self, transform=None):
         r"""
         Compute the 3-center 2-electron integrals.
-
+ 
         The 3-center 2-electron integral between basis functions
         :math:`\phi_i`, :math:`\phi_j`, and auxiliary basis function
         :math:`\phi_k` is defined as:
-
+ 
         .. math::
             (ij|k) = \langle \phi_i \phi_j | \frac{1}{r_{12}} | \phi_k \rangle
-
+ 
         Parameters
         ----------
         transform : np.ndarray(K, K_cont), optional
             Transformation matrix from AO to MO basis.
             Default is no transformation.
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, Nbasis, dtype=float)
             3-center 2-electron integral array.
-
+ 
         """
         out = np.zeros((self.nbfn, self.nbfn, self.nbfn), dtype=c_double)
         getattr(libcint_bindings, f"int3c2e_array_{self._ct}")(
@@ -1328,25 +1414,30 @@ class CBasis:
     def angular_momentum_integral(self, origin=None, notation="physicist", transform=None):
         r"""
         Compute the angular momentum integrals.
-
+ 
+        .. note::
+            This method is not yet implemented. See GitHub Issue #149.
+ 
         Parameters
         ----------
-        origin : np.ndarray(3, dtype=float), default=[0, 0, 0]
-            Origin about which to evaluate integrals.
-        notation : ("physicist" | "chemist"), default="physicist"
-            Axis order convention.
-        transform : np.ndarray(K, K_cont)
-            Transformation matrix from the basis set in the given coordinate system (e.g. AO) to linear
-            combinations of contractions (e.g. MO).
-            Transformation is applied to the left, i.e. the sum is over the index 1 of `transform`
-            and index 0 of the array for contractions.
+        origin : np.ndarray(3, dtype=float), optional
+            Origin about which to evaluate integrals. Default is ``[0, 0, 0]``.
+        notation : ("physicist" | "chemist"), optional
+            Index ordering convention. Default is ``"physicist"``.
+        transform : np.ndarray(K, K_cont), optional
+            Transformation matrix from AO to MO basis.
             Default is no transformation.
-
+ 
         Returns
         -------
         out : np.ndarray(Nbasis, Nbasis, 3, dtype=complex)
-            Integral array.
-
+            Angular momentum integral array.
+ 
+        Raises
+        ------
+        NotImplementedError
+            Always raised; angular momentum integrals are not yet implemented.
+ 
         """
         raise NotImplementedError("Angular momentum integral doesn't work; see Issue #149")
         # return self._amom(origin=origin, notation=notation, transform=transform)
@@ -1356,23 +1447,23 @@ class CBasis:
 
 def normalized_coeffs(shell):
     r"""
-    Normalize the GeneralizedContractionShell coefficients.
-
+    Normalize the contraction coefficients of a ``GeneralizedContractionShell``.
+ 
     Parameters
     ----------
     shell : GeneralizedContractionShell
-
+        Shell whose contraction coefficients are to be normalized.
+ 
     Returns
     -------
-    coeffs : np.ndarray(K, M, dtype=float)
+    coeffs : np.ndarray(Nprim, Ncont, dtype=float)
         Normalized contraction coefficients.
-
+ 
     Notes
     -----
     Adapted from `https://github.com/pyscf/pyscf/blob/master/pyscf/gto/mole.py`.
-
+ 
     """
-
     def gaussian_int(l, a):
         return 0.5 * factorial(0.5 * l - 0.5) * a ** (-0.5 * l - 0.5)
 
