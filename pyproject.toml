@@ -1,6 +1,12 @@
+# Replaced setuptools with scikit-build-core
+# Reason: use a CMake-based build (via scikit-build-core) to compile and bundle libcint/qcint
+# as part of the Python wheel build
+
 [build-system]
-requires = ["setuptools>=64", "setuptools-scm>=8"]
-build-backend = "setuptools.build_meta"
+requires = ["numpy>=2.0", "scikit-build-core>=0.9","setuptools-scm>=8"]
+build-backend = "scikit_build_core.build"
+
+
 
 [project]
 name = "qc-gbasis"
@@ -31,18 +37,40 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    # Ensure the minimal versions are kept consistent with those in .github/workflows/pytest.yaml
-    "numpy >=1.22, <2.0.0; platform_system=='Windows'",
-    "numpy >=1.22; platform_system=='Linux'",
-    "scipy>=1.11.1",
+    # Updated to numpy>=2.0 required for scikit-build-core C extension support
+    # Note: Keep consistent with .github/workflows/pytest.yaml
+    "numpy>=2.0",
+    "scipy>=1.13.0",
     "importlib_resources",
     "sympy",
 ]
 dynamic = ["version"]
 
+[tool.scikit-build]
+# Build type: Release for optimized production build (no debug symbols)
+cmake.build-type = "Release"
+
+# Replaces [tool.setuptools.packages.find] from old setuptools config
+# Only pack gbasis folder in the wheel
+wheel.packages = ["gbasis"]
+
+cmake.args = ["-DCMAKE_C_COMPILER=gcc", "-DCMAKE_CXX_COMPILER=g++"]
+
+
+
+[tool.scikit-build.metadata.version]
+# Automatically get version from git tags via setuptools_scm
+provider = "scikit_build_core.metadata.setuptools_scm"
+
+# Required to activate setuptools_scm for automatic versioning from git tags
 [tool.setuptools_scm]
 
+
+
 [project.optional-dependencies]
+
+# Install with: pip install qc-gbasis[dev]
+
 dev = [
     "tox",
     "pre-commit",
@@ -56,6 +84,9 @@ dev = [
     "sphinx_autodoc_typehints",
     "sphinx-copybutton",
 ]
+
+# Install with: pip install qc-gbasis[doc]
+
 doc = [
     "numpydoc",
     "sphinx_copybutton",
@@ -63,22 +94,26 @@ doc = [
     "nbsphinx",
     "sphinx_rtd_theme",
     "sphinx_autodoc_typehints",
-    "docutils==0.16",  # Needed to show bullet points in sphinx_rtd_theme
+    "docutils==0.16", # Needed to show bullet points in sphinx_rtd_theme
     "nbsphinx-link"
 ]
+
 # iodata = [
 #  "qc-iodata@git+https://github.com/theochem/iodata.git@main"
 # ]
+
+# Install with: pip install qc-gbasis[iodata]
+
 iodata = [
     "qc-iodata>=1.0.0a5"
 ]
+
+# Install with: pip install qc-gbasis[pyscf]
+
 pyscf = [
     "pyscf>=1.6.1"
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]  # list of folders that contain the packages (["."] by default)
-include = ["gbasis"]  # package names should match these glob patterns (["*"] by default)
 
 [project.urls]
 Documentation = "https://gbasis.qcdevs.org"
@@ -113,6 +148,3 @@ addopts = "-v"
 #write_to = "src/gbasis/_version.py"
 #version_scheme = "post-release"
 #local_scheme = "no-local-version"
-
-[tool.setuptools.package-data]
-gbasis = ["integrals/include/cint*.h", "integrals/lib/libcint.so*"]

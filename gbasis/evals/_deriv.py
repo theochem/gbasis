@@ -129,8 +129,10 @@ def _eval_deriv_contractions(coords, orders, center, angmom_comps, alphas, prim_
         # to evaluate multiple orders at the same time. Creating/finding a better function for
         # evaluating the hermite polynomial at different orders (in sequence) may be nice in the
         # future.
+        coeffs = np.array(coeffs, dtype=np.float64)
+        _herm_arg = np.array(alphas**0.5 * nonzero_coords, dtype=np.float64)
         hermite = np.sum(
-            coeffs * eval_hermite(indices_herm, alphas**0.5 * nonzero_coords), axis=0
+            coeffs * eval_hermite(indices_herm.astype(np.int32), _herm_arg), axis=0
         )
         hermite = np.prod(hermite, axis=1)
 
