@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
@@ -39,10 +39,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -53,7 +53,7 @@
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
@@ -63,26 +63,33 @@
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/Tutorial 3 - Two-Electron Integral Optimizations';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -108,7 +115,51 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
     </header>
   
 
@@ -431,7 +482,7 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-and-imports">1. Setup and Imports</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-test-molecules">2. Creating Test Molecules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-os-hgp-algorithm">3. The OS+HGP Algorithm</a><ul class="nav section-nav flex-column">
@@ -514,7 +565,7 @@
     <span class="n">get_boys_function</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All imports successful!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"All imports successful!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -527,17 +578,17 @@ Larger separations between atoms lead to more sparsity and better screening.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_shell</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">angmom</span><span class="p">,</span> <span class="n">exps</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a GeneralizedContractionShell.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create a GeneralizedContractionShell."""</span>
     <span class="k">return</span> <span class="n">GeneralizedContractionShell</span><span class="p">(</span>
         <span class="n">angmom</span><span class="p">,</span>
         <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span>
         <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exps</span><span class="p">),</span>
-        <span class="s1">&#39;cartesian&#39;</span>
+        <span class="s1">'cartesian'</span>
     <span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">make_h_chain</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">spacing</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a hydrogen chain with STO-3G basis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create a hydrogen chain with STO-3G basis."""</span>
     <span class="c1"># STO-3G exponents and coefficients for H</span>
     <span class="n">exps</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.42525091</span><span class="p">,</span> <span class="mf">0.62391373</span><span class="p">,</span> <span class="mf">0.16885540</span><span class="p">]</span>
     <span class="n">coeffs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.15432897</span><span class="p">,</span> <span class="mf">0.53532814</span><span class="p">,</span> <span class="mf">0.44463454</span><span class="p">]</span>
@@ -553,8 +604,8 @@ Larger separations between atoms lead to more sparsity and better screening.</p>
 <span class="n">h4_compact</span> <span class="o">=</span> <span class="n">make_h_chain</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mf">1.4</span><span class="p">)</span>   <span class="c1"># Compact: H-H = 1.4 Bohr</span>
 <span class="n">h6_extended</span> <span class="o">=</span> <span class="n">make_h_chain</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mf">15.0</span><span class="p">)</span> <span class="c1"># Extended: H-H = 15 Bohr</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compact H4:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">h4_compact</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells, 1.4 Bohr spacing&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extended H6: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">h6_extended</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells, 15.0 Bohr spacing&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Compact H4:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">h4_compact</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells, 1.4 Bohr spacing"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Extended H6: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">h6_extended</span><span class="p">)</span><span class="si">}</span><span class="s2"> shells, 15.0 Bohr spacing"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -576,7 +627,7 @@ Step 5: HRR (Horizontal)    [ab|cd] from [a0|c0] (HGP: do last!)
 This is more efficient because contracted integrals are smaller than primitive integrals.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"""</span>
 <span class="s2">Obara-Saika + Head-Gordon-Pople Algorithm</span>
 <span class="s2">==========================================</span>
 
@@ -595,10 +646,10 @@ This is more efficient because contracted integrals are smaller than primitive i
 <span class="s2"> [ab|cd]                [ab|cd]</span>
 
 <span class="s2">Why is HGP better?</span>
-<span class="s2">- HRR has NO &#39;m&#39; index (no auxiliary function dependence)</span>
+<span class="s2">- HRR has NO 'm' index (no auxiliary function dependence)</span>
 <span class="s2">- After contraction, fewer terms to process</span>
 <span class="s2">- Especially beneficial for contracted basis sets (like cc-pVTZ)</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="s2">"""</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -613,21 +664,21 @@ This is more efficient because contracted integrals are smaller than primitive i
 
 <span class="c1"># Original implementation</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="n">eri_old</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">&quot;chemist&quot;</span><span class="p">)</span>
+<span class="n">eri_old</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">"chemist"</span><span class="p">)</span>
 <span class="n">time_old</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
 
 <span class="c1"># Improved OS+HGP implementation</span>
 <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="n">eri_new</span> <span class="o">=</span> <span class="n">electron_repulsion_integral_improved</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">&quot;chemist&quot;</span><span class="p">)</span>
+<span class="n">eri_new</span> <span class="o">=</span> <span class="n">electron_repulsion_integral_improved</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s2">"chemist"</span><span class="p">)</span>
 <span class="n">time_new</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
 
 <span class="c1"># Verify they match</span>
 <span class="n">max_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_old</span> <span class="o">-</span> <span class="n">eri_new</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original implementation: </span><span class="si">{</span><span class="n">time_old</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Improved (OS+HGP):      </span><span class="si">{</span><span class="n">time_new</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max difference:         </span><span class="si">{</span><span class="n">max_diff</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Results match:          </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">eri_old</span><span class="p">,</span><span class="w"> </span><span class="n">eri_new</span><span class="p">,</span><span class="w"> </span><span class="n">rtol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Original implementation: </span><span class="si">{</span><span class="n">time_old</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Improved (OS+HGP):      </span><span class="si">{</span><span class="n">time_new</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max difference:         </span><span class="si">{</span><span class="n">max_diff</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Results match:          </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">eri_old</span><span class="p">,</span><span class="w"> </span><span class="n">eri_new</span><span class="p">,</span><span class="w"> </span><span class="n">rtol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -668,10 +719,10 @@ This is more efficient because contracted integrals are smaller than primitive i
 <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># F_0(T)</span>
 <span class="n">omega</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Range-separation parameter</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Boys Function F_0(T) for Different Potentials:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;T&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Coulomb&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;erf&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;erfc&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Boys Function F_0(T) for Different Potentials:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'T'</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Coulomb'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'erf'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'erfc'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">T_values</span><span class="p">:</span>
     <span class="n">t_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span><span class="p">])</span>
@@ -681,9 +732,9 @@ This is more efficient because contracted integrals are smaller than primitive i
     <span class="n">erf_val</span> <span class="o">=</span> <span class="n">boys_function_erf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t_arr</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">omega</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">erfc_val</span> <span class="o">=</span> <span class="n">boys_function_erfc</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t_arr</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">omega</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">&gt;8.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">coulomb</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">erf_val</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">erfc_val</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">&gt;8.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">coulomb</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">erf_val</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">erfc_val</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Note: erf + erfc = Coulomb (range separation identity)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Note: erf + erfc = Coulomb (range separation identity)"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -698,10 +749,10 @@ This is more efficient because contracted integrals are smaller than primitive i
 <span class="n">erf_val</span> <span class="o">=</span> <span class="n">boys_function_erf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">T_test</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">omega</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">erfc_val</span> <span class="o">=</span> <span class="n">boys_function_erfc</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">T_test</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">omega</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Range Separation Verification:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Coulomb:     </span><span class="si">{</span><span class="n">coulomb</span><span class="si">:</span><span class="s2">.10f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  erf + erfc:  </span><span class="si">{</span><span class="n">erf_val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">erfc_val</span><span class="si">:</span><span class="s2">.10f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Difference:  </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">coulomb</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">erf_val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">erfc_val</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Range Separation Verification:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Coulomb:     </span><span class="si">{</span><span class="n">coulomb</span><span class="si">:</span><span class="s2">.10f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  erf + erfc:  </span><span class="si">{</span><span class="n">erf_val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">erfc_val</span><span class="si">:</span><span class="s2">.10f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Difference:  </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">coulomb</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">erf_val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">erfc_val</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -711,22 +762,22 @@ This is more efficient because contracted integrals are smaller than primitive i
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Factory function for different potentials</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using get_boys_function() factory:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Using get_boys_function() factory:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
 
 <span class="c1"># Standard Coulomb</span>
-<span class="n">boys_coulomb</span> <span class="o">=</span> <span class="n">get_boys_function</span><span class="p">(</span><span class="s2">&quot;coulomb&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coulomb: F_0(1.0) = </span><span class="si">{</span><span class="n">boys_coulomb</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">boys_coulomb</span> <span class="o">=</span> <span class="n">get_boys_function</span><span class="p">(</span><span class="s2">"coulomb"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coulomb: F_0(1.0) = </span><span class="si">{</span><span class="n">boys_coulomb</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Long-range (erf)</span>
-<span class="n">boys_lr</span> <span class="o">=</span> <span class="n">get_boys_function</span><span class="p">(</span><span class="s2">&quot;erf&quot;</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Long-range (omega=0.5): F_0(1.0) = </span><span class="si">{</span><span class="n">boys_lr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span><span class="w"> </span><span class="n">rho</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">boys_lr</span> <span class="o">=</span> <span class="n">get_boys_function</span><span class="p">(</span><span class="s2">"erf"</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Long-range (omega=0.5): F_0(1.0) = </span><span class="si">{</span><span class="n">boys_lr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span><span class="w"> </span><span class="n">rho</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Short-range (erfc)</span>
-<span class="n">boys_sr</span> <span class="o">=</span> <span class="n">get_boys_function</span><span class="p">(</span><span class="s2">&quot;erfc&quot;</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Short-range (omega=0.5): F_0(1.0) = </span><span class="si">{</span><span class="n">boys_sr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span><span class="w"> </span><span class="n">rho</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">boys_sr</span> <span class="o">=</span> <span class="n">get_boys_function</span><span class="p">(</span><span class="s2">"erfc"</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Short-range (omega=0.5): F_0(1.0) = </span><span class="si">{</span><span class="n">boys_sr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="w"> </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]),</span><span class="w"> </span><span class="n">rho</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.8</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Available potentials: &#39;coulomb&#39;, &#39;erf&#39;, &#39;erfc&#39;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Available potentials: 'coulomb', 'erf', 'erfc'"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -753,13 +804,13 @@ This is more efficient because contracted integrals are smaller than primitive i
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demonstrate Schwarz screening on extended system</span>
 <span class="n">boys_func</span> <span class="o">=</span> <span class="n">PointChargeIntegral</span><span class="o">.</span><span class="n">boys_func</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Schwarz Screening Comparison&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Schwarz Screening Comparison"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">spacing</span> <span class="ow">in</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s2">&quot;Compact H4 (1.4 Bohr)&quot;</span><span class="p">,</span> <span class="n">h4_compact</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">),</span>
-    <span class="p">(</span><span class="s2">&quot;Extended H6 (15.0 Bohr)&quot;</span><span class="p">,</span> <span class="n">h6_extended</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Compact H4 (1.4 Bohr)"</span><span class="p">,</span> <span class="n">h4_compact</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Extended H6 (15.0 Bohr)"</span><span class="p">,</span> <span class="n">h6_extended</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">),</span>
 <span class="p">]:</span>
     <span class="n">screener</span> <span class="o">=</span> <span class="n">SchwarzScreener</span><span class="p">(</span>
         <span class="n">basis</span><span class="p">,</span> <span class="n">boys_func</span><span class="p">,</span> <span class="n">compute_two_electron_integrals_os_hgp</span>
@@ -774,12 +825,12 @@ This is more efficient because contracted integrals are smaller than primitive i
     
     <span class="n">stats</span> <span class="o">=</span> <span class="n">screener</span><span class="o">.</span><span class="n">get_statistics</span><span class="p">()</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Total shell quartets:  </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;total&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Computed:              </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;n_computed&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Screened (skipped):    </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;n_screened&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Percent screened:      </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;percent_screened&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Speedup factor:        </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">&#39;speedup_factor&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Total shell quartets:  </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'total'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Computed:              </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'n_computed'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Screened (skipped):    </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'n_screened'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Percent screened:      </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'percent_screened'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Speedup factor:        </span><span class="si">{</span><span class="n">stats</span><span class="p">[</span><span class="s1">'speedup_factor'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -795,25 +846,25 @@ quickly check if a shell pair is significant:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Demonstrate shell-pair prescreening</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shell-Pair Prescreening:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shell-Pair Prescreening:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
 
 <span class="c1"># Same center - always significant</span>
 <span class="n">shell_a</span> <span class="o">=</span> <span class="n">make_shell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">])</span>
 <span class="n">shell_b</span> <span class="o">=</span> <span class="n">make_shell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Same center (0,0,0):         </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_b</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Same center (0,0,0):         </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_b</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Close shells</span>
 <span class="n">shell_c</span> <span class="o">=</span> <span class="n">make_shell</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Close (1.0 Bohr apart):      </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_c</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Close (1.0 Bohr apart):      </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_c</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Far apart</span>
 <span class="n">shell_d</span> <span class="o">=</span> <span class="n">make_shell</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Far apart (50 Bohr):         </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_d</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Far apart (50 Bohr):         </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_d</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Very diffuse (small exponent) at distance</span>
 <span class="n">shell_e</span> <span class="o">=</span> <span class="n">make_shell</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diffuse at 10 Bohr (a=0.01): </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Diffuse at 10 Bohr (a=0.01): </span><span class="si">{</span><span class="n">shell_pair_significant</span><span class="p">(</span><span class="n">shell_a</span><span class="p">,</span><span class="w"> </span><span class="n">shell_e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -831,17 +882,17 @@ quickly check if a shell pair is significant:</p>
 
 <span class="c1"># Angular momentum components</span>
 <span class="n">orbitals</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;s (L=0)&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])),</span>
-    <span class="s1">&#39;p (L=1)&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])),</span>
-    <span class="s1">&#39;d (L=2)&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])),</span>
-    <span class="s1">&#39;f (L=3)&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="s1">'s (L=0)'</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])),</span>
+    <span class="s1">'p (L=1)'</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])),</span>
+    <span class="s1">'d (L=2)'</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])),</span>
+    <span class="s1">'f (L=3)'</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
                             <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]))</span>
 <span class="p">}</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;High Angular Momentum Test:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Orbital&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Shape&#39;</span><span class="si">:</span><span class="s2">&gt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Has NaN&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Has Inf&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"High Angular Momentum Test:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Orbital'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Shape'</span><span class="si">:</span><span class="s2">&gt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Has NaN'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Has Inf'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">angmom</span><span class="p">,</span> <span class="n">comp</span><span class="p">)</span> <span class="ow">in</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">compute_two_electron_integrals_os_hgp</span><span class="p">(</span>
@@ -856,9 +907,9 @@ quickly check if a shell pair is significant:</p>
     <span class="n">has_nan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
     <span class="n">has_inf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shape_str</span><span class="si">:</span><span class="s2">&gt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">has_nan</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">has_inf</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shape_str</span><span class="si">:</span><span class="s2">&gt;20</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">has_nan</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">has_inf</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">All integrals computed successfully without numerical issues!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">All integrals computed successfully without numerical issues!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -875,7 +926,7 @@ Both the original and improved implementations should match PySCF exactly.</p>
     <span class="n">HAS_PYSCF</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">HAS_PYSCF</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PySCF not installed. Install with: pip install pyscf&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"PySCF not installed. Install with: pip install pyscf"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">HAS_PYSCF</span><span class="p">:</span>
     <span class="c1"># H2 with STO-3G basis</span>
@@ -883,37 +934,37 @@ Both the original and improved implementations should match PySCF exactly.</p>
     <span class="n">coeffs_h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.15432897</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.53532814</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.44463454</span><span class="p">]])</span>
     
     <span class="n">basis_gbasis</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">GeneralizedContractionShell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="n">coeffs_h</span><span class="p">,</span> <span class="n">exps_h</span><span class="p">,</span> <span class="s1">&#39;cartesian&#39;</span><span class="p">),</span>
-        <span class="n">GeneralizedContractionShell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="n">coeffs_h</span><span class="p">,</span> <span class="n">exps_h</span><span class="p">,</span> <span class="s1">&#39;cartesian&#39;</span><span class="p">),</span>
+        <span class="n">GeneralizedContractionShell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="n">coeffs_h</span><span class="p">,</span> <span class="n">exps_h</span><span class="p">,</span> <span class="s1">'cartesian'</span><span class="p">),</span>
+        <span class="n">GeneralizedContractionShell</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]),</span> <span class="n">coeffs_h</span><span class="p">,</span> <span class="n">exps_h</span><span class="p">,</span> <span class="s1">'cartesian'</span><span class="p">),</span>
     <span class="p">]</span>
     
     <span class="n">mol</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">M</span><span class="p">(</span>
-        <span class="n">atom</span><span class="o">=</span><span class="s1">&#39;H 0 0 0; H 1.4 0 0&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;bohr&#39;</span><span class="p">,</span>
-        <span class="n">basis</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="n">gto</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
-            <span class="s1">&#39;H  S</span><span class="se">\n</span><span class="s1">    3.42525091    0.15432897</span><span class="se">\n</span><span class="s1">    0.62391373    0.53532814</span><span class="se">\n</span><span class="s1">    0.16885540    0.44463454&#39;</span>
+        <span class="n">atom</span><span class="o">=</span><span class="s1">'H 0 0 0; H 1.4 0 0'</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">'bohr'</span><span class="p">,</span>
+        <span class="n">basis</span><span class="o">=</span><span class="p">{</span><span class="s1">'H'</span><span class="p">:</span> <span class="n">gto</span><span class="o">.</span><span class="n">basis</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span>
+            <span class="s1">'H  S</span><span class="se">\n</span><span class="s1">    3.42525091    0.15432897</span><span class="se">\n</span><span class="s1">    0.62391373    0.53532814</span><span class="se">\n</span><span class="s1">    0.16885540    0.44463454'</span>
         <span class="p">)},</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span>
     
     <span class="c1"># PySCF returns chemist notation (ij|kl)</span>
-    <span class="n">eri_pyscf</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">intor</span><span class="p">(</span><span class="s1">&#39;int2e&#39;</span><span class="p">)</span>
+    <span class="n">eri_pyscf</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">intor</span><span class="p">(</span><span class="s1">'int2e'</span><span class="p">)</span>
     
     <span class="c1"># GBasis - both implementations in chemist notation</span>
-    <span class="n">eri_original</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis_gbasis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">&#39;chemist&#39;</span><span class="p">)</span>
-    <span class="n">eri_improved</span> <span class="o">=</span> <span class="n">electron_repulsion_integral_improved</span><span class="p">(</span><span class="n">basis_gbasis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">&#39;chemist&#39;</span><span class="p">)</span>
+    <span class="n">eri_original</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis_gbasis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">'chemist'</span><span class="p">)</span>
+    <span class="n">eri_improved</span> <span class="o">=</span> <span class="n">electron_repulsion_integral_improved</span><span class="p">(</span><span class="n">basis_gbasis</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">'chemist'</span><span class="p">)</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;H2/STO-3G Comparison (Chemist notation):&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;Integral&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;PySCF&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Original&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;Improved&#39;</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"H2/STO-3G Comparison (Chemist notation):"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Integral'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'PySCF'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Original'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'Improved'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
     
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">i</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">j</span><span class="si">}{</span><span class="n">j</span><span class="si">}</span><span class="s2">)&quot;</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eri_pyscf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eri_original</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eri_improved</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">i</span><span class="si">}{</span><span class="n">i</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="n">j</span><span class="si">}{</span><span class="n">j</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eri_pyscf</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eri_original</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">eri_improved</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;12.6f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Max |Original - PySCF|:    </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_original</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">eri_pyscf</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max |Improved - PySCF|:    </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_improved</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">eri_pyscf</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max |Improved - Original|: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_improved</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">eri_original</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Max |Original - PySCF|:    </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_original</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">eri_pyscf</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |Improved - PySCF|:    </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_improved</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">eri_pyscf</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max |Improved - Original|: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eri_improved</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">eri_original</span><span class="p">))</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -983,14 +1034,14 @@ Both the original and improved implementations should match PySCF exactly.</p>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"""</span>
 <span class="s2">Thanks for completing this tutorial!</span>
 
 <span class="s2">For more information:</span>
 <span class="s2">- Documentation: http://gbasis.qcdevs.org/</span>
 <span class="s2">- GitHub: https://github.com/theochem/gbasis</span>
 <span class="s2">- Issue #221: Two-electron integral improvements</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="s2">"""</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1046,7 +1097,7 @@ Both the original and improved implementations should match PySCF exactly.</p>
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-and-imports">1. Setup and Imports</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-test-molecules">2. Creating Test Molecules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-os-hgp-algorithm">3. The OS+HGP Algorithm</a><ul class="nav section-nav flex-column">
@@ -1120,8 +1171,8 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
   </footer>

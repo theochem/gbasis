@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
@@ -38,10 +38,10 @@
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -52,7 +52,7 @@
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="_static/togglebutton.js?v=1ae7504c"></script>
+    <script src="_static/togglebutton.js?v=b8b12719"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
@@ -60,26 +60,33 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="_static/favicon.png"/>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -105,7 +112,47 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
     </header>
   
 
@@ -341,6 +388,7 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
@@ -351,8 +399,10 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -366,8 +416,12 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.angular_momentum.angular_momentum_integral">angular_momentum_integral() (in module gbasis.integrals.angular_momentum)</a>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.angular_momentum_integral">angular_momentum_integral() (gbasis.integrals.libcint.CBasis method)</a>
+
+      <ul>
+        <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.angular_momentum.angular_momentum_integral">(in module gbasis.integrals.angular_momentum)</a>
 </li>
+      </ul></li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.angular_momentum.AngularMomentumIntegral">AngularMomentumIntegral (class in gbasis.integrals.angular_momentum)</a>
 </li>
       <li><a href="_autosummary/gbasis.html#gbasis.contractions.GeneralizedContractionShell.assign_norm_cont">assign_norm_cont() (gbasis.contractions.GeneralizedContractionShell method)</a>
@@ -416,6 +470,8 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis">CBasis (class in gbasis.integrals.libcint)</a>
+</li>
       <li><a href="_autosummary/gbasis.html#gbasis.contractions.GeneralizedContractionShell.coeffs">coeffs (gbasis.contractions.GeneralizedContractionShell property)</a>
 </li>
       <li><a href="_autosummary/gbasis.html#gbasis.screening.compute_contraction_upper_bond">compute_contraction_upper_bond() (in module gbasis.screening)</a>
@@ -527,9 +583,19 @@
   </ul></td>
 </tr></table>
 
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.dipole">dipole() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.electron_repulsion">electron_repulsion() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.electron_repulsion.electron_repulsion_integral">electron_repulsion_integral() (in module gbasis.integrals.electron_repulsion)</a>
 </li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.electron_repulsion.electron_repulsion_integral_improved">electron_repulsion_integral_improved() (in module gbasis.integrals.electron_repulsion)</a>
@@ -710,8 +776,6 @@
         <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.boys_functions">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     gbasis.integrals.electron_repulsion
 
@@ -719,11 +783,20 @@
         <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.electron_repulsion">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     gbasis.integrals.kinetic_energy
 
       <ul>
         <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.kinetic_energy">module</a>
+</li>
+      </ul></li>
+      <li>
+    gbasis.integrals.libcint
+
+      <ul>
+        <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.libcint">module</a>
 </li>
       </ul></li>
       <li>
@@ -811,6 +884,12 @@
 </li>
       <li><a href="_autosummary/gbasis.html#gbasis.screening.get_points_mask_for_contraction">get_points_mask_for_contraction() (in module gbasis.screening)</a>
 </li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.gradient_kinetic">gradient_kinetic() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.gradient_nuclear">gradient_nuclear() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.gradient_rinv">gradient_rinv() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -825,10 +904,20 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.ia01p">ia01p() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
       <li><a href="_autosummary/gbasis.html#gbasis.contractions.GeneralizedContractionShell.icenter">icenter (gbasis.contractions.GeneralizedContractionShell property)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.iking">iking() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.inucg">inucg() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.iovlpg">iovlpg() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.ircxp">ircxp() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
       <li><a href="_autosummary/gbasis.html#gbasis.screening.is_two_index_overlap_screened">is_two_index_overlap_screened() (in module gbasis.screening)</a>
 </li>
   </ul></td>
@@ -837,10 +926,12 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.kinetic_energy.kinetic_energy_integral">kinetic_energy_integral() (in module gbasis.integrals.kinetic_energy)</a>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.kinetic_energy">kinetic_energy() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.kinetic_energy.kinetic_energy_integral">kinetic_energy_integral() (in module gbasis.integrals.kinetic_energy)</a>
+</li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.kinetic_energy.KineticEnergyIntegral">KineticEnergyIntegral (class in gbasis.integrals.kinetic_energy)</a>
 </li>
   </ul></td>
@@ -891,6 +982,8 @@
 </li>
         <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.kinetic_energy">gbasis.integrals.kinetic_energy</a>
 </li>
+        <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.libcint">gbasis.integrals.libcint</a>
+</li>
         <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.moment">gbasis.integrals.moment</a>
 </li>
         <li><a href="_autosummary/gbasis.integrals.html#module-gbasis.integrals.momentum">gbasis.integrals.momentum</a>
@@ -918,7 +1011,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.moment.Moment">Moment (class in gbasis.integrals.moment)</a>
 </li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.moment">moment() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.moment.moment_integral">moment_integral() (in module gbasis.integrals.moment)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.momentum">momentum() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.momentum.momentum_integral">momentum_integral() (in module gbasis.integrals.momentum)</a>
 </li>
@@ -931,6 +1028,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/gbasis.html#gbasis.contractions.GeneralizedContractionShell.norm_prim_cart">norm_prim_cart (gbasis.contractions.GeneralizedContractionShell property)</a>
+</li>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.nuclear_attraction">nuclear_attraction() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral">nuclear_electron_attraction_integral() (in module gbasis.integrals.nuclear_electron_attraction)</a>
 </li>
@@ -948,12 +1047,16 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.octupole">octupole() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.overlap.Overlap">Overlap (class in gbasis.integrals.overlap)</a>
 </li>
-      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.overlap.overlap_integral">overlap_integral() (in module gbasis.integrals.overlap)</a>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.overlap">overlap() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.overlap.overlap_integral">overlap_integral() (in module gbasis.integrals.overlap)</a>
+</li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.overlap_asymm.overlap_integral_asymmetric">overlap_integral_asymmetric() (in module gbasis.integrals.overlap_asymm)</a>
 </li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.overlap_asymm.OverlapAsymmetric">OverlapAsymmetric (class in gbasis.integrals.overlap_asymm)</a>
@@ -970,9 +1073,19 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.point_charge">point_charge() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.point_charge.point_charge_integral">point_charge_integral() (in module gbasis.integrals.point_charge)</a>
 </li>
       <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.point_charge.PointChargeIntegral">PointChargeIntegral (class in gbasis.integrals.point_charge)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.quadrupole">quadrupole() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -983,12 +1096,24 @@
       <li><a href="_autosummary/gbasis.html#gbasis.spherical.real_solid_harmonic">real_solid_harmonic() (in module gbasis.spherical)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.rinv">rinv() (gbasis.integrals.libcint.CBasis method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/gbasis.html#gbasis.spherical.shift_factor">shift_factor() (in module gbasis.spherical)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/gbasis.integrals.html#gbasis.integrals.libcint.CBasis.three_center_two_electron">three_center_two_electron() (gbasis.integrals.libcint.CBasis method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1055,8 +1180,8 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
   </footer>

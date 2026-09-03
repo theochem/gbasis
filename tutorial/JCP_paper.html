@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
@@ -39,10 +39,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
@@ -53,7 +53,7 @@
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
@@ -63,6 +63,7 @@
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/JCP_paper';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/favicon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -71,20 +72,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -110,7 +117,51 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
     </header>
   
 
@@ -431,7 +482,7 @@
                 <h2> Contents </h2>
             </div>
             <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-dependencies-and-download-data">Install dependencies and download data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-building-basis-functions">A. Building Basis Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-computing-integrals">B. Computing Integrals</a></li>
@@ -486,18 +537,18 @@
 <span class="c1"># from urllib.request import urlretrieve</span>
 
 <span class="c1"># # download the required data files</span>
-<span class="c1"># file_path_1 = &quot;hydrogen_def2-svp.1.gbs&quot;</span>
+<span class="c1"># file_path_1 = "hydrogen_def2-svp.1.gbs"</span>
 <span class="c1"># if not os.path.isfile(file_path_1):</span>
-<span class="c1">#   url = &quot;https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/hydrogen_def2-svp.1.gbs?raw=true&quot;</span>
+<span class="c1">#   url = "https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/hydrogen_def2-svp.1.gbs?raw=true"</span>
 <span class="c1">#   urlretrieve(url, file_path_1)</span>
-<span class="c1"># file_path_2 = &quot;C2H4_hf_ccpvdz.fchk&quot;</span>
+<span class="c1"># file_path_2 = "C2H4_hf_ccpvdz.fchk"</span>
 <span class="c1"># if not os.path.isfile(file_path_2):</span>
-<span class="c1">#     url = &quot;https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/C2H4_hf_ccpvdz.fchk?raw=true&quot;</span>
+<span class="c1">#     url = "https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/C2H4_hf_ccpvdz.fchk?raw=true"</span>
 <span class="c1">#     urlretrieve(url, file_path_2)</span>
 
-<span class="c1"># file_path_3 = &quot;C2H4_hf_ccpvtz.fchk&quot;</span>
+<span class="c1"># file_path_3 = "C2H4_hf_ccpvtz.fchk"</span>
 <span class="c1"># if not os.path.isfile(file_path_3):</span>
-<span class="c1">#     url = &quot;https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/C2H4_hf_ccpvtz.fchk?raw=true&quot;</span>
+<span class="c1">#     url = "https://github.com/theochem/gbasis/blob/master/notebooks/tutorial/C2H4_hf_ccpvtz.fchk?raw=true"</span>
 <span class="c1">#     urlretrieve(url, file_path_3)</span>
 </pre></div>
 </div>
@@ -516,21 +567,21 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.parsers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_gbs</span><span class="p">,</span> <span class="n">make_contractions</span>
 
 <span class="c1"># Define atomic symbols and coordinates (i.e., basis function centers)</span>
-<span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
+<span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"H"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">]</span>
 <span class="n">atcoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
 
 <span class="c1"># Obtain basis functions from the basis set files</span>
-<span class="n">basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">&quot;hydrogen_def2-svp.1.gbs&quot;</span><span class="p">)</span>
+<span class="n">basis_dict</span> <span class="o">=</span> <span class="n">parse_gbs</span><span class="p">(</span><span class="s2">"hydrogen_def2-svp.1.gbs"</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">make_contractions</span><span class="p">(</span>
-<span class="n">basis_dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_types</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="n">basis_dict</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_types</span><span class="o">=</span><span class="s2">"c"</span><span class="p">)</span>
 
 <span class="c1"># To obtain the total number of AOs we compute the cartesian components for each angular momentum</span>
 <span class="n">total_ao</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of generalized shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># Output 6</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of generalized shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="c1"># Output 6</span>
 <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">basis</span><span class="p">:</span>
     <span class="n">total_ao</span> <span class="o">+=</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom_components_cart</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of AOs: &quot;</span><span class="p">,</span> <span class="n">total_ao</span><span class="p">)</span> <span class="c1"># output 10</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total number of AOs: "</span><span class="p">,</span> <span class="n">total_ao</span><span class="p">)</span> <span class="c1"># output 10</span>
 </pre></div>
 </div>
 </div>
@@ -550,19 +601,19 @@ Total number of AOs:  10
 <span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.wrappers</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_iodata</span>
 
 <span class="c1"># Load ethylene fchk</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;C2H4_hf_ccpvdz.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">"C2H4_hf_ccpvdz.fchk"</span><span class="p">)</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of generalized shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># output 24</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of generalized shells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="c1"># output 24</span>
 
 <span class="c1"># To obtain the total number of AOs we check for each shell its angular momentum and coordinate type</span>
 <span class="n">total_ao</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">basis</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span> <span class="o">==</span> <span class="s2">&quot;cartesian&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span> <span class="o">==</span> <span class="s2">"cartesian"</span><span class="p">:</span>
         <span class="n">total_ao</span> <span class="o">+=</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom_components_cart</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span> <span class="o">==</span> <span class="s2">&quot;spherical&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">shell</span><span class="o">.</span><span class="n">coord_type</span> <span class="o">==</span> <span class="s2">"spherical"</span><span class="p">:</span>
         <span class="n">total_ao</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">angmom_components_sph</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of AOs: &quot;</span><span class="p">,</span> <span class="n">total_ao</span><span class="p">)</span> <span class="c1"># output 48</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total number of AOs: "</span><span class="p">,</span> <span class="n">total_ao</span><span class="p">)</span> <span class="c1"># output 48</span>
 </pre></div>
 </div>
 </div>
@@ -578,23 +629,23 @@ Total number of AOs:  48
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For shell 1</span>
 <span class="n">shell</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generalized contraction Shell = 1&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coordinates (Bohr):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generalized contraction Shell = 1"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Coordinates (Bohr):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; x,y,z coordinates&quot;</span><span class="p">)</span> 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Angular momentum: &quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exponents primitives:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape:"</span><span class="p">,</span><span class="n">shell</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"--&gt; x,y,z coordinates"</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Angular momentum: "</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">angmom</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Exponents primitives:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; (K,) K=# primitives&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Contraction coefficients&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape:"</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">exps</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"--&gt; (K,) K=# primitives"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Contraction coefficients"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; (K, M) </span><span class="se">\</span>
-<span class="s2">K=# of primitives, M=# number segmented contraction shells&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normalization constants:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape:"</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"--&gt; (K, M) </span><span class="se">\</span>
+<span class="s2">K=# of primitives, M=# number segmented contraction shells"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Normalization constants:"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape:&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;--&gt; (M, L), </span><span class="se">\</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape:"</span><span class="p">,</span> <span class="n">shell</span><span class="o">.</span><span class="n">norm_cont</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"--&gt; (M, L), </span><span class="se">\</span>
 <span class="s2">M=# number segmented contraction shells, </span><span class="se">\</span>
-<span class="s2">L=# different angular momentum components&quot;</span><span class="p">)</span>
+<span class="s2">L=# different angular momentum components"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -661,14 +712,14 @@ their centers of the basis functions. To use this functionality the molecule nee
 <span class="n">olp_mo</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
 <span class="c1"># check whether overlap integrals are orthonormal</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is AO Overlap Normalized?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_ao</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is AO Overlap Orthogonal?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">total_ao</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is MO Overlap Orthonormal?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_mo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">total_ao</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Is AO Overlap Normalized?"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">total_ao</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Is AO Overlap Orthogonal?"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">total_ao</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Is MO Overlap Orthonormal?"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_mo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">total_ao</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">))</span>
 
 <span class="c1"># compute overlap integrals in AO and MO basis with screening</span>
 <span class="n">olp_ao_screening</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">tol_screen</span><span class="o">=</span><span class="mf">1.0e-5</span><span class="p">)</span>
 <span class="n">olp_mo_screening</span> <span class="o">=</span> <span class="n">overlap_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">tol_screen</span><span class="o">=</span><span class="mf">1.0e-5</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is Overlap equal to Overlap screening?&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">,</span> <span class="n">olp_ao_screening</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Is Overlap equal to Overlap screening?"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">olp_ao</span><span class="p">,</span> <span class="n">olp_ao_screening</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -691,16 +742,16 @@ Is Overlap equal to Overlap screening? True
 <span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.overlap_asymm</span><span class="w"> </span><span class="kn">import</span> <span class="n">overlap_integral_asymmetric</span>
 
 <span class="c1"># load ethylene with basis set cc-pTDZ</span>
-<span class="n">mol_extended_basis</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">&quot;C2H4_hf_ccpvtz.fchk&quot;</span><span class="p">)</span>
+<span class="n">mol_extended_basis</span> <span class="o">=</span> <span class="n">load_one</span><span class="p">(</span><span class="s2">"C2H4_hf_ccpvtz.fchk"</span><span class="p">)</span>
 <span class="n">basis_extended_basis</span> <span class="o">=</span> <span class="n">from_iodata</span><span class="p">(</span><span class="n">mol_extended_basis</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of shells in CC-pVDZ basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_extended_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of shells in CC-pTDZ basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of shells in CC-pVDZ basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_extended_basis</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of shells in CC-pTDZ basis: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># compute overlap of two different basis sets</span>
 <span class="n">olp_asym</span> <span class="o">=</span> <span class="n">overlap_integral_asymmetric</span><span class="p">(</span><span class="n">basis_extended_basis</span><span class="p">,</span> <span class="n">basis</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of overlap matrix: </span><span class="si">{</span><span class="n">olp_asym</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape of overlap matrix: </span><span class="si">{</span><span class="n">olp_asym</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -727,10 +778,10 @@ Shape of overlap matrix: (116, 48)
 
 <span class="c1"># compute kinetic energy integrals in AO basis</span>
 <span class="n">k_int1e</span> <span class="o">=</span> <span class="n">kinetic_energy_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape kinetic energy integral: &quot;</span><span class="p">,</span> <span class="n">k_int1e</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;(#AO, #AO)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape kinetic energy integral: "</span><span class="p">,</span> <span class="n">k_int1e</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"(#AO, #AO)"</span><span class="p">)</span>
 
 <span class="n">kin_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">k_int1e</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kinetic energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">kin_e</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Kinetic energy (Hartree):"</span><span class="p">,</span> <span class="n">kin_e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -753,9 +804,9 @@ Kinetic energy (Hartree): 77.9285467708042
 <span class="c1"># compute nuclear-electron attraction integrals in AO basis</span>
 <span class="n">nuc_int1e</span> <span class="o">=</span> <span class="n">nuclear_electron_attraction_integral</span><span class="p">(</span>
         <span class="n">basis</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">atnums</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape Nuclear-electron integral: &quot;</span><span class="p">,</span> <span class="n">nuc_int1e</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;(#AO, #AO)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape Nuclear-electron integral: "</span><span class="p">,</span> <span class="n">nuc_int1e</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"(#AO, #AO)"</span><span class="p">)</span>
 <span class="n">ne_e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">nuc_int1e</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-electron energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">ne_e</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Nuclear-electron energy (Hartree):"</span><span class="p">,</span> <span class="n">ne_e</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -776,8 +827,8 @@ Nuclear-electron energy (Hartree): -248.2770425530744
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.electron_repulsion</span><span class="w"> </span><span class="kn">import</span> <span class="n">electron_repulsion_integral</span>
 
 <span class="c1">#Compute e-e repulsion integral in MO basis, shape=(#MO, #MO, #MO, #MO)</span>
-<span class="n">int2e_mo</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">&#39;chemist&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Shape e-e repulsion integrals:&#39;</span><span class="p">,</span><span class="n">int2e_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="s1">&#39;(#MO, #MO, #MO, #MO)&#39;</span><span class="p">)</span>
+<span class="n">int2e_mo</span> <span class="o">=</span> <span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">'chemist'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Shape e-e repulsion integrals:'</span><span class="p">,</span><span class="n">int2e_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="s1">'(#MO, #MO, #MO, #MO)'</span><span class="p">)</span>
 <span class="n">j_coul</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">k_ex</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="c1"># Mask only occupied Molecular orbitals</span>
@@ -787,8 +838,8 @@ Nuclear-electron energy (Hartree): -248.2770425530744
         <span class="n">j_coul</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">int2e_mo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
         <span class="n">k_ex</span> <span class="o">+=</span> <span class="n">int2e_mo</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coulomb energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">j_coul</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exchange energy (Hartree):&quot;</span><span class="p">,</span> <span class="n">k_ex</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Coulomb energy (Hartree):"</span><span class="p">,</span> <span class="n">j_coul</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Exchange energy (Hartree):"</span><span class="p">,</span> <span class="n">k_ex</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -809,9 +860,9 @@ Exchange energy (Hartree): 11.756060443132313
 
 <span class="c1"># Combine all terms to obtain total energy at Restricted HF level</span>
 <span class="n">e</span> <span class="o">=</span> <span class="n">nn_e</span> <span class="o">+</span> <span class="n">ne_e</span> <span class="o">+</span> <span class="n">kin_e</span> <span class="o">+</span> <span class="n">j_coul</span> <span class="o">-</span> <span class="n">k_ex</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total energy - Gbasis (Hartree): , </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total energy - Gbasis (Hartree): , </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="c1"># SCF energy is stored in iodata object</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total energy - Gaussian16 (Hartre): &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">energy</span> <span class="p">)</span> <span class="c1">#-78.0401652</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total energy - Gaussian16 (Hartre): "</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">energy</span> <span class="p">)</span> <span class="c1">#-78.0401652</span>
 </pre></div>
 </div>
 </div>
@@ -847,13 +898,13 @@ Total energy - Gaussian16 (Hartre):  -78.04016529602737
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">gbasis.integrals.libcint</span><span class="w"> </span><span class="kn">import</span> <span class="n">CBasis</span>
 
 <span class="c1"># Define atomic elements matching atom numbers</span>
-<span class="n">atoms_ethylene</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
-<span class="n">cbasis</span> <span class="o">=</span> <span class="n">CBasis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">atoms_ethylene</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="p">)</span>
+<span class="n">atoms_ethylene</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">]</span>
+<span class="n">cbasis</span> <span class="o">=</span> <span class="n">CBasis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">atoms_ethylene</span><span class="p">,</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">coord_type</span><span class="o">=</span><span class="s2">"spherical"</span><span class="p">)</span>
 <span class="n">kin_int1e_c</span><span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">kinetic_energy_integral</span><span class="p">()</span>
 <span class="n">kin_e_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">kin_int1e_c</span><span class="p">))</span>
 <span class="n">nuc_int1e_c</span> <span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">nuclear_attraction_integral</span><span class="p">()</span>
 <span class="n">ne_e_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">dm</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">nuc_int1e_c</span><span class="p">))</span>
-<span class="n">int2e_mo_c</span> <span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">&#39;chemist&#39;</span><span class="p">)</span>
+<span class="n">int2e_mo_c</span> <span class="o">=</span> <span class="n">cbasis</span><span class="o">.</span><span class="n">electron_repulsion_integral</span><span class="p">(</span><span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">notation</span><span class="o">=</span><span class="s1">'chemist'</span><span class="p">)</span>
 
 <span class="n">j_coul_c</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">k_ex_c</span> <span class="o">=</span> <span class="mi">0</span>
@@ -866,16 +917,16 @@ Total energy - Gaussian16 (Hartre):  -78.04016529602737
         <span class="n">k_ex_c</span> <span class="o">+=</span> <span class="n">int2e_mo_c</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
 
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Kinetic energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">kin_e_c</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nuclear-electron energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">ne_e_c</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coulomb energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">j_coul_c</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exchange energy (CBasis/Hartree)):&quot;</span><span class="p">,</span> <span class="n">k_ex_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Kinetic energy (CBasis/Hartree)):"</span><span class="p">,</span> <span class="n">kin_e_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Nuclear-electron energy (CBasis/Hartree)):"</span><span class="p">,</span> <span class="n">ne_e_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Coulomb energy (CBasis/Hartree)):"</span><span class="p">,</span> <span class="n">j_coul_c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Exchange energy (CBasis/Hartree)):"</span><span class="p">,</span> <span class="n">k_ex_c</span><span class="p">)</span>
 <span class="c1"># Combine all terms to obtain total energy at Restricted HF level</span>
 <span class="n">e_cbasis</span> <span class="o">=</span> <span class="n">nn_e</span> <span class="o">+</span> <span class="n">ne_e_c</span> <span class="o">+</span> <span class="n">kin_e_c</span> <span class="o">+</span> <span class="n">j_coul_c</span> <span class="o">-</span> <span class="n">k_ex_c</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total energy - Gbasis (Hartree): , </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total energy - Cbasis (Hartree): , </span><span class="si">{</span><span class="n">e_cbasis</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total energy - Gbasis (Hartree): , </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total energy - Cbasis (Hartree): , </span><span class="si">{</span><span class="n">e_cbasis</span><span class="si">:</span><span class="s2"> 5.11f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="c1"># SCF energy is stored in iodata object</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total energy - Gaussian16 (Hartree): &quot;</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">energy</span> <span class="p">)</span> <span class="c1">#-78.0401652</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total energy - Gaussian16 (Hartree): "</span><span class="p">,</span> <span class="n">mol</span><span class="o">.</span><span class="n">energy</span> <span class="p">)</span> <span class="c1">#-78.0401652</span>
 </pre></div>
 </div>
 </div>
@@ -906,8 +957,8 @@ generate the Becke-Lebedev molecular grid:</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">grid.molgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolGrid</span>
 
 <span class="n">grid</span> <span class="o">=</span> <span class="n">MolGrid</span><span class="o">.</span><span class="n">from_preset</span><span class="p">(</span>
-        <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fine&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of grid points = &quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">atnums</span><span class="o">=</span><span class="n">mol</span><span class="o">.</span><span class="n">atnums</span><span class="p">,</span> <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s2">"fine"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of grid points = "</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -925,15 +976,15 @@ generate the Becke-Lebedev molecular grid:</p>
 
 <span class="c1"># Evaluate the MOs on the grid points</span>
 <span class="n">basis_mo</span> <span class="o">=</span> <span class="n">evaluate_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">mo_coeffs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape MOs evaluated in a Molecular grid: &quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">basis_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;(#MOs, #Grid points)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape MOs evaluated in a Molecular grid: "</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis_mo</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"(#MOs, #Grid points)"</span><span class="p">)</span>
 
 <span class="c1"># Integration MO</span>
 <span class="c1"># Mask only occupied Molecular orbitals</span>
 <span class="n">occ_mo</span> <span class="o">=</span> <span class="n">mo_occs</span><span class="p">[</span><span class="n">mo_occs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">occ_mo</span><span class="p">):</span> <span class="c1"># Only occupied MOs</span>
     <span class="n">eval_mo</span> <span class="o">=</span> <span class="n">basis_mo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">basis_mo</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MO </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> integrated squared: &quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">eval_mo</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MO </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> integrated squared: "</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">eval_mo</span><span class="p">))</span>
 
 <span class="c1"># evaluate 6th derivative w.r.t. y for MOs on the grid points</span>
 <span class="n">deriv_6_mo</span> <span class="o">=</span> <span class="n">evaluate_deriv_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> 
@@ -967,7 +1018,7 @@ MO 8 integrated squared:  0.9999976856899412
 <span class="c1"># compute electronic density</span>
 <span class="n">dens</span> <span class="o">=</span> <span class="n">evaluate_density</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
 <span class="c1"># integrate density and compare to the number of electrons in the system</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of electrons: &quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">))</span> <span class="c1"># Total number of electrons ethylene = 16</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total number of electrons: "</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">dens</span><span class="p">))</span> <span class="c1"># Total number of electrons ethylene = 16</span>
 </pre></div>
 </div>
 </div>
@@ -987,12 +1038,12 @@ coded 1st and 2nd derivatives.</p>
 
 <span class="c1"># compute Laplacian of electron density</span>
 <span class="c1"># general arbitrary-order-derivative implementation</span>
-<span class="n">lap_gen</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv_type</span><span class="o">=</span><span class="s1">&#39;general&#39;</span><span class="p">)</span>
+<span class="n">lap_gen</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv_type</span><span class="o">=</span><span class="s1">'general'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">lap_gen</span><span class="p">))</span> <span class="c1"># Expected value: 0</span>
 <span class="c1"># Direct implementation of 1s and 2nd order derivatives</span>
-<span class="n">lap_dir</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv_type</span><span class="o">=</span><span class="s1">&#39;direct&#39;</span><span class="p">)</span>
+<span class="n">lap_dir</span> <span class="o">=</span> <span class="n">evaluate_density_laplacian</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">basis</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">deriv_type</span><span class="o">=</span><span class="s1">'direct'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">integrate</span><span class="p">(</span><span class="n">lap_dir</span><span class="p">))</span> <span class="c1"># Expected value: 0</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Are General and Direct implementation the same?&quot;</span><span class="p">,</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Are General and Direct implementation the same?"</span><span class="p">,</span> 
       <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lap_gen</span><span class="p">,</span> <span class="n">lap_dir</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -1016,18 +1067,18 @@ and arbitrary order derivatives on a set of grid points. Supported related prope
 
 <span class="c1">#center of mass ethylene</span>
 <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">atmasses</span><span class="p">[:,</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">atcoords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">atmasses</span><span class="p">))[</span><span class="kc">None</span><span class="p">,:]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Center of mass of ethylene: </span><span class="si">{</span><span class="n">com</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Center of mass of ethylene: </span><span class="si">{</span><span class="n">com</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ehrenfest force (alpha = </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2"> and beta = </span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ehrenfest force (alpha = </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2"> and beta = </span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">):"</span><span class="p">)</span>
 <span class="n">ef_com</span> <span class="o">=</span> <span class="n">evaluate_ehrenfest_force</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> 
                                   <span class="n">basis</span><span class="p">,</span> 
                                   <span class="n">com</span><span class="p">,</span> 
                                   <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> 
                                   <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape of a Ehrenfest force at one point: </span><span class="si">{</span><span class="n">ef_com</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ehrenfest force at center of mass:</span><span class="se">\n</span><span class="si">{</span><span class="n">ef_com</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ehrenfest force at center of mass is 0: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ef_com</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(should be zero, it is Lorentz point)&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shape of a Ehrenfest force at one point: </span><span class="si">{</span><span class="n">ef_com</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ehrenfest force at center of mass:</span><span class="se">\n</span><span class="si">{</span><span class="n">ef_com</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ehrenfest force at center of mass is 0: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ef_com</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"(should be zero, it is Lorentz point)"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1066,10 +1117,10 @@ Ehrenfest force at center of mass is 0: True
                               <span class="n">points</span><span class="o">=</span><span class="n">cube_grid</span><span class="o">.</span><span class="n">points</span><span class="p">,</span>
                               <span class="n">nuclear_coords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span>
                               <span class="n">nuclear_charges</span><span class="o">=</span><span class="n">atcharges</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shape electrostatic potential output: &quot;</span><span class="p">,</span> <span class="n">esp</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;#Grid points&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Shape electrostatic potential output: "</span><span class="p">,</span> <span class="n">esp</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"#Grid points"</span><span class="p">)</span>
 
 <span class="c1"># generate a cube</span>
-<span class="n">cube_grid</span><span class="o">.</span><span class="n">generate_cube</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="s2">&quot;ethylene.cube&quot;</span><span class="p">,</span>
+<span class="n">cube_grid</span><span class="o">.</span><span class="n">generate_cube</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="s2">"ethylene.cube"</span><span class="p">,</span>
                         <span class="n">data</span><span class="o">=</span><span class="n">esp</span><span class="p">,</span>
                         <span class="n">atcoords</span><span class="o">=</span><span class="n">atcoords</span><span class="p">,</span>
                         <span class="n">atnums</span><span class="o">=</span><span class="n">atnums</span><span class="p">,</span>
@@ -1151,7 +1202,7 @@ Ehrenfest force at center of mass is 0: True
     <i class="fa-solid fa-list"></i> Contents
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-dependencies-and-download-data">Install dependencies and download data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-building-basis-functions">A. Building Basis Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#b-computing-integrals">B. Computing Integrals</a></li>
@@ -1221,8 +1272,8 @@ By The QC-Dev Community with the support of Digital Research Alliance of Canada 
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
   </footer>
