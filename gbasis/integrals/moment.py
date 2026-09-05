@@ -56,7 +56,7 @@ class Moment(BaseTwoIndexSymmetric):
         contractions_two,
         moment_coord,
         moment_orders,
-        screen_basis=True,
+        screen_basis=False,
         tol_screen=1e-8,
     ):
         """Return the evaluations of the given contractions at the given coordinates.
@@ -76,7 +76,7 @@ class Moment(BaseTwoIndexSymmetric):
             Note that a two dimensional array must be given, even if there is only one set of orders
             of the moment.
         screen_basis : bool, optional
-            A toggle to enable or disable screening. Default value is True to enable screening.
+            A toggle to enable or disable screening. Default value is False.
         tol_screen : float, optional
             The tolerance used for screening overlap integrals. `tol_screen` is combined with the
             minimum contraction exponents to compute a cutoff which is compared to the distance
@@ -188,7 +188,7 @@ class Moment(BaseTwoIndexSymmetric):
 
 
 def moment_integral(
-    basis, moment_coord, moment_orders, transform=None, screen_basis=True, tol_screen=1e-8
+    basis, moment_coord, moment_orders, transform=None, screen_basis=False, tol_screen=1e-8
 ):
     r"""Return moment integral of the given basis set.
 
@@ -217,7 +217,7 @@ def moment_integral(
         and index 0 of the array for contractions.
         Default is no transformation.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is False.
     tol_screen : float, optional
         The tolerance used for screening overlap integrals. `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance

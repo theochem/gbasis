@@ -53,7 +53,7 @@ class Overlap(BaseTwoIndexSymmetric):
 
     @staticmethod
     def construct_array_contraction(
-        contractions_one, contractions_two, screen_basis=True, tol_screen=1e-8
+        contractions_one, contractions_two, screen_basis=False, tol_screen=1e-8
     ):
         """Return the evaluations of the given contractions at the given coordinates.
 
@@ -66,7 +66,7 @@ class Overlap(BaseTwoIndexSymmetric):
             Contracted Cartesian Gaussians (of the same shell) associated with the second index of
             the overlap.
         screen_basis : bool, optional
-            A toggle to enable or disable screening. Default value is True to enable screening.
+            A toggle to enable or disable screening. Default value is False.
         tol_screen : float, optional
             The tolerance used for screening overlap integrals. `tol_screen` is combined with the
             minimum contraction exponents to compute a cutoff which is compared to the distance
@@ -134,7 +134,7 @@ class Overlap(BaseTwoIndexSymmetric):
         )[0]
 
 
-def overlap_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):
+def overlap_integral(basis, transform=None, screen_basis=False, tol_screen=1e-8):
     r"""Return overlap integral of the given basis set.
 
     .. math::
@@ -154,7 +154,7 @@ def overlap_integral(basis, transform=None, screen_basis=True, tol_screen=1e-8):
         and index 0 of the array for contractions.
         Default is no transformation.
     screen_basis : bool, optional
-        A toggle to enable or disable screening. Default value is True to enable screening.
+        A toggle to enable or disable screening. Default value is False.
     tol_screen : float, optional
         The tolerance used for screening overlap integrals. `tol_screen` is combined with the
         minimum contraction exponents to compute a cutoff which is compared to the distance
