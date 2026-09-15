@@ -127,7 +127,7 @@ jobs:
           ls -lh wheels/
 
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheel-${{ matrix.python }}-${{ matrix.buildplat.cibw_platform }}
           path: wheels/*.whl
@@ -161,7 +161,7 @@ jobs:
         run: python -m build --sdist --outdir dist
 
       - name: Upload source distribution artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sdist
           path: dist/*.tar.gz
