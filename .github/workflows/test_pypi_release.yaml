@@ -1,0 +1,39 @@
+name: TestPyPI Publish
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/build_wheels.yml
+
+  publish-to-testpypi:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: TestPyPI
+      url: https://test.pypi.org/project/qc-gbasis
+
+    steps:
+      - name: Download wheels
+        uses: actions/download-artifact@v5
+        with:
+          pattern: wheel-*
+          path: dist/
+          merge-multiple: true
+
+      - name: Download source distribution
+        uses: actions/download-artifact@v5
+        with:
+          name: sdist
+          path: dist/
+
+      - name: Publish distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_TOKEN }}
