@@ -1,0 +1,169 @@
+name: Wheel builder
+
+
+on:
+  # build wheels on user (dispatch) or another workflow (e.g., pypi_release.yaml) call
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  # only one wheel-builder workflow run at a time for a given branch or tag (e.g., master or v1.0.0)
+  group: wheel-builder-${{ github.ref }}
+  # cancel older workflow runs in the same group if new instance triggers
+  cancel-in-progress: true
+
+jobs:
+
+  build_wheels:
+    # job name (e.g., "wheel-cp39-manylinux_x86_64", "wheel-cp311-win_amd64")
+    name: wheel-${{ matrix.python }}-${{ matrix.buildplat.cibw_platform }}
+
+    runs-on: ${{ matrix.buildplat.os }}
+
+    strategy:
+
+      # don't cancel other jobs (e.g python versions) if one job (on a specific platform) fails
+      fail-fast: false
+
+      matrix:
+        python:
+          - cp39
+          - cp310
+          - cp311
+          - cp312
+
+        buildplat:
+            # linux x86-64
+          - os: ubuntu-22.04
+            cibw_platform: manylinux_x86_64
+
+            # macos intel x86-64
+          - os: macos-15-intel
+            cibw_platform: macosx_x86_64
+
+            # macos apple silicon arm64
+          - os: macos-14
+            cibw_platform: macosx_arm64
+
+            # windows x86-64
+          - os: windows-latest
+            cibw_platform: win_amd64
+
+
+    steps:
+
+        # fetch the repository
+      - name: Checkout qc-gbasis
+        uses: actions/checkout@v6
+        with:
+          # fetch full history so that cibuildwheel can find the version number from git tags
+          fetch-depth: 0
+          persist-credentials: false
+
+        # on windows, cibuildwheel builds directly on the runner, then install MinGW via MSYS2
+      - name: Setup MinGW
+        if: runner.os == 'Windows'
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+
+        # if windows, add MinGW to PATH so that cibuildwheel can find it
+      - name: Add MinGW to PATH
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+            "${{ steps.msys2.outputs.msys2-location }}\mingw64\bin" >> $env:GITHUB_PATH
+
+      - name: Check MinGW toolchain
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          gcc --version
+          g++ --version
+          cmake --version
+          mingw32-make --version
+
+      - name: Build and test wheel
+        uses: pypa/cibuildwheel@v4.2.1
+
+        env:
+          # build one wheel for each python/buildplat combination in the matrix above
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat.cibw_platform }}
+          CIBW_BUILD_VERBOSITY: "2"
+
+          # define test environment for the wheel after it is built
+          CIBW_TEST_EXTRAS: "dev,iodata"                    # install extras for testing the wheel
+          CIBW_TEST_SOURCES: "tests"                        # copy tests source
+          CIBW_TEST_COMMAND: pytest tests/
+
+          # define windows build environment
+          CIBW_ENVIRONMENT_WINDOWS: >-
+            CC=gcc
+            CXX=g++
+            CMAKE_GENERATOR="MinGW Makefiles"
+
+          # build linux x86_64 wheels with manylinux_2_28 image
+          CIBW_MANYLINUX_X86_64_IMAGE: "manylinux_2_28"
+
+        with:
+          # source directory for the package
+          package-dir: .
+          # destination folder for wheels
+          output-dir: wheels
+
+      - name: Show compiled wheels
+        shell: bash
+        run: |
+          echo "Built wheel:"
+          ls -lh wheels/
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: wheel-${{ matrix.python }}-${{ matrix.buildplat.cibw_platform }}
+          path: wheels/*.whl
+          # fail if wheels not created
+          if-no-files-found: error
+          # delete the artifact after 7 days
+          retention-days: 7
+
+
+  build_sdist:
+    name: source-distribution
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout qc-gbasis
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install build
+        run: python -m pip install build
+
+      - name: Build source distribution
+        run: python -m build --sdist --outdir dist
+
+      - name: Upload source distribution artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7

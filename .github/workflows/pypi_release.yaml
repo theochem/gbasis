@@ -1,20 +1,17 @@
-# This workflow is adapted from:
-# https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
-# Changes made:
-# - Removed emoticons
-# - Updated some actions to more recent versions
-# - Customized for the qc-gbasis repository
-
 name: PyPI Release
 on:
   push:
     tags:
       # Trigger on version tags (e.g., v1.0.0)
-      - "v[0-9].[0-9].[0-9]*"
-      - "[0-9].[0-9].[0-9]*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+"
       # Trigger on pre-release tags (e.g., v1.0.0-alpha.1)
-      - "v[0-9].[0-9].[0-9]*-*"
-      - "[0-9].[0-9].[0-9]*-*"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+      - "[0-9]+.[0-9]+.[0-9]+-*"
+
+# jobs that require additional permissions should declare them explicitly
+permissions:
+  contents: read
 
 env:
   # The name of the package to be published to PyPI and TestPyPI.
@@ -23,57 +20,50 @@ env:
 jobs:
   build:
     name: Build distribution
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-    - name: Install pypa/build
-      run: >-
-        python -m pip install build
-    - name: Build package
-      run: >-
-        python -m build
-    - name: Store the distribution packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
+    uses: ./.github/workflows/build_wheels.yaml
 
   publish-to-pypi:
     name: Publish Python distribution to PyPI
-    # only publish to PyPI on tag pushes
-    if: startsWith(github.ref, 'refs/tags/')
     needs:
       - build
+
     runs-on: ubuntu-latest
+
     environment:
       name: PyPI-Release
       url: https://pypi.org/project/${{ env.PYPI_NAME }}
+
+    # Required for PyPI Trusted Publishing.
     permissions:
       id-token: write
 
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Publish distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      env:
-        TWINE_USERNAME: "__token__"
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      - name: Download wheels
+        uses: actions/download-artifact@v8
+        # download all artifacts "wheel-*" and merge them into dist/
+        with:
+          pattern: wheel-*
+          path: dist/
+          merge-multiple: true
 
+      - name: Download source distribution
+        uses: actions/download-artifact@v8
+        with:
+          name: sdist
+          path: dist/
+      - name: Show distributions to be published
+        run: ls -lh dist/
+
+      - name: Publish distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+# create github release if PyPI publish is successful
   github-release:
-    name: Sign the Python distribution with Sigstore and upload them to GitHub Release
+    name: Create GitHub Release
+
     needs:
-    - publish-to-pypi
+      - publish-to-pypi
+
     runs-on: ubuntu-latest
 
     permissions:
@@ -81,57 +71,37 @@ jobs:
       id-token: write
 
     steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Sign the dists with Sigstore
-      uses: sigstore/gh-action-sigstore-python@v3.0.0
-      with:
-        inputs: >-
-          ./dist/*.tar.gz
-          ./dist/*.whl
-    - name: Create GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: >-
-        gh release create
-        '${{ github.ref_name }}'
-        --repo '${{ github.repository }}'
-        --notes ""
-    - name: Upload artifact signatures to GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: >-
-        gh release upload
-        '${{ github.ref_name }}' dist/**
-        --repo '${{ github.repository }}'
 
-  publish-to-testpypi:
-    name: Publish Python distribution to TestPyPI
-    # if: ${{ github.ref == 'refs/heads/master' && github.repository_owner == 'theochem' }}
-    needs:
-    - build
-    runs-on: ubuntu-latest
+      # download artifacts for this runner
+      - name: Download wheels
+        uses: actions/download-artifact@v8
+        with:
+          pattern: wheel-*
+          path: dist/
+          merge-multiple: true
 
-    environment:
-      name: TestPyPI
-      url: https://test.pypi.org/project/${{ env.PYPI_NAME }}
+      - name: Download source distribution
+        uses: actions/download-artifact@v8
+        with:
+          name: sdist
+          path: dist/
 
-    permissions:
-      id-token: write
+      - name: Sign distributions with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v3.5.0
+        with:
+          # sign only files listed
+          release-signing-artifacts: false
+          inputs: >-
+            ./dist/*.tar.gz
+            ./dist/*.whl
 
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Publish distribution to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
-      env:
-        TWINE_USERNAME: "__token__"
-        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create \
+            "${{ github.ref_name }}" \
+            dist/* \
+            --repo "${{ github.repository }}" \
+            --verify-tag \
+            --generate-notes
