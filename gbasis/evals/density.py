@@ -69,7 +69,7 @@ def evaluate_density(
     points,
     transform=None,
     threshold=1.0e-8,
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return the density of the given basis set at the given points.
@@ -104,8 +104,7 @@ def evaluate_density(
         The absolute value below which negative density values are acceptable. Any negative density
         value with an absolute value smaller than this threshold will be set to zero.
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -137,7 +136,7 @@ def evaluate_deriv_reduced_density_matrix(
     points,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return the derivative of the first-order reduced density matrix at the given points.
@@ -192,8 +191,7 @@ def evaluate_deriv_reduced_density_matrix(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -241,7 +239,7 @@ def evaluate_deriv_density(
     points,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return the derivative of density of the given transformed basis set at the given points.
@@ -291,8 +289,7 @@ def evaluate_deriv_density(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -357,7 +354,7 @@ def evaluate_density_gradient(
     points,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return the gradient of the density evaluated at the given points.
@@ -397,8 +394,7 @@ def evaluate_density_gradient(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -448,7 +444,7 @@ def evaluate_density_laplacian(
     points,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return the Laplacian of the density evaluated at the given points.
@@ -486,8 +482,7 @@ def evaluate_density_laplacian(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -565,7 +560,7 @@ def evaluate_density_hessian(
     points,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return the Hessian of the density evaluated at the given points.
@@ -611,8 +606,7 @@ def evaluate_density_hessian(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -719,7 +713,7 @@ def evaluate_posdef_kinetic_energy_density(
     transform=None,
     deriv_type="general",
     threshold=1.0e-8,
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return evaluations of positive definite kinetic energy density at the given points.
@@ -765,8 +759,7 @@ def evaluate_posdef_kinetic_energy_density(
         The absolute value below which negative density values are acceptable. Any negative density
         value with an absolute value smaller than this threshold will be set to zero.
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
@@ -808,7 +801,7 @@ def evaluate_general_kinetic_energy_density(
     alpha,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Return evaluations of general form of the kinetic energy density at the given points.
@@ -846,8 +839,7 @@ def evaluate_general_kinetic_energy_density(
         and "direct" makes reference to specific implementation of first and second order
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
