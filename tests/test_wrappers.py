@@ -2,7 +2,8 @@
 
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.wrappers import from_iodata, from_pyscf
+from gbasis.wrapper_iodata import from_iodata
+from gbasis.wrapper_pyscf import from_pyscf
 import numpy as np
 import pytest
 from utils import find_datafile
