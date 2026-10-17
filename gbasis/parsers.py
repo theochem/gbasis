@@ -166,6 +166,125 @@ def parse_gbs(gbs_basis_file):
     return output
 
 
+def parse_bse(basis_set, atoms=None):
+    """Parse a basis set from the Basis Set Exchange (BSE).
+
+    This function lazily imports the ``basis_set_exchange`` package and converts the
+    BSE representation into the same dictionary format returned by the other
+    parsers in this module (mapping element symbol to list of (angmom, exps, coeffs)).
+
+    Parameters
+    ----------
+    basis_set : str
+        Name of the basis set to fetch from BSE (e.g., "sto-3g", "6-31g").
+    atoms : list, optional
+        If provided, only elements in this list will be fetched. The list may contain
+        element atomic numbers (ints) or symbols (strs); it is passed directly to
+        ``basis_set_exchange.get_basis(..., elements=atoms)``.
+
+    Returns
+    -------
+    basis_dict : dict
+        Dictionary mapping element symbol to list of tuples (angmom, exps, coeffs).
+
+    Raises
+    ------
+    ImportError
+        If the ``basis_set_exchange`` package is not available.
+    ValueError
+        If an unexpected or missing layout is encountered in the BSE data.
+
+    """
+    # lazy import so that BSE is an optional dependency
+    try:
+        from basis_set_exchange import lut, get_basis
+    except Exception as exc:  # pragma: no cover - import depends on user env
+        raise ImportError(
+            "The 'basis_set_exchange' package is required for parse_bse."
+            " Install it with 'pip install basis-set-exchange'."
+        ) from exc
+
+    bse_res = get_basis(basis_set, elements=atoms)
+    if not isinstance(bse_res, dict):
+        raise ValueError("Unexpected response from basis_set_exchange.get_basis; expected dict.")
+
+    elements = bse_res.get("elements", bse_res)
+    if not elements:
+        raise ValueError(f"No basis data found for '{basis_set}'.")
+
+    output = {}
+    for atom_num_str, info in elements.items():
+        atom_symbol = lut.element_sym_from_Z(int(atom_num_str), normalize=True)
+
+        shells = info.get("electron_shells")
+        if not shells:
+            raise ValueError(f"No electron shells for element {atom_symbol} in '{basis_set}'.")
+
+        for shell in shells:
+            exps_raw = shell.get("exponents")
+            if not exps_raw:
+                raise ValueError(f"Empty exponents for element {atom_symbol} in '{basis_set}'.")
+            exponents = np.asarray(exps_raw, dtype=float)
+
+            # BSE stores angular_momentum as list of ints
+            ang_moms = shell.get("angular_momentum")
+            if not ang_moms:
+                # missing angular momentum or empty list is unexpected; raise concise layout error
+                raise ValueError(f"Unexpected coefficients layout for element {atom_symbol}")
+
+            for i, l in enumerate(ang_moms):
+                coeffs_raw = shell.get("coefficients")
+                if not coeffs_raw or len(coeffs_raw) <= i:
+                    raise ValueError(
+                        f"Unexpected coefficients layout for element {atom_symbol}, l={l}."
+                    )
+
+                coeffs_entry = coeffs_raw[i]
+                coeffs = np.asarray(coeffs_entry, dtype=float)
+
+                # Normalize to 2D array with shape (n_exponents, n_contractions).
+                # Accept scalars, 1D and 2D arrays and normalize them into
+                # (n_exponents, n_contractions) layout.
+                if coeffs.ndim == 0:
+                    # scalar -> single exponent, single contraction
+                    coeffs = coeffs.reshape(1, 1)
+                elif coeffs.ndim == 1:
+                    # 1D array must match number of exponents and is treated as
+                    # a single contraction (n_exponents,) -> (n_exponents, 1)
+                    if coeffs.shape[0] == exponents.shape[0]:
+                        coeffs = coeffs.reshape(-1, 1)
+                    else:
+                        raise ValueError(
+                            f"Coefficient/exponent mismatch for {atom_symbol} (l={l}): "
+                            f"{coeffs.shape[0]} coeffs vs {exponents.shape[0]} exponents"
+                        )
+                elif coeffs.ndim == 2:
+                    # Accept either (n_exponents, n_contractions) or the transposed
+                    # (n_contractions, n_exponents).
+                    if coeffs.shape[0] == exponents.shape[0]:
+                        pass
+                    elif coeffs.shape[1] == exponents.shape[0]:
+                        coeffs = coeffs.T
+                    else:
+                        raise ValueError(
+                            f"Coefficient/exponent mismatch for {atom_symbol} (l={l}): "
+                            f"{coeffs.shape[0]}x{coeffs.shape[1]} vs {exponents.shape[0]} exponents"
+                        )
+                else:
+                    raise ValueError(
+                        f"Unsupported coefficients ndim={coeffs.ndim} for {atom_symbol} (l={l})"
+                    )
+
+                if coeffs.shape[0] != exponents.shape[0]:
+                    raise ValueError(
+                        f"Coefficient/exponent mismatch for {atom_symbol} (l={l})"
+                    )
+
+                output.setdefault(atom_symbol, []).append((l, exponents, coeffs))
+
+    return output
+
+
 def make_contractions(basis_dict, atoms, coords, coord_types):
     """Return the contractions that correspond to the given atoms for the given basis.
 
