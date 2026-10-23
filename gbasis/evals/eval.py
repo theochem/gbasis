@@ -55,7 +55,7 @@ class Eval(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points, screen_basis, tol_screen):
+    def construct_array_contraction(contractions, points, *, screen_basis, tol_screen):
         r"""Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
