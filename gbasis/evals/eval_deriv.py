@@ -1,11 +1,14 @@
 """Functions for evaluating Gaussian primitives."""
 
+import numpy as np
+
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
-from gbasis.evals._deriv import _eval_deriv_contractions
-from gbasis.evals._deriv import _eval_first_second_order_deriv_contractions
+from gbasis.evals._deriv import (
+    _eval_deriv_contractions,
+    _eval_first_second_order_deriv_contractions,
+)
 from gbasis.screening import get_points_mask_for_contraction
-import numpy as np
 
 
 class EvalDeriv(BaseOneIndex):
@@ -58,7 +61,7 @@ class EvalDeriv(BaseOneIndex):
 
     @staticmethod
     def construct_array_contraction(
-        contractions, points, orders, deriv_type="general", screen_basis=True, tol_screen=1e-8
+        contractions, points, orders, deriv_type="general", *, screen_basis, tol_screen
     ):
         r"""Return the array associated with a set of contracted Cartesian Gaussians.
 
@@ -80,9 +83,8 @@ class EvalDeriv(BaseOneIndex):
             function (_eval_deriv_contractions()) and "direct" makes reference to specific
             implementation of first and second order derivatives for generalized
             contraction (_eval_first_second_order_deriv_contractions()).
-        screen_basis : bool, optional
-            Whether to screen out points that are too far from the contraction center. Default value
-            is True (enable screening).
+        screen_basis : bool
+            Whether to screen out points that are too far from the contraction center
         tol_screen : float
             Screening tolerance for excluding points. This value, together with the
             minimum contraction parameters, determines a cutoff distance. Points
@@ -177,7 +179,7 @@ def evaluate_deriv_basis(
     orders,
     transform=None,
     deriv_type="general",
-    screen_basis=True,
+    screen_basis=False,
     tol_screen=1e-8,
 ):
     r"""Evaluate the derivative of the basis set in the given coordinate system at the given points.
@@ -190,8 +192,8 @@ def evaluate_deriv_basis(
         \phi (\mathbf{r})
 
     where :math:`m_x, m_y, m_z` are the orders of the derivative with respect to x, y, and z,
-    :math:`\phi` is the basis function (a generalized contraction shell), and :math:`\mathbf{r}_n` are
-    the coordinate of the points in space where the basis function is evaluated.
+    :math:`\phi` is the basis function (a generalized contraction shell), and :math:`\mathbf{r}_n`
+    are the coordinate of the points in space where the basis function is evaluated.
 
     Parameters
     ----------
@@ -221,10 +223,10 @@ def evaluate_deriv_basis(
     screen_basis : bool, optional
         Whether to screen out points that are too far from the contractions center to contribute to
         the result above the given tolerance. Default value is True (enable screening).
-    tol_screen : float
+    tol_screen : float, optional
         Screening tolerance for excluding points. This value, together with the
         minimum contraction parameters, determines a cutoff distance. Points
-        farther than the cutoff are excluded from contraction evaluation.
+        farther than the cutoff are excluded from contraction evaluation. Default value is 1e-8.
 
     Returns
     -------

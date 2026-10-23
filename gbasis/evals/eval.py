@@ -68,7 +68,7 @@ class Eval(BaseOneIndex):
             functions are evaluated.
             Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
             components.
-        screen_basis : bool, optional
+        screen_basis : bool
             Whether to screen out points with negligible contributions.
         tol_screen : float
             Screening tolerance for excluding evaluations. Points with values below this tolerance
