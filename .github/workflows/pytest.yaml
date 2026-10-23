@@ -17,8 +17,9 @@ jobs:
       COVERAGE_TOTAL: 78
 
     strategy:
+      fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        os: ["ubuntu-24.04", "macos-latest", "windows-latest"]
         py: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
@@ -37,7 +38,7 @@ jobs:
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
           path-type: inherit
 
-      
+
 
       - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}
@@ -75,4 +76,4 @@ jobs:
           cp /mingw64/bin/libgcc_s_seh-1.dll gbasis/integrals/lib/ 2>/dev/null || true
           cp /mingw64/bin/libwinpthread-1.dll gbasis/integrals/lib/ 2>/dev/null || true
           cp /mingw64/bin/libstdc++-6.dll gbasis/integrals/lib/ 2>/dev/null || true
-          pytest tests/ -x --timeout=300 
+          pytest tests/ -x --timeout=300
