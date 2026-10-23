@@ -1,10 +1,10 @@
 """Functions for evaluating Gaussian contractions."""
+import numpy as np
 
 from gbasis.base_one import BaseOneIndex
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.evals._deriv import _eval_deriv_contractions
 from gbasis.screening import get_points_mask_for_contraction
-import numpy as np
 
 
 class Eval(BaseOneIndex):
@@ -163,8 +163,7 @@ def evaluate_basis(basis, points, transform=None, screen_basis=False, tol_screen
         and index 0 of the array for contractions.
         Default is no transformation.
     screen_basis : bool, optional
-        Whether to screen out points with negligible contributions. Default value is True
-        (enable screening).
+        Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
         Screening tolerance for excluding evaluations. Points with values below this tolerance
         will not be evaluated (they will be set to zero). Internal computed quantities that
