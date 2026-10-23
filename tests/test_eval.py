@@ -389,6 +389,6 @@ def test_evaluate_basis_screening_accuracy(precision):
 
     #  the screening tolerance needs to be 1e-4 times the desired precision
     tol_screen = precision * 1e-4
-    basis_evaluation = evaluate_basis(contraction, grid_3d, tol_screen=tol_screen)
+    basis_evaluation = evaluate_basis(contraction, grid_3d, screen_basis=True, tol_screen=tol_screen)
     basis_evaluation_no_screen = evaluate_basis(contraction, grid_3d, screen_basis=False)
     assert np.allclose(basis_evaluation, basis_evaluation_no_screen, atol=precision)
