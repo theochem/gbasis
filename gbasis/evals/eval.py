@@ -55,7 +55,7 @@ class Eval(BaseOneIndex):
     """
 
     @staticmethod
-    def construct_array_contraction(contractions, points, screen_basis=True, tol_screen=1e-8):
+    def construct_array_contraction(contractions, points, screen_basis, tol_screen):
         r"""Return the evaluations of the given contractions at the given coordinates.
 
         Parameters
@@ -69,13 +69,12 @@ class Eval(BaseOneIndex):
             Rows correspond to the points and columns correspond to the :math:`x, y, \text{and} z`
             components.
         screen_basis : bool, optional
-            Whether to screen out points with negligible contributions. Default value is True
-            (enable screening).
+            Whether to screen out points with negligible contributions.
         tol_screen : float
             Screening tolerance for excluding evaluations. Points with values below this tolerance
             will not be evaluated (they will be set to zero). Internal computed quantities that
             affect the results below this tolerance will also be ignored to speed up the
-            evaluation. Default value is 1e-8.
+            evaluation.
 
         Returns
         -------
@@ -145,7 +144,7 @@ class Eval(BaseOneIndex):
         return output
 
 
-def evaluate_basis(basis, points, transform=None, screen_basis=True, tol_screen=1e-8):
+def evaluate_basis(basis, points, transform=None, screen_basis=False, tol_screen=1e-8):
     r"""Evaluate the basis set in the given coordinate system at the given points.
 
     Parameters
