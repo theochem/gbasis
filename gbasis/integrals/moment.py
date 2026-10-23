@@ -155,7 +155,7 @@ class Moment(BaseTwoIndexSymmetric):
                     len(contractions_one.norm_prim_cart),
                     contractions_two.num_seg_cont,
                     len(contractions_two.norm_prim_cart),
-                    3,
+                    moment_orders.shape[0],
                 ),
                 dtype=np.float64,
             )

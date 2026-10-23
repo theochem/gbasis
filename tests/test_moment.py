@@ -332,7 +332,9 @@ def test_moment_screening_accuracy(precision):
     atsymbols = ["H", "C", "Kr"]
     atcoords = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
     contraction = make_contractions(basis_dict, atsymbols, atcoords, "cartesian")
-    order = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    order = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1],
+                      [2, 0, 0], [1, 1, 0], [1, 0, 1],
+                      [0, 2, 0], [0, 1, 1], [0, 0, 2]])
 
     #  the screening tolerance needs to be 1e-4 times the desired precision
     tol_screen = precision * 1e-4
