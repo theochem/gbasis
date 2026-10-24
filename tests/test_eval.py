@@ -92,7 +92,9 @@ def test_evaluate_basis_cartesian(screen_basis, tol_screen):
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "cartesian")
     evaluate_obj = Eval(basis)
     assert np.allclose(
-        evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
+        evaluate_obj.construct_array_cartesian(
+            points=np.array([[0, 0, 0]]), screen_basis=False, tol_screen=0.0
+        ),
         evaluate_basis(
             basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
         ),
@@ -110,7 +112,9 @@ def test_evaluate_basis_spherical(screen_basis, tol_screen):
     basis = make_contractions(basis_dict, ["H"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
-        evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
+        evaluate_obj.construct_array_cartesian(
+            points=np.array([[0, 0, 0]]), screen_basis=False, tol_screen=tol_screen
+        ),
         evaluate_basis(
             basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
         ),
@@ -120,7 +124,9 @@ def test_evaluate_basis_spherical(screen_basis, tol_screen):
     basis = make_contractions(basis_dict, ["Li"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
-        evaluate_obj.construct_array_cartesian(points=np.array([[0, 0, 0]])),
+        evaluate_obj.construct_array_cartesian(
+            points=np.array([[0, 0, 0]]), screen_basis=False, tol_screen=tol_screen
+        ),
         evaluate_basis(
             basis, np.array([[0, 0, 0]]), screen_basis=screen_basis, tol_screen=tol_screen
         ),
@@ -130,7 +136,9 @@ def test_evaluate_basis_spherical(screen_basis, tol_screen):
     basis = make_contractions(basis_dict, ["Kr"], np.array([[0, 0, 0]]), "spherical")
     evaluate_obj = Eval(basis)
     assert np.allclose(
-        evaluate_obj.construct_array_spherical(points=np.array([[1, 1, 1]])),
+        evaluate_obj.construct_array_spherical(
+            points=np.array([[1, 1, 1]]), screen_basis=False, tol_screen=tol_screen
+        ),
         evaluate_basis(
             basis, np.array([[1, 1, 1]]), screen_basis=screen_basis, tol_screen=tol_screen
         ),
@@ -222,7 +230,7 @@ def test_evaluate_basis_lincomb():
     transform = np.random.rand(14, 18)
     assert np.allclose(
         evaluate_obj.construct_array_lincomb(
-            transform, ["spherical"], points=np.array([[1, 1, 1]])
+            transform, ["spherical"], points=np.array([[1, 1, 1]]), screen_basis=False, tol_screen=0
         ),
         evaluate_basis(basis, np.array([[1, 1, 1]]), transform=transform, screen_basis=False),
     )
@@ -381,6 +389,6 @@ def test_evaluate_basis_screening_accuracy(precision):
 
     #  the screening tolerance needs to be 1e-4 times the desired precision
     tol_screen = precision * 1e-4
-    basis_evaluation = evaluate_basis(contraction, grid_3d, tol_screen=tol_screen)
+    basis_evaluation = evaluate_basis(contraction, grid_3d, screen_basis=True, tol_screen=tol_screen)
     basis_evaluation_no_screen = evaluate_basis(contraction, grid_3d, screen_basis=False)
     assert np.allclose(basis_evaluation, basis_evaluation_no_screen, atol=precision)
