@@ -222,7 +222,7 @@ def evaluate_deriv_basis(
         derivatives for generalized contraction (_eval_first_second_order_deriv_contractions()).
     screen_basis : bool, optional
         Whether to screen out points that are too far from the contractions center to contribute to
-        the result above the given tolerance. Default value is True (enable screening).
+        the result above the given tolerance. Default value is False.
     tol_screen : float, optional
         Screening tolerance for excluding points. This value, together with the
         minimum contraction parameters, determines a cutoff distance. Points

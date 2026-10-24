@@ -389,6 +389,42 @@ def test_evaluate_basis_screening_accuracy(precision):
 
     #  the screening tolerance needs to be 1e-4 times the desired precision
     tol_screen = precision * 1e-4
-    basis_evaluation = evaluate_basis(contraction, grid_3d, screen_basis=True, tol_screen=tol_screen)
+    basis_evaluation = evaluate_basis(
+        contraction, grid_3d, screen_basis=True, tol_screen=tol_screen
+    )
     basis_evaluation_no_screen = evaluate_basis(contraction, grid_3d, screen_basis=False)
     assert np.allclose(basis_evaluation, basis_evaluation_no_screen, atol=precision)
+
+
+def test_evaluate_basis_screening_disabled_by_default():
+    """Check that screening is disabled by default and enabled explicitly."""
+    alpha = 1.0
+    distance = 2.0
+    centers = [
+        np.array([0.0, 0.0, 0.0]),
+        np.array([distance, 0.0, 0.0]),
+    ]
+    # Two s-type Gaussians, one at the origin and one at (2, 0, 0).
+    basis = [
+        GeneralizedContractionShell(0, center, np.array([1.0]), np.array([alpha]), "cartesian")
+        for center in centers
+    ]
+    points = np.array(centers)
+
+    # Choose a tolerance that screens distant contributions.
+    norm = (2 * alpha / np.pi) ** 0.75
+    tail = norm * np.exp(-alpha * distance**2)
+    tol_screen = 2 * tail
+
+    default = evaluate_basis(basis, points, tol_screen=tol_screen)
+    unscreened = evaluate_basis(basis, points, screen_basis=False, tol_screen=tol_screen)
+    screened = evaluate_basis(basis, points, screen_basis=True, tol_screen=tol_screen)
+
+    np.testing.assert_array_equal(
+        default,
+        unscreened,
+        err_msg="Screening should be disabled by default.",
+    )
+    assert not np.array_equal(
+        screened, unscreened
+    ), "Screened evaluation should differ from unscreened evaluation"
