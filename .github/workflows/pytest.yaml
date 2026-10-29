@@ -4,6 +4,7 @@ on:
   push:
     branches:
      - main
+     - master
     tags-ignore:
       - '**'
   pull_request:
@@ -37,8 +38,6 @@ jobs:
           msystem: MINGW64
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
           path-type: inherit
-
-
 
       - name: Install old versions of supported dependencies
         if: ${{ matrix.py == '3.9'}}

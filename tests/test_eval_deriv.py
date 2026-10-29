@@ -1,4 +1,5 @@
 """Test gbasis.evals.evaluate_deriv."""
+
 import itertools as it
 
 from gbasis.contractions import GeneralizedContractionShell
@@ -20,31 +21,59 @@ def test_evaluate_deriv_construct_array_contraction():
     )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            points=[[2, 3, 4]], orders=orders, contractions=contractions
+            points=[[2, 3, 4]],
+            orders=orders,
+            contractions=contractions,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            points=points, orders=[0, 0, 0], contractions=contractions
+            points=points,
+            orders=[0, 0, 0],
+            contractions=contractions,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            points=points, orders=orders, contractions=contractions.__dict__
+            points=points,
+            orders=orders,
+            contractions=contractions.__dict__,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            points=points.reshape(3, 1), orders=orders, contractions=contractions
+            points=points.reshape(3, 1),
+            orders=orders,
+            contractions=contractions,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
     with pytest.raises(TypeError):
         EvalDeriv.construct_array_contraction(
-            points=points, orders=orders.reshape(1, 3), contractions=contractions
+            points=points,
+            orders=orders.reshape(1, 3),
+            contractions=contractions,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
     with pytest.raises(ValueError):
         EvalDeriv.construct_array_contraction(
-            points=points, orders=np.array([-1, 0, 0]), contractions=contractions
+            points=points,
+            orders=np.array([-1, 0, 0]),
+            contractions=contractions,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
     with pytest.raises(ValueError):
         EvalDeriv.construct_array_contraction(
-            points=points, orders=np.array([0.0, 0, 0]), contractions=contractions
+            points=points,
+            orders=np.array([0.0, 0, 0]),
+            contractions=contractions,
+            screen_basis=False,
+            tol_screen=1e-8,
         )
 
     # first order
@@ -82,7 +111,11 @@ def test_evaluate_deriv_construct_array_contraction():
         ).reshape(3, 1)
         assert np.allclose(
             EvalDeriv.construct_array_contraction(
-                points=np.array([[2, 3, 4]]), orders=orders, contractions=test
+                points=np.array([[2, 3, 4]]),
+                orders=orders,
+                contractions=test,
+                screen_basis=False,
+                tol_screen=1e-8,
             ),
             answer,
         )
@@ -122,7 +155,11 @@ def test_evaluate_deriv_construct_array_contraction():
         ).reshape(3, 1)
         assert np.allclose(
             EvalDeriv.construct_array_contraction(
-                points=np.array([[2, 3, 4]]), orders=orders, contractions=test
+                points=np.array([[2, 3, 4]]),
+                orders=orders,
+                contractions=test,
+                screen_basis=False,
+                tol_screen=1e-8,
             ),
             answer,
         )
@@ -135,13 +172,19 @@ def test_evaluate_deriv_basis_cartesian():
     evaluate_obj = EvalDeriv(basis)
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(
-            points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([0, 0, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
         evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])),
     )
     assert np.allclose(
         evaluate_obj.construct_array_cartesian(
-            points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([2, 1, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
         evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])),
     )
@@ -154,13 +197,19 @@ def test_evaluate_deriv_basis_spherical():
     evaluate_obj = EvalDeriv(basis)
     assert np.allclose(
         evaluate_obj.construct_array_spherical(
-            points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([0, 0, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
         evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), np.array([0, 0, 0])),
     )
     assert np.allclose(
         evaluate_obj.construct_array_spherical(
-            points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([2, 1, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
         evaluate_deriv_basis(basis, np.array([[1, 1, 1]]), np.array([2, 1, 0])),
     )
@@ -179,15 +228,35 @@ def test_evaluate_deriv_basis_mix():
     evaluate_obj_spherical = EvalDeriv(spherical_basis)
     assert np.allclose(
         evaluate_obj_cartesian.construct_array_mix(
-            ["cartesian"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            ["cartesian"] * 8,
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([0, 0, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
-        evaluate_deriv_basis(cartesian_basis, np.array([[1, 1, 1]]), np.array([0, 0, 0])),
+        evaluate_deriv_basis(
+            cartesian_basis,
+            np.array([[1, 1, 1]]),
+            np.array([0, 0, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
+        ),
     )
     assert np.allclose(
         evaluate_obj_spherical.construct_array_mix(
-            ["spherical"] * 8, points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            ["spherical"] * 8,
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([2, 1, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
-        evaluate_deriv_basis(spherical_basis, np.array([[1, 1, 1]]), np.array([2, 1, 0])),
+        evaluate_deriv_basis(
+            spherical_basis,
+            np.array([[1, 1, 1]]),
+            np.array([2, 1, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
+        ),
     )
 
 
@@ -202,20 +271,37 @@ def test_evaluate_deriv_basis_lincomb():
     sph_transform = np.random.rand(14, 18)
     assert np.allclose(
         evaluate_obj_cartesian.construct_array_lincomb(
-            cart_transform, ["cartesian"], points=np.array([[1, 1, 1]]), orders=np.array([0, 0, 0])
+            cart_transform,
+            ["cartesian"],
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([0, 0, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
         evaluate_deriv_basis(
             cartesian_basis,
             np.array([[1, 1, 1]]),
             np.array([0, 0, 0]),
             cart_transform,
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
     )
     assert np.allclose(
         evaluate_obj_spherical.construct_array_lincomb(
-            sph_transform, ["spherical"], points=np.array([[1, 1, 1]]), orders=np.array([2, 1, 0])
+            sph_transform,
+            ["spherical"],
+            points=np.array([[1, 1, 1]]),
+            orders=np.array([2, 1, 0]),
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
         evaluate_deriv_basis(
-            spherical_basis, np.array([[1, 1, 1]]), np.array([2, 1, 0]), sph_transform
+            spherical_basis,
+            np.array([[1, 1, 1]]),
+            np.array([2, 1, 0]),
+            sph_transform,
+            screen_basis=False,
+            tol_screen=1e-8,
         ),
     )
