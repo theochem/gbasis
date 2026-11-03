@@ -222,3 +222,24 @@ def test_momentum_screening_accuracy(precision):
     momentum = momentum_integral(contraction, tol_screen=tol_screen)
     momentum_no_screen = momentum_integral(contraction, screen_basis=False)
     assert np.allclose(momentum, momentum_no_screen, atol=precision)
+
+
+@pytest.mark.parametrize("coord_type", ["cartesian", "spherical"])
+def test_momentum_hermiticity_and_antisymmetry(coord_type):
+    """Test momentum matrices are strictly anti-symmetric, Hermitian, and real-eigenvalued."""
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    contractions = make_contractions(
+        basis_dict, ["C", "H"], np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 2.0]]), coord_type
+    )
+    p_mat = momentum_integral(contractions, screen_basis=False)
+
+    for k in range(3):
+        pk = p_mat[:, :, k]
+        # Anti-symmetry: P^T = -P
+        assert np.allclose(pk, -pk.T, atol=1e-12)
+        # Hermiticity: P^dagger = P
+        assert np.allclose(pk, pk.conj().T, atol=1e-12)
+        # Physical eigenvalues must be real
+        eigs = np.linalg.eigvals(pk)
+        assert np.allclose(eigs.imag, 0.0, atol=1e-12)
+
