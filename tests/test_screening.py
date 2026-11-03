@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.screening import is_two_index_overlap_screened, compute_primitive_upper_bound
-from gbasis.screening import compute_primitive_cutoff_radius, compute_contraction_upper_bond
+from gbasis.screening import compute_primitive_cutoff_radius, compute_contraction_upper_bound
 from gbasis.evals.eval_deriv import _eval_deriv_contractions
 from gbasis.utils import factorial2
 from utils import find_datafile
@@ -106,7 +106,7 @@ def test_compute_compute_primitive_upper_bound():
 
 @pytest.mark.skip(reason="The implementation fails for some reason")
 @pytest.mark.parametrize("deriv_order", [0, 2])
-def test_compute_contraction_upper_bond(deriv_order):
+def test_compute_contraction_upper_bound(deriv_order):
     """Test the computation of the contraction upper bound."""
 
     atcoord = np.array([[0.0, 0.0, 0.0]])
@@ -118,7 +118,7 @@ def test_compute_contraction_upper_bond(deriv_order):
 
     basis = get_atom_contractions_data("O", atcoord)
     for contractions in basis:
-        computed_upper_bound = compute_contraction_upper_bond(contractions, deriv_order=deriv_order)
+        computed_upper_bound = compute_contraction_upper_bound(contractions, deriv_order=deriv_order)
         alphas = contractions.exps
         prim_coeffs = contractions.coeffs
         angmom_comps = contractions.angmom_components_cart
