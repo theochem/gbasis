@@ -63,6 +63,13 @@ jobs:
         run: |
           jupyter-book build ./website/
 
+      # website/tutorial only exists as a soft link during the build, so point
+      # the "Launch on Colab" buttons to the notebooks' real location on GitHub
+      - name: Fix the Colab links of the tutorial notebooks
+        run: |
+          grep -rl --null "blob/master/website/tutorial/" website/_build/html \
+            | xargs -0 -r sed -i "s#blob/master/website/tutorial/#blob/master/notebooks/tutorial/#g"
+
       # Push the book's HTML to github-pages
       # inspired by https://github.com/orgs/community/discussions/26724
       # only push to gh-pages if the master branch has been updated
