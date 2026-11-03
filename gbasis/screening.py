@@ -109,18 +109,17 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
 
     Here, :math:`c` is the coefficient of the primitive Gaussian, :math:`\alpha` is its exponent,
     :math:`\ell` is the angular momentum quantum number, :math:`k` is the total order of the
-    derivative (0 for the function itself), and :math:`n` is the normalization factor given by:
+    derivative (0 for the function itself), and :math:`n` is the 3D normalization factor given by:
 
     .. math::
 
-        n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{1}{4}}
-            \frac{(4 \alpha)^{\frac{\ell}{2}}}{\sqrt{(2\ell + 1)!!}}
+        n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{3}{4}} (4 \alpha)^{\frac{\ell}{2}}
 
     The radial bound accounts for the polynomial factors arising from derivatives:
 
     .. math::
 
-        |\partial_x^p \partial_y^q \partial_z^r \chi(\mathbf{r})| \lesssim r^{\ell+k} e^{-\alpha r^2},
+        |\partial_x^p \partial_y^q \partial_z^r \chi(\mathbf{r})| \lesssim (2\alpha)^k r^{\ell+k} e^{-\alpha r^2},
         \quad k = p+q+r
 
     Parameters
@@ -142,8 +141,9 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
         The cutoff radius at which the radial bound of the Gaussian (or its derivative) drops below
         the specified tolerance.
     """
-    # Compute normalization factor n for the primitive Gaussian
-    n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
+    c = np.abs(c)
+    # Compute 3D normalization factor n for the primitive Gaussian
+    n = (2 * alpha / np.pi) ** 0.75 * (4 * alpha) ** (angm / 2)
 
     # effective angular momentum including derivative order
     eff_angm = angm + deriv_order
@@ -152,19 +152,77 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
 
     # special case for effective angular momentum 0. Solution found using logarithm
     if eff_angm == 0:
-        return np.sqrt(-np.log(eff_tol_screen / (c * n)) / alpha)
+        val_ratio = eff_tol_screen / (c * n)
+        if np.all(val_ratio >= 1.0):
+            return 0.0 if np.isscalar(val_ratio) else np.zeros_like(val_ratio)
+        return np.sqrt(-np.log(val_ratio) / alpha)
     # general case for effective angular momentum > 0. Solution found in terms of the Lambert W
     # function W_{-1} branch corresponds to the outermost solution
     lambert_input_value = -2 * alpha * (eff_tol_screen / (c * n)) ** (2 / eff_angm) / eff_angm
     return np.sqrt(-(eff_angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)
 
-# TODO: Fix this, it fails for some reason, it is needed for screening of 1rdms
+
+# Maximum dimensionless product C(ax, kx) * C(ay, ky) * C(az, kz)
+# over ax + ay + az = angm and kx + ky + kz = deriv_order,
+# where C(a, k) = max_u | 2^a / sqrt((2a-1)!!) * d^k/du^k [u^a exp(-u^2)] |.
+_DIMENSIONLESS_MAX_C = {
+    (0, 0): 1.000000000000,
+    (0, 1): 0.857763884961,
+    (0, 2): 2.000000000000,
+    (0, 3): 3.903566132919,
+    (0, 4): 12.000000000000,
+    (1, 0): 0.857763884961,
+    (1, 1): 2.000000000000,
+    (1, 2): 3.903566132919,
+    (1, 3): 12.000000000000,
+    (1, 4): 32.713910049089,
+    (2, 0): 1.471517764686,
+    (2, 1): 3.279330231535,
+    (2, 2): 8.661458127143,
+    (2, 3): 25.957555738331,
+    (2, 4): 86.032054139669,
+    (3, 0): 3.279330231535,
+    (3, 1): 8.661458127143,
+    (3, 2): 25.957555738331,
+    (3, 3): 86.032054139669,
+    (3, 4): 310.039792967788,
+    (4, 0): 8.661458127143,
+    (4, 1): 25.957555738331,
+    (4, 2): 86.032054139669,
+    (4, 3): 310.039792967788,
+    (4, 4): 1200.333710212083,
+    (5, 0): 25.957555738331,
+    (5, 1): 86.032054139669,
+    (5, 2): 310.039792967788,
+    (5, 3): 1200.333710212083,
+    (5, 4): 4947.674318615531,
+    (6, 0): 86.032054139669,
+    (6, 1): 310.039792967788,
+    (6, 2): 1200.333710212083,
+    (6, 3): 4947.674318615531,
+    (6, 4): 21561.430397073495,
+}
+
+
+def _get_dimensionless_max_c(angm, deriv_order):
+    """Return the maximum dimensionless envelope factor for (angm, deriv_order)."""
+    if (angm, deriv_order) in _DIMENSIONLESS_MAX_C:
+        return _DIMENSIONLESS_MAX_C[(angm, deriv_order)] * (1.0 + 1e-12)
+    if deriv_order == 0:
+        return 1.0 * (1.0 + 1e-12)
+    # Safe upper bound for higher angular momentum or derivative orders:
+    factor = 1.0
+    for j in range(1, deriv_order + 1):
+        factor *= 2.0 * (angm + j)
+    return factor * (1.0 + 1e-12)
+
+
 def compute_contraction_upper_bound(contractions, deriv_order):
     r"""Compute an upper bound for a contraction or its derivatives for any point.
 
     The upper bound for a contraction or its Cartesian derivative at any point is given by the
-    maximum upper bound of its constituent primitive Gaussians or their derivatives (see
-    `compute_primitive_upper_bound`).
+    sum of upper bounds of its constituent primitive Gaussians or their derivatives (see
+    :func:`compute_primitive_upper_bound`).
 
     Parameters
     ----------
@@ -184,10 +242,11 @@ def compute_contraction_upper_bound(contractions, deriv_order):
     # use absolute value (indicating magnitude) of primitive contributions
     coeffs = np.abs(contractions.coeffs)  # shape (K, M)
 
-    # compute cutoff radius for all primitives in all contractions
+    # compute upper bounds for all primitives in all contractions
     upper_bounds = compute_primitive_upper_bound(coeffs, exps, angm, deriv_order)
 
-    return np.sum(upper_bounds)
+    # Sum over primitives (axis 0), and take the maximum over segmented contractions (axis 1)
+    return float(np.max(np.sum(upper_bounds, axis=0)))
 
 
 def compute_contraction_upper_bond(contractions, deriv_order):
@@ -196,32 +255,25 @@ def compute_contraction_upper_bond(contractions, deriv_order):
 
 
 def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
-    r"""Compute an upper bound for a primitive Gaussian or its derivatives at a distance r.
+    r"""Compute an upper bound for a primitive Gaussian or its derivatives at any point.
 
-    The upper bound for a primitive Gaussian or its Cartesian derivative at a distance r from its
-    center is given by:
+    The upper bound for a 3D Cartesian primitive Gaussian or its Cartesian derivative of total
+    order :math:`k` at any point in space is bounded by:
 
     .. math::
-        U(r) =  |c| n  (2 \alpha)^{k} r^{\ell + k}e^{-\alpha r^2}
 
-    where :math:`c` is the coefficient of the primitive Gaussian, :math:`\alpha` is its exponent,
-    :math:`\ell` is the angular momentum quantum number, :math:`k` is the total order of the
-    derivative (0 for the function itself), and :math:`n` is the normalization factor given by:
-    .. math::
+        \max_{\mathbf{r}} |\partial^k g(\mathbf{r})| \le |c| \left(\frac{2\alpha}{\pi}\right)^{3/4}
+        \alpha^{k/2} C(\ell, k)
 
-        n = \left( \frac{2 \alpha}{\pi} \right)^{\frac{1}{4}}
-            \frac{(4 \alpha)^{\frac{\ell}{2}}}{\sqrt{(2\ell + 1)!!}}
-
-    The primitive upper bound is then:
-    .. math::
-        max(U(r)) = |c| n (2 \alpha)^{\frac{k - \ell}{2}}
-        (\ell + k)^{\frac{\ell + k}{2}} e^{-\frac{\ell + k}{2}}
+    where :math:`c` is the contraction coefficient, :math:`\alpha` is the Gaussian exponent,
+    :math:`\ell` is the angular momentum, and :math:`C(\ell, k)` is the maximum dimensionless
+    envelope factor across all Cartesian angular momentum components and derivative partitions.
 
     Parameters
     ----------
-    c : float
+    c : float or np.ndarray
         Coefficient of the primitive Gaussian.
-    alpha : float
+    alpha : float or np.ndarray
         Exponent :math:`\alpha` of the primitive Gaussian.
     angm : int
         Angular momentum quantum number :math:`\ell` of the primitive Gaussian.
@@ -230,22 +282,11 @@ def compute_primitive_upper_bound(c, alpha, angm, deriv_order):
 
     Returns
     -------
-    float
+    float or np.ndarray
         An upper bound for the absolute value of the primitive Gaussian or its derivative at any
         point.
     """
-    # Compute normalization factor n for the primitive Gaussian
-    n = (2 * alpha / np.pi) ** 0.25 * (4 * alpha) ** (angm / 2) / np.sqrt(factorial2(2 * angm + 1))
-
-    if angm + deriv_order == 0:
-        return np.abs(c) * n
-
-    # compute logarithm of the upper bound to avoid over/underflow
-    up_log = (
-        np.log(np.abs(c) * n)
-        + (deriv_order - angm) / 2 * np.log(2 * alpha)
-        + (deriv_order + angm) / 2 * np.log(deriv_order + angm)
-        - (deriv_order + angm) / 2
-    )
-
-    return np.exp(up_log)
+    prefactor = _get_dimensionless_max_c(angm, deriv_order)
+    n_3d = (2.0 * alpha / np.pi) ** 0.75
+    alpha_term = alpha ** (deriv_order / 2.0) if deriv_order > 0 else 1.0
+    return np.abs(c) * n_3d * alpha_term * prefactor
