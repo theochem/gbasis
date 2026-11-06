@@ -231,3 +231,50 @@ def test_electrostatic_potential_mix():
         ),
         horton_nucattract,
     )
+
+
+def test_electrostatic_potential_threshold_dist():
+    """Test threshold_dist properly discards nuclei based on Euclidean distance."""
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
+    # Diatomic with C (Z=6) at origin and H (Z=1) at (2.0, 0, 0)
+    coords = np.array([[0.0, 0.0, 0.0], [2.0, 0.0, 0.0]])
+    charges = np.array([6.0, 1.0])
+    basis = make_contractions(basis_dict, ["C", "H"], coords, "cartesian")
+    basis = [
+        HortonContractions(i.angmom, i.coord, i.coeffs, i.exps, i.coord_type)
+        for i in basis
+    ]
+    dm = np.identity(sum(c.num_cart for c in basis))
+
+    # Point 1: at (1.5, 0, 0), distances are 1.5 to C and 0.5 to H
+    # With threshold_dist = 0.4, neither nucleus should be discarded
+    pt_mid = np.array([[1.5, 0.0, 0.0]])
+    esp_full = electrostatic_potential(basis, dm, pt_mid, coords, charges, threshold_dist=0.0)
+    esp_thresh_none = electrostatic_potential(
+        basis, dm, pt_mid, coords, charges, threshold_dist=0.4
+    )
+    assert np.allclose(esp_full, esp_thresh_none)
+
+    # Point 2: at (0.2, 0, 0), distance is 0.2 to C and 1.8 to H
+    # With threshold_dist = 0.5, C (dist=0.2 < 0.5) is discarded, H (dist=1.8 > 0.5) is kept
+    pt_near_c = np.array([[0.2, 0.0, 0.0]])
+    esp_c_full = electrostatic_potential(
+        basis, dm, pt_near_c, coords, charges, threshold_dist=0.0
+    )
+    esp_c_thresh = electrostatic_potential(
+        basis, dm, pt_near_c, coords, charges, threshold_dist=0.5
+    )
+    # Difference should be exactly C's nuclear contribution: 6.0 / 0.2 = 30.0 Ha
+    assert np.allclose(esp_c_full - esp_c_thresh, np.array([30.0]))
+
+    # Point 3: at (1.9, 0, 0), distance is 1.9 to C and 0.1 to H
+    # With threshold_dist = 0.5, H (dist=0.1 < 0.5) is discarded, C (dist=1.9 > 0.5) is kept
+    pt_near_h = np.array([[1.9, 0.0, 0.0]])
+    esp_h_full = electrostatic_potential(
+        basis, dm, pt_near_h, coords, charges, threshold_dist=0.0
+    )
+    esp_h_thresh = electrostatic_potential(
+        basis, dm, pt_near_h, coords, charges, threshold_dist=0.5
+    )
+    # Difference should be exactly H's nuclear contribution: 1.0 / 0.1 = 10.0 Ha
+    assert np.allclose(esp_h_full - esp_h_thresh, np.array([10.0]))
