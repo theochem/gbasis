@@ -153,13 +153,25 @@ def compute_primitive_cutoff_radius(c, alpha, angm, deriv_order, tol_screen):
     # special case for effective angular momentum 0. Solution found using logarithm
     if eff_angm == 0:
         val_ratio = eff_tol_screen / (c * n)
-        if np.all(val_ratio >= 1.0):
-            return 0.0 if np.isscalar(val_ratio) else np.zeros_like(val_ratio)
-        return np.sqrt(-np.log(val_ratio) / alpha)
+        if np.isscalar(val_ratio):
+            return 0.0 if val_ratio >= 1.0 else np.sqrt(-np.log(val_ratio) / alpha)
+        safe_ratio = np.minimum(val_ratio, 1.0)
+        return np.where(val_ratio >= 1.0, 0.0, np.sqrt(-np.log(safe_ratio) / alpha))
+
     # general case for effective angular momentum > 0. Solution found in terms of the Lambert W
     # function W_{-1} branch corresponds to the outermost solution
     lambert_input_value = -2 * alpha * (eff_tol_screen / (c * n)) ** (2 / eff_angm) / eff_angm
-    return np.sqrt(-(eff_angm / (2 * alpha)) * lambertw(lambert_input_value, k=-1).real)
+    inv_e = -1.0 / np.e
+    if np.isscalar(lambert_input_value):
+        if lambert_input_value <= inv_e:
+            return 0.0
+        w = lambertw(lambert_input_value, k=-1).real
+        return float(np.sqrt(np.maximum(-(eff_angm / (2 * alpha)) * w, 0.0)))
+
+    safe_z = np.maximum(lambert_input_value, inv_e)
+    w = lambertw(safe_z, k=-1).real
+    r = np.sqrt(np.maximum(-(eff_angm / (2 * alpha)) * w, 0.0))
+    return np.where(lambert_input_value <= inv_e, 0.0, r)
 
 
 # Maximum dimensionless product C(ax, kx) * C(ay, ky) * C(az, kz)
@@ -169,13 +181,13 @@ _DIMENSIONLESS_MAX_C = {
     (0, 0): 1.000000000000,
     (0, 1): 0.857763884961,
     (0, 2): 2.000000000000,
-    (0, 3): 3.903566132919,
+    (0, 3): 3.903566146000,
     (0, 4): 12.000000000000,
     (1, 0): 0.857763884961,
     (1, 1): 2.000000000000,
-    (1, 2): 3.903566132919,
+    (1, 2): 3.903566146000,
     (1, 3): 12.000000000000,
-    (1, 4): 32.713910049089,
+    (1, 4): 32.713910400000,
     (2, 0): 1.471517764686,
     (2, 1): 3.279330231535,
     (2, 2): 8.661458127143,

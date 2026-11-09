@@ -134,9 +134,35 @@ def test_compute_contraction_upper_bound(deriv_order):
                 points, orders, center, angmom_comps, alphas, prim_coeffs, norm_prim_cart
             )
             max_contraction_values = np.max(np.abs(contraction_values))
-            assert max_contraction_values <= computed_upper_bound or np.isclose(
-                max_contraction_values, computed_upper_bound, rtol=1e-12, atol=1e-12
-            ), (
+            assert max_contraction_values <= computed_upper_bound, (
                 f"Contraction values exceed the computed upper bound: "
                 f"{max_contraction_values} > {computed_upper_bound}"
             )
+
+
+def test_compute_primitive_cutoff_radius_array_inputs():
+    """Test compute_primitive_cutoff_radius with array inputs where some ratios >= 1."""
+    c = np.array([1.0, 0.01])
+    alpha = np.array([1.0, 1.0])
+
+    # angm = 0
+    r0 = compute_primitive_cutoff_radius(c, alpha, angm=0, deriv_order=0, tol_screen=0.5)
+    assert not np.any(np.isnan(r0))
+    assert r0[1] == 0.0
+    assert r0[0] > 0.0
+
+    # angm = 1
+    r1 = compute_primitive_cutoff_radius(c, alpha, angm=1, deriv_order=0, tol_screen=0.5)
+    assert not np.any(np.isnan(r1))
+    assert r1[1] == 0.0
+    assert r1[0] > 0.0
+
+    # 2D array input (e.g. from contractions.coeffs of shape (K, M))
+    c_2d = np.array([[1.0, 0.01], [0.005, 2.0]])
+    alpha_2d = np.array([[1.0, 1.0], [2.0, 2.0]])
+    r_2d = compute_primitive_cutoff_radius(c_2d, alpha_2d, angm=0, deriv_order=0, tol_screen=0.5)
+    assert not np.any(np.isnan(r_2d))
+    assert r_2d[0, 1] == 0.0
+    assert r_2d[1, 0] == 0.0
+    assert r_2d[0, 0] > 0.0
+    assert r_2d[1, 1] > 0.0
