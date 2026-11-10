@@ -21,6 +21,9 @@ from gbasis.integrals._two_elec_int_improved import (
 )
 from gbasis.integrals.electron_repulsion import (
     ElectronRepulsionIntegralImproved,
+    _SCHWARZ_SCREENER_CACHE_MAX,
+    _schwarz_screener_cache,
+    clear_schwarz_screener_cache,
     electron_repulsion_integral_improved,
 )
 from gbasis.integrals.point_charge import PointChargeIntegral
@@ -778,3 +781,48 @@ class TestSchwarzScreening:
             basis, notation="chemist", schwarz_threshold=1e-10
         )
         assert np.all(np.isfinite(result))
+
+    def test_schwarz_screener_cache_is_reused_and_capped(self):
+        """Same shells and threshold reuse one screener, and old entries are dropped."""
+        clear_schwarz_screener_cache()
+        shells = [
+            GeneralizedContractionShell(
+                0,
+                np.array([float(i), 0.0, 0.0]),
+                np.array([[1.0]]),
+                np.array([1.0]),
+                "cartesian",
+            )
+            for i in range(_SCHWARZ_SCREENER_CACHE_MAX + 1)
+        ]
+        threshold = 1e-8
+
+        def run(shell):
+            electron_repulsion_integral_improved(
+                [shell], notation="chemist", schwarz_threshold=threshold
+            )
+
+        run(shells[0])
+        run(shells[1])
+        run(shells[0])
+        key0 = ((id(shells[0]),), threshold)
+        screener = _schwarz_screener_cache[key0]
+        run(shells[0])
+        assert _schwarz_screener_cache[key0] is screener
+        for shell in shells[2:]:
+            run(shell)
+        assert len(_schwarz_screener_cache) == _SCHWARZ_SCREENER_CACHE_MAX
+        assert key0 in _schwarz_screener_cache
+        assert ((id(shells[1]),), threshold) not in _schwarz_screener_cache
+        clear_schwarz_screener_cache()
+        assert len(_schwarz_screener_cache) == 0
+        electron_repulsion_integral_improved(
+            [shells[0]], notation="chemist", schwarz_threshold=threshold
+        )
+        electron_repulsion_integral_improved(
+            [shells[0]], notation="chemist", schwarz_threshold=1e-4
+        )
+        assert _schwarz_screener_cache[((id(shells[0]),), threshold)] is not (
+            _schwarz_screener_cache[((id(shells[0]),), 1e-4)]
+        )
+        clear_schwarz_screener_cache()
