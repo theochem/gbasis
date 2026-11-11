@@ -4,7 +4,7 @@ import numpy as np
 
 
 def nuclear_electron_attraction_integral(basis, nuclear_coords, nuclear_charges, transform=None):
-    """Return the nuclear electron attraction integrals of the basis set in the Cartesian form.
+    r"""Return the nuclear electron attraction integrals of the basis set in the Cartesian form.
 
     .. math::
 
