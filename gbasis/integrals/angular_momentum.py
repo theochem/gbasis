@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from gbasis.base_two_symm import BaseTwoIndexSymmetric
+from gbasis.base_two_antisymm import BaseTwoIndexAntiSymmetric
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals._diff_operator_int import (
     _compute_differential_operator_integrals_intermediate,
@@ -12,7 +12,7 @@ from gbasis.screening import is_two_index_overlap_screened
 
 
 # TODO: need to test against reference
-class AngularMomentumIntegral(BaseTwoIndexSymmetric):
+class AngularMomentumIntegral(BaseTwoIndexAntiSymmetric):
     """Class for obtaining the angular momentum integral for a set of Gaussian contractions.
 
     Attributes
