@@ -1,5 +1,7 @@
 """Test gbasis.wrapper."""
 
+import copy
+
 from gbasis.contractions import GeneralizedContractionShell
 from gbasis.parsers import make_contractions, parse_nwchem
 from gbasis.wrappers import from_iodata, from_pyscf
@@ -14,6 +16,10 @@ def test_from_iodata():
     from iodata import load_one
 
     mol = load_one(find_datafile("data_iodata_water_sto3g_hf_g03.fchk"))
+    # The conventions of the basis set are shared with all the other molecules that are loaded
+    # from the same format, and this test changes them. Work on a copy, so that the other tests
+    # do not depend on the order in which they are run.
+    mol = copy.deepcopy(mol)
 
     basis = from_iodata(mol)
     coord_types = [type for type in [shell.coord_type for shell in basis]]
