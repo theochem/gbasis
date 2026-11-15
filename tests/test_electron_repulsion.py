@@ -365,3 +365,56 @@ class TestImprovedSymmetries:
         n = integrals.shape[0]
         for i in range(n):
             assert integrals[i, i, i, i] > 0, f"Diagonal (ii|ii) not positive for i={i}"
+
+
+H_COORD = np.array([0.0, 0.0, 0.0])
+CL_COORD = np.array([0.3, -0.2, 2.4])
+
+
+@pytest.mark.parametrize(
+    "cls", [ElectronRepulsionIntegral, ElectronRepulsionIntegralImproved], ids=["old", "improved"]
+)
+def test_tight_s_in_bra_and_diffuse_d_in_ket_primitives(cls):
+    """Test a quartet whose bra has a much larger exponent sum than its ket.
+
+    The primitives are d on H, the tightest s on Cl (cc-pVTZ), and two d on Cl. The reference value
+    is the largest element of the same normalized integral from PySCF. The electron transfer
+    recursion used to be off by 4e3 for this quartet.
+    """
+    conts = [
+        GeneralizedContractionShell(2, H_COORD, np.array([1.0]), np.array([1.057]), "cartesian"),
+        GeneralizedContractionShell(0, CL_COORD, np.array([1.0]), np.array([4.561e5]), "cartesian"),
+        GeneralizedContractionShell(2, CL_COORD, np.array([1.0]), np.array([0.344]), "cartesian"),
+        GeneralizedContractionShell(2, CL_COORD, np.array([1.0]), np.array([0.344]), "cartesian"),
+    ]
+    integrals = cls.construct_array_contraction(*conts)
+    assert integrals.shape == (1, 6, 1, 1, 1, 6, 1, 6)
+    assert np.max(np.abs(integrals)) == pytest.approx(2.332134867280155e-06, rel=1e-8)
+    swapped = cls.construct_array_contraction(conts[2], conts[3], conts[0], conts[1])
+    np.testing.assert_allclose(
+        integrals, np.transpose(swapped, (4, 5, 6, 7, 0, 1, 2, 3)), rtol=1e-8, atol=1e-18
+    )
+
+
+@pytest.mark.parametrize(
+    "cls", [ElectronRepulsionIntegral, ElectronRepulsionIntegralImproved], ids=["old", "improved"]
+)
+def test_schwarz_inequality_with_tight_and_diffuse_primitives(cls):
+    """Test |(ab|cd)| <= sqrt((ab|ab) (cd|cd)) for very different exponents."""
+    exps_s = np.array([4.561e5, 6.833e4, 1.555e4, 4.405e3, 1.439e3, 5.204e2, 2.031e2, 83.96])
+    coeffs_s = np.array([4.0e-4, 2.0e-3, 8.4e-3, 2.95e-2, 8.78e-2, 2.115e-1, 3.654e-1, 3.409e-1])
+    basis = [
+        GeneralizedContractionShell(2, H_COORD, np.array([1.0]), np.array([1.057]), "cartesian"),
+        GeneralizedContractionShell(0, CL_COORD, coeffs_s, exps_s, "cartesian"),
+        GeneralizedContractionShell(
+            1, CL_COORD, np.array([1.0, 0.5]), np.array([20.0, 0.5]), "cartesian"
+        ),
+        GeneralizedContractionShell(2, CL_COORD, np.array([1.0]), np.array([0.344]), "cartesian"),
+    ]
+    integrals = cls(basis).construct_array_cartesian()
+    diagonal = np.sqrt(np.abs(np.einsum("abab->ab", integrals)))
+    bound = diagonal[:, :, None, None] * diagonal[None, None, :, :]
+    assert np.all(np.abs(integrals) <= bound * (1 + 1e-8) + 1e-14)
+    np.testing.assert_allclose(
+        integrals, np.transpose(integrals, (2, 3, 0, 1)), rtol=1e-8, atol=1e-14
+    )
