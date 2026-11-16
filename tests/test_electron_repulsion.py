@@ -12,6 +12,7 @@ from gbasis.contractions import GeneralizedContractionShell
 from gbasis.integrals.electron_repulsion import (
     ElectronRepulsionIntegral,
     ElectronRepulsionIntegralImproved,
+    _schwarz_screener_cache,
     electron_repulsion_integral,
     electron_repulsion_integral_improved,
 )
@@ -418,3 +419,54 @@ def test_schwarz_inequality_with_tight_and_diffuse_primitives(cls):
     np.testing.assert_allclose(
         integrals, np.transpose(integrals, (2, 3, 0, 1)), rtol=1e-8, atol=1e-14
     )
+
+
+def test_schwarz_bounds_with_tight_and_diffuse_primitives():
+    """Test that the Schwarz bounds are the square roots of the largest (ab|ab) integrals."""
+
+    def normalized(shell):
+        """Return the shell with contraction coefficients that give a normalized contraction."""
+        return GeneralizedContractionShell(
+            shell.angmom,
+            shell.coord,
+            shell.coeffs[:, 0] * shell.norm_cont[0, 0],
+            shell.exps,
+            "cartesian",
+        )
+
+    # the s contraction of Cl in cc-pVTZ, from the tightest to the most diffuse primitive
+    exps_s = np.array(
+        [
+            4.561e5, 6.833e4, 1.555e4, 4.405e3, 1.439e3, 5.204e2, 2.031e2,
+            83.96, 36.2, 15.83, 6.334, 2.694, 0.4313,
+        ]
+    )  # fmt: skip
+    coeffs_s = np.array(
+        [
+            2.0e-5, 4.0e-4, 2.0e-3, 8.4e-3, 2.95e-2, 8.78e-2, 2.115e-1,
+            3.654e-1, 3.409e-1, 1.021e-1, 3.1e-3, 1.1e-3, 2.0e-4,
+        ]
+    )  # fmt: skip
+    basis = [
+        GeneralizedContractionShell(2, H_COORD, np.array([1.0]), np.array([1.057]), "cartesian"),
+        normalized(GeneralizedContractionShell(0, CL_COORD, coeffs_s, exps_s, "cartesian")),
+        normalized(
+            GeneralizedContractionShell(
+                1, CL_COORD, np.array([1.0, 0.5]), np.array([20.0, 0.5]), "cartesian"
+            )
+        ),
+        GeneralizedContractionShell(2, CL_COORD, np.array([1.0]), np.array([0.344]), "cartesian"),
+    ]
+    integrals = ElectronRepulsionIntegralImproved(basis).construct_array_cartesian()
+    offsets = np.cumsum([0] + [len(shell.angmom_components_cart) for shell in basis])
+    expected = np.zeros((len(basis), len(basis)))
+    for i in range(len(basis)):
+        for j in range(len(basis)):
+            block_i = slice(offsets[i], offsets[i + 1])
+            block_j = slice(offsets[j], offsets[j + 1])
+            expected[i, j] = np.sqrt(np.max(np.abs(integrals[block_i, block_j, block_i, block_j])))
+
+    # the screener that is made by electron_repulsion_integral_improved
+    electron_repulsion_integral_improved(basis, schwarz_threshold=1e-12)
+    screener = _schwarz_screener_cache[(tuple(id(shell) for shell in basis), 1e-12)]
+    np.testing.assert_allclose(screener.bounds, expected, rtol=1e-8)

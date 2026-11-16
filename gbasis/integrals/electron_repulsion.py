@@ -121,6 +121,26 @@ def _compute_two_elec_stable(compute, shell_a, shell_b, shell_c, shell_d):
     return total
 
 
+def _compute_two_electron_integrals_os_hgp_stable(boys_func, *args):
+    """Return the OS+HGP two-electron integrals of four contractions with a stable recursion.
+
+    This has the same arguments and result as `compute_two_electron_integrals_os_hgp`, i.e. the
+    Boys function followed by the coordinate, angular momentum, angular momentum components,
+    exponents and contraction coefficients of each of the four contractions. It is used for the
+    Schwarz bounds, which are integrals of the form (ab|ab) and have the same problem when the
+    primitives of the contractions have very different exponents.
+
+    """
+
+    def compute(shell_a, shell_b, shell_c, shell_d):
+        return compute_two_electron_integrals_os_hgp(
+            boys_func, *shell_a, *shell_b, *shell_c, *shell_d
+        )
+
+    shells = [args[5 * i : 5 * i + 5] for i in range(4)]
+    return _compute_two_elec_stable(compute, *shells)
+
+
 class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
     """Class for constructing electron-electron repulsion integrals.
 
@@ -298,27 +318,7 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
 
             def compute(shell_a, shell_b, shell_c, shell_d):
                 return _compute_two_elec_integrals(
-                    cls.boys_func,
-                    shell_a[0],
-                    shell_a[1],
-                    shell_a[2],
-                    shell_a[3],
-                    shell_a[4],
-                    shell_b[0],
-                    shell_b[1],
-                    shell_b[2],
-                    shell_b[3],
-                    shell_b[4],
-                    shell_c[0],
-                    shell_c[1],
-                    shell_c[2],
-                    shell_c[3],
-                    shell_c[4],
-                    shell_d[0],
-                    shell_d[1],
-                    shell_d[2],
-                    shell_d[3],
-                    shell_d[4],
+                    cls.boys_func, *shell_a, *shell_b, *shell_c, *shell_d
                 )
 
             integrals = _compute_two_elec_stable(compute, *shell_args)
@@ -589,7 +589,7 @@ def electron_repulsion_integral_improved(
             _schwarz_screener_cache[cache_key] = SchwarzScreener(
                 list(basis),
                 get_boys_function("coulomb"),
-                compute_two_electron_integrals_os_hgp,
+                _compute_two_electron_integrals_os_hgp_stable,
                 schwarz_threshold,
             )
         screener = _schwarz_screener_cache[cache_key]
