@@ -470,3 +470,36 @@ def test_schwarz_bounds_with_tight_and_diffuse_primitives():
     electron_repulsion_integral_improved(basis, schwarz_threshold=1e-12)
     screener = _schwarz_screener_cache[(tuple(id(shell) for shell in basis), 1e-12)]
     np.testing.assert_allclose(screener.bounds, expected, rtol=1e-8)
+
+
+@pytest.mark.parametrize(
+    "cls", [ElectronRepulsionIntegral, ElectronRepulsionIntegralImproved], ids=["old", "improved"]
+)
+@pytest.mark.parametrize(
+    "quartet", [(0, 1, 3, 3), (1, 0, 1, 3), (0, 2, 2, 3)], ids=["d_s_d_d", "s_d_s_d", "d_p_p_d"]
+)
+def test_swapped_contractions_that_need_splitting(cls, quartet):
+    """Test (ab|cd) = (cd|ab) for contractions whose primitives have very different exponents.
+
+    The second contraction has two contractions with the same exponents and the third has two
+    primitives, with weights that are not small on the tightest and the most diffuse primitive.
+    """
+    coeffs_s = np.array([[1.0, 0.5], [0.8, -1.0], [1.0, 0.3]])
+    exps_s = np.array([4.561e5, 83.96, 0.4313])
+    basis = [
+        GeneralizedContractionShell(2, H_COORD, np.array([1.0]), np.array([1.057]), "cartesian"),
+        GeneralizedContractionShell(0, CL_COORD, coeffs_s, exps_s, "cartesian"),
+        GeneralizedContractionShell(
+            1, CL_COORD, np.array([1.0, 0.5]), np.array([20.0, 0.5]), "cartesian"
+        ),
+        GeneralizedContractionShell(2, CL_COORD, np.array([1.0]), np.array([0.344]), "cartesian"),
+    ]
+    a, b, c, d = (basis[i] for i in quartet)
+    direct = cls.construct_array_contraction(a, b, c, d)
+    swapped = cls.construct_array_contraction(c, d, a, b)
+    np.testing.assert_allclose(
+        direct,
+        np.transpose(swapped, (4, 5, 6, 7, 0, 1, 2, 3)),
+        rtol=1e-7,
+        atol=1e-12 * np.max(np.abs(direct)),
+    )

@@ -57,8 +57,9 @@ def _compute_two_elec_stable(compute, shell_a, shell_b, shell_c, shell_d):
     exponent sums of the bra (a and b) and the ket (c and d) in every step. If this ratio is large
     (for example a tight s primitive of a heavy atom in the bra and diffuse primitives in the ket),
     the rounding errors grow until the integrals are completely wrong. The integral is the same
-    when the bra and the ket are swapped, which makes the ratio small. If one of the two
-    orientations is stable for all primitives of the contractions, it is used.
+    when the bra and the ket are swapped, which makes the ratio small. If the given order is stable
+    for all primitives of the contractions, it is used as it is. Otherwise the swapped order is used
+    if that one is stable for all primitives.
 
     Otherwise the primitive quartets are split into parts according to the contraction and the
     primitive that has the largest exponent of the four. When the largest exponent belongs to the
@@ -88,9 +89,11 @@ def _compute_two_elec_stable(compute, shell_a, shell_b, shell_c, shell_d):
     direct = _amplification(exps_bra, exps_ket, shell_c[1] + shell_d[1])
     swapped = _amplification(exps_ket, exps_bra, shell_a[1] + shell_b[1])
 
-    if min(direct, swapped) <= _AMPLIFICATION_LIMIT:
-        if direct <= swapped:
-            return compute(*shells)
+    # The given order is kept whenever it is stable, because the callers choose it to limit the
+    # memory of the recursion.
+    if direct <= _AMPLIFICATION_LIMIT:
+        return compute(*shells)
+    if swapped <= _AMPLIFICATION_LIMIT:
         integrals = compute(shell_c, shell_d, shell_a, shell_b)
         return np.transpose(integrals, (2, 3, 0, 1, 6, 7, 4, 5))
 
