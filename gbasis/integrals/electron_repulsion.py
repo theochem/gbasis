@@ -16,6 +16,133 @@ from gbasis.integrals.point_charge import PointChargeIntegral
 # Cache for Schwarz screeners keyed by (basis_ids, threshold)
 _schwarz_screener_cache = {}
 
+# Largest tolerated amplification of rounding errors in the electron transfer step. A quartet whose
+# bra and ket cannot be oriented to stay below this limit is split into parts, see
+# `_compute_two_elec_stable`.
+_AMPLIFICATION_LIMIT = 1e3
+
+
+def _amplification(exps_num, exps_den, angmom_den):
+    r"""Return the factor by which the electron transfer recursion amplifies rounding errors.
+
+    The recursion moves angular momentum from the bra to the ket and multiplies by the ratio of the
+    exponent sums of the bra and ket once per step, so the amplification grows as
+    :math:`(\zeta_{bra} / \zeta_{ket})^{L_{ket}}`.
+
+    Parameters
+    ----------
+    exps_num : np.ndarray(K_a, K_b)
+        Sums of the exponents of the pairs of primitives on the side that is moved.
+    exps_den : np.ndarray(K_c, K_d)
+        Sums of the exponents of the pairs of primitives on the side that receives the angular
+        momentum.
+    angmom_den : int
+        Total angular momentum on the side that receives the angular momentum.
+
+    Returns
+    -------
+    amplification : float
+        Worst-case amplification factor, 1 if no angular momentum is moved.
+
+    """
+    if angmom_den == 0:
+        return 1.0
+    return max(1.0, exps_num.max() / exps_den.min()) ** angmom_den
+
+
+def _compute_two_elec_stable(compute, shell_a, shell_b, shell_c, shell_d):
+    r"""Return two-electron integrals of four contractions, avoiding unstable recursions.
+
+    The electron transfer recursion of the Obara-Saika scheme multiplies by the ratio of the
+    exponent sums of the bra (a and b) and the ket (c and d) in every step. If this ratio is large
+    (for example a tight s primitive of a heavy atom in the bra and diffuse primitives in the ket),
+    the rounding errors grow until the integrals are completely wrong. The integral is the same
+    when the bra and the ket are swapped, which makes the ratio small. If the given order is stable
+    for all primitives of the contractions, it is used as it is. Otherwise the swapped order is used
+    if that one is stable for all primitives.
+
+    Otherwise the primitive quartets are split into parts according to the contraction and the
+    primitive that has the largest exponent of the four. When the largest exponent belongs to the
+    bra, the exponent sum of the bra is at least half of the one of the ket, and the bra and the ket
+    are swapped. When it belongs to the ket, the integrals are computed as they are. In both cases
+    the ratio in the recursion is at most 2. The parts do not overlap and they cover all primitive
+    quartets, so adding them up gives the integrals of the whole contractions.
+
+    Parameters
+    ----------
+    compute : function(shell_a, shell_b, shell_c, shell_d)
+        Function that returns the integrals with the recursion as it is.
+    shell_a, shell_b, shell_c, shell_d : tuple
+        Coordinate (np.ndarray(3,)), angular momentum (int), angular momentum components
+        (np.ndarray(L, 3)), exponents (np.ndarray(K,)) and contraction coefficients
+        (np.ndarray(K, M)) of each contraction.
+
+    Returns
+    -------
+    integrals : np.ndarray(L_a, L_b, L_c, L_d, M_a, M_b, M_c, M_d)
+        Two-electron integrals in the order of `compute`.
+
+    """
+    shells = (shell_a, shell_b, shell_c, shell_d)
+    exps_bra = shell_a[3][:, None] + shell_b[3][None, :]
+    exps_ket = shell_c[3][:, None] + shell_d[3][None, :]
+    direct = _amplification(exps_bra, exps_ket, shell_c[1] + shell_d[1])
+    swapped = _amplification(exps_ket, exps_bra, shell_a[1] + shell_b[1])
+
+    # The given order is kept whenever it is stable, because the callers choose it to limit the
+    # memory of the recursion.
+    if direct <= _AMPLIFICATION_LIMIT:
+        return compute(*shells)
+    if swapped <= _AMPLIFICATION_LIMIT:
+        integrals = compute(shell_c, shell_d, shell_a, shell_b)
+        return np.transpose(integrals, (2, 3, 0, 1, 6, 7, 4, 5))
+
+    total = None
+    for pos, shell in enumerate(shells):
+        for index, exp in enumerate(shell[3]):
+            # primitives of the other contractions that have a smaller exponent (ties are broken by
+            # the position of the contraction and the index of the primitive)
+            parts = []
+            for other_pos, other in enumerate(shells):
+                if other_pos == pos:
+                    selected = np.array([index])
+                else:
+                    smaller = other[3] < exp
+                    if other_pos < pos:
+                        smaller |= other[3] == exp
+                    selected = np.flatnonzero(smaller)
+                if selected.size == 0:
+                    break
+                parts.append((other[0], other[1], other[2], other[3][selected], other[4][selected]))
+            else:
+                if pos < 2:
+                    integrals = compute(parts[2], parts[3], parts[0], parts[1])
+                    integrals = np.transpose(integrals, (2, 3, 0, 1, 6, 7, 4, 5))
+                else:
+                    integrals = compute(*parts)
+                total = integrals if total is None else total + integrals
+    return total
+
+
+def _compute_two_electron_integrals_os_hgp_stable(boys_func, *args):
+    """Return the OS+HGP two-electron integrals of four contractions with a stable recursion.
+
+    This has the same arguments and result as `compute_two_electron_integrals_os_hgp`, i.e. the
+    Boys function followed by the coordinate, angular momentum, angular momentum components,
+    exponents and contraction coefficients of each of the four contractions. It is used for the
+    Schwarz bounds, which are integrals of the form (ab|ab) and have the same problem when the
+    primitives of the contractions have very different exponents.
+
+    """
+
+    def compute(shell_a, shell_b, shell_c, shell_d):
+        return compute_two_electron_integrals_os_hgp(
+            boys_func, *shell_a, *shell_b, *shell_c, *shell_d
+        )
+
+    shells = [args[5 * i : 5 * i + 5] for i in range(4)]
+    return _compute_two_elec_stable(compute, *shells)
+
 
 class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
     """Class for constructing electron-electron repulsion integrals.
@@ -181,29 +308,23 @@ class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
                 cont_four.coeffs,
             )
         else:
-            integrals = _compute_two_elec_integrals(
-                cls.boys_func,
-                cont_one.coord,
-                cont_one.angmom,
-                cont_one.angmom_components_cart,
-                cont_one.exps,
-                cont_one.coeffs,
-                cont_two.coord,
-                cont_two.angmom,
-                cont_two.angmom_components_cart,
-                cont_two.exps,
-                cont_two.coeffs,
-                cont_three.coord,
-                cont_three.angmom,
-                cont_three.angmom_components_cart,
-                cont_three.exps,
-                cont_three.coeffs,
-                cont_four.coord,
-                cont_four.angmom,
-                cont_four.angmom_components_cart,
-                cont_four.exps,
-                cont_four.coeffs,
-            )
+            shell_args = [
+                (
+                    cont.coord,
+                    cont.angmom,
+                    cont.angmom_components_cart,
+                    cont.exps,
+                    cont.coeffs,
+                )
+                for cont in (cont_one, cont_two, cont_three, cont_four)
+            ]
+
+            def compute(shell_a, shell_b, shell_c, shell_d):
+                return _compute_two_elec_integrals(
+                    cls.boys_func, *shell_a, *shell_b, *shell_c, *shell_d
+                )
+
+            integrals = _compute_two_elec_stable(compute, *shell_args)
         integrals = np.transpose(integrals, (4, 0, 5, 1, 6, 2, 7, 3))
 
         # TODO: if we swap the contractions, we need to unswap them here
@@ -374,29 +495,27 @@ class ElectronRepulsionIntegralImproved(BaseFourIndexSymmetric):
             cont_one, cont_three = cont_three, cont_one
             cont_two, cont_four = cont_four, cont_two
 
-        integrals = compute_two_electron_integrals_os_hgp(
-            cls.boys_func,
-            cont_one.coord,
-            cont_one.angmom,
-            cont_one.angmom_components_cart,
-            cont_one.exps,
-            cont_one.coeffs,
-            cont_two.coord,
-            cont_two.angmom,
-            cont_two.angmom_components_cart,
-            cont_two.exps,
-            cont_two.coeffs,
-            cont_three.coord,
-            cont_three.angmom,
-            cont_three.angmom_components_cart,
-            cont_three.exps,
-            cont_three.coeffs,
-            cont_four.coord,
-            cont_four.angmom,
-            cont_four.angmom_components_cart,
-            cont_four.exps,
-            cont_four.coeffs,
-        )
+        shell_args = [
+            (
+                cont.coord,
+                cont.angmom,
+                cont.angmom_components_cart,
+                cont.exps,
+                cont.coeffs,
+            )
+            for cont in (cont_one, cont_two, cont_three, cont_four)
+        ]
+
+        def compute(shell_a, shell_b, shell_c, shell_d):
+            return compute_two_electron_integrals_os_hgp(
+                cls.boys_func,
+                *shell_a,
+                *shell_b,
+                *shell_c,
+                *shell_d,
+            )
+
+        integrals = _compute_two_elec_stable(compute, *shell_args)
 
         # --- Un-swap axes to restore original ordering ---
         # Output shape from compute: (L_a, L_b, L_c, L_d, M_a, M_b, M_c, M_d)
@@ -473,7 +592,7 @@ def electron_repulsion_integral_improved(
             _schwarz_screener_cache[cache_key] = SchwarzScreener(
                 list(basis),
                 get_boys_function("coulomb"),
-                compute_two_electron_integrals_os_hgp,
+                _compute_two_electron_integrals_os_hgp_stable,
                 schwarz_threshold,
             )
         screener = _schwarz_screener_cache[cache_key]
