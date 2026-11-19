@@ -1,5 +1,7 @@
 """Electron-electron repulsion integral."""
 
+from collections import OrderedDict
+
 import numpy as np
 
 from gbasis.base_four_symm import BaseFourIndexSymmetric
@@ -13,8 +15,19 @@ from gbasis.integrals._two_elec_int_improved import compute_two_electron_integra
 from gbasis.integrals.boys_functions import get_boys_function
 from gbasis.integrals.point_charge import PointChargeIntegral
 
-# Cache for Schwarz screeners keyed by (basis_ids, threshold)
-_schwarz_screener_cache = {}
+# Keyed by (shell ids, threshold). Eight is enough for a few basis sets in one
+# session. After that the least recently used screener is dropped.
+_SCHWARZ_SCREENER_CACHE_MAX = 8
+_schwarz_screener_cache = OrderedDict()
+
+
+def clear_schwarz_screener_cache():
+    """Drop every cached Schwarz screener.
+
+    The cache already forgets the least recently used screener once it is full.
+    This removes whatever is still cached.
+    """
+    _schwarz_screener_cache.clear()
 
 
 class ElectronRepulsionIntegral(BaseFourIndexSymmetric):
@@ -451,6 +464,8 @@ def electron_repulsion_integral_improved(
     schwarz_threshold : float
         Schwarz screening threshold. Shell quartets with Schwarz bound below
         this threshold are skipped. Default is 0.0 (no screening).
+        The screener for the same shells and threshold is reused. The cache
+        keeps only a few of these. ``clear_schwarz_screener_cache`` drops them.
 
     Returns
     -------
@@ -469,13 +484,17 @@ def electron_repulsion_integral_improved(
     screening_kwargs = {}
     if schwarz_threshold > 0:
         cache_key = (tuple(id(shell) for shell in basis), schwarz_threshold)
-        if cache_key not in _schwarz_screener_cache:
+        if cache_key in _schwarz_screener_cache:
+            _schwarz_screener_cache.move_to_end(cache_key)
+        else:
             _schwarz_screener_cache[cache_key] = SchwarzScreener(
                 list(basis),
                 get_boys_function("coulomb"),
                 compute_two_electron_integrals_os_hgp,
                 schwarz_threshold,
             )
+            if len(_schwarz_screener_cache) > _SCHWARZ_SCREENER_CACHE_MAX:
+                _schwarz_screener_cache.popitem(last=False)
         screener = _schwarz_screener_cache[cache_key]
         index_map = {id(shell): i for i, shell in enumerate(basis)}
         screening_kwargs = {"screener": screener, "contraction_index_map": index_map}
