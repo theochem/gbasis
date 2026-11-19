@@ -1349,7 +1349,6 @@ class CBasis:
         out = out[:, :, :, self._permutations]
         # Normalize cartesian
         if self._ovlp_minhalf is not None:
-            s = self._ovlp_minhalf
             out = np.einsum("a,b,c,d,abcd->abcd", self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf, out)        # Apply notation
         if notation == "chemist":
             out = out.transpose(0, 2, 1, 3)
@@ -1400,17 +1399,17 @@ class CBasis:
         out = out[self._permutations]
         out = out[:, self._permutations]
         out = out[:, :, self._permutations]
+        # Normalize cartesian
+        if self._ovlp_minhalf is not None:
+            out = np.einsum("a,b,c,abc->abc", self._ovlp_minhalf, self._ovlp_minhalf, self._ovlp_minhalf, out)
         # Apply transformation
         if transform is not None:
             out = np.tensordot(transform, out, (1, 0))
             out = np.tensordot(transform, out, (1, 1))
             out = np.tensordot(transform, out, (1, 2))
-            out = np.moveaxis(out, [0, 1, 2], [2, 0, 1])
+            out = np.moveaxis(out, [0, 1, 2], [2, 1, 0])
         return out
 
-    
-    
-    
     def angular_momentum_integral(self, origin=None, notation="physicist", transform=None):
         r"""
         Compute the angular momentum integrals.
