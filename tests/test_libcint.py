@@ -25,7 +25,7 @@ from gbasis.integrals.overlap import overlap_integral
 from gbasis.integrals.point_charge import point_charge_integral
 
 from gbasis.parsers import make_contractions, parse_nwchem
-from gbasis.wrappers import from_iodata
+from gbasis.wrapper_iodata import from_iodata
 
 from utils import find_datafile
 
