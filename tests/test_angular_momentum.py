@@ -427,3 +427,38 @@ def test_angular_momentum_screening_accuracy(precision):
     angular_momentum = angular_momentum_integral(contraction, tol_screen=tol_screen)
     angular_momentum_no_screen = angular_momentum_integral(contraction, screen_basis=False)
     assert np.allclose(angular_momentum, angular_momentum_no_screen, atol=precision)
+
+
+@pytest.mark.parametrize("coord_type", ["cartesian", "spherical"])
+def test_angular_momentum_hermiticity_and_antisymmetry(coord_type):
+    """Test angular momentum matrices are strictly anti-symmetric, Hermitian, and real-eigenvalued."""
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    contractions = make_contractions(
+        basis_dict, ["C", "H"], np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 2.0]]), coord_type
+    )
+    l_mat = angular_momentum_integral(contractions, screen_basis=False)
+
+    for k in range(3):
+        lk = l_mat[:, :, k]
+        # Anti-symmetry: L^T = -L
+        assert np.allclose(lk, -lk.T, atol=1e-12)
+        # Hermiticity: L^dagger = L
+        assert np.allclose(lk, lk.conj().T, atol=1e-12)
+        # Physical eigenvalues must be real
+        eigs = np.linalg.eigvals(lk)
+        assert np.allclose(eigs.imag, 0.0, atol=1e-12)
+
+
+def test_angular_momentum_intra_shell_consistency():
+    """Test that intra-shell p-orbital matrix elements have correct signs (<px|Lz|py> = -1j)."""
+    basis_dict = parse_gbs(find_datafile("data_631g.gbs"))
+    contractions = make_contractions(
+        basis_dict, ["C"], np.array([[0.0, 0.0, 0.0]]), "cartesian"
+    )
+    l_mat = angular_momentum_integral(contractions, screen_basis=False)
+    # C 6-31g cartesian basis:
+    # index 0: 1s, index 1: 2s, indices 2, 3, 4: 2px, 2py, 2pz
+    # <px|Lz|py> must be -1j, <py|Lz|px> must be +1j
+    assert np.isclose(l_mat[2, 3, 2], -1j)
+    assert np.isclose(l_mat[3, 2, 2], 1j)
+
