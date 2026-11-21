@@ -132,8 +132,10 @@ def evaluate_density(
     
     min_output = np.min(output)
     if min_output < threshold:
-        warnings.warn(f"Found negative density <= {threshold}, got {min_output}. These values will be set to zero.", stacklevel=2)
-    output[output < threshold] = 0.0
+        warnings.warn(f"Found negative density <= {threshold}, got {min_output}." 
+                      "These values will be set to zero.", 
+                      stacklevel=2)
+        output[output < threshold] = 0.0
     return output
 
 
