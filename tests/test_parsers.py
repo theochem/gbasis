@@ -824,3 +824,28 @@ def test_make_contractions():
         test[1].exps,
         np.array([35.52322122, 6.513143725, 1.822142904, 0.625955266, 0.243076747, 0.100112428]),
     )
+
+
+def test_make_contractions_coord_types_tuple_and_list():
+    """Test make_contractions handles tuple coord_types and does not mutate list."""
+    basis_dict = parse_nwchem(find_datafile("data_sto6g.nwchem"))
+    coords = np.array([[0, 0, 0], [1, 1, 1]])
+
+    # Tuple coord_types should be supported without raising AttributeError
+    coord_tuple = ("spherical", "cartesian")
+    test_tuple = make_contractions(basis_dict, ["H", "H"], coords, coord_tuple)
+    assert len(test_tuple) == 2
+    assert test_tuple[0].coord_type == "spherical"
+    assert test_tuple[1].coord_type == "cartesian"
+
+    # List coord_types should not be mutated (emptied) by make_contractions
+    coord_list = ["cartesian", "spherical"]
+    test_list = make_contractions(basis_dict, ["H", "H"], coords, coord_list)
+    assert len(test_list) == 2
+    assert test_list[0].coord_type == "cartesian"
+    assert test_list[1].coord_type == "spherical"
+    assert coord_list == ["cartesian", "spherical"]
+
+    # Invalid type should raise TypeError
+    with pytest.raises(TypeError):
+        make_contractions(basis_dict, ["H", "H"], coords, 12345)

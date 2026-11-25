@@ -224,6 +224,8 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
                 f"got {coord_types}"
             )
         coord_types = [coord_types] * num_coord_types
+    elif not isinstance(coord_types, (list, tuple)):
+        raise TypeError("`coord_types` must be a string, list, or tuple.")
 
     if len(coord_types) != num_coord_types:
         raise ValueError(
@@ -232,6 +234,7 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
         )
 
     # make shells
+    icont = 0
     for icenter, (atom, coord) in enumerate(zip(atoms, coords)):
         for angmom, exps, coeffs in basis_dict[atom]:
             basis.append(
@@ -240,8 +243,9 @@ def make_contractions(basis_dict, atoms, coords, coord_types):
                     coord,
                     coeffs,
                     exps,
-                    coord_types.pop(0),
+                    coord_types[icont],
                     icenter=icenter,
                 )
             )
+            icont += 1
     return tuple(basis)

@@ -143,13 +143,11 @@ def electrostatic_potential(
     hartree_potential = np.sum(hartree_potential, axis=(0, 1))
 
     # silence warning for dividing by zero
-    old_settings = np.seterr(divide="ignore")
-    external_potential = (
-        nuclear_charges[None, :]
-        / np.sum((points[:, :, None] - nuclear_coords.T[None, :, :]) ** 2, axis=1) ** 0.5
-    )
+    old_settings = np.seterr(divide="ignore", invalid="ignore")
+    dists = np.sum((points[:, :, None] - nuclear_coords.T[None, :, :]) ** 2, axis=1) ** 0.5
+    external_potential = nuclear_charges[None, :] / dists
     # zero out potentials of elements that are too close to the nucleus
-    external_potential[external_potential > 1.0 / np.array(threshold_dist)] = 0
+    external_potential[dists < threshold_dist] = 0.0
     # restore old settings
     np.seterr(**old_settings)
     # sum over potentials for each dimension
