@@ -103,7 +103,7 @@ def evaluate_density(
         and index 0 of the array for contractions.
         Default is no transformation.
     threshold : float, optional
-        Lower bound for the density; must be <= 0. Density values below this threshold are set to 
+        Lower bound for the density; must be <= 0. Density values below this threshold are set to
         zero (with a warning). Negative values between `threshold` and zero are kept as they are.
         Use `-np.inf` to disable clipping entirely. Default is -1e-8.
     screen_basis : bool, optional
@@ -129,11 +129,11 @@ def evaluate_density(
         basis, points, transform=transform, screen_basis=screen_basis, tol_screen=tol_screen
     )
     output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
-    
+
     min_output = np.min(output)
     if min_output < threshold:
-        warnings.warn(f"Found negative density <= {threshold}, got {min_output}." 
-                      "These values will be set to zero.", 
+        warnings.warn(f"Found negative density <= {threshold}, got {min_output}."
+                      "These values will be set to zero.",
                       stacklevel=2)
         output[output < threshold] = 0.0
     return output
