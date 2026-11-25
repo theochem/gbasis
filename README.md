@@ -45,7 +45,7 @@ See https://gbasis.qcdevs.org/installation.html for full details.
 
 We welcome contributions of all kinds, such as new features,
 improvements, bug fixes, and documentation clarifications. Please read
-our [Contributor Guide](https://iodata.qcdevs.org/contributing.html) and
+our [Contributor Guide](https://github.com/theochem/gbasis/blob/master/CONTRIBUTING.md) and
 [Code of Conduct](https://github.com/theochem/.github/blob/main/CODE_OF_CONDUCT.md)
 for more details.
 
@@ -62,28 +62,28 @@ This is a partial list of the features that are supported in `gbasis`:
 
 ### Evaluations
 
-- of basis sets (`gbasis.eval.evaluate_basis`)
-- of arbitrary derivative of basis sets (`gbasis.eval_deriv.evaluate_deriv_basis`)
-- of density (`gbasis.density.evaluate_density`)
-- of arbitrary derivative of density (`gbasis.density.evaluate_deriv_density`)
-- of gradient of density (`gbasis.density.evaluate_density_gradient`)
-- of Laplacian of density (`gbasis.density.evaluate_density_laplacian`)
-- of Hessian of density (`gbasis.density.evaluate_density_hessian`)
-- of stress tensor (`gbasis.stress_tensor.evaluate_stress_tensor`)
-- of Ehrenfest force (`gbasis.stress_tensor.evaluate_ehrenfest_force`)
-- of Ehrenfest Hessian (`gbasis.stress_tensor.evaluate_ehrenfest_hessian`)
-- of positive-definite kinetic energy (`gbasis.density.evaluate_posdef_kinetic_energy_density`)
-- of general form of the kinetic energy (`gbasis.density.evaluate_general_kinetic_energy_density`)
-- of electrostatic potential (`gbasis.electrostatic_potential.electrostatic_potential`)
+- of basis sets (`gbasis.evals.eval.evaluate_basis`)
+- of arbitrary derivative of basis sets (`gbasis.evals.eval_deriv.evaluate_deriv_basis`)
+- of density (`gbasis.evals.density.evaluate_density`)
+- of arbitrary derivative of density (`gbasis.evals.density.evaluate_deriv_density`)
+- of gradient of density (`gbasis.evals.density.evaluate_density_gradient`)
+- of Laplacian of density (`gbasis.evals.density.evaluate_density_laplacian`)
+- of Hessian of density (`gbasis.evals.density.evaluate_density_hessian`)
+- of stress tensor (`gbasis.evals.stress_tensor.evaluate_stress_tensor`)
+- of Ehrenfest force (`gbasis.evals.stress_tensor.evaluate_ehrenfest_force`)
+- of Ehrenfest Hessian (`gbasis.evals.stress_tensor.evaluate_ehrenfest_hessian`)
+- of positive-definite kinetic energy (`gbasis.evals.density.evaluate_posdef_kinetic_energy_density`)
+- of general form of the kinetic energy (`gbasis.evals.density.evaluate_general_kinetic_energy_density`)
+- of electrostatic potential (`gbasis.evals.electrostatic_potential.electrostatic_potential`)
 
 ### Integrals
 
-- overlap integrals of a basis set (`gbasis.overlap.overlap_integral`)
-- overlap integrals between two basis sets (`gbasis.overlap_asymm.overlap_integral_asymmetric`)
-- arbitrary multipole moment integral (`gbasis.moment.moment_integral`)
-- kinetic energy integral (`gbasis.kinetic_energy.kinetic_energy.integral`)
-- momentum integral (`gbasis.momentum.momentum_integral`)
-- angular momentum integral (`gbasis.angular_momentum.angular_momentum_integral`)
-- point charge interaction integral (`gbasis.point_charge.point_charge_integral`)
-- nuclear-electron attraction integral (`gbasis.point_charge.point_charge_integral`)
-- electron-electron repulsion integral (`gbasis.electron_repulsion.electron_repulsion_integral`)
+- overlap integrals of a basis set (`gbasis.integrals.overlap.overlap_integral`)
+- overlap integrals between two basis sets (`gbasis.integrals.overlap_asymm.overlap_integral_asymmetric`)
+- arbitrary multipole moment integral (`gbasis.integrals.moment.moment_integral`)
+- kinetic energy integral (`gbasis.integrals.kinetic_energy.kinetic_energy_integral`)
+- momentum integral (`gbasis.integrals.momentum.momentum_integral`)
+- angular momentum integral (`gbasis.integrals.angular_momentum.angular_momentum_integral`)
+- point charge interaction integral (`gbasis.integrals.point_charge.point_charge_integral`)
+- nuclear-electron attraction integral (`gbasis.integrals.nuclear_electron_attraction.nuclear_electron_attraction_integral`)
+- electron-electron repulsion integral (`gbasis.integrals.electron_repulsion.electron_repulsion_integral`)
