@@ -76,6 +76,9 @@ def evaluate_density(
 ):
     r"""Return the density of the given basis set at the given points.
 
+    Density values below `threshold` are clipped to `threshold`. Use `threshold=-np.inf` to
+    disable clipping and obtain the raw (possibly negative) density.
+
     .. math::
 
         \rho(\mathbf{r}) = \sum_{ij} \gamma_{ij} \phi_i(\mathbf{r}) \phi_j(\mathbf{r})
@@ -103,9 +106,9 @@ def evaluate_density(
         and index 0 of the array for contractions.
         Default is no transformation.
     threshold : float, optional
-        Lower bound for the density; must be <= 0. Density values below this threshold are set to
-        zero (with a warning). Negative values between `threshold` and zero are kept as they are.
-        Use `-np.inf` to disable clipping entirely. Default is -1e-8.
+        Lower bound for the density. Density values below this threshold are clipped to
+        `threshold` (with a warning). Use `-np.inf` to disable clipping entirely.
+        Default is -1e-8.
     screen_basis : bool, optional
         Whether to screen out points with negligible contributions. Default value is False.
     tol_screen : float
@@ -120,23 +123,18 @@ def evaluate_density(
         Density evaluated at `N` grid points.
 
     """
-    if threshold > 0:
-        raise ValueError(
-            "`threshold` must be non-positive (it is a lower bound on the density). "
-            "Use `-np.inf` to disable clipping."
-        )
+
     orb_eval = evaluate_basis(
         basis, points, transform=transform, screen_basis=screen_basis, tol_screen=tol_screen
     )
     output = evaluate_density_using_evaluated_orbs(one_density_matrix, orb_eval)
-
+    # Fix #276: clip density values below the threshold
     min_output = np.min(output)
     if min_output < threshold:
-        warnings.warn(f"Found negative density <= {threshold}, got {min_output}."
-                      "These values will be set to zero.",
+        warnings.warn(f"Found density below the threshold {threshold}, got {min_output}. "
+                      f"These values will be clipped to {threshold}.", 
                       stacklevel=2)
-        output[output < threshold] = 0.0
-    return output
+    return output.clip(min=threshold)
 
 
 def evaluate_deriv_reduced_density_matrix(
